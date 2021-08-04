@@ -3,6 +3,20 @@ NOI Community App for Android
 
 > TODO Describe what this App provides
 
+*Table of Contents*
+- [it.bz.noi.community.android](#itbznoicommunityandroid)
+  - [Getting started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Source code](#source-code)
+    - [Configure the project](#configure-the-project)
+  - [Running tests](#running-tests)
+  - [Deployment](#deployment)
+  - [Information](#information)
+    - [Support](#support)
+    - [Contributing](#contributing)
+    - [Documentation](#documentation)
+    - [License](#license)
+
 ## Getting started
 
 These instructions will get you a copy of the project up and running
