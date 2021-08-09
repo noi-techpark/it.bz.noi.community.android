@@ -1,7 +1,7 @@
 # it.bz.noi.community.android
 NOI Community App for Android
 
-> TODO Describe what this App provides
+<!-- > Describe what this App provides: TBD -->
 
 *Table of Contents*
 - [it.bz.noi.community.android](#itbznoicommunityandroid)
@@ -10,11 +10,11 @@ NOI Community App for Android
     - [Source code](#source-code)
     - [Configure the project](#configure-the-project)
   - [Running tests](#running-tests)
-  - [Deployment](#deployment)
+  <!-- - [Deployment](#deployment) -->
   - [Information](#information)
     - [Support](#support)
     - [Contributing](#contributing)
-    - [Documentation](#documentation)
+    <!-- - [Documentation](#documentation) -->
     - [License](#license)
 
 ## Getting started
@@ -26,7 +26,7 @@ on your local machine for development and testing purposes.
 
 To build the project, the following prerequisites must be met:
 
-> TODO
+1. Android Studio is strongly recommended (https://developer.android.com/studio), even if any other IDE that supports Android projects should be fine
 
 
 ### Source code
@@ -39,19 +39,23 @@ git clone git@github.com:noi-techpark/it.bz.noi.community.android.git
 
 ### Configure the project
 
-> TODO
+No configuration is needed.
 
 ## Running tests
 
 The unit tests can be executed with the following command:
 
 ```bash
-> TODO
+./gradlew clean; ./gradlew test
 ```
 
-## Deployment
+*More informations at https://developer.android.com/studio/test/command-line*
 
-> TODO A detailed description about how the application must be deployed.
+<!-- ## Deployment
+
+> A detailed description about how the application must be deployed. TBD.
+
+-->
 
 ## Information
 
@@ -71,11 +75,13 @@ If you'd like to contribute, please follow the following instructions:
 
 - Create a pull request against the `development` branch.
 
+<!--
 ### Documentation
 
 More documentation can be found at 
 
-> TODO
+TBD
+-->
 
 ### License
 
