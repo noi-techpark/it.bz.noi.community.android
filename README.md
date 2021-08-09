@@ -43,13 +43,13 @@ No configuration is needed.
 
 ## Running tests
 
-The unit tests can be executed with the following command:
+The unit tests can be executed with the following command launched from the project folder:
 
 ```bash
 ./gradlew clean; ./gradlew test
 ```
 
-*More informations at https://developer.android.com/studio/test/command-line*
+*More information about Android tests at https://developer.android.com/studio/test/command-line*
 
 <!-- ## Deployment
 
