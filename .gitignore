@@ -87,3 +87,9 @@ lint/tmp/
 
 # Android Profiling
 *.hprof
+
+infrastructure/keystore
+
+.project
+.settings
+.env
