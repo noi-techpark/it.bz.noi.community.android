@@ -5,17 +5,17 @@ NOI Community App for Android
 
 *Table of Contents*
 - [it.bz.noi.community.android](#itbznoicommunityandroid)
-  - [Getting started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Source code](#source-code)
-    - [Configure the project](#configure-the-project)
-  - [Running tests](#running-tests)
-  - [Deployment](#deployment)
-  - [Information](#information)
-    - [Support](#support)
-    - [Contributing](#contributing)
-    - [Documentation](#documentation)
-    - [License](#license)
+	- [Getting started](#getting-started)
+		- [Prerequisites](#prerequisites)
+		- [Source code](#source-code)
+		- [Configure the project](#configure-the-project)
+	- [Running tests](#running-tests)
+	- [Deployment](#deployment)
+	- [Information](#information)
+		- [Support](#support)
+		- [Contributing](#contributing)
+		- [Documentation](#documentation)
+		- [License](#license)
 
 ## Getting started
 
@@ -26,7 +26,8 @@ on your local machine for development and testing purposes.
 
 To build the project, the following prerequisites must be met:
 
-> TODO
+1. [Android Studio](https://developer.android.com/studio) is strongly recommended,
+   even if any other IDE that supports Android projects should be fine
 
 
 ### Source code
@@ -39,19 +40,27 @@ git clone git@github.com:noi-techpark/it.bz.noi.community.android.git
 
 ### Configure the project
 
-> TODO
+No configuration is needed.
 
 ## Running tests
 
-The unit tests can be executed with the following command:
+The unit tests can be executed with the following command launched from the project folder:
 
 ```bash
-> TODO
+./gradlew clean
+./gradlew test
 ```
+
+*More information about Android tests at https://developer.android.com/studio/test/command-line*
 
 ## Deployment
 
-> TODO A detailed description about how the application must be deployed.
+We deployment the application with Github Actions to the Internal Test Track, if
+someone pushes to the `development` branch, and prefixes the commit message with
+`[SNAPSHOT]`. See [.github/workflows] for details...
+
+A detailed description on how to release the application to the store, will
+follow when we do that the first time.
 
 ## Information
 
@@ -73,7 +82,7 @@ If you'd like to contribute, please follow the following instructions:
 
 ### Documentation
 
-More documentation can be found at 
+More documentation can be found at
 
 > TODO
 
