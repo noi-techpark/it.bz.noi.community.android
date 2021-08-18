@@ -38,22 +38,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Generate Release APK
-        run: ./gradlew assembleRelease
-      - name: Sign APK
+      - name: Generate Release AAB
+        run: ./gradlew bundleRelease
+      - name: Sign AAB
         uses: r0adkll/sign-android-release@v1
         # ID used to access action output
         id: sign_app
         with:
-          releaseDirectory: app/build/outputs/apk/release
+          releaseDirectory: app/build/outputs/bundle/release
           signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY }}
           alias: ${{ secrets.KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEYSTORE_PASSWORD_FOR_KEY }}
-      - name: Upload APK as Github Artifact
+      - name: Upload AAB as Github Artifact
         uses: actions/upload-artifact@master
         with:
-          name: release-${{ github.sha }}.apk
+          name: release-${{ github.sha }}.aab
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
       - name: Upload Mappings as Github Artifact, if file exists
         uses: actions/upload-artifact@master
@@ -70,10 +70,10 @@ jobs:
     if: github.ref == 'refs/heads/development' && github.event_name == 'push' && startsWith( github.event.head_commit.message , '[SNAPSHOT]')
     runs-on: ubuntu-20.04
     steps:
-      - name: Download the APK Github Artifact
+      - name: Download the AAB Github Artifact
         uses: actions/download-artifact@master
         with:
-          name: release-${{ github.sha }}.apk
+          name: release-${{ github.sha }}.aab
       - name: Download the Mappings Github Artifact, if file exists
         uses: actions/download-artifact@master
         # Hack, because fileExists() is not implemented yet
@@ -85,6 +85,6 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: it.bz.noi.community
-          releaseFiles: app-release-unsigned-signed.apk
+          releaseFiles: app-release-unsigned-signed.aab
           track: internal
           #mappingFile: mapping-${{ github.sha }}.txt
