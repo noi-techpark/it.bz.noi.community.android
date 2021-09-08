@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">NOI Community</string>
+    <string name="title_activity_main2">MainActivity</string>
+    <string name="title_today">Hey you!</string>
+    <string name="title_orientate">Find your way!</string>
+    <string name="title_meet">Meet up!</string>
+    <string name="title_eat">Take a break!</string>
+    <string name="title_more">More</string>
+
+    <string name="tab_title_today">Today</string>
+    <string name="tab_title_orientate">Orientate</string>
+    <string name="tab_title_meet">Meet</string>
+    <string name="tab_title_eat">Eat</string>
+    <string name="tab_title_more">More</string>
 </resources>

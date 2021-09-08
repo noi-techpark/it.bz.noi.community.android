@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_today">
+
+    <fragment
+        android:id="@+id/navigation_today"
+        android:name="it.bz.noi.community.ui.today.TodayFragment"
+        android:label="@string/title_today"
+        tools:layout="@layout/fragment_today" />
+
+    <fragment
+        android:id="@+id/navigation_orientate"
+        android:name="it.bz.noi.community.ui.orientate.OrientateFragment"
+        android:label="@string/title_orientate"
+        tools:layout="@layout/fragment_orientate" />
+
+    <fragment
+        android:id="@+id/navigation_meet"
+        android:name="it.bz.noi.community.ui.meet.MeetFragment"
+        android:label="@string/title_meet"
+        tools:layout="@layout/fragment_meet" />
+
+    <fragment
+        android:id="@+id/navigation_eat"
+        android:name="it.bz.noi.community.ui.eat.EatFragment"
+        android:label="@string/title_eat"
+        tools:layout="@layout/fragment_eat" />
+
+    <fragment
+        android:id="@+id/navigation_more"
+        android:name="it.bz.noi.community.ui.more.MoreFragment"
+        android:label="@string/title_more"
+        tools:layout="@layout/fragment_more" />
+</navigation>
