@@ -4,4 +4,6 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="unselected">#828282</color>
+
+    <color name="date_card_view">#F4D100</color>
 </resources>
