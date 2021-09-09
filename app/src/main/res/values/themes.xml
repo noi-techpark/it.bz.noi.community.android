@@ -19,7 +19,6 @@
     </style>
 
     <style name="ToolbarTextAppearence">
-        <item name="android:textSize">40sp</item>
-        <item name="android:fontFamily">@font/source_sans_pro_semibold</item>
+        <item name="android:textSize">26sp</item>
     </style>
 </resources>
