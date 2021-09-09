@@ -12,15 +12,16 @@
         android:id="@+id/itemTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/source_sans_pro_semibold"
         android:paddingStart="17dp"
         android:text="Item"
         android:textColor="@color/black"
         android:textSize="19sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/linkArrow"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/linkArrow"
