@@ -75,6 +75,10 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
             adapter = eventsAdapter
         }
 
+        binding.cdFilterEvents.setOnClickListener {
+            Toast.makeText(requireContext(), "Not available at the moment... be patient :p", Toast.LENGTH_LONG).show()
+        }
+
         setupObservers()
     }
 

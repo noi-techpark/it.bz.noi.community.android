@@ -16,6 +16,13 @@ data class EventsResponse(
         @SerializedName("StartDate")
         val startDate: String,
         @SerializedName("EndDate")
-        val endDate: String
-    )
+        val endDate: String,
+        @SerializedName("ImageGallery")
+        val imageGallery: List<ImageGallery>
+    ) {
+        data class ImageGallery(
+            @SerializedName("ImageUrl")
+            val imageUrl: String
+        )
+    }
 }

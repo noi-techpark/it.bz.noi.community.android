@@ -4,9 +4,11 @@ import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.text.bold
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import it.bz.noi.community.R
 import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.utils.Constants.getServerDatetimeParser
@@ -21,7 +23,7 @@ class EventsAdapter(private val events: List<EventsResponse.Event>) :
     RecyclerView.Adapter<EventsAdapter.EventViewHolder>() {
 
     private val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
-    private val dateFormatter = SimpleDateFormat("yyyy-MM-dd")
+    private val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -35,12 +37,13 @@ class EventsAdapter(private val events: List<EventsResponse.Event>) :
 
     override fun getItemCount() = events.size
 
-    inner class EventViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class EventViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
         val eventName = view.findViewById<TextView>(R.id.tvEventName)
         val eventLocation = view.findViewById<TextView>(R.id.tvEventLocation)
         val eventDate = view.findViewById<TextView>(R.id.tvEventDate)
         val eventTime = view.findViewById<TextView>(R.id.tvEventTime)
+        val eventImage = view.findViewById<ImageView>(R.id.ivEventImage)
 
         fun bind(event: EventsResponse.Event) {
             eventName.text = event.name
@@ -71,6 +74,15 @@ class EventsAdapter(private val events: List<EventsResponse.Event>) :
             val startHour = timeFormatter.format(getServerDatetimeParser().parse(event.startDate))
             val endHour = timeFormatter.format(getServerDatetimeParser().parse(event.endDate))
             eventTime.text = "$startHour - $endHour"
+
+            val eventImageUrl = event.imageGallery.firstOrNull()?.imageUrl
+            if (eventImageUrl != null) {
+                Glide
+                    .with(view.context)
+                    .load(eventImageUrl)
+                    .centerCrop()
+                    .into(eventImage)
+            }
         }
 
         // i mesi partono da 0
