@@ -9,6 +9,7 @@ import androidx.core.text.bold
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.models.EventsResponse
+import it.bz.noi.community.utils.Constants.getServerDateParser
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -16,12 +17,11 @@ interface EventClickListener {
     fun onEventClick(eventId: Long)
 }
 
-class EventsAdapter(val events: List<EventsResponse.Event>) :
+class EventsAdapter(private val events: List<EventsResponse.Event>) :
     RecyclerView.Adapter<EventsAdapter.EventViewHolder>() {
 
-    private val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-    private val timeParser = SimpleDateFormat("HH:mm", Locale.getDefault())
-    private val dateParser = SimpleDateFormat("yyyy-MM-dd")
+    private val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+    private val dateFormatter = SimpleDateFormat("yyyy-MM-dd")
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -46,24 +46,30 @@ class EventsAdapter(val events: List<EventsResponse.Event>) :
             eventName.text = event.name
             eventLocation.text = event.location
 
-            val startDate = dateParser.format(sdf.parse(event.startDate))
-            val endDate = dateParser.format(sdf.parse(event.endDate))
+            val startDate = dateFormatter.format(getServerDateParser().parse(event.startDate))
+            val endDate = dateFormatter.format(getServerDateParser().parse(event.endDate))
             if (startDate == endDate) {
                 eventDate.text = SpannableStringBuilder()
-                    .append("${sdf.parse(event.startDate).date}\n")
+                    .append("${getServerDateParser().parse(event.startDate).date}\n")
                     .bold {
-                        append("${getMonthCode(sdf.parse(event.startDate).month)}")
+                        append("${getMonthCode(getServerDateParser().parse(event.startDate).month)}")
                     }
             } else {
                 eventDate.text = SpannableStringBuilder()
-                    .append("${sdf.parse(event.startDate).date} - ${sdf.parse(event.endDate).date}\n")
+                    .append(
+                        "${getServerDateParser().parse(event.startDate).date} - ${
+                            getServerDateParser().parse(
+                                event.endDate
+                            ).date
+                        }\n"
+                    )
                     .bold {
-                        append("${getMonthCode(sdf.parse(event.startDate).month)}")
+                        append("${getMonthCode(getServerDateParser().parse(event.startDate).month)}")
                     }
             }
 
-            val startHour = timeParser.format(sdf.parse(event.startDate))
-            val endHour = timeParser.format(sdf.parse(event.endDate))
+            val startHour = timeFormatter.format(getServerDateParser().parse(event.startDate))
+            val endHour = timeFormatter.format(getServerDateParser().parse(event.endDate))
             eventTime.text = "$startHour - $endHour"
         }
 

@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.EventsResponse
@@ -18,7 +19,7 @@ import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.utils.Status
 
-class TodayFragment : Fragment(), EventClickListener {
+class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 
     private lateinit var binding: FragmentTodayBinding
     private lateinit var todayViewModel: TodayViewModel
@@ -26,6 +27,11 @@ class TodayFragment : Fragment(), EventClickListener {
     private lateinit var viewModel: MainViewModel
 
     private val events = arrayListOf<EventsResponse.Event>()
+
+    private val timeFilterAdapter by lazy {
+        TimeFilterAdapter(todayViewModel.timeFilters, this)
+    }
+
     private val eventsAdapter by lazy {
         EventsAdapter(events)
     }
@@ -52,6 +58,12 @@ class TodayFragment : Fragment(), EventClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.rvTimeFilters.apply {
+            layoutManager = LinearLayoutManager(requireContext(), HORIZONTAL, false)
+            adapter = timeFilterAdapter
+        }
+
         binding.rvEvents.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = eventsAdapter
@@ -92,5 +104,15 @@ class TodayFragment : Fragment(), EventClickListener {
 
     override fun onEventClick(eventId: Long) {
         TODO("Not yet implemented")
+    }
+
+    override fun onTimeFilterClick(position: Int) {
+        val oldSelected = todayViewModel.timeFilters.first {
+            it.filterSelected
+        }
+        val oldSelectedIndex = todayViewModel.timeFilters.indexOf(oldSelected)
+        todayViewModel.timeFilters[oldSelectedIndex].filterSelected = false
+        todayViewModel.timeFilters[position].filterSelected = true
+        timeFilterAdapter.notifyDataSetChanged()
     }
 }
