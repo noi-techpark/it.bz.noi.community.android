@@ -12,4 +12,12 @@
     <string name="tab_title_meet">Meet</string>
     <string name="tab_title_eat">Eat</string>
     <string name="tab_title_more">More</string>
+
+    <string name="meet_item_companies">Companies</string>
+    <string name="meet_item_startups">Startups</string>
+    <string name="meet_item_university">University</string>
+    <string name="meet_item_research">Research Institutions</string>
+    <string name="meet_item_support">Institutional Support</string>
+    <string name="meet_item_lab">Laboratories</string>
+    <string name="meet_item_team">Team NOI</string>
 </resources>
