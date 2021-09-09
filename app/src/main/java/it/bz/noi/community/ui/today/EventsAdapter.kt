@@ -9,7 +9,7 @@ import androidx.core.text.bold
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.models.EventsResponse
-import it.bz.noi.community.utils.Constants.getServerDateParser
+import it.bz.noi.community.utils.Constants.getServerDatetimeParser
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,30 +46,30 @@ class EventsAdapter(private val events: List<EventsResponse.Event>) :
             eventName.text = event.name
             eventLocation.text = event.location
 
-            val startDate = dateFormatter.format(getServerDateParser().parse(event.startDate))
-            val endDate = dateFormatter.format(getServerDateParser().parse(event.endDate))
+            val startDate = dateFormatter.format(getServerDatetimeParser().parse(event.startDate))
+            val endDate = dateFormatter.format(getServerDatetimeParser().parse(event.endDate))
             if (startDate == endDate) {
                 eventDate.text = SpannableStringBuilder()
-                    .append("${getServerDateParser().parse(event.startDate).date}\n")
+                    .append("${getServerDatetimeParser().parse(event.startDate).date}\n")
                     .bold {
-                        append("${getMonthCode(getServerDateParser().parse(event.startDate).month)}")
+                        append("${getMonthCode(getServerDatetimeParser().parse(event.startDate).month)}")
                     }
             } else {
                 eventDate.text = SpannableStringBuilder()
                     .append(
-                        "${getServerDateParser().parse(event.startDate).date} - ${
-                            getServerDateParser().parse(
+                        "${getServerDatetimeParser().parse(event.startDate).date} - ${
+                            getServerDatetimeParser().parse(
                                 event.endDate
                             ).date
                         }\n"
                     )
                     .bold {
-                        append("${getMonthCode(getServerDateParser().parse(event.startDate).month)}")
+                        append("${getMonthCode(getServerDatetimeParser().parse(event.startDate).month)}")
                     }
             }
 
-            val startHour = timeFormatter.format(getServerDateParser().parse(event.startDate))
-            val endHour = timeFormatter.format(getServerDateParser().parse(event.endDate))
+            val startHour = timeFormatter.format(getServerDatetimeParser().parse(event.startDate))
+            val endHour = timeFormatter.format(getServerDatetimeParser().parse(event.endDate))
             eventTime.text = "$startHour - $endHour"
         }
 

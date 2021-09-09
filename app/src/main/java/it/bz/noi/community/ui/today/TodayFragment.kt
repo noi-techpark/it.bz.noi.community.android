@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +17,7 @@ import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.databinding.FragmentTodayBinding
 import it.bz.noi.community.ui.MainViewModel
+import it.bz.noi.community.ui.TimeRange
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.utils.Status
 
@@ -34,6 +36,10 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 
     private val eventsAdapter by lazy {
         EventsAdapter(events)
+    }
+
+    private val layoutManagerFilters by lazy {
+        LinearLayoutManager(requireContext(), HORIZONTAL, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +66,7 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         binding.rvTimeFilters.apply {
-            layoutManager = LinearLayoutManager(requireContext(), HORIZONTAL, false)
+            layoutManager = layoutManagerFilters
             adapter = timeFilterAdapter
         }
 
@@ -73,21 +79,24 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
     }
 
     private fun setupObservers() {
-        viewModel.getEvents().observe(viewLifecycleOwner, Observer {
+        viewModel.mediatorEvents.observe(viewLifecycleOwner, Observer {
             it?.let { resource ->
                 when (resource.status) {
                     Status.SUCCESS -> {
-                        binding.rvEvents.visibility = View.VISIBLE
+                        binding.progressBarLoading.isVisible = false
+                        binding.rvEvents.isVisible = true
                         resource.data?.let { events ->
                             retrieveList(events)
                         }
                     }
                     Status.ERROR -> {
-                        binding.rvEvents.visibility = View.VISIBLE
+                        binding.progressBarLoading.isVisible = false
+                        binding.rvEvents.isVisible = false
                         Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
                     }
                     Status.LOADING -> {
-                        binding.rvEvents.visibility = View.GONE
+                        binding.progressBarLoading.isVisible = true
+                        binding.rvEvents.isVisible = true
                     }
                 }
             }
@@ -114,5 +123,19 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
         todayViewModel.timeFilters[oldSelectedIndex].filterSelected = false
         todayViewModel.timeFilters[position].filterSelected = true
         timeFilterAdapter.notifyDataSetChanged()
+
+        // serve per evitare che venga selezionato un elemento in modo parziale
+        if (layoutManagerFilters.findLastCompletelyVisibleItemPosition() < position)
+            binding.rvTimeFilters.smoothScrollToPosition(todayViewModel.timeFilters.lastIndex)
+        else if (layoutManagerFilters.findFirstCompletelyVisibleItemPosition() > position)
+            binding.rvTimeFilters.smoothScrollToPosition(0)
+
+        when (position) {
+            0 -> viewModel.filterTime(TimeRange.ALL)
+            1 -> viewModel.filterTime(TimeRange.TODAY)
+            2 -> viewModel.filterTime(TimeRange.THIS_WEEK)
+            3 -> viewModel.filterTime(TimeRange.THIS_MONTH)
+            else -> viewModel.filterTime(TimeRange.ALL)
+        }
     }
 }
