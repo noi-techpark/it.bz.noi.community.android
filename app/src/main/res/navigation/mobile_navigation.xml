@@ -15,7 +15,12 @@
         android:id="@+id/navigation_orientate"
         android:name="it.bz.noi.community.ui.orientate.OrientateFragment"
         android:label="@string/title_orientate"
-        tools:layout="@layout/fragment_orientate" />
+        tools:layout="@layout/fragment_orientate" >
+        <action
+            android:id="@+id/action_navigation_orientate_to_webViewFragment"
+            app:destination="@id/webViewFragment"
+            app:popUpTo="@id/navigation_orientate" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_meet"
@@ -34,4 +39,18 @@
         android:name="it.bz.noi.community.ui.more.MoreFragment"
         android:label="@string/title_more"
         tools:layout="@layout/fragment_more" />
+
+    <fragment
+        android:id="@+id/webViewFragment"
+        android:name="it.bz.noi.community.ui.WebViewFragment"
+        android:label="WebViewFragment" >
+        <argument
+            android:name="title"
+            app:argType="string"
+            android:defaultValue="Title" />
+        <argument
+            android:name="url"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
 </navigation>
