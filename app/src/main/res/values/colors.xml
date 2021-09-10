@@ -5,5 +5,10 @@
 
     <color name="unselected">#828282</color>
 
+    <color name="date_card_view">#F4D100</color>
+
+    <color name="unselected_time_filter">#D9828282</color>
+
     <color name="light_gray">#F1F1F1</color>
+
 </resources>
