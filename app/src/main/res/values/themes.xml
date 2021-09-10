@@ -14,12 +14,17 @@
         <item name="colorSecondaryVariant">@color/white</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
         <!-- Customize your theme here. -->
         <item name="android:windowActivityTransitions">true</item>
     </style>
 
     <style name="ToolbarTextAppearence">
         <item name="android:textSize">26sp</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="@style/Widget.MaterialComponents.ActionBar.Primary">
+        <!-- Customize color of navigation drawer icon and back arrow -->
+        <item name="colorControlNormal">@color/white</item>
     </style>
 </resources>

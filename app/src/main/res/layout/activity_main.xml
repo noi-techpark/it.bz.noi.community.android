@@ -13,6 +13,7 @@
         app:titleTextColor="@color/white"
         android:background="@color/black"
         app:layout_constraintTop_toTopOf="parent"
+        android:theme="@style/ToolbarTheme"
         app:titleTextAppearance="@style/ToolbarTextAppearence"/>
 
     <fragment

@@ -5,6 +5,7 @@ import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.SharedElementCallback
 import androidx.core.text.bold
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.TransitionInflater
+import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.databinding.FragmentEventDetailsBinding
@@ -36,7 +38,7 @@ class EventDetailsFragment : Fragment() {
         ).get(MainViewModel::class.java)
 
         sharedElementEnterTransition =
-            TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+            TransitionInflater.from(context).inflateTransition(R.transition.change_bounds)
         postponeEnterTransition(100, TimeUnit.MILLISECONDS)
 
         setEnterSharedElementCallback(object : SharedElementCallback() {
@@ -68,7 +70,14 @@ class EventDetailsFragment : Fragment() {
         val eventDays = arguments?.getString("eventDays")!!
         val eventMonth = arguments?.getString("eventMonth")!!
         val eventTime = arguments?.getString("eventTime")!!
-        ViewCompat.setTransitionName(binding.cardViewEvent, "cardEvent_${eventID}")
+        ViewCompat.setTransitionName(binding.cardViewDate, "cardDate_${eventID}")
+        ViewCompat.setTransitionName(binding.constraintLayout, "constraintLayout_${eventID}")
+        ViewCompat.setTransitionName(binding.tvEventName, "eventName_${eventID}")
+        ViewCompat.setTransitionName(binding.tvEventLocation, "eventLocation_${eventID}")
+        ViewCompat.setTransitionName(binding.tvEventTime, "eventTime_${eventID}")
+        ViewCompat.setTransitionName(binding.ivEventImage, "eventImage_${eventID}")
+        ViewCompat.setTransitionName(binding.ivLocation, "locationIcon_${eventID}")
+        ViewCompat.setTransitionName(binding.ivTime, "timeIcon_${eventID}")
         (requireActivity() as AppCompatActivity).supportActionBar?.title = eventName
 
         binding.tvEventName.text = eventName

@@ -1,13 +1,16 @@
 package it.bz.noi.community
 
 import android.os.Bundle
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.appbar.MaterialToolbar
 import it.bz.noi.community.databinding.ActivityMainBinding
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,10 +53,23 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_more -> {
                     supportActionBar?.hide()
                 }
+                R.id.eventDetailsFragment -> {
+                    (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
+                        18f
+                    supportActionBar?.setDisplayShowHomeEnabled(true)
+                    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                }
                 else -> {
+                    (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
+                        26f
                     supportActionBar?.show()
                 }
             }
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        navController.popBackStack()
+        return super.onSupportNavigateUp()
     }
 }

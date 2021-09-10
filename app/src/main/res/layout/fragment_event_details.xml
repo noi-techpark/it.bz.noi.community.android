@@ -21,9 +21,12 @@
                 android:layout_height="wrap_content"
                 android:elevation="0dp"
                 app:cardCornerRadius="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/black">
@@ -31,7 +34,7 @@
                     <ImageView
                         android:id="@+id/ivEventImage"
                         android:layout_width="match_parent"
-                        android:layout_height="220dp"
+                        android:layout_height="400dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/srctest"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -44,32 +47,50 @@
                         android:paddingVertical="8dp"
                         android:textColor="@color/white"
                         android:textColorHint="@color/white"
-                        android:textSize="30sp"
-                        android:transitionName="eventName"
+                        android:textSize="25sp"
                         app:layout_constraintTop_toBottomOf="@id/cardViewDate"
                         tools:hint="Corso consulente energetico CasaClima" />
+
+                    <ImageView
+                        android:id="@+id/ivLocation"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginStart="16dp"
+                        android:src="@drawable/ic_location"
+                        app:layout_constraintBottom_toBottomOf="@id/tvEventLocation"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tvEventLocation" />
 
                     <TextView
                         android:id="@+id/tvEventLocation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingHorizontal="16dp"
-                        android:paddingBottom="16dp"
+                        android:layout_marginStart="4dp"
                         android:textColor="@color/white"
                         android:textColorHint="@color/white"
-                        android:transitionName="eventLocation"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ivLocation"
                         app:layout_constraintTop_toBottomOf="@id/tvEventName"
                         tools:hint="NOI Techpark" />
+
+                    <ImageView
+                        android:id="@+id/ivTime"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="4dp"
+                        android:src="@drawable/ic_time"
+                        app:layout_constraintBottom_toBottomOf="@id/tvEventLocation"
+                        app:layout_constraintEnd_toStartOf="@id/tvEventTime"
+                        app:layout_constraintTop_toTopOf="@id/tvEventLocation" />
 
                     <TextView
                         android:id="@+id/tvEventTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingHorizontal="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:paddingBottom="16dp"
                         android:textColor="@color/white"
                         android:textColorHint="@color/white"
-                        android:transitionName="eventTime"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvEventName"
                         tools:hint="19:00 - 20:00" />
@@ -87,7 +108,6 @@
                         android:layout_marginTop="-25dp"
                         android:layout_marginEnd="16dp"
                         android:backgroundTint="@color/date_card_view"
-                        android:transitionName="eventDate"
                         app:cardCornerRadius="25dp"
                         app:layout_constraintBottom_toBottomOf="@id/barrier"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -173,6 +193,7 @@
         android:id="@+id/viewWhiteLayer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="-16dp"
         android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="@id/btnFindOnMaps" />
@@ -181,6 +202,7 @@
         android:id="@+id/btnFindOnMaps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:text="Find on maps"
         app:cornerRadius="0dp"
         app:elevation="0dp"
@@ -192,6 +214,7 @@
         android:id="@+id/btnAddToCalendar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:text="Add to calendar"
         app:cornerRadius="0dp"
         app:elevation="0dp"

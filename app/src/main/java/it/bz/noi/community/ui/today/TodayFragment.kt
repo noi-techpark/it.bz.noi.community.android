@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
@@ -24,11 +27,11 @@ import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.EventParsed
 import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.databinding.FragmentTodayBinding
-import it.bz.noi.community.databinding.ViewHolderEventBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.TimeRange
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.utils.Status
+import java.util.concurrent.TimeUnit
 
 class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 
@@ -71,7 +74,7 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        postponeEnterTransition(100, TimeUnit.MILLISECONDS)
         layoutManagerFilters = LinearLayoutManager(requireContext(), HORIZONTAL, false)
 
         binding.rvTimeFilters.apply {
@@ -82,10 +85,6 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
         binding.rvEvents.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = eventsAdapter
-            postponeEnterTransition()
-            doOnPreDraw {
-                startPostponedEnterTransition()
-            }
         }
 
         binding.cdFilterEvents.setOnClickListener {
@@ -113,6 +112,9 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
                         resource.data?.let { events ->
                             retrieveList(events)
                         }
+                        (view?.parent as? ViewGroup)?.doOnPreDraw {
+                            startPostponedEnterTransition()
+                        }
                     }
                     Status.ERROR -> {
                         binding.swipeRefreshEvents.isRefreshing = false
@@ -136,9 +138,27 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
         eventsAdapter.notifyDataSetChanged()
     }
 
-    override fun onEventClick(cardEvent: MaterialCardView, event: EventParsed) {
+    override fun onEventClick(
+        cardEvent: MaterialCardView,
+        cardDate: CardView,
+        eventName: TextView,
+        eventLocation: TextView,
+        eventTime: TextView,
+        eventImage: ImageView,
+        constraintLayout: ConstraintLayout,
+        locationIcon: ImageView,
+        timeIcon: ImageView,
+        event: EventParsed
+    ) {
         val extras = FragmentNavigatorExtras(
-            cardEvent to "cardEvent_${event.eventId}"
+            constraintLayout to "constraintLayout_${event.eventId}",
+            eventName to "eventName_${event.eventId}",
+            cardDate to "cardDate_${event.eventId}",
+            eventLocation to "eventLocation_${event.eventId}",
+            eventTime to "eventTime_${event.eventId}",
+            eventImage to "eventImage_${event.eventId}",
+            locationIcon to "locationIcon_${event.eventId}",
+            timeIcon to "timeIcon_${event.eventId}"
         )
         findNavController().navigate(
             R.id.action_navigation_today_to_eventDetailsFragment, bundleOf(

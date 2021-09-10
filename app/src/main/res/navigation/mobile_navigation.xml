@@ -45,6 +45,6 @@
     <fragment
         android:id="@+id/eventDetailsFragment"
         android:name="it.bz.noi.community.ui.eventDetails.EventDetailsFragment"
-        android:label="EventDetailsFragment"
+        android:label=" "
         tools:layout="@layout/fragment_event_details"/>
 </navigation>
