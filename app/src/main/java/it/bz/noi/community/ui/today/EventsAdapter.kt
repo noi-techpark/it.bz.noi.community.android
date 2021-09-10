@@ -137,7 +137,6 @@ class EventsAdapter(
                     .load(eventImageUrl)
                     .centerCrop()
                     .into(eventImage)
-                    .apply { RequestOptions().dontTransform() }
             }
 
             eventParsed = EventParsed(
@@ -145,7 +144,8 @@ class EventsAdapter(
                 event.name,
                 event.location,
                 days, month,
-                eventTime.text.toString()
+                eventTime.text.toString(),
+                eventImageUrl
             )
         }
 

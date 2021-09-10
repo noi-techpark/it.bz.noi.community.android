@@ -74,7 +74,7 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        postponeEnterTransition(100, TimeUnit.MILLISECONDS)
+
         layoutManagerFilters = LinearLayoutManager(requireContext(), HORIZONTAL, false)
 
         binding.rvTimeFilters.apply {
@@ -85,6 +85,11 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
         binding.rvEvents.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = eventsAdapter
+            postponeEnterTransition()
+            viewTreeObserver.addOnPreDrawListener {
+                startPostponedEnterTransition()
+                true
+            }
         }
 
         binding.cdFilterEvents.setOnClickListener {
@@ -111,9 +116,6 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
                         binding.rvEvents.isVisible = true
                         resource.data?.let { events ->
                             retrieveList(events)
-                        }
-                        (view?.parent as? ViewGroup)?.doOnPreDraw {
-                            startPostponedEnterTransition()
                         }
                     }
                     Status.ERROR -> {
@@ -167,7 +169,8 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
                 "eventLocation" to event.location,
                 "eventDays" to event.days,
                 "eventMonth" to event.month,
-                "eventTime" to event.time
+                "eventTime" to event.time,
+                "eventImage" to event.imageUrl
             ), null, extras
         )
     }

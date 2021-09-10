@@ -1,11 +1,11 @@
 package it.bz.noi.community.ui.eventDetails
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.SharedElementCallback
 import androidx.core.text.bold
@@ -15,6 +15,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.TransitionInflater
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
@@ -70,14 +76,10 @@ class EventDetailsFragment : Fragment() {
         val eventDays = arguments?.getString("eventDays")!!
         val eventMonth = arguments?.getString("eventMonth")!!
         val eventTime = arguments?.getString("eventTime")!!
-        ViewCompat.setTransitionName(binding.cardViewDate, "cardDate_${eventID}")
-        ViewCompat.setTransitionName(binding.constraintLayout, "constraintLayout_${eventID}")
-        ViewCompat.setTransitionName(binding.tvEventName, "eventName_${eventID}")
-        ViewCompat.setTransitionName(binding.tvEventLocation, "eventLocation_${eventID}")
-        ViewCompat.setTransitionName(binding.tvEventTime, "eventTime_${eventID}")
-        ViewCompat.setTransitionName(binding.ivEventImage, "eventImage_${eventID}")
-        ViewCompat.setTransitionName(binding.ivLocation, "locationIcon_${eventID}")
-        ViewCompat.setTransitionName(binding.ivTime, "timeIcon_${eventID}")
+        val eventImageUrl = arguments?.getString("imageUrl")
+
+        setupTransitions(eventID, eventImageUrl)
+
         (requireActivity() as AppCompatActivity).supportActionBar?.title = eventName
 
         binding.tvEventName.text = eventName
@@ -96,5 +98,47 @@ class EventDetailsFragment : Fragment() {
                 }
             }
         })
+    }
+
+    private fun setupTransitions(eventID: String, eventImageUrl: String?) {
+        ViewCompat.setTransitionName(binding.cardViewDate, "cardDate_${eventID}")
+        ViewCompat.setTransitionName(binding.constraintLayout, "constraintLayout_${eventID}")
+        ViewCompat.setTransitionName(binding.tvEventName, "eventName_${eventID}")
+        ViewCompat.setTransitionName(binding.tvEventLocation, "eventLocation_${eventID}")
+        ViewCompat.setTransitionName(binding.tvEventTime, "eventTime_${eventID}")
+        ViewCompat.setTransitionName(binding.ivEventImage, "eventImage_${eventID}")
+        ViewCompat.setTransitionName(binding.ivLocation, "locationIcon_${eventID}")
+        ViewCompat.setTransitionName(binding.ivTime, "timeIcon_${eventID}")
+
+        if (eventImageUrl != null) {
+            Glide
+                .with(requireContext())
+                .load(eventImageUrl)
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        startPostponedEnterTransition()
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        startPostponedEnterTransition()
+                        return false
+                    }
+
+                })
+                .centerCrop()
+                .into(binding.ivEventImage)
+        }
     }
 }
