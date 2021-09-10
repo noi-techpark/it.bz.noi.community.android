@@ -7,4 +7,5 @@ class ApiHelper(private val apiService: ApiService) {
     suspend fun getEvents(urlParams: UrlParams): EventsResponse {
         return apiService.getEvents(startDate = urlParams.startDate, endDate = urlParams.endDate)
     }
+    suspend fun getEventDetails(eventID: String) = apiService.getEventDetails(eventID)
 }

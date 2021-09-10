@@ -5,4 +5,5 @@ import it.bz.noi.community.data.models.UrlParams
 
 class MainRepository(private val apiHelper: ApiHelper) {
     suspend fun getEvents(urlParams: UrlParams) = apiHelper.getEvents(urlParams)
+    suspend fun getEventDetails(eventID: String) = apiHelper.getEventDetails(eventID)
 }

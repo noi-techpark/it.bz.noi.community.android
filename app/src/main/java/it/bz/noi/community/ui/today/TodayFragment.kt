@@ -4,18 +4,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.os.bundleOf
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
+import com.google.android.material.card.MaterialCardView
+import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
+import it.bz.noi.community.data.models.EventParsed
 import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.databinding.FragmentTodayBinding
+import it.bz.noi.community.databinding.ViewHolderEventBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.TimeRange
 import it.bz.noi.community.ui.ViewModelFactory
@@ -35,12 +44,10 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
     }
 
     private val eventsAdapter by lazy {
-        EventsAdapter(events)
+        EventsAdapter(events, this)
     }
 
-    private val layoutManagerFilters by lazy {
-        LinearLayoutManager(requireContext(), HORIZONTAL, false)
-    }
+    private lateinit var layoutManagerFilters: LinearLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +72,8 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        layoutManagerFilters = LinearLayoutManager(requireContext(), HORIZONTAL, false)
+
         binding.rvTimeFilters.apply {
             layoutManager = layoutManagerFilters
             adapter = timeFilterAdapter
@@ -73,10 +82,18 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
         binding.rvEvents.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = eventsAdapter
+            postponeEnterTransition()
+            doOnPreDraw {
+                startPostponedEnterTransition()
+            }
         }
 
         binding.cdFilterEvents.setOnClickListener {
-            Toast.makeText(requireContext(), "Not available at the moment... be patient :p", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                requireContext(),
+                "Not available at the moment... be patient :p",
+                Toast.LENGTH_LONG
+            ).show()
         }
 
         binding.swipeRefreshEvents.setOnRefreshListener {
@@ -119,8 +136,20 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
         eventsAdapter.notifyDataSetChanged()
     }
 
-    override fun onEventClick(eventId: Long) {
-        TODO("Not yet implemented")
+    override fun onEventClick(cardEvent: MaterialCardView, event: EventParsed) {
+        val extras = FragmentNavigatorExtras(
+            cardEvent to "cardEvent_${event.eventId}"
+        )
+        findNavController().navigate(
+            R.id.action_navigation_today_to_eventDetailsFragment, bundleOf(
+                "eventID" to event.eventId,
+                "eventName" to event.name,
+                "eventLocation" to event.location,
+                "eventDays" to event.days,
+                "eventMonth" to event.month,
+                "eventTime" to event.time
+            ), null, extras
+        )
     }
 
     override fun onTimeFilterClick(position: Int) {

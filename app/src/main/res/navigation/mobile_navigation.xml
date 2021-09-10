@@ -9,7 +9,15 @@
         android:id="@+id/navigation_today"
         android:name="it.bz.noi.community.ui.today.TodayFragment"
         android:label="@string/title_today"
-        tools:layout="@layout/fragment_today" />
+        tools:layout="@layout/fragment_today" >
+        <action
+            android:id="@+id/action_navigation_today_to_eventDetailsFragment"
+            app:destination="@id/eventDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_orientate"
@@ -34,4 +42,9 @@
         android:name="it.bz.noi.community.ui.more.MoreFragment"
         android:label="@string/title_more"
         tools:layout="@layout/fragment_more" />
+    <fragment
+        android:id="@+id/eventDetailsFragment"
+        android:name="it.bz.noi.community.ui.eventDetails.EventDetailsFragment"
+        android:label="EventDetailsFragment"
+        tools:layout="@layout/fragment_event_details"/>
 </navigation>

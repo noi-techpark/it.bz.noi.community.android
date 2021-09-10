@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardViewEvent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
@@ -30,6 +31,7 @@
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textSize="24sp"
+            android:transitionName="eventName"
             app:layout_constraintTop_toBottomOf="@id/cardViewDate"
             tools:hint="Corso consulente energetico CasaClima" />
 
@@ -41,6 +43,7 @@
             android:paddingBottom="16dp"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
+            android:transitionName="eventLocation"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvEventName"
             tools:hint="NOI Techpark" />
@@ -52,12 +55,13 @@
             android:paddingHorizontal="16dp"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
+            android:transitionName="eventTime"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvEventName"
             tools:hint="19:00 - 20:00" />
 
         <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier"
+            android:id="@+id/barrier1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/ivEventImage" />
@@ -69,10 +73,11 @@
             android:layout_marginTop="-25dp"
             android:layout_marginEnd="16dp"
             android:backgroundTint="@color/date_card_view"
+            android:transitionName="eventDate"
             app:cardCornerRadius="25dp"
-            app:layout_constraintBottom_toBottomOf="@id/barrier"
+            app:layout_constraintBottom_toBottomOf="@id/barrier1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/barrier">
+            app:layout_constraintTop_toTopOf="@id/barrier1">
 
             <TextView
                 android:id="@+id/tvEventDate"

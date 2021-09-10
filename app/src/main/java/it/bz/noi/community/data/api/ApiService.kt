@@ -1,7 +1,9 @@
 package it.bz.noi.community.data.api
 
+import it.bz.noi.community.data.models.EventDetailsResponse
 import it.bz.noi.community.data.models.EventsResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -12,4 +14,9 @@ interface ApiService {
         @Query("startdate") startDate: String,
         @Query("enddate") endDate: String? = null
     ): EventsResponse
+
+    @GET("v1/EventShort/Detail/{id}")
+    suspend fun getEventDetails(
+        @Path("id") eventID: String
+    ): EventDetailsResponse
 }
