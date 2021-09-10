@@ -9,7 +9,11 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/viewWhiteLayer"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -140,7 +144,9 @@
                 android:id="@+id/tvAboutLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/activity_horizontal_margin"
+                android:paddingHorizontal="@dimen/activity_horizontal_margin"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
                 android:text="About"
                 android:textColor="@color/black"
                 android:textSize="19sp"
@@ -161,7 +167,9 @@
                 android:id="@+id/tvInterestingForYou"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/activity_horizontal_margin"
+                android:paddingHorizontal="@dimen/activity_horizontal_margin"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
                 android:text="Interesting for you?"
                 android:textColor="@color/black"
                 android:textSize="19sp"

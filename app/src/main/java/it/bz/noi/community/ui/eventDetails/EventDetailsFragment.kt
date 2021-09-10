@@ -6,7 +6,11 @@ import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.SharedElementCallback
 import androidx.core.text.bold
 import androidx.core.view.ViewCompat
@@ -14,26 +18,34 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
+import it.bz.noi.community.data.models.EventParsed
+import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.databinding.FragmentEventDetailsBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
+import it.bz.noi.community.ui.today.EventClickListener
+import it.bz.noi.community.ui.today.EventsAdapter
 import it.bz.noi.community.utils.Status
 import java.util.concurrent.TimeUnit
 
-class EventDetailsFragment : Fragment() {
+class EventDetailsFragment : Fragment(), EventClickListener {
     private lateinit var binding: FragmentEventDetailsBinding
 
     private lateinit var viewModel: MainViewModel
+
+    val suggestedEvents = arrayListOf<EventsResponse.Event>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +54,8 @@ class EventDetailsFragment : Fragment() {
             ViewModelFactory(ApiHelper(RetrofitBuilder.apiService))
 
         ).get(MainViewModel::class.java)
+
+        createMockEvents()
 
         sharedElementEnterTransition =
             TransitionInflater.from(context).inflateTransition(R.transition.change_bounds)
@@ -57,6 +71,39 @@ class EventDetailsFragment : Fragment() {
                 binding.groupEventServerData.isVisible = true
             }
         })
+    }
+
+    private fun createMockEvents() {
+        suggestedEvents.add(
+            EventsResponse.Event(
+                "zio",
+                "Evento test1",
+                "NOI Techpark",
+                "2021-09-14T08:00:00",
+                "2021-09-14T18:00:00",
+                listOf()
+            )
+        )
+        suggestedEvents.add(
+            EventsResponse.Event(
+                "zio",
+                "Evento test2",
+                "NOI Techpark",
+                "2021-09-18T10:00:00",
+                "2021-09-20T12:00:00",
+                listOf()
+            )
+        )
+        suggestedEvents.add(
+            EventsResponse.Event(
+                "zio",
+                "Evento test3",
+                "NOI Techpark",
+                "2021-09-29T08:00:00",
+                "2021-09-29T18:00:00",
+                listOf()
+            )
+        )
     }
 
     override fun onCreateView(
@@ -98,6 +145,11 @@ class EventDetailsFragment : Fragment() {
                 }
             }
         })
+
+        binding.rvSuggestedEvents.apply {
+            layoutManager = LinearLayoutManager(requireContext(), HORIZONTAL, false)
+            adapter = EventsAdapter(suggestedEvents, this@EventDetailsFragment)
+        }
     }
 
     private fun setupTransitions(eventID: String, eventImageUrl: String?) {
@@ -140,5 +192,20 @@ class EventDetailsFragment : Fragment() {
                 .centerCrop()
                 .into(binding.ivEventImage)
         }
+    }
+
+    override fun onEventClick(
+        cardEvent: MaterialCardView,
+        cardDate: CardView,
+        eventName: TextView,
+        eventLocation: TextView,
+        eventTime: TextView,
+        eventImage: ImageView,
+        constraintLayout: ConstraintLayout,
+        locationIcon: ImageView,
+        timeIcon: ImageView,
+        event: EventParsed
+    ) {
+
     }
 }
