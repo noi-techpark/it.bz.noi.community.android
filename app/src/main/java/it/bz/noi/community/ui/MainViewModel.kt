@@ -77,6 +77,10 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
         refreshData()
     }
 
+    fun refresh() {
+        refreshData()
+    }
+
     private fun refreshData() {
         mediatorEvents.removeSource(events)
         events = liveData(Dispatchers.IO) {

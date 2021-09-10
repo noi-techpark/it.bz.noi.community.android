@@ -79,6 +79,10 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
             Toast.makeText(requireContext(), "Not available at the moment... be patient :p", Toast.LENGTH_LONG).show()
         }
 
+        binding.swipeRefreshEvents.setOnRefreshListener {
+            viewModel.refresh()
+        }
+
         setupObservers()
     }
 
@@ -87,19 +91,19 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
             it?.let { resource ->
                 when (resource.status) {
                     Status.SUCCESS -> {
-                        binding.progressBarLoading.isVisible = false
+                        binding.swipeRefreshEvents.isRefreshing = false
                         binding.rvEvents.isVisible = true
                         resource.data?.let { events ->
                             retrieveList(events)
                         }
                     }
                     Status.ERROR -> {
-                        binding.progressBarLoading.isVisible = false
+                        binding.swipeRefreshEvents.isRefreshing = false
                         binding.rvEvents.isVisible = false
                         Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
                     }
                     Status.LOADING -> {
-                        binding.progressBarLoading.isVisible = true
+                        binding.swipeRefreshEvents.isRefreshing = true
                         binding.rvEvents.isVisible = true
                     }
                 }
