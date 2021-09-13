@@ -18,14 +18,14 @@ class FiltersFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         items = listOf(
-            FiltersAdapter.Item.Header("Filter by event type"),
-            FiltersAdapter.Item.Filter("Public", false, FiltersAdapter.FilterType.EVENT_TYPE),
-            FiltersAdapter.Item.Filter("NOI only", false, FiltersAdapter.FilterType.EVENT_TYPE),
-            FiltersAdapter.Item.Header("Filter by technology sector"),
-            FiltersAdapter.Item.Filter("Green", true, FiltersAdapter.FilterType.TECHNOLOGY_SECTOR),
-            FiltersAdapter.Item.Filter("Food", false, FiltersAdapter.FilterType.TECHNOLOGY_SECTOR),
-            FiltersAdapter.Item.Filter("Digital", false, FiltersAdapter.FilterType.TECHNOLOGY_SECTOR),
-            FiltersAdapter.Item.Filter("Automotiv", false, FiltersAdapter.FilterType.TECHNOLOGY_SECTOR)
+            FiltersAdapter.Item.Header(resources.getString(R.string.filter_by_type)),
+            FiltersAdapter.Item.Filter(resources.getString(R.string.filter_type_public), false, FiltersAdapter.FilterType.EVENT_TYPE),
+            FiltersAdapter.Item.Filter(resources.getString(R.string.filter_type_noi), false, FiltersAdapter.FilterType.EVENT_TYPE),
+            FiltersAdapter.Item.Header(resources.getString(R.string.filter_by_sector)),
+            FiltersAdapter.Item.Filter(resources.getString(R.string.filter_sector_green), false, FiltersAdapter.FilterType.TECHNOLOGY_SECTOR),
+            FiltersAdapter.Item.Filter(resources.getString(R.string.filter_sector_food), false, FiltersAdapter.FilterType.TECHNOLOGY_SECTOR),
+            FiltersAdapter.Item.Filter(resources.getString(R.string.filter_sector_digital), false, FiltersAdapter.FilterType.TECHNOLOGY_SECTOR),
+            FiltersAdapter.Item.Filter(resources.getString(R.string.filter_sector_automotiv), false, FiltersAdapter.FilterType.TECHNOLOGY_SECTOR)
         )
     }
 
