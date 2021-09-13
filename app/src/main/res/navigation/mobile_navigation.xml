@@ -9,7 +9,11 @@
         android:id="@+id/navigation_today"
         android:name="it.bz.noi.community.ui.today.TodayFragment"
         android:label="@string/title_today"
-        tools:layout="@layout/fragment_today" />
+        tools:layout="@layout/fragment_today" >
+        <action
+            android:id="@+id/action_navigation_today_to_filtersFragment"
+            app:destination="@id/filtersFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_orientate"
@@ -53,4 +57,9 @@
             app:argType="string"
             app:nullable="true" />
     </fragment>
+    <fragment
+        android:id="@+id/filtersFragment"
+        android:name="it.bz.noi.community.ui.today.FiltersFragment"
+        android:label="Filter"
+        tools:layout="@layout/fragment_filters" />
 </navigation>
