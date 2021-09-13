@@ -29,7 +29,7 @@ class OrientateFragment : Fragment() {
 
         val btn = root.findViewById<Button>(R.id.roomBookingBtn)
         btn.setOnClickListener {
-            val action = OrientateFragmentDirections.actionNavigationOrientateToWebViewFragment(null)
+            val action = OrientateFragmentDirections.actionNavigationOrientateToWebViewFragment()
             action.title = resources.getString(R.string.room_booking)
             root.findNavController().navigate(action)
         }

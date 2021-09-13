@@ -81,6 +81,9 @@ class EventDetailsFragment : Fragment(), EventClickListener {
             TransitionInflater.from(context).inflateTransition(R.transition.change_bounds)
         postponeEnterTransition(100, TimeUnit.MILLISECONDS)
 
+        exitTransition = TransitionInflater.from(context)
+            .inflateTransition(R.transition.events_exit_transition)
+
         setEnterSharedElementCallback(object : SharedElementCallback() {
             override fun onSharedElementEnd(
                 sharedElementNames: List<String?>?,

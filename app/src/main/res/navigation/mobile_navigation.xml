@@ -12,11 +12,7 @@
         tools:layout="@layout/fragment_today">
         <action
             android:id="@+id/action_navigation_today_to_eventDetailsFragment"
-            app:destination="@id/eventDetailsFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/slide_out_right" />
+            app:destination="@id/eventDetailsFragment" />
     </fragment>
 
     <fragment
@@ -68,8 +64,8 @@
             app:argType="string" />
         <argument
             android:name="url"
-            app:argType="string"
-            app:nullable="true" />
+            android:defaultValue="https://noi.bz.it/it"
+            app:argType="string" />
     </fragment>
 
     <action

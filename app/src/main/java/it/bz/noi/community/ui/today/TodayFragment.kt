@@ -65,7 +65,7 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
             ViewModelProvider(this).get(TodayViewModel::class.java)
 
         exitTransition = TransitionInflater.from(context)
-            .inflateTransition(R.transition.events_exit_transition);
+            .inflateTransition(R.transition.events_exit_transition)
     }
 
     override fun onCreateView(
