@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.Switch
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.switchmaterial.SwitchMaterial
 import it.bz.noi.community.R
 
 class FiltersAdapter(private val items: List<Item>) :
@@ -79,7 +80,7 @@ class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 class FilterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    private val switchVH: Switch = itemView.findViewById(R.id.switchVH)
+    private val switchVH: SwitchMaterial = itemView.findViewById(R.id.switchVH)
 
     fun bind(filter: String, checked: Boolean) {
         switchVH.text = filter

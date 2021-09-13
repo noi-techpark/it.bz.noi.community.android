@@ -10,5 +10,6 @@
     <color name="unselected_time_filter">#D9828282</color>
 
     <color name="light_gray">#F1F1F1</color>
+    <color name="medium_gray">#E5E5E5</color>
 
 </resources>

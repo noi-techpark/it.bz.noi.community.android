@@ -8,16 +8,18 @@
     android:layout_marginTop="1dp"
     >
 
-    <Switch
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/switchVH"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingEnd="17dp"
-        app:layout_constraintEnd_toEndOf="parent"
         android:paddingStart="17dp"
+        android:paddingEnd="17dp"
         android:text="Item"
+        android:checked="true"
         android:textColor="@color/black"
         android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"  />
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
