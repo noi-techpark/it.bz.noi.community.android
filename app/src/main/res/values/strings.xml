@@ -21,7 +21,8 @@
     <string name="meet_item_lab">Laboratories</string>
     <string name="meet_item_team">Team NOI</string>
 
-    <string name="more_item_room_booking">Book a room</string>
+    <string name="room_booking">Book a room</string>
+
     <string name="more_item_onboarding">Come on board</string>
     <string name="more_item_feedback">Provide Feedback</string>
     <string name="more_item_account">My account</string>

@@ -18,7 +18,7 @@ class MoreFragment: Fragment() {
         super.onCreate(savedInstanceState)
 
         items = listOf(
-            resources.getString(R.string.more_item_room_booking),
+            resources.getString(R.string.room_booking),
             resources.getString(R.string.more_item_onboarding),
             resources.getString(R.string.more_item_feedback),
             resources.getString(R.string.more_item_account),

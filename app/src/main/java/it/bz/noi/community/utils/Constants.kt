@@ -4,11 +4,27 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object Constants {
-    fun getServerDatetimeParser(): SimpleDateFormat {
-        return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-    }
+    fun getServerDatetimeParser() = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+    fun getServerDateParser() = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    fun getLocalDateFormatter() = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    fun getLocalTimeFormatter() = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-    fun getServerDateParser(): SimpleDateFormat {
-        return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    // months start from 0
+    fun getMonthCode(month: Int): String {
+        return when (month) {
+            0 -> "JAN"
+            1 -> "FEB"
+            2 -> "MAR"
+            3 -> "APR"
+            4 -> "MAY"
+            5 -> "JUN"
+            6 -> "JUL"
+            7 -> "AUG"
+            8 -> "SEP"
+            9 -> "OCT"
+            10 -> "NOV"
+            11 -> "DEC"
+            else -> throw IllegalArgumentException("Month does not exisr")
+        }
     }
 }

@@ -1,7 +1,10 @@
 package it.bz.noi.community.ui.eventDetails
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.provider.CalendarContract
+import android.provider.CalendarContract.Events
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
@@ -12,12 +15,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.SharedElementCallback
+import androidx.core.os.bundleOf
 import androidx.core.text.bold
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.transition.TransitionInflater
@@ -30,14 +36,18 @@ import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
-import it.bz.noi.community.data.models.EventParsed
 import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.databinding.FragmentEventDetailsBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.today.EventClickListener
 import it.bz.noi.community.ui.today.EventsAdapter
+import it.bz.noi.community.utils.Constants
+import it.bz.noi.community.utils.Constants.getLocalDateFormatter
+import it.bz.noi.community.utils.Constants.getLocalTimeFormatter
+import it.bz.noi.community.utils.Constants.getMonthCode
 import it.bz.noi.community.utils.Status
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class EventDetailsFragment : Fragment(), EventClickListener {
@@ -45,7 +55,17 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
     private lateinit var viewModel: MainViewModel
 
-    val suggestedEvents = arrayListOf<EventsResponse.Event>()
+    private val suggestedEvents = arrayListOf<EventsResponse.Event>()
+
+    private val eventID by lazy {
+        arguments?.getString("eventID")!!
+    }
+
+    private val eventName by lazy {
+        arguments?.getString("eventName")!!
+    }
+
+    private var description: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,13 +137,12 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val eventID = arguments?.getString("eventID")!!
-        val eventName = arguments?.getString("eventName")!!
         val eventLocation = arguments?.getString("eventLocation")!!
-        val eventDays = arguments?.getString("eventDays")!!
-        val eventMonth = arguments?.getString("eventMonth")!!
-        val eventTime = arguments?.getString("eventTime")!!
+        val eventStartDate = arguments?.getString("eventStartDate")!!
+        val eventEndDate = arguments?.getString("eventEndDate")!!
         val eventImageUrl = arguments?.getString("imageUrl")
+
+        setDate(eventStartDate, eventEndDate)
 
         setupTransitions(eventID, eventImageUrl)
 
@@ -131,16 +150,13 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
         binding.tvEventName.text = eventName
         binding.tvEventLocation.text = eventLocation
-        binding.tvEventDate.text = SpannableStringBuilder()
-            .append(eventDays)
-            .bold { append(eventMonth) }
-        binding.tvEventTime.text = eventTime
 
         viewModel.getEventDetails(eventID).observe(viewLifecycleOwner, Observer {
             it.let { resource ->
                 when (resource.status) {
                     Status.SUCCESS -> {
-                        binding.tvEventDescription.text = resource.data?.eventDescription
+                        description = resource.data?.eventDescription
+                        binding.tvEventDescription.text = description
                     }
                 }
             }
@@ -148,10 +164,35 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
         binding.rvSuggestedEvents.apply {
             layoutManager = LinearLayoutManager(requireContext(), HORIZONTAL, false)
-            adapter = EventsAdapter(suggestedEvents, this@EventDetailsFragment)
+            adapter = EventsAdapter(suggestedEvents, this@EventDetailsFragment, true)
+        }
+
+        binding.btnAddToCalendar.setOnClickListener {
+            val beginTime = Constants.getServerDatetimeParser().parse(eventStartDate).time
+            val endTime = Constants.getServerDatetimeParser().parse(eventEndDate).time
+
+            val intent: Intent = Intent(Intent.ACTION_INSERT)
+                .setData(Events.CONTENT_URI)
+                .putExtra(
+                    CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                    beginTime
+                )
+                .putExtra(
+                    CalendarContract.EXTRA_EVENT_END_TIME,
+                    endTime
+                )
+                .putExtra(Events.TITLE, eventName)
+                .putExtra(Events.DESCRIPTION, description)
+                .putExtra(Events.EVENT_LOCATION, "The gym")
+                .putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY)
+
+            startActivity(intent)
         }
     }
 
+    /**
+     * Setup the transition for having the shared animation effect
+     */
     private fun setupTransitions(eventID: String, eventImageUrl: String?) {
         ViewCompat.setTransitionName(binding.cardViewDate, "cardDate_${eventID}")
         ViewCompat.setTransitionName(binding.constraintLayout, "constraintLayout_${eventID}")
@@ -194,6 +235,47 @@ class EventDetailsFragment : Fragment(), EventClickListener {
         }
     }
 
+    /**
+     * Parsing of the date to populate date container and time
+     */
+    private fun setDate(startDatetime: String, endDatetime: String) {
+        val startDate =
+            getLocalDateFormatter().format(Constants.getServerDatetimeParser().parse(startDatetime))
+        val endDate =
+            getLocalDateFormatter().format(Constants.getServerDatetimeParser().parse(endDatetime))
+        val month =
+            "${getMonthCode(Constants.getServerDatetimeParser().parse(startDatetime).month)}"
+        val eventDateString = if (startDate == endDate) {
+            SpannableStringBuilder()
+                .append("${Constants.getServerDatetimeParser().parse(startDatetime).date}\n")
+                .bold {
+                    append(month)
+                }
+        } else {
+            SpannableStringBuilder()
+                .append(
+                    "${Constants.getServerDatetimeParser().parse(startDatetime).date} - ${
+                        Constants.getServerDatetimeParser().parse(
+                            endDatetime
+                        ).date
+                    }\n"
+                )
+                .bold {
+                    append(month)
+                }
+        }
+        binding.tvEventDate.text = eventDateString
+
+        val startHour =
+            getLocalTimeFormatter().format(Constants.getServerDatetimeParser().parse(startDatetime))
+        val endHour =
+            getLocalTimeFormatter().format(Constants.getServerDatetimeParser().parse(endDatetime))
+        binding.tvEventTime.text = "$startHour - $endHour"
+    }
+
+    /**
+     * Clicking on suggested event will result in open another EventDetailsFragment instance
+     */
     override fun onEventClick(
         cardEvent: MaterialCardView,
         cardDate: CardView,
@@ -204,8 +286,27 @@ class EventDetailsFragment : Fragment(), EventClickListener {
         constraintLayout: ConstraintLayout,
         locationIcon: ImageView,
         timeIcon: ImageView,
-        event: EventParsed
+        event: EventsResponse.Event
     ) {
-
+        val extras = FragmentNavigatorExtras(
+            constraintLayout to "constraintLayout_${event.eventId}",
+            eventName to "eventName_${event.eventId}",
+            cardDate to "cardDate_${event.eventId}",
+            eventLocation to "eventLocation_${event.eventId}",
+            eventTime to "eventTime_${event.eventId}",
+            eventImage to "eventImage_${event.eventId}",
+            locationIcon to "locationIcon_${event.eventId}",
+            timeIcon to "timeIcon_${event.eventId}"
+        )
+        findNavController().navigate(
+            R.id.action_eventDetailsFragment_self, bundleOf(
+                "eventID" to event.eventId,
+                "eventName" to event.name,
+                "eventLocation" to event.location,
+                "eventStartDate" to event.startDate,
+                "eventEndDate" to event.endDate,
+                "eventImage" to event.imageGallery.firstOrNull()?.imageUrl
+            ), null, extras
+        )
     }
 }

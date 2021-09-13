@@ -11,14 +11,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.bold
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
-import it.bz.noi.community.data.models.EventParsed
 import it.bz.noi.community.data.models.EventsResponse
+import it.bz.noi.community.utils.Constants.getLocalDateFormatter
+import it.bz.noi.community.utils.Constants.getLocalTimeFormatter
+import it.bz.noi.community.utils.Constants.getMonthCode
 import it.bz.noi.community.utils.Constants.getServerDatetimeParser
-import java.text.SimpleDateFormat
-import java.util.*
 
 interface EventClickListener {
     fun onEventClick(
@@ -31,22 +30,28 @@ interface EventClickListener {
         constraintLayout: ConstraintLayout,
         locationIcon: ImageView,
         timeIcon: ImageView,
-        event: EventParsed
+        event: EventsResponse.Event
     )
 }
 
+/**
+ * isSuggestedEvents is a boolean that is used for telling the adapter that is used in the event details
+ * suggested events recyclerview
+ */
 class EventsAdapter(
     private val events: List<EventsResponse.Event>,
-    private val listener: EventClickListener
+    private val listener: EventClickListener,
+    private val isSuggestedEvents: Boolean = false
 ) :
     RecyclerView.Adapter<EventsAdapter.EventViewHolder>() {
 
-    private val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
-    private val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.view_holder_event, parent, false)
+        val view = if (isSuggestedEvents)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.view_holder_suggested_event, parent, false)
+        else
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.view_holder_event, parent, false)
         return EventViewHolder(view)
     }
 
@@ -69,8 +74,7 @@ class EventsAdapter(
         private val locationIcon = view.findViewById<ImageView>(R.id.ivLocation)
         private val timeIcon = view.findViewById<ImageView>(R.id.ivTime)
 
-        private lateinit var eventParsed: EventParsed
-        private lateinit var days: String
+        private lateinit var event: EventsResponse.Event
 
         init {
             view.rootView.setOnClickListener {
@@ -84,12 +88,13 @@ class EventsAdapter(
                     constraintLayout,
                     locationIcon,
                     timeIcon,
-                    eventParsed
+                    event
                 )
             }
         }
 
         fun bind(event: EventsResponse.Event) {
+            this.event = event
             eventName.text = event.name
             eventLocation.text = event.location
 
@@ -102,32 +107,36 @@ class EventsAdapter(
             locationIcon.transitionName = "locationIcon_${event.eventId}"
             timeIcon.transitionName = "timeIcon_${event.eventId}"
 
-            val startDate = dateFormatter.format(getServerDatetimeParser().parse(event.startDate))
-            val endDate = dateFormatter.format(getServerDatetimeParser().parse(event.endDate))
+            val startDate =
+                getLocalDateFormatter().format(getServerDatetimeParser().parse(event.startDate))
+            val endDate =
+                getLocalDateFormatter().format(getServerDatetimeParser().parse(event.endDate))
             val month = "${getMonthCode(getServerDatetimeParser().parse(event.startDate).month)}"
             val eventDateString = if (startDate == endDate) {
-                days = "${getServerDatetimeParser().parse(event.startDate).date}\n"
                 SpannableStringBuilder()
-                    .append(days)
+                    .append("${getServerDatetimeParser().parse(event.startDate).date}\n")
                     .bold {
                         append(month)
                     }
             } else {
-                days = "${getServerDatetimeParser().parse(event.startDate).date} - ${
-                    getServerDatetimeParser().parse(
-                        event.endDate
-                    ).date
-                }\n"
                 SpannableStringBuilder()
-                    .append(days)
+                    .append(
+                        "${getServerDatetimeParser().parse(event.startDate).date} - ${
+                            getServerDatetimeParser().parse(
+                                event.endDate
+                            ).date
+                        }\n"
+                    )
                     .bold {
                         append(month)
                     }
             }
             eventDate.text = eventDateString
 
-            val startHour = timeFormatter.format(getServerDatetimeParser().parse(event.startDate))
-            val endHour = timeFormatter.format(getServerDatetimeParser().parse(event.endDate))
+            val startHour =
+                getLocalTimeFormatter().format(getServerDatetimeParser().parse(event.startDate))
+            val endHour =
+                getLocalTimeFormatter().format(getServerDatetimeParser().parse(event.endDate))
             eventTime.text = "$startHour - $endHour"
 
             val eventImageUrl = event.imageGallery.firstOrNull()?.imageUrl
@@ -137,34 +146,6 @@ class EventsAdapter(
                     .load(eventImageUrl)
                     .centerCrop()
                     .into(eventImage)
-            }
-
-            eventParsed = EventParsed(
-                event.eventId,
-                event.name,
-                event.location,
-                days, month,
-                eventTime.text.toString(),
-                eventImageUrl
-            )
-        }
-
-        // i mesi partono da 0
-        private fun getMonthCode(month: Int): String {
-            return when (month) {
-                0 -> "JAN"
-                1 -> "FEB"
-                2 -> "MAR"
-                3 -> "APR"
-                4 -> "MAY"
-                5 -> "JUN"
-                6 -> "JUL"
-                7 -> "AUG"
-                8 -> "SEP"
-                9 -> "OCT"
-                10 -> "NOV"
-                11 -> "DEC"
-                else -> throw IllegalArgumentException("Month does not exisr")
             }
         }
     }

@@ -10,6 +10,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
 import it.bz.noi.community.databinding.ActivityMainBinding
+import it.bz.noi.community.ui.WebViewFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -63,6 +64,12 @@ class MainActivity : AppCompatActivity() {
                     (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
                         26f
                     supportActionBar?.show()
+
+                    if (destination.id == R.id.webViewFragment) {
+                        arguments?.let {
+                            supportActionBar?.title = arguments.getString(WebViewFragment.TITLE)
+                        }
+                    }
                 }
             }
         }

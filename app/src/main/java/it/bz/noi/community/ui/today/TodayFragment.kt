@@ -150,7 +150,7 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
         constraintLayout: ConstraintLayout,
         locationIcon: ImageView,
         timeIcon: ImageView,
-        event: EventParsed
+        event: EventsResponse.Event
     ) {
         val extras = FragmentNavigatorExtras(
             constraintLayout to "constraintLayout_${event.eventId}",
@@ -167,10 +167,8 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
                 "eventID" to event.eventId,
                 "eventName" to event.name,
                 "eventLocation" to event.location,
-                "eventDays" to event.days,
-                "eventMonth" to event.month,
-                "eventTime" to event.time,
-                "eventImage" to event.imageUrl
+                "eventStartDate" to event.startDate,
+                "eventEndDate" to event.endDate
             ), null, extras
         )
     }

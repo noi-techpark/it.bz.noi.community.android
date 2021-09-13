@@ -4,5 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class EventDetailsResponse(
     @SerializedName("EventDescription")
-    val eventDescription: String
+    val eventDescription: String,
+    @SerializedName("StartDate")
+    val startDate: String,
+    @SerializedName("EndDate")
+    val endDate: String
 )
