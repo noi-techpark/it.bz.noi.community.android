@@ -22,18 +22,38 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:listitem="@layout/vh_switch"/>
 
-<!--        <Button
+        <TextView
+            android:id="@+id/resetBtn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:foreground="@color/light_gray"
-            android:text="Reset all Filters"
+            android:backgroundTint="@color/light_gray"
+            android:layout_marginTop="45dp"
+            android:layout_marginBottom="45dp"
+            android:text="@string/reset_btn"
             android:textColor="@color/black"
             android:textSize="19sp"
             android:textStyle="bold"
+            android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-        </Button>-->
+            app:layout_constraintTop_toBottomOf="@id/filterstRV"
+            app:layout_constraintBottom_toTopOf="@id/showBtn"/>
+
+        <Button
+            android:id="@+id/showBtn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/show_btn"
+            android:textColor="@color/white"
+            android:textSize="19sp"
+            android:textStyle="bold"
+            android:layout_marginStart="17dp"
+            android:layout_marginEnd="17dp"
+            android:layout_marginBottom="17dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/resetBtn"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
