@@ -1,14 +1,17 @@
 package it.bz.noi.community
 
 import android.os.Bundle
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.appbar.MaterialToolbar
 import it.bz.noi.community.databinding.ActivityMainBinding
 import it.bz.noi.community.ui.WebViewFragment
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -51,7 +54,13 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_more -> {
                     supportActionBar?.hide()
                 }
+                R.id.eventDetailsFragment, R.id.webViewFragment -> {
+                    (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
+                        18f
+                }
                 else -> {
+                    (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
+                        26f
                     supportActionBar?.show()
 
                     if (destination.id == R.id.webViewFragment) {
@@ -64,4 +73,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        navController.popBackStack()
+        return super.onSupportNavigateUp()
+    }
 }

@@ -1,6 +1,9 @@
 package it.bz.noi.community.ui
 
-import androidx.lifecycle.*
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.liveData
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.data.models.UrlParams
@@ -93,6 +96,15 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
         }
         mediatorEvents.addSource(events) {
             mediatorEvents.value = it
+        }
+    }
+
+    fun getEventDetails(eventId: String) = liveData(Dispatchers.IO) {
+        emit(Resource.loading(data = null))
+        try {
+            emit(Resource.success(data = mainRepository.getEventDetails(eventId)))
+        } catch (exception: Exception) {
+            emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
         }
     }
 }

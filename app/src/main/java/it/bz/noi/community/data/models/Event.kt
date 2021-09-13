@@ -7,8 +7,8 @@ data class EventsResponse(
     val events: List<Event>
 ) {
     data class Event(
-        @SerializedName("EventId")
-        val eventId: Long,
+        @SerializedName("Id")
+        val eventId: String,
         @SerializedName("EventDescription")
         val name: String,
         @SerializedName("EventLocation")

@@ -13,13 +13,16 @@
         <action
             android:id="@+id/action_navigation_today_to_filtersFragment"
             app:destination="@id/filtersFragment" />
+        <action
+            android:id="@+id/action_navigation_today_to_eventDetailsFragment"
+            app:destination="@id/eventDetailsFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_orientate"
         android:name="it.bz.noi.community.ui.orientate.OrientateFragment"
         android:label="@string/title_orientate"
-        tools:layout="@layout/fragment_orientate" >
+        tools:layout="@layout/fragment_orientate">
         <action
             android:id="@+id/action_navigation_orientate_to_webViewFragment"
             app:destination="@id/webViewFragment"
@@ -45,21 +48,38 @@
         tools:layout="@layout/fragment_more" />
 
     <fragment
+        android:id="@+id/eventDetailsFragment"
+        android:name="it.bz.noi.community.ui.eventDetails.EventDetailsFragment"
+        android:label=" "
+        tools:layout="@layout/fragment_event_details">
+        <action
+            android:id="@+id/action_eventDetailsFragment_self"
+            app:destination="@id/eventDetailsFragment" />
+    </fragment>
+
+    <fragment
         android:id="@+id/webViewFragment"
         android:name="it.bz.noi.community.ui.WebViewFragment"
-        android:label="WebViewFragment" >
+        android:label="WebViewFragment">
         <argument
             android:name="title"
-            app:argType="string"
-            android:defaultValue="Title" />
+            android:defaultValue="Title"
+            app:argType="string" />
         <argument
             android:name="url"
-            app:argType="string"
-            app:nullable="true" />
+            android:defaultValue="https://noi.bz.it/it"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/filtersFragment"
         android:name="it.bz.noi.community.ui.today.FiltersFragment"
         android:label="Filter"
         tools:layout="@layout/fragment_filters" />
+    <action
+        android:id="@+id/action_global_webViewFragment"
+        app:destination="@id/webViewFragment"
+        app:enterAnim="@anim/slide_in_up"
+        app:exitAnim="@anim/fade_out"
+        app:popEnterAnim="@anim/fade_in"
+        app:popExitAnim="@anim/slide_out_up" />
 </navigation>

@@ -6,28 +6,56 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.bold
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionSet
 import com.bumptech.glide.Glide
+import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.models.EventsResponse
+import it.bz.noi.community.utils.Constants.getLocalDateFormatter
+import it.bz.noi.community.utils.Constants.getLocalTimeFormatter
+import it.bz.noi.community.utils.Constants.getMonthCode
 import it.bz.noi.community.utils.Constants.getServerDatetimeParser
-import java.text.SimpleDateFormat
-import java.util.*
 
 interface EventClickListener {
-    fun onEventClick(eventId: Long)
+    fun onEventClick(
+        cardEvent: MaterialCardView,
+        cardDate: CardView,
+        eventName: TextView,
+        eventLocation: TextView,
+        eventTime: TextView,
+        eventImage: ImageView,
+        constraintLayout: ConstraintLayout,
+        locationIcon: ImageView,
+        timeIcon: ImageView,
+        event: EventsResponse.Event
+    )
 }
 
-class EventsAdapter(private val events: List<EventsResponse.Event>) :
+/**
+ * isSuggestedEvents is a boolean that is used for telling the adapter that is used in the event details
+ * suggested events recyclerview
+ * i need fragment parameter to avoid clicked view to have the fade out animation
+ */
+class EventsAdapter(
+    private val events: List<EventsResponse.Event>,
+    private val listener: EventClickListener,
+    private val fragment: Fragment,
+    private val isSuggestedEvents: Boolean = false
+) :
     RecyclerView.Adapter<EventsAdapter.EventViewHolder>() {
 
-    private val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
-    private val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.view_holder_event, parent, false)
+        val view = if (isSuggestedEvents)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.view_holder_suggested_event, parent, false)
+        else
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.view_holder_event, parent, false)
         return EventViewHolder(view)
     }
 
@@ -39,26 +67,64 @@ class EventsAdapter(private val events: List<EventsResponse.Event>) :
 
     inner class EventViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-        val eventName = view.findViewById<TextView>(R.id.tvEventName)
-        val eventLocation = view.findViewById<TextView>(R.id.tvEventLocation)
-        val eventDate = view.findViewById<TextView>(R.id.tvEventDate)
-        val eventTime = view.findViewById<TextView>(R.id.tvEventTime)
-        val eventImage = view.findViewById<ImageView>(R.id.ivEventImage)
+        private val cardEvent = view.findViewById<MaterialCardView>(R.id.cardViewEvent)
+        private val cardDate = view.findViewById<CardView>(R.id.cardViewDate)
+        private val constraintLayout = view.findViewById<ConstraintLayout>(R.id.constraintLayout)
+        private val eventName = view.findViewById<TextView>(R.id.tvEventName)
+        private val eventLocation = view.findViewById<TextView>(R.id.tvEventLocation)
+        private val eventDate = view.findViewById<TextView>(R.id.tvEventDate)
+        private val eventTime = view.findViewById<TextView>(R.id.tvEventTime)
+        private val eventImage = view.findViewById<ImageView>(R.id.ivEventImage)
+        private val locationIcon = view.findViewById<ImageView>(R.id.ivLocation)
+        private val timeIcon = view.findViewById<ImageView>(R.id.ivTime)
+
+        private lateinit var event: EventsResponse.Event
+
+        init {
+            view.rootView.setOnClickListener {
+                (fragment.exitTransition as TransitionSet).excludeTarget(view, true)
+                listener.onEventClick(
+                    cardEvent,
+                    cardDate,
+                    eventName,
+                    eventLocation,
+                    eventTime,
+                    eventImage,
+                    constraintLayout,
+                    locationIcon,
+                    timeIcon,
+                    event
+                )
+            }
+        }
 
         fun bind(event: EventsResponse.Event) {
+            this.event = event
             eventName.text = event.name
             eventLocation.text = event.location
 
-            val startDate = dateFormatter.format(getServerDatetimeParser().parse(event.startDate))
-            val endDate = dateFormatter.format(getServerDatetimeParser().parse(event.endDate))
-            if (startDate == endDate) {
-                eventDate.text = SpannableStringBuilder()
+            constraintLayout.transitionName = "constraintLayout_${event.eventId}"
+            eventName.transitionName = "eventName_${event.eventId}"
+            cardDate.transitionName = "cardDate_${event.eventId}"
+            eventLocation.transitionName = "eventLocation_${event.eventId}"
+            eventTime.transitionName = "eventTime_${event.eventId}"
+            eventImage.transitionName = "eventImage_${event.eventId}"
+            locationIcon.transitionName = "locationIcon_${event.eventId}"
+            timeIcon.transitionName = "timeIcon_${event.eventId}"
+
+            val startDate =
+                getLocalDateFormatter().format(getServerDatetimeParser().parse(event.startDate))
+            val endDate =
+                getLocalDateFormatter().format(getServerDatetimeParser().parse(event.endDate))
+            val month = "${getMonthCode(getServerDatetimeParser().parse(event.startDate).month)}"
+            val eventDateString = if (startDate == endDate) {
+                SpannableStringBuilder()
                     .append("${getServerDatetimeParser().parse(event.startDate).date}\n")
                     .bold {
-                        append("${getMonthCode(getServerDatetimeParser().parse(event.startDate).month)}")
+                        append(month)
                     }
             } else {
-                eventDate.text = SpannableStringBuilder()
+                SpannableStringBuilder()
                     .append(
                         "${getServerDatetimeParser().parse(event.startDate).date} - ${
                             getServerDatetimeParser().parse(
@@ -67,12 +133,15 @@ class EventsAdapter(private val events: List<EventsResponse.Event>) :
                         }\n"
                     )
                     .bold {
-                        append("${getMonthCode(getServerDatetimeParser().parse(event.startDate).month)}")
+                        append(month)
                     }
             }
+            eventDate.text = eventDateString
 
-            val startHour = timeFormatter.format(getServerDatetimeParser().parse(event.startDate))
-            val endHour = timeFormatter.format(getServerDatetimeParser().parse(event.endDate))
+            val startHour =
+                getLocalTimeFormatter().format(getServerDatetimeParser().parse(event.startDate))
+            val endHour =
+                getLocalTimeFormatter().format(getServerDatetimeParser().parse(event.endDate))
             eventTime.text = "$startHour - $endHour"
 
             val eventImageUrl = event.imageGallery.firstOrNull()?.imageUrl
@@ -82,25 +151,8 @@ class EventsAdapter(private val events: List<EventsResponse.Event>) :
                     .load(eventImageUrl)
                     .centerCrop()
                     .into(eventImage)
-            }
-        }
-
-        // i mesi partono da 0
-        private fun getMonthCode(month: Int): String {
-            return when (month) {
-                0 -> "JAN"
-                1 -> "FEB"
-                2 -> "MAR"
-                3 -> "APR"
-                4 -> "MAY"
-                5 -> "JUN"
-                6 -> "JUL"
-                7 -> "AUG"
-                8 -> "SEP"
-                9 -> "OCT"
-                10 -> "NOV"
-                11 -> "DEC"
-                else -> throw IllegalArgumentException("Month does not exisr")
+            } else {
+                eventImage.setImageResource(R.drawable.srctest)
             }
         }
     }
