@@ -151,6 +151,8 @@ class EventsAdapter(
                     .load(eventImageUrl)
                     .centerCrop()
                     .into(eventImage)
+            } else {
+                eventImage.setImageResource(R.drawable.srctest)
             }
         }
     }
