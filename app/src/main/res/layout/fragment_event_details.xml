@@ -107,12 +107,12 @@
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardViewDate"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:layout_marginTop="-25dp"
                         android:layout_marginEnd="16dp"
                         android:backgroundTint="@color/date_card_view"
-                        app:cardCornerRadius="25dp"
+                        app:cardCornerRadius="30dp"
                         app:layout_constraintBottom_toBottomOf="@id/barrier"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/barrier">

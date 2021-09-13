@@ -7,6 +7,7 @@
         <entry key="app/src/main/res/layout/fragment_today.xml" value="0.16893115942028986" />
         <entry key="app/src/main/res/layout/layout_suggested_event.xml" value="0.3804347826086957" />
         <entry key="app/src/main/res/layout/view_holder_event.xml" value="0.19047619047619047" />
+        <entry key="app/src/main/res/layout/view_holder_suggested_event.xml" value="0.19047619047619047" />
       </map>
     </option>
   </component>

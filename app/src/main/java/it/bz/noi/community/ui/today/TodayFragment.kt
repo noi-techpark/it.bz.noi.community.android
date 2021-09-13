@@ -20,6 +20,8 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
+import androidx.transition.TransitionInflater
+import androidx.transition.TransitionSet
 import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
@@ -47,7 +49,7 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
     }
 
     private val eventsAdapter by lazy {
-        EventsAdapter(events, this)
+        EventsAdapter(events, this, this)
     }
 
     private lateinit var layoutManagerFilters: LinearLayoutManager
@@ -61,6 +63,9 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
         ).get(MainViewModel::class.java)
         todayViewModel =
             ViewModelProvider(this).get(TodayViewModel::class.java)
+
+        exitTransition = TransitionInflater.from(context)
+            .inflateTransition(R.transition.events_exit_transition);
     }
 
     override fun onCreateView(
@@ -152,6 +157,11 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
         timeIcon: ImageView,
         event: EventsResponse.Event
     ) {
+        // Exclude the clicked card from the exit transition (e.g. the card will disappear immediately
+        // instead of fading out with the rest to prevent an overlapping animation of fade and move).
+        // Exclude the clicked card from the exit transition (e.g. the card will disappear immediately
+        // instead of fading out with the rest to prevent an overlapping animation of fade and move).
+
         val extras = FragmentNavigatorExtras(
             constraintLayout to "constraintLayout_${event.eventId}",
             eventName to "eventName_${event.eventId}",

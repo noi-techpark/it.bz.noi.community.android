@@ -9,7 +9,9 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.bold
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionSet
 import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
@@ -37,10 +39,12 @@ interface EventClickListener {
 /**
  * isSuggestedEvents is a boolean that is used for telling the adapter that is used in the event details
  * suggested events recyclerview
+ * i need fragment parameter to avoid clicked view to have the fade out animation
  */
 class EventsAdapter(
     private val events: List<EventsResponse.Event>,
     private val listener: EventClickListener,
+    private val fragment: Fragment,
     private val isSuggestedEvents: Boolean = false
 ) :
     RecyclerView.Adapter<EventsAdapter.EventViewHolder>() {
@@ -78,6 +82,7 @@ class EventsAdapter(
 
         init {
             view.rootView.setOnClickListener {
+                (fragment.exitTransition as TransitionSet).excludeTarget(view, true)
                 listener.onEventClick(
                     cardEvent,
                     cardDate,

@@ -166,7 +166,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
         binding.rvSuggestedEvents.apply {
             layoutManager = LinearLayoutManager(requireContext(), HORIZONTAL, false)
-            adapter = EventsAdapter(suggestedEvents, this@EventDetailsFragment, true)
+            adapter = EventsAdapter(suggestedEvents, this@EventDetailsFragment, this@EventDetailsFragment, true)
         }
 
         binding.btnAddToCalendar.setOnClickListener {
