@@ -65,7 +65,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
         arguments?.getString("eventName")!!
     }
 
-    private var description: String? = null
+    private var eventDescription: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -142,9 +142,9 @@ class EventDetailsFragment : Fragment(), EventClickListener {
         val eventEndDate = arguments?.getString("eventEndDate")!!
         val eventImageUrl = arguments?.getString("imageUrl")
 
-        setDate(eventStartDate, eventEndDate)
-
         setupTransitions(eventID, eventImageUrl)
+
+        setDate(eventStartDate, eventEndDate)
 
         (requireActivity() as AppCompatActivity).supportActionBar?.title = eventName
 
@@ -155,8 +155,10 @@ class EventDetailsFragment : Fragment(), EventClickListener {
             it.let { resource ->
                 when (resource.status) {
                     Status.SUCCESS -> {
-                        description = resource.data?.eventDescription
-                        binding.tvEventDescription.text = description
+                        eventDescription = resource.data?.eventDescription
+                        binding.tvEventDescription.text = eventDescription
+                        binding.groupEventActions.isVisible = true
+                        binding.groupEventServerData.isVisible = true
                     }
                 }
             }
@@ -182,11 +184,17 @@ class EventDetailsFragment : Fragment(), EventClickListener {
                     endTime
                 )
                 .putExtra(Events.TITLE, eventName)
-                .putExtra(Events.DESCRIPTION, description)
-                .putExtra(Events.EVENT_LOCATION, "The gym")
+                .putExtra(Events.DESCRIPTION, eventDescription)
+                .putExtra(Events.EVENT_LOCATION, eventLocation)
                 .putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY)
 
             startActivity(intent)
+        }
+
+        binding.btnFindOnMaps.setOnClickListener {
+            findNavController().navigate(R.id.action_global_webViewFragment, bundleOf(
+                "title" to eventName, "url" to "https://maps.noi.bz.it"
+            ))
         }
     }
 

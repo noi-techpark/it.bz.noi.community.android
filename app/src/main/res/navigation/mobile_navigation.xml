@@ -9,7 +9,7 @@
         android:id="@+id/navigation_today"
         android:name="it.bz.noi.community.ui.today.TodayFragment"
         android:label="@string/title_today"
-        tools:layout="@layout/fragment_today" >
+        tools:layout="@layout/fragment_today">
         <action
             android:id="@+id/action_navigation_today_to_eventDetailsFragment"
             app:destination="@id/eventDetailsFragment"
@@ -23,7 +23,7 @@
         android:id="@+id/navigation_orientate"
         android:name="it.bz.noi.community.ui.orientate.OrientateFragment"
         android:label="@string/title_orientate"
-        tools:layout="@layout/fragment_orientate" >
+        tools:layout="@layout/fragment_orientate">
         <action
             android:id="@+id/action_navigation_orientate_to_webViewFragment"
             app:destination="@id/webViewFragment"
@@ -61,14 +61,22 @@
     <fragment
         android:id="@+id/webViewFragment"
         android:name="it.bz.noi.community.ui.WebViewFragment"
-        android:label="WebViewFragment" >
+        android:label="WebViewFragment">
         <argument
             android:name="title"
-            app:argType="string"
-            android:defaultValue="Title" />
+            android:defaultValue="Title"
+            app:argType="string" />
         <argument
             android:name="url"
             app:argType="string"
             app:nullable="true" />
     </fragment>
+
+    <action
+        android:id="@+id/action_global_webViewFragment"
+        app:destination="@id/webViewFragment"
+        app:enterAnim="@anim/slide_in_up"
+        app:exitAnim="@anim/fade_out"
+        app:popEnterAnim="@anim/fade_in"
+        app:popExitAnim="@anim/slide_out_up" />
 </navigation>

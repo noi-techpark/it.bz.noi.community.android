@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import it.bz.noi.community.R
@@ -26,6 +27,8 @@ class WebViewFragment : Fragment() {
         args.url?.let {
             webView.loadUrl(it)
         }
+
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = args.title
 
         return root
     }
