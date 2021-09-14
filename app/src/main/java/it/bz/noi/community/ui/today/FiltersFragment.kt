@@ -4,15 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentFiltersBinding
-import it.bz.noi.community.databinding.FragmentTodayBinding
-import it.bz.noi.community.ui.SimpleListAdapter
+import kotlin.collections.forEach
 
 class FiltersFragment : Fragment() {
 
@@ -56,16 +52,15 @@ class FiltersFragment : Fragment() {
             }
 
             showBtn.setOnClickListener {
-                // TODO Passare i filtri aggiornati
                 findNavController().popBackStack()
             }
         }
     }
 
     private fun resetFilters() {
-        items.forEach {
-            if (it is FiltersAdapter.Item.Filter) {
-                it.checked = false
+        items.forEach { item ->
+            if (item is FiltersAdapter.Item.Filter) {
+                item.checked = false
             }
         }
         filterAdapter.notifyDataSetChanged()

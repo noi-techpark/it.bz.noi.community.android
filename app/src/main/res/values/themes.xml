@@ -35,8 +35,8 @@
     </style>
 
     <!--
-        Switch checked: nero
-        Switch unchecked: grigio medio
+        Switch checked: black
+        Switch unchecked: medium gray
     -->
     <style name="ThemeOverlay.App.Switch" parent="">
         <item name="colorSecondary">@color/black</item>
@@ -45,8 +45,8 @@
     </style>
 
     <!--
-        Switch checked: grigio medio
-        Switch unchecked: grigio chiaro
+        Switch checked: medium gray
+        Switch unchecked: light gray
     -->
     <style name="ThemeOverlay.App.Switch2" parent="">
         <item name="colorSecondary">@color/medium_gray</item>
