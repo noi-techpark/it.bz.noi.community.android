@@ -6,6 +6,9 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+/**
+ * Interface for calling the different endpoints
+ */
 interface ApiService {
     @GET("v1/EventShort")
     suspend fun getEvents(
