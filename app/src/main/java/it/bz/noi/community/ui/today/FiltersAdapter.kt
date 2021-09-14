@@ -24,7 +24,7 @@ class FiltersAdapter(private val items: List<Item>) :
 
     sealed class Item {
         data class Header(val text: String): Item()
-        data class Filter(val filter: String, val checked: Boolean, val type: FilterType) : Item()
+        data class Filter(val filter: String, var checked: Boolean, val type: FilterType) : Item()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

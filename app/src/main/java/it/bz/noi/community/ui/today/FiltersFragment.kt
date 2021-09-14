@@ -4,15 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
+import it.bz.noi.community.databinding.FragmentFiltersBinding
+import it.bz.noi.community.databinding.FragmentTodayBinding
 import it.bz.noi.community.ui.SimpleListAdapter
 
 class FiltersFragment : Fragment() {
 
     private lateinit var items: List<FiltersAdapter.Item>
     private lateinit var filterAdapter: FiltersAdapter
+    private lateinit var binding: FragmentFiltersBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,10 +40,35 @@ class FiltersFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        binding = FragmentFiltersBinding.inflate(inflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         filterAdapter = FiltersAdapter(items)
-        val root = inflater.inflate(R.layout.fragment_filters, container, false)
-        root.findViewById<RecyclerView>(R.id.filterstRV).adapter = filterAdapter
-        return root
+        binding.apply {
+            filterstRV.adapter = filterAdapter
+
+            resetBtn.setOnClickListener {
+                resetFilters()
+            }
+
+            showBtn.setOnClickListener {
+                // TODO Passare i filtri aggiornati
+                findNavController().popBackStack()
+            }
+        }
+    }
+
+    private fun resetFilters() {
+        items.forEach {
+            if (it is FiltersAdapter.Item.Filter) {
+                it.checked = false
+            }
+        }
+        filterAdapter.notifyDataSetChanged()
     }
 
 }
