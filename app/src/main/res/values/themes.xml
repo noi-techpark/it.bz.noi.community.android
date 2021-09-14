@@ -30,8 +30,6 @@
         <item name="colorControlNormal">@color/white</item>
     </style>
 
-
-
     <style name="Widget.App.Switch" parent="Widget.MaterialComponents.CompoundButton.Switch">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.Switch</item>
     </style>
@@ -54,5 +52,9 @@
         <item name="colorSecondary">@color/medium_gray</item>
         <item name="colorSurface">@color/white</item>
         <item name="colorOnSurface">@color/medium_gray</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_theme</item>
     </style>
 </resources>

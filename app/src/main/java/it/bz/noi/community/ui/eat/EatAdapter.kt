@@ -5,13 +5,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
 
-data class Restaurant(val name: String, val pictureIds: List<Int>, val openingDays: String, val openingTime: String, val menuUrl: String)
+/**
+ * Class that represents a restaurant in the NOI community application
+ */
+data class Restaurant(
+    val name: String,
+    val pictureIds: List<Int>,
+    val openingDays: String,
+    val openingTime: String,
+    val menuUrl: String
+)
 
+/**
+ * Adapter used to populate the list of restaurants in the Eat tab
+ */
 class EatAdapter(private val items: List<Restaurant>) : RecyclerView.Adapter<EatViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EatViewHolder {
@@ -22,7 +33,13 @@ class EatAdapter(private val items: List<Restaurant>) : RecyclerView.Adapter<Eat
 
     override fun onBindViewHolder(holder: EatViewHolder, position: Int) {
         val restaurant = items[position]
-        holder.bind(restaurant.name, restaurant.pictureIds, restaurant.openingDays, restaurant.openingTime, restaurant.menuUrl)
+        holder.bind(
+            restaurant.name,
+            restaurant.pictureIds,
+            restaurant.openingDays,
+            restaurant.openingTime,
+            restaurant.menuUrl
+        )
     }
 
     override fun getItemCount(): Int {
@@ -30,6 +47,9 @@ class EatAdapter(private val items: List<Restaurant>) : RecyclerView.Adapter<Eat
     }
 }
 
+/**
+ * View holder of the Restaurant
+ */
 class EatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val nameTV: TextView = itemView.findViewById(R.id.tvRestName)
@@ -37,17 +57,27 @@ class EatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val openingTimeTV: TextView = itemView.findViewById(R.id.tvRestOpeningTime)
     private val picturesRV: RecyclerView = itemView.findViewById(R.id.picturesRecyclerView)
 
-    fun bind(name: String, pictureIds: List<Int>, openingDays: String, openingTime: String, menuUrl: String) {
+    fun bind(
+        name: String,
+        pictureIds: List<Int>,
+        openingDays: String,
+        openingTime: String,
+        menuUrl: String
+    ) {
         nameTV.text = name
         openingDaysTV.text = openingDays
         openingTimeTV.text = openingTime
 
-        picturesRV.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        picturesRV.layoutManager =
+            LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         picturesRV.adapter = PictureAdapter(pictureIds)
     }
 
 }
 
+/**
+ * Adapter used to populate the list of pictures of each restaurant
+ */
 class PictureAdapter(private val pictures: List<Int>) : RecyclerView.Adapter<PictureViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PictureViewHolder {
@@ -65,6 +95,9 @@ class PictureAdapter(private val pictures: List<Int>) : RecyclerView.Adapter<Pic
     }
 }
 
+/**
+ * View holder of a single picture of the restaurant
+ */
 class PictureViewHolder(pictureItemView: View) : RecyclerView.ViewHolder(pictureItemView) {
 
     private val restImageView: ImageView = itemView.findViewById(R.id.restImage)
@@ -72,7 +105,6 @@ class PictureViewHolder(pictureItemView: View) : RecyclerView.ViewHolder(picture
     fun bind(pictureId: Int) {
         restImageView.setImageResource(pictureId)
     }
-
 }
 
 
