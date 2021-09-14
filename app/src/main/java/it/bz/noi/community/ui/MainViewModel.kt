@@ -31,8 +31,14 @@ enum class TimeRange {
 
 class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 
+    /**
+     * parameters of the url for filter the events
+     */
     val urlParams = UrlParams(startDate = Constants.getServerDateParser().format(Date()))
 
+    /**
+     * live data of the events
+     */
     private var events = liveData(Dispatchers.IO) {
         emit(Resource.loading(data = null))
         try {
@@ -42,6 +48,9 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
         }
     }
 
+    /**
+     * mediator live data that emits the events to the observers
+     */
     val mediatorEvents = MediatorLiveData<Resource<List<EventsResponse.Event>>>()
 
     init {
@@ -80,10 +89,16 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
         refreshData()
     }
 
+    /**
+     * public function for reloading data, it can be used for updating the results
+     */
     fun refresh() {
         refreshData()
     }
 
+    /**
+     * force the mediatorEvents to trigger other data
+     */
     private fun refreshData() {
         mediatorEvents.removeSource(events)
         events = liveData(Dispatchers.IO) {
@@ -99,6 +114,9 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
         }
     }
 
+    /**
+     * function for getting the details of event
+     */
     fun getEventDetails(eventId: String) = liveData(Dispatchers.IO) {
         emit(Resource.loading(data = null))
         try {
