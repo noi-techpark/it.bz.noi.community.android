@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentFiltersBinding
-import kotlin.collections.forEach
 
 class FiltersFragment : Fragment() {
 
@@ -58,7 +57,7 @@ class FiltersFragment : Fragment() {
     }
 
     private fun resetFilters() {
-        items.forEach { item ->
+        items.iterator().forEach { item ->
             if (item is FiltersAdapter.Item.Filter) {
                 item.checked = false
             }
