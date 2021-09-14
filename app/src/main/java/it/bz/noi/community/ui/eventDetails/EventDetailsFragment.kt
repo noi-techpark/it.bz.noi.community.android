@@ -99,7 +99,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
     private fun createMockEvents() {
         suggestedEvents.add(
             EventsResponse.Event(
-                "zio",
+                "321412452",
                 "Evento test1",
                 "NOI Techpark",
                 "2021-09-14T08:00:00",
@@ -109,7 +109,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
         )
         suggestedEvents.add(
             EventsResponse.Event(
-                "zio",
+                "676474635",
                 "Evento test2",
                 "NOI Techpark",
                 "2021-09-18T10:00:00",

@@ -17,6 +17,9 @@ import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentEventDetailsBinding
 import it.bz.noi.community.databinding.FragmentWebviewBinding
 
+/**
+ * 
+ */
 class WebViewFragment : Fragment() {
 
     // ARGS: title, url

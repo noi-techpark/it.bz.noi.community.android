@@ -8,7 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
 
-class EatFragment: Fragment() {
+/**
+ * Eat tab fragment. Contains the available restaurants
+ */
+class EatFragment : Fragment() {
 
     private lateinit var restaurants: List<Restaurant>
     private lateinit var eatAdapter: EatAdapter
@@ -16,9 +19,31 @@ class EatFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val rest1 = Restaurant("Noisteria", listOf(R.drawable.restaurant_placeholder, R.drawable.restaurant_placeholder, R.drawable.restaurant_placeholder), "Mo - Sa", "19:00 - 20:00", "")
-        val rest2 = Restaurant("NOI Community Bar", listOf(R.drawable.restaurant_placeholder, R.drawable.restaurant_placeholder), "Mo - Sa", "19:00 - 20:00", "")
-        val rest3 = Restaurant("Alumix", listOf(R.drawable.restaurant_placeholder), "Mo - Sa", "19:00 - 20:00", "")
+        val rest1 = Restaurant(
+            "Noisteria",
+            listOf(
+                R.drawable.restaurant_placeholder,
+                R.drawable.restaurant_placeholder,
+                R.drawable.restaurant_placeholder
+            ),
+            "Mo - Sa",
+            "19:00 - 20:00",
+            ""
+        )
+        val rest2 = Restaurant(
+            "NOI Community Bar",
+            listOf(R.drawable.restaurant_placeholder, R.drawable.restaurant_placeholder),
+            "Mo - Sa",
+            "19:00 - 20:00",
+            ""
+        )
+        val rest3 = Restaurant(
+            "Alumix",
+            listOf(R.drawable.restaurant_placeholder),
+            "Mo - Sa",
+            "19:00 - 20:00",
+            ""
+        )
 
         restaurants = listOf(rest1, rest2, rest3)
     }

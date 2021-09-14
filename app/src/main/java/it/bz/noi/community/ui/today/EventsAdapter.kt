@@ -21,6 +21,10 @@ import it.bz.noi.community.utils.Constants.getLocalTimeFormatter
 import it.bz.noi.community.utils.Constants.getMonthCode
 import it.bz.noi.community.utils.Constants.getServerDatetimeParser
 
+/**
+ * click listener for handling events click
+ * the views are required to creare the shared animation
+ */
 interface EventClickListener {
     fun onEventClick(
         cardEvent: MaterialCardView,

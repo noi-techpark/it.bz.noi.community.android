@@ -9,7 +9,9 @@ object Constants {
     fun getLocalDateFormatter() = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     fun getLocalTimeFormatter() = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-    // months start from 0
+    /**
+     * Returns the month code based on passed month number (0 -> January, 11 -> December)
+     */
     fun getMonthCode(month: Int): String {
         return when (month) {
             0 -> "JAN"
@@ -24,7 +26,7 @@ object Constants {
             9 -> "OCT"
             10 -> "NOV"
             11 -> "DEC"
-            else -> throw IllegalArgumentException("Month does not exisr")
+            else -> throw IllegalArgumentException("Month does not exist")
         }
     }
 }
