@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.switchmaterial.SwitchMaterial
 import it.bz.noi.community.BuildConfig
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
@@ -28,9 +29,22 @@ class FiltersFragment : Fragment() {
     })
 
     private val onSwitchClickListener = View.OnClickListener{
-        // TODO
-        // Aggiornare filtro corrispondente allo switch
-        mainViewModel.refresh()
+        it?.let {
+            val switch = it as SwitchMaterial
+            val filter = switch.text
+            val checked = switch.isChecked
+
+            when (filter) {
+                getString(R.string.filter_type_public) -> mainViewModel.urlParams.public = checked
+                getString(R.string.filter_type_noi) -> mainViewModel.urlParams.noiOnly = checked
+                getString(R.string.filter_sector_green) -> mainViewModel.urlParams.green = checked
+                getString(R.string.filter_sector_food) -> mainViewModel.urlParams.food = checked
+                getString(R.string.filter_sector_digital) -> mainViewModel.urlParams.digital = checked
+                getString(R.string.filter_sector_automotiv) -> mainViewModel.urlParams.automotiv = checked
+                else -> throw (RuntimeException("Filter not matched!"))
+            }
+            mainViewModel.refresh()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
