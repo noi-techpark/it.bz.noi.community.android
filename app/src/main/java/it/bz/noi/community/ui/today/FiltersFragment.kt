@@ -13,6 +13,8 @@ import it.bz.noi.community.BuildConfig
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
+import it.bz.noi.community.data.models.UrlParams
+import it.bz.noi.community.data.models.resetFilters
 import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
@@ -137,6 +139,8 @@ class FiltersFragment : Fragment() {
             }
         }
         filterAdapter.notifyDataSetChanged()
+        mainViewModel.urlParams.resetFilters()
+        mainViewModel.refresh()
     }
 
 }

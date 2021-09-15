@@ -36,3 +36,12 @@ fun UrlParams.getRawFilter(): String? {
     }
     return rawFilter
 }
+
+fun UrlParams.resetFilters() {
+    public = false
+    noiOnly = false
+    green = false
+    food = false
+    digital = false
+    automotiv = false
+}
