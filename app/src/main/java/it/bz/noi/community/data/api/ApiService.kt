@@ -14,7 +14,7 @@ interface ApiService {
         @Query("pagesize") pageSize: Int = 20,
         @Query("startdate") startDate: String,
         @Query("enddate") endDate: String? = null,
-        @Query("rawfilter") rawFilter: Array<String>?
+        @Query("rawfilter") rawFilter: String?
     ): EventsResponse
 
     @GET("v1/EventShort/Detail/{id}")

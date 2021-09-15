@@ -13,7 +13,7 @@ data class UrlParams(
     var automotiv: Boolean = false,
 )
 
-fun UrlParams.getEventTypeRawFilter(): String? {
+private fun UrlParams.getEventTypeRawFilter(): String? {
     var rawFilter: String? = null
     if (public || noiOnly) {
         rawFilter = "in(CustomTagging.[],"
@@ -24,7 +24,7 @@ fun UrlParams.getEventTypeRawFilter(): String? {
     return rawFilter
 }
 
-fun UrlParams.getRawFilter(): String? {
+private fun UrlParams.getTechSectorRawFilter(): String? {
     var rawFilter: String? = null
     if (green || food || digital || automotiv) {
         rawFilter = "in(TechnologyFields.[],"
@@ -34,6 +34,20 @@ fun UrlParams.getRawFilter(): String? {
         if (automotiv) rawFilter = rawFilter.plus("'Automotiv',")
         rawFilter = rawFilter.substring(0, rawFilter.length-1).plus(")")
     }
+    return rawFilter
+}
+
+fun UrlParams.getRawFilter(): String? {
+    val eventTypeRawFilter = getEventTypeRawFilter()
+    val techSectorRawFilter = getTechSectorRawFilter()
+
+    var rawFilter: String? = null
+    if (eventTypeRawFilter != null && techSectorRawFilter != null)
+        rawFilter = "and(".plus(eventTypeRawFilter).plus(",").plus(techSectorRawFilter).plus(")")
+    else if (eventTypeRawFilter != null)
+        rawFilter = eventTypeRawFilter
+    else if (techSectorRawFilter != null)
+        rawFilter = techSectorRawFilter
     return rawFilter
 }
 

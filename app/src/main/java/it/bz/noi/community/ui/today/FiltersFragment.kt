@@ -9,11 +9,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
-import it.bz.noi.community.BuildConfig
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
-import it.bz.noi.community.data.models.UrlParams
 import it.bz.noi.community.data.models.resetFilters
 import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.MainViewModel
