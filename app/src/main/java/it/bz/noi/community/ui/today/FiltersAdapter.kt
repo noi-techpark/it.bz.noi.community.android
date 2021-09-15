@@ -3,13 +3,12 @@ package it.bz.noi.community.ui.today
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Switch
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import it.bz.noi.community.R
 
-class FiltersAdapter(private val items: List<Item>) :
+class FiltersAdapter(private val items: List<Item>, private val onSwitchClickListener: View.OnClickListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -30,7 +29,7 @@ class FiltersAdapter(private val items: List<Item>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             HEADER -> HeaderViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.vh_header, parent, false))
-            FILTER -> FilterViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.vh_switch, parent, false))
+            FILTER -> FilterViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.vh_switch, parent, false), onSwitchClickListener)
             else -> throw RuntimeException("Unsupported viewType $viewType")
         }
     }
@@ -78,9 +77,13 @@ class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 }
 
-class FilterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class FilterViewHolder(itemView: View, onClickListener: View.OnClickListener) : RecyclerView.ViewHolder(itemView) {
 
-    private val switchVH: SwitchMaterial = itemView.findViewById(R.id.switchVH)
+    val switchVH: SwitchMaterial = itemView.findViewById(R.id.switchVH)
+
+    init {
+        switchVH.setOnClickListener(onClickListener)
+    }
 
     fun bind(filter: String, checked: Boolean) {
         switchVH.text = filter

@@ -38,7 +38,7 @@
     <string name="filter_sector_automotiv">Automotiv</string>
 
     <string name="reset_btn">Reset all Filters</string>
-    <string name="show_btn">Show results</string>
+    <string name="show_btn">Show results (%1$d)</string>
 
     <string name="content_description_event_image">The image of the event.</string>
     <string name="content_description_location_icon">Icon for event location</string>

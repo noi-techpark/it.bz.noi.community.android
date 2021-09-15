@@ -1,9 +1,6 @@
 package it.bz.noi.community.ui
 
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.data.models.UrlParams
