@@ -2,6 +2,7 @@ package it.bz.noi.community
 
 import android.os.Bundle
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -9,7 +10,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
+import it.bz.noi.community.data.api.ApiHelper
+import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.databinding.ActivityMainBinding
+import it.bz.noi.community.ui.MainViewModel
+import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
 
 
@@ -20,6 +25,10 @@ class MainActivity : AppCompatActivity() {
     private val navController: NavController by lazy {
         findNavController(R.id.nav_host_fragment)
     }
+
+    private val mainViewModel: MainViewModel by viewModels(factoryProducer = {
+        ViewModelFactory(ApiHelper(RetrofitBuilder.apiService))
+    })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +83,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
+        if (navController.currentBackStackEntry?.destination?.id == R.id.filtersFragment) {
+            mainViewModel.restoreCashedFilters()
+            mainViewModel.refresh()
+        }
         navController.popBackStack()
         return super.onSupportNavigateUp()
     }

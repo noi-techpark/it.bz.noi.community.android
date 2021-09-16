@@ -48,7 +48,6 @@ import it.bz.noi.community.utils.Constants.getLocalTimeFormatter
 import it.bz.noi.community.utils.Constants.getMonthCode
 import it.bz.noi.community.utils.Status
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class EventDetailsFragment : Fragment(), EventClickListener {
     private lateinit var binding: FragmentEventDetailsBinding

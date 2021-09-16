@@ -50,6 +50,8 @@ class FiltersFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        mainViewModel.cacheFilters()
+
         items = listOf(
             FiltersAdapter.Item.Header(resources.getString(R.string.filter_by_type)),
             FiltersAdapter.Item.Filter(
