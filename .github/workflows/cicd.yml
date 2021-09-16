@@ -82,6 +82,8 @@ jobs:
         with:
           name: mapping-${{ github.sha }}.txt
           path: mapping-${{ github.sha }}.txt
+      - name: List files
+        run: ls -la
       - name: Publish to Play Store internal test track
         uses: r0adkll/upload-google-play@v1
         with:
