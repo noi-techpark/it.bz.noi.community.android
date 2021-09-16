@@ -49,5 +49,7 @@
     <string name="btn_add_to_calendar">Add to calendar</string>
     <string name="btn_menu">Menu</string>
     <string name="content_description_image_for_restaurant">Image for restaurant</string>
+    <string name="label_events_empty_state_title">We are very sorry!</string>
+    <string name="label_events_empty_state_subtitle">But based on your filter settings, we could not find any events. Try to readjust your filters.</string>
 
 </resources>
