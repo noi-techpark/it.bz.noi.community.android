@@ -42,6 +42,37 @@
         app:layout_constraintTop_toTopOf="@id/cdFilterEvents"
         tools:itemCount="1" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clEmptyState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:paddingHorizontal="32dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/cdFilterEvents">
+
+        <TextView
+            android:id="@+id/tvEmptyStateTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_events_empty_state_title"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvEmptyStateSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_events_empty_state_subtitle"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@id/tvEmptyStateTitle" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshEvents"
         android:layout_width="match_parent"

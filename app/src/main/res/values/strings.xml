@@ -43,11 +43,14 @@
     <string name="content_description_event_image">The image of the event.</string>
     <string name="content_description_location_icon">Icon for event location</string>
     <string name="content_description_time_icon">Icon for event time</string>
+    <string name="content_description_image_for_restaurant">Image for restaurant</string>
+
     <string name="label_about">About</string>
     <string name="label_interesting_for_you">Interesting for you?</string>
     <string name="btn_find_on_maps">Find on maps</string>
     <string name="btn_add_to_calendar">Add to calendar</string>
     <string name="btn_menu">Menu</string>
-    <string name="content_description_image_for_restaurant">Image for restaurant</string>
+    <string name="label_events_empty_state_title">We are very sorry!</string>
+    <string name="label_events_empty_state_subtitle">But based on your filter settings, we could not find any events. Try to readjust your filters.</string>
 
 </resources>

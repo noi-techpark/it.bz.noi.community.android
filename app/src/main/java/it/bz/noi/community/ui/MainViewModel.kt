@@ -1,6 +1,9 @@
 package it.bz.noi.community.ui
 
-import androidx.lifecycle.*
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.liveData
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.data.models.UrlParams
@@ -19,6 +22,13 @@ class ViewModelFactory(private val apiHelper: ApiHelper) : ViewModelProvider.Fac
     }
 }
 
+/**
+ * The different time ranges for filtering the events
+ * ALL -> All the events starting from TODAY --> startDate has today date value
+ * TODAY -> The events of today --> startDate and endDate both set to today date
+ * THIS_WEEK -> From today to the end of the current week
+ * THIS_MONTH -> From today to the end of the current month
+ */
 enum class TimeRange {
     ALL,
     TODAY,
@@ -69,17 +79,18 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
             TimeRange.THIS_WEEK -> {
                 val calendar = Calendar.getInstance().apply {
                     time = Date()
+                    firstDayOfWeek = Calendar.MONDAY
                 }
-                calendar.add(Calendar.DAY_OF_YEAR, 7)
-                urlParams.startDate = Constants.getServerDateParser().format(Date())
+                urlParams.startDate = Constants.getServerDateParser().format(calendar.time)
+                calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
                 urlParams.endDate = Constants.getServerDateParser().format(calendar.time)
             }
             TimeRange.THIS_MONTH -> {
                 val calendar = Calendar.getInstance().apply {
                     time = Date()
                 }
-                calendar.add(Calendar.DAY_OF_YEAR, 30)
-                urlParams.startDate = Constants.getServerDateParser().format(Date())
+                urlParams.startDate = Constants.getServerDateParser().format(calendar.time)
+                calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DATE))
                 urlParams.endDate = Constants.getServerDateParser().format(calendar.time)
             }
         }

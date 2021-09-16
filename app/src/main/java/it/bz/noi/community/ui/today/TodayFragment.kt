@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -83,15 +84,13 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
         binding.rvEvents.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = eventsAdapter
-            postponeEnterTransition()
-            viewTreeObserver.addOnPreDrawListener {
+            doOnPreDraw {
                 startPostponedEnterTransition()
-                true
             }
         }
 
         binding.cdFilterEvents.setOnClickListener {
-            findNavController().navigate( TodayFragmentDirections.actionNavigationTodayToFiltersFragment())
+            findNavController().navigate(TodayFragmentDirections.actionNavigationTodayToFiltersFragment())
         }
 
         binding.swipeRefreshEvents.setOnRefreshListener {
@@ -99,6 +98,11 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
         }
 
         setupObservers()
+
+        // Avoid a postponeEnterTransition on orientation change, and postpone only of first creation.
+        if (savedInstanceState == null) {
+            postponeEnterTransition()
+        }
     }
 
     private fun setupObservers() {
@@ -107,9 +111,14 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
                 when (resource.status) {
                     Status.SUCCESS -> {
                         binding.swipeRefreshEvents.isRefreshing = false
-                        binding.rvEvents.isVisible = true
-                        resource.data?.let { events ->
+                        val events = resource.data
+                        if (events != null && events.isNotEmpty()) {
+                            binding.rvEvents.isVisible = true
+                            binding.clEmptyState.isVisible = false
                             retrieveList(events)
+                        } else {
+                            binding.clEmptyState.isVisible = true
+                            binding.rvEvents.isVisible = false
                         }
                     }
                     Status.ERROR -> {
@@ -119,7 +128,6 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
                     }
                     Status.LOADING -> {
                         binding.swipeRefreshEvents.isRefreshing = true
-                        binding.rvEvents.isVisible = true
                     }
                 }
             }
@@ -146,11 +154,6 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
         timeIcon: ImageView,
         event: EventsResponse.Event
     ) {
-        // Exclude the clicked card from the exit transition (e.g. the card will disappear immediately
-        // instead of fading out with the rest to prevent an overlapping animation of fade and move).
-        // Exclude the clicked card from the exit transition (e.g. the card will disappear immediately
-        // instead of fading out with the rest to prevent an overlapping animation of fade and move).
-
         val extras = FragmentNavigatorExtras(
             constraintLayout to "constraintLayout_${event.eventId}",
             eventName to "eventName_${event.eventId}",
@@ -166,8 +169,11 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
                 "eventID" to event.eventId,
                 "eventName" to event.name,
                 "eventLocation" to event.location,
+                "imageUrl" to event.imageGallery.firstOrNull()?.imageUrl,
                 "eventStartDate" to event.startDate,
-                "eventEndDate" to event.endDate
+                "eventEndDate" to event.endDate,
+                "eventDescription" to event.description,
+                "technologyFields" to event.technologyFields
             ), null, extras
         )
     }

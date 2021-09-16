@@ -12,7 +12,11 @@
         tools:layout="@layout/fragment_today" >
         <action
             android:id="@+id/action_navigation_today_to_filtersFragment"
-            app:destination="@id/filtersFragment" />
+            app:destination="@id/filtersFragment"
+            app:enterAnim="@anim/left_to_right"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/right_to_left"/>
         <action
             android:id="@+id/action_navigation_today_to_eventDetailsFragment"
             app:destination="@id/eventDetailsFragment" />

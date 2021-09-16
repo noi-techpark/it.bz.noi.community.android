@@ -10,6 +10,8 @@ import retrofit2.http.*
 interface ApiService {
     @GET("v1/EventShort")
     suspend fun getEvents(
+        @Query("onlyactive") onlyActive: Boolean = true,
+        @Query("eventlocation") eventLocation: String = "NOI",
         @Query("pagenumber") pageNumber: Int = 1,
         @Query("pagesize") pageSize: Int = 20,
         @Query("startdate") startDate: String,

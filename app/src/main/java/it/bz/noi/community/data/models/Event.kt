@@ -9,9 +9,13 @@ data class EventsResponse(
     data class Event(
         @SerializedName("Id")
         val eventId: String,
-        @SerializedName("EventDescription")
+        @SerializedName("EventDescriptionEN")
         val name: String,
-        @SerializedName("EventLocation")
+        @SerializedName("EventTextEN")
+        val description: String,
+        @SerializedName("TechnologyFields")
+        val technologyFields: List<String>? = null,
+        @SerializedName("AnchorVenue")
         val location: String,
         @SerializedName("StartDate")
         val startDate: String,
