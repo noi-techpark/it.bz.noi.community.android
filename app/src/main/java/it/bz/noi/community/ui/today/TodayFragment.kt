@@ -107,9 +107,14 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
                 when (resource.status) {
                     Status.SUCCESS -> {
                         binding.swipeRefreshEvents.isRefreshing = false
-                        binding.rvEvents.isVisible = true
-                        resource.data?.let { events ->
+                        val events = resource.data
+                        if (events != null && events.isNotEmpty()) {
+                            binding.rvEvents.isVisible = true
+                            binding.clEmptyState.isVisible = false
                             retrieveList(events)
+                        } else {
+                            binding.clEmptyState.isVisible = true
+                            binding.rvEvents.isVisible = false
                         }
                     }
                     Status.ERROR -> {
@@ -119,7 +124,6 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
                     }
                     Status.LOADING -> {
                         binding.swipeRefreshEvents.isRefreshing = true
-                        binding.rvEvents.isVisible = true
                     }
                 }
             }
