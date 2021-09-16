@@ -91,7 +91,7 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
         }
 
         binding.cdFilterEvents.setOnClickListener {
-            findNavController().navigate( TodayFragmentDirections.actionNavigationTodayToFiltersFragment())
+            findNavController().navigate(TodayFragmentDirections.actionNavigationTodayToFiltersFragment())
         }
 
         binding.swipeRefreshEvents.setOnRefreshListener {
@@ -170,8 +170,11 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
                 "eventID" to event.eventId,
                 "eventName" to event.name,
                 "eventLocation" to event.location,
+                "imageUrl" to event.imageGallery.firstOrNull()?.imageUrl,
                 "eventStartDate" to event.startDate,
-                "eventEndDate" to event.endDate
+                "eventEndDate" to event.endDate,
+                "eventDescription" to event.description,
+                "technologyFields" to event.technologyFields
             ), null, extras
         )
     }

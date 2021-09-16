@@ -20,8 +20,8 @@ import androidx.core.text.bold
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,7 +53,9 @@ import java.util.concurrent.TimeUnit
 class EventDetailsFragment : Fragment(), EventClickListener {
     private lateinit var binding: FragmentEventDetailsBinding
 
-    private lateinit var viewModel: MainViewModel
+    private val mainViewModel: MainViewModel by activityViewModels(factoryProducer = {
+        ViewModelFactory(ApiHelper(RetrofitBuilder.apiService))
+    })
 
     private val suggestedEvents = arrayListOf<EventsResponse.Event>()
 
@@ -62,20 +64,14 @@ class EventDetailsFragment : Fragment(), EventClickListener {
     }
 
     private val eventName by lazy {
-        arguments?.getString("eventName")!!
+        arguments?.getString("eventName") ?: ""
     }
 
-    private var eventDescription: String? = null
+    private val suggestedEventsAdapter =
+        EventsAdapter(suggestedEvents, this@EventDetailsFragment, this@EventDetailsFragment, true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(
-            this,
-            ViewModelFactory(ApiHelper(RetrofitBuilder.apiService))
-
-        ).get(MainViewModel::class.java)
-
-        createMockEvents()
 
         sharedElementEnterTransition =
             TransitionInflater.from(context).inflateTransition(R.transition.change_bounds)
@@ -91,42 +87,8 @@ class EventDetailsFragment : Fragment(), EventClickListener {
                 sharedElementSnapshots: List<View?>?
             ) {
                 binding.groupEventActions.isVisible = true
-                binding.groupEventServerData.isVisible = true
             }
         })
-    }
-
-    private fun createMockEvents() {
-        suggestedEvents.add(
-            EventsResponse.Event(
-                "321412452",
-                "Evento test1",
-                "NOI Techpark",
-                "2021-09-14T08:00:00",
-                "2021-09-14T18:00:00",
-                listOf()
-            )
-        )
-        suggestedEvents.add(
-            EventsResponse.Event(
-                "676474635",
-                "Evento test2",
-                "NOI Techpark",
-                "2021-09-18T10:00:00",
-                "2021-09-20T12:00:00",
-                listOf()
-            )
-        )
-        suggestedEvents.add(
-            EventsResponse.Event(
-                "zio",
-                "Evento test3",
-                "NOI Techpark",
-                "2021-09-29T08:00:00",
-                "2021-09-29T18:00:00",
-                listOf()
-            )
-        )
     }
 
     override fun onCreateView(
@@ -140,10 +102,12 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val eventLocation = arguments?.getString("eventLocation")!!
+        val eventLocation = arguments?.getString("eventLocation") ?: ""
         val eventStartDate = arguments?.getString("eventStartDate")!!
         val eventEndDate = arguments?.getString("eventEndDate")!!
         val eventImageUrl = arguments?.getString("imageUrl")
+        val eventDescription = arguments?.getString("eventDescription") ?: ""
+        val technologyFields = arguments?.getStringArrayList("technologyFields") ?: listOf<String>()
 
         setupTransitions(eventID, eventImageUrl)
 
@@ -153,24 +117,41 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
         binding.tvEventName.text = eventName
         binding.tvEventLocation.text = eventLocation
+        if (eventDescription.isNotEmpty())
+            binding.tvEventDescription.text = eventDescription
+        else {
+            binding.tvAboutLabel.isVisible = false
+            binding.tvEventDescription.isVisible = false
+        }
 
-        viewModel.getEventDetails(eventID).observe(viewLifecycleOwner, Observer {
-            it.let { resource ->
-                when (resource.status) {
-                    Status.SUCCESS -> {
-                        eventDescription = resource.data?.eventDescription
-                        binding.tvEventDescription.text = eventDescription
-                        binding.groupEventActions.isVisible = true
-                        binding.groupEventServerData.isVisible = true
+        binding.rvSuggestedEvents.apply {
+            layoutManager = LinearLayoutManager(requireContext(), HORIZONTAL, false)
+            adapter = suggestedEventsAdapter
+        }
+
+        mainViewModel.mediatorEvents.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    val events = it.data
+                    if (events != null && events.isNotEmpty()) {
+                        suggestedEvents.clear()
+                        for (event in events) {
+                            for (field in technologyFields) {
+                                if (event.technologyFields?.contains(field) == true) {
+                                    suggestedEvents.add(event)
+                                    break
+                                }
+                            }
+                        }
+                        suggestedEventsAdapter.notifyItemRangeChanged(0, suggestedEvents.size)
+                        if (suggestedEvents.isEmpty())
+                            binding.tvInterestingForYou.isVisible = false
+                    } else {
+                        binding.tvInterestingForYou.isVisible = false
                     }
                 }
             }
         })
-
-        binding.rvSuggestedEvents.apply {
-            layoutManager = LinearLayoutManager(requireContext(), HORIZONTAL, false)
-            adapter = EventsAdapter(suggestedEvents, this@EventDetailsFragment, this@EventDetailsFragment, true)
-        }
 
         binding.btnAddToCalendar.setOnClickListener {
             val beginTime = Constants.getServerDatetimeParser().parse(eventStartDate).time
@@ -195,9 +176,11 @@ class EventDetailsFragment : Fragment(), EventClickListener {
         }
 
         binding.btnFindOnMaps.setOnClickListener {
-            findNavController().navigate(R.id.action_global_webViewFragment, bundleOf(
-                "title" to eventName, "url" to "https://maps.noi.bz.it"
-            ))
+            findNavController().navigate(
+                R.id.action_global_webViewFragment, bundleOf(
+                    "title" to eventName, "url" to "https://maps.noi.bz.it"
+                )
+            )
         }
     }
 
