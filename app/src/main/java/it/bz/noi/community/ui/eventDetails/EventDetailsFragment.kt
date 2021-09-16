@@ -75,7 +75,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
         sharedElementEnterTransition =
             TransitionInflater.from(context).inflateTransition(R.transition.change_bounds)
-        postponeEnterTransition(100, TimeUnit.MILLISECONDS)
+        postponeEnterTransition()
 
         exitTransition = TransitionInflater.from(context)
             .inflateTransition(R.transition.events_exit_transition)
@@ -197,36 +197,33 @@ class EventDetailsFragment : Fragment(), EventClickListener {
         ViewCompat.setTransitionName(binding.ivLocation, "locationIcon_${eventID}")
         ViewCompat.setTransitionName(binding.ivTime, "timeIcon_${eventID}")
 
-        if (eventImageUrl != null) {
-            Glide
-                .with(requireContext())
-                .load(eventImageUrl)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        startPostponedEnterTransition()
-                        return false
-                    }
+        Glide
+            .with(requireContext())
+            .load(eventImageUrl ?: R.drawable.srctest)
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    startPostponedEnterTransition()
+                    return false
+                }
 
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        startPostponedEnterTransition()
-                        return false
-                    }
-
-                })
-                .centerCrop()
-                .into(binding.ivEventImage)
-        }
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    startPostponedEnterTransition()
+                    return false
+                }
+            })
+            .centerCrop()
+            .into(binding.ivEventImage)
     }
 
     /**
@@ -297,9 +294,11 @@ class EventDetailsFragment : Fragment(), EventClickListener {
                 "eventID" to event.eventId,
                 "eventName" to event.name,
                 "eventLocation" to event.location,
+                "imageUrl" to event.imageGallery.firstOrNull()?.imageUrl,
                 "eventStartDate" to event.startDate,
                 "eventEndDate" to event.endDate,
-                "eventImage" to event.imageGallery.firstOrNull()?.imageUrl
+                "eventDescription" to event.description,
+                "technologyFields" to event.technologyFields
             ), null, extras
         )
     }
