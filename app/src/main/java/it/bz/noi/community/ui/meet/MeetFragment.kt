@@ -5,14 +5,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
 import it.bz.noi.community.ui.SimpleListAdapter
 
 class MeetFragment : Fragment() {
 
+    private val openLinkClickListener = View.OnClickListener {
+        it?.let {
+
+            val pos = recyclerView.getChildAdapterPosition((it.parent as View))
+
+            val action = MeetFragmentDirections.actionNavigationMeetToWebViewFragment()
+            action.title = items[pos]
+            action.url = meetViewModel.getUrlByItemPosition(pos)
+            findNavController().navigate(action)
+        }
+    }
+
     private lateinit var items: List<String>
     private lateinit var meetAdapter: SimpleListAdapter
+    private lateinit var recyclerView: RecyclerView
+    private val meetViewModel = MeetViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,9 +47,12 @@ class MeetFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        meetAdapter = SimpleListAdapter(items)
+        meetAdapter = SimpleListAdapter(items, openLinkClickListener)
+
         val root = inflater.inflate(R.layout.fragment_meet, container, false)
-        root.findViewById<RecyclerView>(R.id.meetRecyclerView).adapter = meetAdapter
+        recyclerView = root.findViewById(R.id.meetRecyclerView)
+        recyclerView.adapter = meetAdapter
+
         return root
     }
 
