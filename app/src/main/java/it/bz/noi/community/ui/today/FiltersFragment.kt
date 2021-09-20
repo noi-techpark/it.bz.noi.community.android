@@ -50,37 +50,39 @@ class FiltersFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        mainViewModel.cacheFilters()
+
         items = listOf(
             FiltersAdapter.Item.Header(resources.getString(R.string.filter_by_type)),
             FiltersAdapter.Item.Filter(
                 resources.getString(R.string.filter_type_public),
-                false,
+                mainViewModel.urlParams.public,
                 FiltersAdapter.FilterType.EVENT_TYPE
             ),
             FiltersAdapter.Item.Filter(
                 resources.getString(R.string.filter_type_noi),
-                false,
+                mainViewModel.urlParams.noiOnly,
                 FiltersAdapter.FilterType.EVENT_TYPE
             ),
             FiltersAdapter.Item.Header(resources.getString(R.string.filter_by_sector)),
             FiltersAdapter.Item.Filter(
                 resources.getString(R.string.filter_sector_green),
-                false,
+                mainViewModel.urlParams.green,
                 FiltersAdapter.FilterType.TECHNOLOGY_SECTOR
             ),
             FiltersAdapter.Item.Filter(
                 resources.getString(R.string.filter_sector_food),
-                false,
+                mainViewModel.urlParams.food,
                 FiltersAdapter.FilterType.TECHNOLOGY_SECTOR
             ),
             FiltersAdapter.Item.Filter(
                 resources.getString(R.string.filter_sector_digital),
-                false,
+                mainViewModel.urlParams.digital,
                 FiltersAdapter.FilterType.TECHNOLOGY_SECTOR
             ),
             FiltersAdapter.Item.Filter(
                 resources.getString(R.string.filter_sector_automotiv),
-                false,
+                mainViewModel.urlParams.automotiv,
                 FiltersAdapter.FilterType.TECHNOLOGY_SECTOR
             )
         )

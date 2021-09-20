@@ -42,7 +42,9 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
     /**
      * parameters of the url for filter the events
      */
-    val urlParams = UrlParams(startDate = Constants.getServerDateParser().format(Date()))
+    var urlParams = UrlParams(startDate = Constants.getServerDateParser().format(Date()))
+
+    private lateinit var cachedParams: UrlParams
 
     /**
      * live data of the events
@@ -128,5 +130,13 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
         } catch (exception: Exception) {
             emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
         }
+    }
+
+    fun cacheFilters() {
+        cachedParams = urlParams.copy()
+    }
+
+    fun restoreCashedFilters() {
+        urlParams = cachedParams.copy()
     }
 }

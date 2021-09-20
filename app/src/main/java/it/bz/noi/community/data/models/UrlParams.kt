@@ -43,7 +43,7 @@ fun UrlParams.getRawFilter(): String? {
 
     var rawFilter: String? = null
     if (eventTypeRawFilter != null && techSectorRawFilter != null)
-        rawFilter = "and(".plus(eventTypeRawFilter).plus(",").plus(techSectorRawFilter).plus(")")
+        rawFilter = "or(".plus(eventTypeRawFilter).plus(",").plus(techSectorRawFilter).plus(")")
     else if (eventTypeRawFilter != null)
         rawFilter = eventTypeRawFilter
     else if (techSectorRawFilter != null)
