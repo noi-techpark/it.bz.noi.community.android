@@ -23,4 +23,7 @@ interface ApiService {
     suspend fun getEventDetails(
         @Path("id") eventID: String
     ): EventDetailsResponse
+
+    @GET("v1/EventShort/RoomMapping")
+    suspend fun getRoomMapping(): Map<String, String>
 }

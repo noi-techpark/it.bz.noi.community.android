@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -66,6 +67,10 @@ class EventDetailsFragment : Fragment(), EventClickListener {
         arguments?.getString("eventName") ?: ""
     }
 
+    private val roomName by lazy {
+        arguments?.getString("roomName")
+    }
+
     private val suggestedEventsAdapter =
         EventsAdapter(suggestedEvents, this@EventDetailsFragment, this@EventDetailsFragment, true)
 
@@ -78,16 +83,6 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
         exitTransition = TransitionInflater.from(context)
             .inflateTransition(R.transition.events_exit_transition)
-
-        setEnterSharedElementCallback(object : SharedElementCallback() {
-            override fun onSharedElementEnd(
-                sharedElementNames: List<String?>?,
-                sharedElements: List<View?>?,
-                sharedElementSnapshots: List<View?>?
-            ) {
-                binding.groupEventActions.isVisible = true
-            }
-        })
     }
 
     override fun onCreateView(
@@ -183,11 +178,27 @@ class EventDetailsFragment : Fragment(), EventClickListener {
         }
 
         binding.btnFindOnMaps.setOnClickListener {
-            findNavController().navigate(
-                R.id.action_global_webViewFragment, bundleOf(
-                    "title" to eventName, "url" to "https://maps.noi.bz.it"
-                )
-            )
+            mainViewModel.getRoomMapping().observe(viewLifecycleOwner, Observer {
+                when (it.status) {
+                    Status.SUCCESS -> {
+                        binding.progressBarLoading.isVisible = false
+                        val mapUrl = it.data?.get(roomName) ?: "https://maps.noi.bz.it/"
+                        findNavController().navigate(
+                            R.id.action_global_webViewFragment, bundleOf(
+                                "title" to if (eventName.isNotEmpty()) eventName else "No title",
+                                "url" to mapUrl
+                            )
+                        )
+                    }
+                    Status.LOADING -> {
+                        binding.progressBarLoading.isVisible = true
+                    }
+                    Status.ERROR -> {
+                        binding.progressBarLoading.isVisible = false
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                    }
+                }
+            })
         }
     }
 

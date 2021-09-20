@@ -22,7 +22,9 @@ data class EventsResponse(
         @SerializedName("EndDate")
         val endDate: String,
         @SerializedName("ImageGallery")
-        val imageGallery: List<ImageGallery>
+        val imageGallery: List<ImageGallery>,
+        @SerializedName("AnchorVenueRoomMapping")
+        val roomName: String
     ) {
         data class ImageGallery(
             @SerializedName("ImageUrl")

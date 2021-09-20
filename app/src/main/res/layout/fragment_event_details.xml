@@ -126,8 +126,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:textAlignment="center"
                             android:lines="2"
+                            android:textAlignment="center"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
                             android:textSize="12sp"
@@ -188,14 +188,6 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/groupEventActions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="viewWhiteLayer, btnFindOnMaps, btnAddToCalendar"
-        tools:visibility="visible" />
-
     <View
         android:id="@+id/viewWhiteLayer"
         android:layout_width="match_parent"
@@ -228,5 +220,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btnFindOnMaps" />
+
+    <ProgressBar
+        android:id="@+id/progressBarLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/date_card_view"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

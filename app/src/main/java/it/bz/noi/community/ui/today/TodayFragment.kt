@@ -173,7 +173,8 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
                 "eventStartDate" to event.startDate,
                 "eventEndDate" to event.endDate,
                 "eventDescription" to event.description,
-                "technologyFields" to event.technologyFields
+                "technologyFields" to event.technologyFields,
+                "roomName" to event.roomName
             ), null, extras
         )
     }

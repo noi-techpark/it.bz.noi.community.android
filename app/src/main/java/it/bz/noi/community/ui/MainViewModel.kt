@@ -46,6 +46,15 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 
     private lateinit var cachedParams: UrlParams
 
+    fun getRoomMapping() = liveData(Dispatchers.IO) {
+        emit(Resource.loading(null))
+        try {
+            emit(Resource.success(data = mainRepository.getRoomMapping()))
+        } catch (exception: Exception) {
+            emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
+        }
+    }
+
     /**
      * live data of the events
      */
