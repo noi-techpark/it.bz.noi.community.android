@@ -42,7 +42,7 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
     /**
      * parameters of the url for filter the events
      */
-    var urlParams = UrlParams(startDate = Constants.getServerDateParser().format(Date()))
+    var urlParams = UrlParams(startDate = Constants.startDateFormatter().format(Date()))
 
     private lateinit var cachedParams: UrlParams
 
@@ -81,24 +81,24 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
     fun filterTime(timeRange: TimeRange) {
         when (timeRange) {
             TimeRange.ALL -> {
-                urlParams.startDate = Constants.getServerDateParser().format(Date())
+                urlParams.startDate = Constants.startDateFormatter().format(Date())
                 urlParams.endDate = null
             }
             TimeRange.TODAY -> {
-                urlParams.startDate = Constants.getServerDateParser().format(Date())
-                urlParams.endDate = Constants.getServerDateParser().format(Date())
+                urlParams.startDate = Constants.startDateFormatter().format(Date())
+                urlParams.endDate = Constants.endDateFormatter().format(Date())
             }
             TimeRange.THIS_WEEK -> {
                 val calendar = getNoiCalendar()
-                urlParams.startDate = Constants.getServerDateParser().format(calendar.time)
+                urlParams.startDate = Constants.startDateFormatter().format(calendar.time)
                 calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
-                urlParams.endDate = Constants.getServerDateParser().format(calendar.time)
+                urlParams.endDate = Constants.endDateFormatter().format(calendar.time)
             }
             TimeRange.THIS_MONTH -> {
                 val calendar = getNoiCalendar()
-                urlParams.startDate = Constants.getServerDateParser().format(calendar.time)
+                urlParams.startDate = Constants.startDateFormatter().format(calendar.time)
                 calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DATE))
-                urlParams.endDate = Constants.getServerDateParser().format(calendar.time)
+                urlParams.endDate = Constants.endDateFormatter().format(calendar.time)
             }
         }
         refreshData()

@@ -11,7 +11,11 @@ object Constants {
         timeZone = TimeZone.getTimeZone("Europe/Rome")
         calendar = getNoiCalendar()
     }
-    fun getServerDateParser() = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).apply {
+    fun startDateFormatter() = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).apply {
+        timeZone = TimeZone.getTimeZone("Europe/Rome")
+        calendar = getNoiCalendar()
+    }
+    fun endDateFormatter() = SimpleDateFormat("yyyy-MM-dd 23:59", Locale.getDefault()).apply {
         timeZone = TimeZone.getTimeZone("Europe/Rome")
         calendar = getNoiCalendar()
     }
