@@ -106,9 +106,11 @@ class EventsAdapter(
 
         fun bind(event: EventsResponse.Event) {
             this.event = event
-            eventName.text = if (!event.name.isNullOrEmpty())
-                event.name
-            else
+            eventName.text = if (!event.nameEN.isNullOrEmpty())
+                event.nameEN
+            else if (!event.name.isNullOrEmpty())
+            	event.name
+			else
                 SpannableStringBuilder()
                     .italic { append("No title") }
             eventLocation.text = event.location
