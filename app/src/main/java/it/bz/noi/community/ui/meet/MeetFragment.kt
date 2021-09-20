@@ -14,12 +14,11 @@ class MeetFragment : Fragment() {
 
     private val openLinkClickListener = View.OnClickListener {
         it?.let {
-
             val pos = recyclerView.getChildAdapterPosition((it.parent as View))
 
             val action = MeetFragmentDirections.actionNavigationMeetToWebViewFragment()
             action.title = items[pos]
-            action.url = meetViewModel.getUrlByItemPosition(pos)
+            action.url = getUrlByItemPosition(pos)
             findNavController().navigate(action)
         }
     }
@@ -27,7 +26,6 @@ class MeetFragment : Fragment() {
     private lateinit var items: List<String>
     private lateinit var meetAdapter: SimpleListAdapter
     private lateinit var recyclerView: RecyclerView
-    private val meetViewModel = MeetViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +52,19 @@ class MeetFragment : Fragment() {
         recyclerView.adapter = meetAdapter
 
         return root
+    }
+
+    private fun getUrlByItemPosition(pos: Int): String {
+        return when (pos) {
+            0 -> resources.getString(R.string.meet_link_companies)
+            1 -> resources.getString(R.string.meet_link_startups)
+            2 -> resources.getString(R.string.meet_link_university)
+            3 -> resources.getString(R.string.meet_link_research)
+            4 -> resources.getString(R.string.meet_link_support)
+            5 -> resources.getString(R.string.meet_link_lab)
+            6 -> resources.getString(R.string.meet_link_team)
+            else -> throw Exception("Link not found")
+        }
     }
 
 }

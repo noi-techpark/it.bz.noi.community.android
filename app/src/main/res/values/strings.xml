@@ -21,6 +21,14 @@
     <string name="meet_item_lab">Laboratories</string>
     <string name="meet_item_team">Team NOI</string>
 
+    <string name="meet_link_companies">https://noi.bz.it/it/aziende</string>
+    <string name="meet_link_startups">https://noi.bz.it/it/start-up</string>
+    <string name="meet_link_university">https://noi.bz.it/it/universita</string>
+    <string name="meet_link_research">https://noi.bz.it/it/enti-di-ricerca</string>
+    <string name="meet_link_support">https://noi.bz.it/it/istituzioni</string>
+    <string name="meet_link_lab">https://noi.bz.it/it/laboratori-sviluppo-tecnologico</string>
+    <string name="meet_link_team">https://noi.bz.it/it/chi-siamo#t</string>
+
     <string name="room_booking">Book a room</string>
 
     <string name="more_item_onboarding">Come on board</string>
