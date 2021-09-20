@@ -10,7 +10,7 @@ data class EventsResponse(
         @SerializedName("Id")
         val eventId: String,
         @SerializedName("EventDescription")
-        val name: String,
+        val name: String? = null,
         @SerializedName("EventTextEN")
         val description: String,
         @SerializedName("AnchorVenue")

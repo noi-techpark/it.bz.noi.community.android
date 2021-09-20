@@ -106,7 +106,7 @@ class EventsAdapter(
 
         fun bind(event: EventsResponse.Event) {
             this.event = event
-            eventName.text = if (event.name.isNotEmpty())
+            eventName.text = if (!event.name.isNullOrEmpty())
                 event.name
             else
                 SpannableStringBuilder()
