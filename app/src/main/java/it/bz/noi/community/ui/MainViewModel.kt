@@ -9,6 +9,7 @@ import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.data.models.UrlParams
 import it.bz.noi.community.data.repository.MainRepository
 import it.bz.noi.community.utils.Constants
+import it.bz.noi.community.utils.Constants.getNoiCalendar
 import it.bz.noi.community.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import java.util.*
@@ -79,18 +80,13 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
                 urlParams.endDate = Constants.getServerDateParser().format(Date())
             }
             TimeRange.THIS_WEEK -> {
-                val calendar = Calendar.getInstance().apply {
-                    time = Date()
-                    firstDayOfWeek = Calendar.MONDAY
-                }
+                val calendar = getNoiCalendar()
                 urlParams.startDate = Constants.getServerDateParser().format(calendar.time)
                 calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
                 urlParams.endDate = Constants.getServerDateParser().format(calendar.time)
             }
             TimeRange.THIS_MONTH -> {
-                val calendar = Calendar.getInstance().apply {
-                    time = Date()
-                }
+                val calendar = getNoiCalendar()
                 urlParams.startDate = Constants.getServerDateParser().format(calendar.time)
                 calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DATE))
                 urlParams.endDate = Constants.getServerDateParser().format(calendar.time)

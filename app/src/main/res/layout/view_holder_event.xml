@@ -109,10 +109,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:textAlignment="center"
+                android:lines="2"
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
                 android:textSize="12sp"
-                tools:hint="17.\nSEP" />
+                android:textStyle="bold"
+                tools:hint="20.9. - 22.9." />
         </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

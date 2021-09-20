@@ -1,6 +1,7 @@
 package it.bz.noi.community.ui.today
 
 import android.text.SpannableStringBuilder
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.bold
+import androidx.core.text.italic
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionSet
@@ -104,7 +106,11 @@ class EventsAdapter(
 
         fun bind(event: EventsResponse.Event) {
             this.event = event
-            eventName.text = event.name
+            eventName.text = if (event.name.isNotEmpty())
+                event.name
+            else
+                SpannableStringBuilder()
+                    .italic { append("No title") }
             eventLocation.text = event.location
 
             constraintLayout.transitionName = "constraintLayout_${event.eventId}"
@@ -121,25 +127,17 @@ class EventsAdapter(
             val endDate =
                 getLocalDateFormatter().format(getServerDatetimeParser().parse(event.endDate))
             val month = "${getMonthCode(getServerDatetimeParser().parse(event.startDate).month)}"
+            val endMonth = "${getMonthCode(getServerDatetimeParser().parse(event.endDate).month)}"
             val eventDateString = if (startDate == endDate) {
-                SpannableStringBuilder()
-                    .append("${getServerDatetimeParser().parse(event.startDate).date}\n")
-                    .bold {
-                        append(month)
-                    }
+                "${getServerDatetimeParser().parse(event.startDate).date}.$month."
             } else {
-                SpannableStringBuilder()
-                    .append(
-                        "${getServerDatetimeParser().parse(event.startDate).date} - ${
-                            getServerDatetimeParser().parse(
-                                event.endDate
-                            ).date
-                        }\n"
-                    )
-                    .bold {
-                        append(month)
-                    }
+                "${getServerDatetimeParser().parse(event.startDate).date}.$month. - ${
+                    getServerDatetimeParser().parse(
+                        event.endDate
+                    ).date
+                }.$endMonth."
             }
+
             eventDate.text = eventDateString
 
             val startHour =

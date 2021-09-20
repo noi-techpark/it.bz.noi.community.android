@@ -16,7 +16,7 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.SharedElementCallback
 import androidx.core.os.bundleOf
-import androidx.core.text.bold
+import androidx.core.text.italic
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -112,9 +112,17 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
         setDate(eventStartDate, eventEndDate)
 
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = eventName
+        (requireActivity() as AppCompatActivity).supportActionBar?.title =
+            if (eventName.isNotEmpty())
+                eventName
+            else
+                "No title"
 
-        binding.tvEventName.text = eventName
+        binding.tvEventName.text = if (eventName.isNotEmpty())
+            eventName
+        else
+            SpannableStringBuilder()
+                .italic { append("No title") }
         binding.tvEventLocation.text = eventLocation
         if (eventDescription.isNotEmpty())
             binding.tvEventDescription.text = eventDescription
@@ -235,24 +243,16 @@ class EventDetailsFragment : Fragment(), EventClickListener {
             getLocalDateFormatter().format(Constants.getServerDatetimeParser().parse(endDatetime))
         val month =
             "${getMonthCode(Constants.getServerDatetimeParser().parse(startDatetime).month)}"
+        val endMonth =
+            "${getMonthCode(Constants.getServerDatetimeParser().parse(startDatetime).month)}"
         val eventDateString = if (startDate == endDate) {
-            SpannableStringBuilder()
-                .append("${Constants.getServerDatetimeParser().parse(startDatetime).date}\n")
-                .bold {
-                    append(month)
-                }
+            "${Constants.getServerDatetimeParser().parse(startDatetime).date}.$month."
         } else {
-            SpannableStringBuilder()
-                .append(
-                    "${Constants.getServerDatetimeParser().parse(startDatetime).date} - ${
-                        Constants.getServerDatetimeParser().parse(
-                            endDatetime
-                        ).date
-                    }\n"
-                )
-                .bold {
-                    append(month)
-                }
+            "${Constants.getServerDatetimeParser().parse(startDatetime).date}.$month. - ${
+                Constants.getServerDatetimeParser().parse(
+                    endDatetime
+                ).date
+            }.$endMonth.\n"
         }
         binding.tvEventDate.text = eventDateString
 
