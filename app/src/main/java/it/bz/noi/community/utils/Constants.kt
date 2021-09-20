@@ -4,28 +4,43 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object Constants {
-    fun getServerDatetimeParser() = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-    fun getServerDateParser() = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    fun getLocalDateFormatter() = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    fun getLocalTimeFormatter() = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+    fun getNoiCalendar() = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.getDefault())
+
+    fun getServerDatetimeParser() = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).apply {
+        timeZone = TimeZone.getTimeZone("Europe/Rome")
+        calendar = getNoiCalendar()
+    }
+    fun getServerDateParser() = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).apply {
+        timeZone = TimeZone.getTimeZone("Europe/Rome")
+        calendar = getNoiCalendar()
+    }
+    fun getLocalDateFormatter() = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).apply {
+        timeZone = TimeZone.getTimeZone("Europe/Rome")
+        calendar = getNoiCalendar()
+    }
+    fun getLocalTimeFormatter() = SimpleDateFormat("HH:mm", Locale.getDefault()).apply {
+        timeZone = TimeZone.getTimeZone("Europe/Rome")
+        calendar = getNoiCalendar()
+    }
 
     /**
      * Returns the month code based on passed month number (0 -> January, 11 -> December)
      */
-    fun getMonthCode(month: Int): String {
+    fun getMonthCode(month: Int): Int {
         return when (month) {
-            0 -> "JAN"
-            1 -> "FEB"
-            2 -> "MAR"
-            3 -> "APR"
-            4 -> "MAY"
-            5 -> "JUN"
-            6 -> "JUL"
-            7 -> "AUG"
-            8 -> "SEP"
-            9 -> "OCT"
-            10 -> "NOV"
-            11 -> "DEC"
+            0 -> 1
+            1 -> 2
+            2 -> 3
+            3 -> 4
+            4 -> 5
+            5 -> 6
+            6 -> 7
+            7 -> 8
+            8 -> 9
+            9 -> 10
+            10 -> 11
+            11 -> 12
             else -> throw IllegalArgumentException("Month does not exist")
         }
     }
