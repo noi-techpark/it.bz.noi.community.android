@@ -9,18 +9,22 @@ data class EventsResponse(
     data class Event(
         @SerializedName("Id")
         val eventId: String,
-        @SerializedName("EventDescriptionEN")
+        @SerializedName("EventDescription")
         val name: String,
         @SerializedName("EventTextEN")
         val description: String,
-        @SerializedName("TechnologyFields")
-        val technologyFields: List<String>? = null,
         @SerializedName("AnchorVenue")
         val location: String,
+        @SerializedName("Display5")
+        val eventOrganizer: String? = null,
+        @SerializedName("CompanyName")
+        val eventOrganizerFallback: String,
         @SerializedName("StartDate")
         val startDate: String,
         @SerializedName("EndDate")
         val endDate: String,
+        @SerializedName("TechnologyFields")
+        val technologyFields: List<String>? = null,
         @SerializedName("ImageGallery")
         val imageGallery: List<ImageGallery>,
         @SerializedName("AnchorVenueRoomMapping")

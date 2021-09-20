@@ -15,7 +15,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.app.SharedElementCallback
 import androidx.core.os.bundleOf
 import androidx.core.text.italic
 import androidx.core.view.ViewCompat
@@ -102,6 +101,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
         val eventImageUrl = arguments?.getString("imageUrl")
         val eventDescription = arguments?.getString("eventDescription") ?: ""
         val technologyFields = arguments?.getStringArrayList("technologyFields") ?: listOf<String>()
+        val eventOrganizer = arguments?.getString("eventOrganizer")
 
         setupTransitions(eventID, eventImageUrl)
 
@@ -119,6 +119,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
             SpannableStringBuilder()
                 .italic { append("No title") }
         binding.tvEventLocation.text = eventLocation
+        binding.tvEventOrganizer.text = eventOrganizer
         if (eventDescription.isNotEmpty())
             binding.tvEventDescription.text = eventDescription
         else {

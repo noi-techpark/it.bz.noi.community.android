@@ -174,6 +174,7 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
                 "eventEndDate" to event.endDate,
                 "eventDescription" to event.description,
                 "technologyFields" to event.technologyFields,
+                "eventOrganizer" to if (event.eventOrganizer.isNullOrEmpty()) event.eventOrganizerFallback else event.eventOrganizer,
                 "roomName" to event.roomName
             ), null, extras
         )

@@ -78,6 +78,18 @@
                         app:layout_constraintTop_toBottomOf="@id/tvEventName"
                         tools:hint="NOI Techpark" />
 
+                    <TextView
+                        android:id="@+id/tvEventOrganizer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:paddingBottom="16dp"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        app:layout_constraintStart_toStartOf="@id/ivLocation"
+                        app:layout_constraintTop_toBottomOf="@id/ivLocation"
+                        tools:hint="Green Technologies" />
+
                     <ImageView
                         android:id="@+id/ivTime"
                         android:layout_width="14dp"
@@ -95,7 +107,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
-                        android:paddingBottom="16dp"
                         android:textColor="@color/white"
                         android:textColorHint="@color/white"
                         app:layout_constraintEnd_toEndOf="parent"
