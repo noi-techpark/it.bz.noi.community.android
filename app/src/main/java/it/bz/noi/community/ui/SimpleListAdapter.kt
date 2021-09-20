@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
 
-class SimpleListAdapter(private val items: List<String>) : RecyclerView.Adapter<ItemViewHolder>() {
+class SimpleListAdapter(private val items: List<String>, private val onClickListener: View.OnClickListener? = null) : RecyclerView.Adapter<ItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -17,7 +17,7 @@ class SimpleListAdapter(private val items: List<String>) : RecyclerView.Adapter<
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(items[position], null)
+        holder.bind(items[position], onClickListener)
     }
 
     override fun getItemCount(): Int {

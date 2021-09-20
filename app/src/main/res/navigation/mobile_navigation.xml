@@ -37,7 +37,12 @@
         android:id="@+id/navigation_meet"
         android:name="it.bz.noi.community.ui.meet.MeetFragment"
         android:label="@string/title_meet"
-        tools:layout="@layout/fragment_meet" />
+        tools:layout="@layout/fragment_meet" >
+        <action
+            android:id="@+id/action_navigation_meet_to_webViewFragment"
+            app:destination="@id/webViewFragment"
+            app:popUpTo="@id/navigation_meet" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_eat"
