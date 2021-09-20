@@ -56,13 +56,13 @@ class MeetFragment : Fragment() {
 
     private fun getUrlByItemPosition(pos: Int): String {
         return when (pos) {
-            0 -> resources.getString(R.string.meet_link_companies)
-            1 -> resources.getString(R.string.meet_link_startups)
-            2 -> resources.getString(R.string.meet_link_university)
-            3 -> resources.getString(R.string.meet_link_research)
-            4 -> resources.getString(R.string.meet_link_support)
-            5 -> resources.getString(R.string.meet_link_lab)
-            6 -> resources.getString(R.string.meet_link_team)
+            0 -> resources.getString(R.string.url_companies)
+            1 -> resources.getString(R.string.url_startups)
+            2 -> resources.getString(R.string.url_university)
+            3 -> resources.getString(R.string.url_research)
+            4 -> resources.getString(R.string.url_institutions)
+            5 -> resources.getString(R.string.url_lab)
+            6 -> resources.getString(R.string.url_about_us)
             else -> throw Exception("Link not found")
         }
     }
