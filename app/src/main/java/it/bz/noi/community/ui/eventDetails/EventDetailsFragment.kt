@@ -138,6 +138,8 @@ class EventDetailsFragment : Fragment(), EventClickListener {
                     if (events != null && events.isNotEmpty()) {
                         suggestedEvents.clear()
                         for (event in events) {
+                            if (suggestedEvents.size == 3)
+                                break
                             for (field in technologyFields) {
                                 if (event.technologyFields?.contains(field) == true) {
                                     suggestedEvents.add(event)
