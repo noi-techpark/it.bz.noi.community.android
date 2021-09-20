@@ -305,7 +305,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
         findNavController().navigate(
             R.id.action_eventDetailsFragment_self, bundleOf(
                 "eventID" to event.eventId,
-                "eventName" to event.name,
+                "eventName" to (event.name ?: event.nameEN),
                 "eventLocation" to event.location,
                 "imageUrl" to event.imageGallery.firstOrNull()?.imageUrl,
                 "eventStartDate" to event.startDate,
