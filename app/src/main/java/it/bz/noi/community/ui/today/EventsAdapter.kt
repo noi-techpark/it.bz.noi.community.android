@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.models.EventsResponse
+import it.bz.noi.community.utils.Constants
 import it.bz.noi.community.utils.Constants.getLocalDateFormatter
 import it.bz.noi.community.utils.Constants.getLocalTimeFormatter
 import it.bz.noi.community.utils.Constants.getMonthCode
@@ -135,12 +136,19 @@ class EventsAdapter(
             val eventDateString = if (startDate == endDate) {
                 "${getServerDatetimeParser().parse(event.startDate).date}.$month."
             } else {
-                "${getServerDatetimeParser().parse(event.startDate).date}.$month. - ${
-                    getServerDatetimeParser().parse(
-                        event.endDate
-                    ).date
-                }.$endMonth."
-            }
+				if (month == endMonth)
+					"${getServerDatetimeParser().parse(event.startDate).date}. -\n ${
+						getServerDatetimeParser().parse(
+							event.endDate
+						).date
+					}.$month.\n"
+				else
+					"${getServerDatetimeParser().parse(event.startDate).date}.$month. -\n ${
+						getServerDatetimeParser().parse(
+							event.endDate
+						).date
+					}.$endMonth.\n"
+			}
 
             eventDate.text = eventDateString
 

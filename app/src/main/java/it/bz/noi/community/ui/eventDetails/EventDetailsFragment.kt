@@ -258,16 +258,23 @@ class EventDetailsFragment : Fragment(), EventClickListener {
         val month =
             "${getMonthCode(Constants.getServerDatetimeParser().parse(startDatetime).month)}"
         val endMonth =
-            "${getMonthCode(Constants.getServerDatetimeParser().parse(startDatetime).month)}"
+            "${getMonthCode(Constants.getServerDatetimeParser().parse(endDatetime).month)}"
         val eventDateString = if (startDate == endDate) {
             "${Constants.getServerDatetimeParser().parse(startDatetime).date}.$month."
         } else {
-            "${Constants.getServerDatetimeParser().parse(startDatetime).date}.$month. - ${
-                Constants.getServerDatetimeParser().parse(
-                    endDatetime
-                ).date
-            }.$endMonth.\n"
-        }
+			if (month == endMonth)
+				"${Constants.getServerDatetimeParser().parse(startDatetime).date}. -\n ${
+					Constants.getServerDatetimeParser().parse(
+						endDatetime
+					).date
+				}.$month.\n"
+			else
+				"${Constants.getServerDatetimeParser().parse(startDatetime).date}.$month. -\n ${
+					Constants.getServerDatetimeParser().parse(
+						endDatetime
+					).date
+				}.$endMonth.\n"
+		}
         binding.tvEventDate.text = eventDateString
 
         val startHour =
