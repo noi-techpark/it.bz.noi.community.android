@@ -8,19 +8,19 @@ data class EventsResponse(
 ) {
     data class Event(
         @SerializedName("Id")
-        val eventId: String,
+        val eventId: String? = null,
         @SerializedName("EventDescription")
         val name: String? = null,
 		@SerializedName("EventDescriptionEN")
 		val nameEN: String? = null,
         @SerializedName("EventTextEN")
-        val description: String,
+        val description: String? = null,
         @SerializedName("AnchorVenue")
-        val location: String,
+        val location: String? = null,
         @SerializedName("Display5")
         val eventOrganizer: String? = null,
         @SerializedName("CompanyName")
-        val eventOrganizerFallback: String,
+        val eventOrganizerFallback: String? = null,
         @SerializedName("StartDate")
         val startDate: String,
         @SerializedName("EndDate")
@@ -28,13 +28,13 @@ data class EventsResponse(
         @SerializedName("TechnologyFields")
         val technologyFields: List<String>? = null,
         @SerializedName("ImageGallery")
-        val imageGallery: List<ImageGallery>,
+        val imageGallery: List<ImageGallery>? = null,
         @SerializedName("AnchorVenueRoomMapping")
-        val roomName: String
+        val roomName: String? = null
     ) {
         data class ImageGallery(
             @SerializedName("ImageUrl")
-            val imageUrl: String
+            val imageUrl: String? = null
         )
     }
 }

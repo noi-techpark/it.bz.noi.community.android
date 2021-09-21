@@ -307,7 +307,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
                 "eventID" to event.eventId,
                 "eventName" to (event.name ?: event.nameEN),
                 "eventLocation" to event.location,
-                "imageUrl" to event.imageGallery.firstOrNull()?.imageUrl,
+                "imageUrl" to event.imageGallery?.firstOrNull { it.imageUrl != null },
                 "eventStartDate" to event.startDate,
                 "eventEndDate" to event.endDate,
                 "eventDescription" to event.description,
