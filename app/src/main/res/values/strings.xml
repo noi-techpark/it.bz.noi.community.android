@@ -61,4 +61,7 @@
     <string name="label_events_empty_state_title">We are very sorry!</string>
     <string name="label_events_empty_state_subtitle">But based on your filter settings, we could not find any events. Try to readjust your filters.</string>
 
+	<string name="url_map">https://maps.noi.bz.it</string>
+	<string name="url_room_booking">https://rooms.noi.bz.it/</string>
+
 </resources>
