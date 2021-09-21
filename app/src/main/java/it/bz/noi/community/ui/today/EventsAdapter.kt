@@ -148,7 +148,7 @@ class EventsAdapter(
                 getLocalTimeFormatter().format(getServerDatetimeParser().parse(event.endDate))
             eventTime.text = "$startHour - $endHour"
 
-            val eventImageUrl = event.imageGallery?.firstOrNull { it.imageUrl != null }
+            val eventImageUrl = event.imageGallery?.firstOrNull { it.imageUrl != null }?.imageUrl
             if (eventImageUrl != null) {
                 Glide
                     .with(view.context)
