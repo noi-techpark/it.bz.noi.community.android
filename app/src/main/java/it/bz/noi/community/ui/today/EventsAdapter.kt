@@ -88,7 +88,9 @@ class EventsAdapter(
 
         init {
             view.rootView.setOnClickListener {
-                (fragment.exitTransition as TransitionSet).excludeTarget(view, true)
+				// it should be used for avoiding clicked view to fade out. But for letting other
+				// transactions to work in fragment I cannot use this
+                //(fragment.exitTransition as TransitionSet).excludeTarget(view, true)
                 listener.onEventClick(
                     cardEvent,
                     cardDate,
@@ -156,7 +158,7 @@ class EventsAdapter(
                     .centerCrop()
                     .into(eventImage)
             } else {
-                eventImage.setImageResource(R.drawable.srctest)
+                eventImage.setImageResource(R.drawable.img_event_placeholder)
             }
         }
     }

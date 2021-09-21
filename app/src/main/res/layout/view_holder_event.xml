@@ -23,7 +23,7 @@
             android:contentDescription="@string/content_description_event_image"
             android:scaleType="centerCrop"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/srctest" />
+            tools:src="@drawable/img_event_placeholder" />
 
         <TextView
             android:id="@+id/tvEventName"

@@ -92,7 +92,7 @@ class FiltersFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentFiltersBinding.inflate(inflater)
         mainViewModel.mediatorEvents.observe(viewLifecycleOwner, Observer {
             when (it.status) {

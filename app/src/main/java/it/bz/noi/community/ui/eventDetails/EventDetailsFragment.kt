@@ -220,7 +220,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
         Glide
             .with(requireContext())
-            .load(eventImageUrl ?: R.drawable.srctest)
+            .load(eventImageUrl ?: R.drawable.img_event_placeholder)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
