@@ -31,7 +31,6 @@ class OrientateFragment : Fragment() {
         btn.setOnClickListener {
             val action = OrientateFragmentDirections.actionNavigationOrientateToWebViewFragment()
             action.title = resources.getString(R.string.room_booking)
-			action.url = BOOKING_ROOM_URL
             root.findNavController().navigate(action)
         }
 
@@ -40,6 +39,6 @@ class OrientateFragment : Fragment() {
 
     companion object {
         const val MAP_URL = "https://maps.noi.bz.it"
-        const val BOOKING_ROOM_URL = "https://rooms.noi.bz.it/"
+        const val BOOKING_ROOM_URL = ""
     }
 }

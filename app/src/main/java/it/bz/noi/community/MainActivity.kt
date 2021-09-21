@@ -84,10 +84,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         if (navController.currentBackStackEntry?.destination?.id == R.id.filtersFragment) {
-        	if (!mainViewModel.isFiltersSameAsCached()) {
-				mainViewModel.restoreCachedFilters()
-				mainViewModel.refresh()
-			}
+            mainViewModel.restoreCashedFilters()
+            mainViewModel.refresh()
         }
         navController.popBackStack()
         return super.onSupportNavigateUp()

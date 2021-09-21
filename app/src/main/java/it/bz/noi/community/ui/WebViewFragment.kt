@@ -18,7 +18,7 @@ import it.bz.noi.community.databinding.FragmentEventDetailsBinding
 import it.bz.noi.community.databinding.FragmentWebviewBinding
 
 /**
- *
+ * 
  */
 class WebViewFragment : Fragment() {
 
