@@ -39,6 +39,8 @@ enum class TimeRange {
 
 class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 
+	val locale = Locale.getDefault().language
+
 	/**
 	 * parameters of the url for filter the events
 	 */

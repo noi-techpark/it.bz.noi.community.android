@@ -48,7 +48,7 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 	}
 
 	private val eventsAdapter by lazy {
-		EventsAdapter(todayViewModel.events, this, this)
+		EventsAdapter(todayViewModel.events, this, this, locale = viewModel.locale)
 	}
 
 	private lateinit var layoutManagerFilters: LinearLayoutManager
@@ -165,6 +165,23 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		exitTransition = TransitionInflater.from(context)
 			.inflateTransition(R.transition.events_exit_transition)
 
+		val eventDescription: String?
+		val eventNamed: String?
+		when (viewModel.locale) {
+			"it" -> {
+				eventNamed = event.nameIT ?: event.name
+				eventDescription = event.descriptionIT ?: event.description
+			}
+			"de" -> {
+				eventNamed = event.nameDE ?: event.name
+				eventDescription = event.descriptionDE ?: event.description
+			}
+			else -> {
+				eventNamed = event.nameEN ?: event.name
+				eventDescription = event.descriptionEN ?: event.description
+			}
+		}
+
 		val extras = FragmentNavigatorExtras(
 			constraintLayout to "constraintLayout_${event.eventId}",
 			eventName to "eventName_${event.eventId}",
@@ -178,12 +195,12 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		findNavController().navigate(
 			R.id.action_navigation_today_to_eventDetailsFragment, bundleOf(
 				"eventID" to event.eventId,
-				"eventName" to (event.name ?: event.nameEN),
+				"eventName" to eventNamed,
 				"eventLocation" to event.location,
 				"imageUrl" to event.imageGallery?.firstOrNull { it.imageUrl != null }?.imageUrl,
 				"eventStartDate" to event.startDate,
 				"eventEndDate" to event.endDate,
-				"eventDescription" to event.description,
+				"eventDescription" to eventDescription,
 				"technologyFields" to event.technologyFields,
 				"eventOrganizer" to if (event.eventOrganizer.isNullOrEmpty()) event.eventOrganizerFallback else event.eventOrganizer,
 				"roomName" to event.roomName

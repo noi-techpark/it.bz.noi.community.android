@@ -52,7 +52,8 @@ class EventsAdapter(
     private val events: List<EventsResponse.Event>,
     private val listener: EventClickListener,
     private val fragment: Fragment,
-    private val isSuggestedEvents: Boolean = false
+    private val isSuggestedEvents: Boolean = false,
+	private val locale: String
 ) :
     RecyclerView.Adapter<EventsAdapter.EventViewHolder>() {
 
@@ -109,13 +110,20 @@ class EventsAdapter(
 
         fun bind(event: EventsResponse.Event) {
             this.event = event
-            eventName.text = if (!event.nameEN.isNullOrEmpty())
-                event.nameEN
-            else if (!event.name.isNullOrEmpty())
-            	event.name
-			else
-                SpannableStringBuilder()
-                    .italic { append("No title") }
+
+			val eventNamed: String? = when (locale) {
+				"it" -> {
+					event.nameIT ?: event.name
+				}
+				"de" -> {
+					event.nameDE ?: event.name
+				}
+				else -> {
+					event.nameEN ?: event.name
+				}
+			}
+
+            eventName.text = eventNamed
             eventLocation.text = event.location
 
             constraintLayout.transitionName = "constraintLayout_${event.eventId}"
