@@ -167,9 +167,9 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
         findNavController().navigate(
             R.id.action_navigation_today_to_eventDetailsFragment, bundleOf(
                 "eventID" to event.eventId,
-                "eventName" to event.name,
+				"eventName" to (event.name ?: event.nameEN),
                 "eventLocation" to event.location,
-                "imageUrl" to event.imageGallery.firstOrNull()?.imageUrl,
+                "imageUrl" to event.imageGallery?.firstOrNull { it.imageUrl != null }?.imageUrl,
                 "eventStartDate" to event.startDate,
                 "eventEndDate" to event.endDate,
                 "eventDescription" to event.description,

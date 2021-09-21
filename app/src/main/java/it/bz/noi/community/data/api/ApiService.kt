@@ -11,6 +11,7 @@ interface ApiService {
     @GET("v1/EventShort")
     suspend fun getEvents(
         @Query("onlyactive") onlyActive: Boolean = true,
+		@Query("removenullvalues") removeNullValues: Boolean = true,
         @Query("eventlocation") eventLocation: String = "NOI",
         @Query("pagenumber") pageNumber: Int = 1,
         @Query("pagesize") pageSize: Int = 20,
