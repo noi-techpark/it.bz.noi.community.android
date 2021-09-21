@@ -34,7 +34,7 @@ jobs:
   ## Build and sign the app, and upload it as Github Artifact
   build_and_deploy_to_play_store:
     needs: [ unit_tests, android_tests ]
-    if: github.ref == 'refs/heads/development' && github.event_name == 'push')
+    if: github.ref == 'refs/heads/development' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
