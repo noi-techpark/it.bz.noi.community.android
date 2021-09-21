@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable/ic_filter.xml" value="0.3712962962962963" />
+        <entry key="app/src/main/res/drawable/ic_meet.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/drawable/splash_theme.xml" value="0.38333333333333336" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.44128553770086526" />
+        <entry key="app/src/main/res/layout/fragment_eat.xml" value="0.15577507598784193" />
+        <entry key="app/src/main/res/layout/fragment_event_details.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/fragment_meet.xml" value="0.15577507598784193" />
+        <entry key="app/src/main/res/layout/fragment_more.xml" value="0.15577507598784193" />
+        <entry key="app/src/main/res/layout/fragment_orientate.xml" value="0.15577507598784193" />
+        <entry key="app/src/main/res/layout/fragment_today.xml" value="0.16893115942028986" />
+        <entry key="app/src/main/res/layout/fragment_webview.xml" value="0.3804347826086957" />
+        <entry key="app/src/main/res/layout/layout_suggested_event.xml" value="0.3804347826086957" />
+        <entry key="app/src/main/res/layout/vh_eat.xml" value="0.3203125" />
+        <entry key="app/src/main/res/layout/vh_image.xml" value="0.3203125" />
+        <entry key="app/src/main/res/layout/vh_link_item.xml" value="0.15577507598784193" />
+        <entry key="app/src/main/res/layout/view_holder_event.xml" value="0.4931150027376217" />
+        <entry key="app/src/main/res/layout/view_holder_filter_events.xml" value="0.3203125" />
+        <entry key="app/src/main/res/layout/view_holder_suggested_event.xml" value="0.19047619047619047" />
+        <entry key="app/src/main/res/layout/view_holder_time_filter.xml" value="0.15577507598784193" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_today">
+
+    <fragment
+        android:id="@+id/navigation_today"
+        android:name="it.bz.noi.community.ui.today.TodayFragment"
+        android:label="@string/title_today"
+        tools:layout="@layout/fragment_today" >
+        <action
+            android:id="@+id/action_navigation_today_to_filtersFragment"
+            app:destination="@id/filtersFragment"
+            app:enterAnim="@anim/left_to_right"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/right_to_left"/>
+        <action
+            android:id="@+id/action_navigation_today_to_eventDetailsFragment"
+            app:destination="@id/eventDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_orientate"
+        android:name="it.bz.noi.community.ui.orientate.OrientateFragment"
+        android:label="@string/title_orientate"
+        tools:layout="@layout/fragment_orientate">
+        <action
+            android:id="@+id/action_navigation_orientate_to_webViewFragment"
+            app:destination="@id/webViewFragment"
+            app:popUpTo="@id/navigation_orientate" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_meet"
+        android:name="it.bz.noi.community.ui.meet.MeetFragment"
+        android:label="@string/title_meet"
+        tools:layout="@layout/fragment_meet" >
+        <action
+            android:id="@+id/action_navigation_meet_to_webViewFragment"
+            app:destination="@id/webViewFragment"
+            app:popUpTo="@id/navigation_meet" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_eat"
+        android:name="it.bz.noi.community.ui.eat.EatFragment"
+        android:label="@string/title_eat"
+        tools:layout="@layout/fragment_eat" />
+
+    <fragment
+        android:id="@+id/navigation_more"
+        android:name="it.bz.noi.community.ui.more.MoreFragment"
+        android:label="@string/title_more"
+        tools:layout="@layout/fragment_more" />
+
+    <fragment
+        android:id="@+id/eventDetailsFragment"
+        android:name="it.bz.noi.community.ui.eventDetails.EventDetailsFragment"
+        android:label=" "
+        tools:layout="@layout/fragment_event_details">
+        <action
+            android:id="@+id/action_eventDetailsFragment_self"
+            app:destination="@id/eventDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/webViewFragment"
+        android:name="it.bz.noi.community.ui.WebViewFragment"
+        android:label="WebViewFragment">
+        <argument
+            android:name="title"
+            android:defaultValue="Title"
+            app:argType="string" />
+        <argument
+            android:name="url"
+            android:defaultValue="https://noi.bz.it/it"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/filtersFragment"
+        android:name="it.bz.noi.community.ui.today.FiltersFragment"
+        android:label="Filter"
+        tools:layout="@layout/fragment_filters" />
+    <action
+        android:id="@+id/action_global_webViewFragment"
+        app:destination="@id/webViewFragment"
+        app:enterAnim="@anim/slide_in_up"
+        app:exitAnim="@anim/fade_out"
+        app:popEnterAnim="@anim/fade_in"
+        app:popExitAnim="@anim/slide_out_up" />
+</navigation>
