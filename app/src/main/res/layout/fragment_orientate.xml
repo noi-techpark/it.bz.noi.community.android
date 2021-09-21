@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.orientate.OrientateFragment">
+    tools:context=".ui.orientate.OrientateFragment"
+	android:background="@color/background_color">
 
     <WebView
         android:id="@+id/orientateWV"
@@ -23,10 +24,10 @@
         android:layout_marginTop="17dp"
         android:layout_marginEnd="17dp"
         android:layout_marginBottom="17dp"
-        android:background="@color/black"
+        android:background="@color/fill_color"
         android:text="@string/room_booking"
         android:textAlignment="center"
-        android:textColor="@color/white"
+        android:textColor="@color/label_on_fill_color"
         android:textSize="19sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,12 +1,9 @@
 package it.bz.noi.community.ui.today
 
-import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.text.bold
-import androidx.core.text.scale
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.models.TimeFilter
@@ -47,14 +44,14 @@ class TimeFilterAdapter(
         fun bind(timeFilter: TimeFilter) {
             if (timeFilter.filterSelected) {
                 filterName.apply {
-                    setTextColor(view.resources.getColor(R.color.black))
+                    setTextColor(view.resources.getColor(R.color.label_on_background_color))
                     text = timeFilter.filterName
                 }
-                filterSelected.setBackgroundColor(view.resources.getColor(R.color.black))
+                filterSelected.setBackgroundColor(view.resources.getColor(R.color.fill_color))
             } else {
                 filterName.apply {
                     text = timeFilter.filterName
-                    setTextColor(view.resources.getColor(R.color.unselected_time_filter))
+                    setTextColor(view.resources.getColor(R.color.label_disabled_color))
                 }
                 filterSelected.setBackgroundColor(view.resources.getColor(R.color.unselected_time_filter))
             }
