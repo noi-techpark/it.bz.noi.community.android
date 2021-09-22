@@ -13,8 +13,16 @@ data class EventsResponse(
         val name: String? = null,
 		@SerializedName("EventDescriptionEN")
 		val nameEN: String? = null,
-        @SerializedName("EventTextEN")
-        val description: String? = null,
+		@SerializedName("EventDescriptionIT")
+		val nameIT: String? = null,
+		@SerializedName("EventDescriptionDE")
+		val nameDE: String? = null,
+		@SerializedName("EventTextEN")
+		val descriptionEN: String? = null,
+		@SerializedName("EventTextIT")
+		val descriptionIT: String? = null,
+        @SerializedName("EventTextDE")
+        val descriptionDE: String? = null,
         @SerializedName("AnchorVenue")
         val location: String? = null,
         @SerializedName("Display5")

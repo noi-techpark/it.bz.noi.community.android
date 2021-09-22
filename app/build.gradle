@@ -8,11 +8,28 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
+    // Version Code Generation - Start
+    def Properties versionProps = new Properties()
+    def versionPropsFile = file('version.properties')
+    
+    if(versionPropsFile.exists()) {
+        versionProps.load(new FileInputStream(versionPropsFile))
+    }
+
+    def code = (versionProps['VERSION_CODE'] ?: "0").toInteger()
+
+    if ('bundleRelease' in gradle.startParameter.taskNames) {
+        code = code + 1
+        versionProps['VERSION_CODE'] = code.toString()
+        versionProps.store(versionPropsFile.newWriter(), null)
+    }
+    // Version Code Generation - End
+
     defaultConfig {
         applicationId "it.bz.noi.community"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 2
+        versionCode code
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

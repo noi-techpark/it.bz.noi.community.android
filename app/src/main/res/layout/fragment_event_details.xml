@@ -1,247 +1,247 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:background="@color/secondary_background_color">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:animateLayoutChanges="true"
+	android:background="@color/secondary_background_color">
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@id/viewWhiteLayer"
-        app:layout_constraintTop_toTopOf="parent">
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:clipToPadding="false"
+		android:paddingBottom="16dp"
+		app:layout_constraintBottom_toTopOf="@id/viewWhiteLayer"
+		app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardViewEvent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="0dp"
-                app:cardCornerRadius="0dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+			<com.google.android.material.card.MaterialCardView
+				android:id="@+id/cardViewEvent"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:elevation="0dp"
+				app:cardCornerRadius="0dp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/background_color">
+				<androidx.constraintlayout.widget.ConstraintLayout
+					android:id="@+id/constraintLayout"
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:background="@color/background_color">
 
-                    <ImageView
-                        android:id="@+id/ivEventImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="400dp"
-                        android:contentDescription="@string/content_description_event_image"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/srctest"
-                        app:layout_constraintTop_toTopOf="parent" />
+					<ImageView
+						android:id="@+id/ivEventImage"
+						android:layout_width="match_parent"
+						android:layout_height="400dp"
+						android:contentDescription="@string/content_description_event_image"
+						android:scaleType="centerCrop"
+						android:src="@drawable/img_event_placeholder"
+						app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/tvEventName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
-                        android:textColor="@color/primary_color"
-                        android:textColorHint="@color/primary_color"
-                        android:textSize="25sp"
-                        app:layout_constraintTop_toBottomOf="@id/cardViewDate"
-                        tools:hint="Corso consulente energetico CasaClima" />
+					<TextView
+						android:id="@+id/tvEventName"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:paddingHorizontal="16dp"
+						android:paddingVertical="8dp"
+						android:textColor="@color/primary_color"
+						android:textColorHint="@color/primary_color"
+						android:textSize="25sp"
+						app:layout_constraintTop_toBottomOf="@id/cardViewDate"
+						tools:hint="Corso consulente energetico CasaClima" />
 
-                    <ImageView
-                        android:id="@+id/ivLocation"
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_marginStart="16dp"
-                        android:contentDescription="@string/content_description_location_icon"
-                        android:src="@drawable/ic_location"
-                        app:layout_constraintBottom_toBottomOf="@id/tvEventLocation"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/tvEventLocation" />
+					<ImageView
+						android:id="@+id/ivLocation"
+						android:layout_width="14dp"
+						android:layout_height="14dp"
+						android:layout_marginStart="16dp"
+						android:contentDescription="@string/content_description_location_icon"
+						android:src="@drawable/ic_location"
+						app:layout_constraintBottom_toBottomOf="@id/tvEventLocation"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toTopOf="@id/tvEventLocation" />
 
-                    <TextView
-                        android:id="@+id/tvEventLocation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:textColor="@color/primary_color"
-                        android:textColorHint="@color/primary_color"
-                        app:layout_constraintStart_toEndOf="@id/ivLocation"
-                        app:layout_constraintTop_toBottomOf="@id/tvEventName"
-                        tools:hint="NOI Techpark" />
+					<TextView
+						android:id="@+id/tvEventLocation"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginStart="4dp"
+						android:textColor="@color/primary_color"
+						android:textColorHint="@color/primary_color"
+						app:layout_constraintStart_toEndOf="@id/ivLocation"
+						app:layout_constraintTop_toBottomOf="@id/tvEventName"
+						tools:hint="NOI Techpark" />
 
-                    <TextView
-                        android:id="@+id/tvEventOrganizer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:paddingBottom="16dp"
-                        android:textColor="@color/primary_color"
-                        android:textColorHint="@color/primary_color"
-                        app:layout_constraintStart_toStartOf="@id/ivLocation"
-                        app:layout_constraintTop_toBottomOf="@id/ivLocation"
-                        tools:hint="Green Technologies" />
+					<TextView
+						android:id="@+id/tvEventOrganizer"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="8dp"
+						android:paddingBottom="16dp"
+						android:textColor="@color/primary_color"
+						android:textColorHint="@color/primary_color"
+						app:layout_constraintStart_toStartOf="@id/ivLocation"
+						app:layout_constraintTop_toBottomOf="@id/ivLocation"
+						tools:hint="Green Technologies" />
 
-                    <ImageView
-                        android:id="@+id/ivTime"
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="4dp"
-                        android:contentDescription="@string/content_description_time_icon"
-                        android:src="@drawable/ic_time"
-                        app:layout_constraintBottom_toBottomOf="@id/tvEventLocation"
-                        app:layout_constraintEnd_toStartOf="@id/tvEventTime"
-                        app:layout_constraintTop_toTopOf="@id/tvEventLocation" />
+					<ImageView
+						android:id="@+id/ivTime"
+						android:layout_width="14dp"
+						android:layout_height="14dp"
+						android:layout_marginStart="16dp"
+						android:layout_marginEnd="4dp"
+						android:contentDescription="@string/content_description_time_icon"
+						android:src="@drawable/ic_time"
+						app:layout_constraintBottom_toBottomOf="@id/tvEventLocation"
+						app:layout_constraintEnd_toStartOf="@id/tvEventTime"
+						app:layout_constraintTop_toTopOf="@id/tvEventLocation" />
 
-                    <TextView
-                        android:id="@+id/tvEventTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:textColor="@color/primary_color"
-                        android:textColorHint="@color/primary_color"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tvEventName"
-                        tools:hint="19:00 - 20:00" />
+					<TextView
+						android:id="@+id/tvEventTime"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginEnd="16dp"
+						android:textColor="@color/primary_color"
+						android:textColorHint="@color/primary_color"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/tvEventName"
+						tools:hint="19:00 - 20:00" />
 
-                    <androidx.constraintlayout.widget.Barrier
-                        android:id="@+id/barrier"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/ivEventImage" />
+					<androidx.constraintlayout.widget.Barrier
+						android:id="@+id/barrier"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						app:layout_constraintTop_toBottomOf="@id/ivEventImage" />
 
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/cardViewDate"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="-25dp"
-                        android:layout_marginEnd="16dp"
-                        android:backgroundTint="@color/accent_color"
-                        android:transitionName="eventDate"
-                        app:cardCornerRadius="30dp"
-                        app:layout_constraintBottom_toBottomOf="@id/barrier"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/barrier">
+					<androidx.cardview.widget.CardView
+						android:id="@+id/cardViewDate"
+						android:layout_width="60dp"
+						android:layout_height="60dp"
+						android:layout_marginTop="-25dp"
+						android:layout_marginEnd="16dp"
+						android:backgroundTint="@color/accent_color"
+						android:transitionName="eventDate"
+						app:cardCornerRadius="30dp"
+						app:layout_constraintBottom_toBottomOf="@id/barrier"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintTop_toTopOf="@id/barrier">
 
-                        <TextView
-                            android:id="@+id/tvEventDate"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:lines="2"
-                            android:textAlignment="center"
-                            android:textColor="@color/secondary_color"
-                            android:textColorHint="@color/secondary_color"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            tools:hint="20.9. - 22.9." />
-                    </androidx.cardview.widget.CardView>
+						<TextView
+							android:id="@+id/tvEventDate"
+							android:layout_width="match_parent"
+							android:layout_height="match_parent"
+							android:gravity="center"
+							android:lines="2"
+							android:padding="4dp"
+							android:textAlignment="center"
+							android:textColor="@color/secondary_color"
+							android:textColorHint="@color/secondary_color"
+							android:textSize="13sp"
+							android:textStyle="bold"
+							tools:hint="20.9. - 22.9." />
+					</androidx.cardview.widget.CardView>
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+				</androidx.constraintlayout.widget.ConstraintLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+			</com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:id="@+id/tvAboutLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/activity_horizontal_margin"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp"
-                android:text="@string/label_about"
-                android:textColor="@color/secondary_color"
-                android:textSize="19sp"
-                android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/cardViewEvent" />
+			<TextView
+				android:id="@+id/tvAboutLabel"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingHorizontal="@dimen/activity_horizontal_margin"
+				android:paddingTop="16dp"
+				android:paddingBottom="8dp"
+				android:text="@string/label_about"
+				android:textColor="@color/secondary_color"
+				android:textSize="19sp"
+				android:textStyle="bold"
+				app:layout_constraintTop_toBottomOf="@id/cardViewEvent" />
 
-            <TextView
-                android:id="@+id/tvEventDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:textColor="@color/secondary_color"
-                android:textColorHint="@color/secondary_color"
-                app:layout_constraintTop_toBottomOf="@id/tvAboutLabel"
-                tools:hint="Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet." />
+			<TextView
+				android:id="@+id/tvEventDescription"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingHorizontal="16dp"
+				android:textColor="@color/secondary_color"
+				android:textColorHint="@color/secondary_color"
+				app:layout_constraintTop_toBottomOf="@id/tvAboutLabel"
+				tools:hint="Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet." />
 
-            <TextView
-                android:id="@+id/tvInterestingForYou"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/activity_horizontal_margin"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp"
-                android:text="@string/label_interesting_for_you"
-                android:textColor="@color/secondary_color"
-                android:textSize="19sp"
-                android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/tvEventDescription" />
+			<TextView
+				android:id="@+id/tvInterestingForYou"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingHorizontal="@dimen/activity_horizontal_margin"
+				android:paddingTop="16dp"
+				android:paddingBottom="8dp"
+				android:text="@string/label_interesting_for_you"
+				android:textColor="@color/secondary_color"
+				android:textSize="19sp"
+				android:textStyle="bold"
+				app:layout_constraintTop_toBottomOf="@id/tvEventDescription" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvSuggestedEvents"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                app:layout_constraintTop_toBottomOf="@id/tvInterestingForYou"
-                tools:itemCount="1"
-                tools:listitem="@layout/view_holder_event" />
+			<androidx.recyclerview.widget.RecyclerView
+				android:id="@+id/rvSuggestedEvents"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:clipToPadding="false"
+				app:layout_constraintTop_toBottomOf="@id/tvInterestingForYou"
+				tools:itemCount="1"
+				tools:listitem="@layout/view_holder_event" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.core.widget.NestedScrollView>
+	</androidx.core.widget.NestedScrollView>
 
-    <View
-        android:id="@+id/viewWhiteLayer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="-16dp"
-        android:background="@color/tertiary_background_color"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="@id/btnFindOnMaps" />
+	<View
+		android:id="@+id/viewWhiteLayer"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_marginTop="-16dp"
+		android:background="@color/tertiary_background_color"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintTop_toTopOf="@id/btnFindOnMaps" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnFindOnMaps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="@string/btn_find_on_maps"
-        app:cornerRadius="0dp"
-        app:elevation="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btnAddToCalendar"
-        app:layout_constraintStart_toStartOf="parent" />
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/btnFindOnMaps"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="16dp"
+		android:text="@string/btn_find_on_maps"
+		app:cornerRadius="0dp"
+		app:elevation="0dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/btnAddToCalendar"
+		app:layout_constraintStart_toStartOf="parent" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnAddToCalendar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="@string/btn_add_to_calendar"
-        app:cornerRadius="0dp"
-        app:elevation="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btnFindOnMaps" />
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/btnAddToCalendar"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="16dp"
+		android:text="@string/btn_add_to_calendar"
+		app:cornerRadius="0dp"
+		app:elevation="0dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/btnFindOnMaps" />
 
-    <ProgressBar
-        android:id="@+id/progressBarLoading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:indeterminateTint="@color/accent_color"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
-
+	<ProgressBar
+		android:id="@+id/progressBarLoading"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:indeterminateTint="@color/accent_color"
+		android:visibility="gone"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>
