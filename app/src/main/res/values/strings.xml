@@ -1,18 +1,40 @@
 <resources>
     <string name="app_name">NOI Community</string>
-    <string name="title_activity_main2">MainActivity</string>
+	<string name="title_activity_main2">MainActivity</string>
+
+	<!--TAB NAMES-->
+	<string name="tab_title_today">Today</string>
+	<string name="tab_title_orientate">Orientate</string>
+	<string name="tab_title_meet">Meet</string>
+	<string name="tab_title_eat">Eat</string>
+	<string name="tab_title_more">More</string>
+
+	<!--TAB TITLES-->
     <string name="title_today">Hey you!</string>
     <string name="title_orientate">Find your way!</string>
     <string name="title_meet">Meet up!</string>
     <string name="title_eat">Take a break!</string>
     <string name="title_more">More</string>
 
-    <string name="tab_title_today">Today</string>
-    <string name="tab_title_orientate">Orientate</string>
-    <string name="tab_title_meet">Meet</string>
-    <string name="tab_title_eat">Eat</string>
-    <string name="tab_title_more">More</string>
+	<!--TAB TODAY-->
+	<string name="label_events_empty_state_title">We are very sorry!</string>
+	<string name="label_events_empty_state_subtitle">But based on your filter settings, we could not find any events. Try to readjust your filters.</string>
+	<string name="time_filter_all">All</string>
+	<string name="time_filter_today">Today</string>
+	<string name="time_filter_this_week">This week</string>
+	<string name="time_filter_this_month">This month</string>
 
+	<!--EVENT DETAIL-->
+	<string name="label_about">About</string>
+	<string name="label_interesting_for_you">Interesting for you?</string>
+	<string name="btn_find_on_maps">Find on maps</string>
+	<string name="btn_add_to_calendar">Add to calendar</string>
+	<string name="content_description_event_image">The image of the event</string>
+	<string name="content_description_location_icon">Icon for event location</string>
+	<string name="content_description_time_icon">Icon for event time</string>
+	<string name="content_description_image_for_restaurant">Image for restaurant</string>
+
+	<!--TAB MEET-->
     <string name="meet_item_companies">Companies</string>
     <string name="meet_item_startups">Startups</string>
     <string name="meet_item_university">University</string>
@@ -20,7 +42,6 @@
     <string name="meet_item_support">Institutional Support</string>
     <string name="meet_item_lab">Laboratories</string>
     <string name="meet_item_team">Team NOI</string>
-
     <string name="url_companies">https://noi.bz.it/it/aziende</string>
     <string name="url_startups">https://noi.bz.it/it/start-up</string>
     <string name="url_university">https://noi.bz.it/it/universita</string>
@@ -29,13 +50,17 @@
     <string name="url_lab">https://noi.bz.it/it/laboratori-sviluppo-tecnologico</string>
     <string name="url_about_us">https://noi.bz.it/it/chi-siamo#t</string>
 
-    <string name="room_booking">Book a room</string>
+	<!--TAB EAT-->
+	<string name="btn_menu">Menu</string>
 
+	<!--TAB MORE-->
     <string name="more_item_onboarding">Come on board</string>
     <string name="more_item_feedback">Provide Feedback</string>
     <string name="more_item_account">My account</string>
     <string name="more_item_settings">App Settings</string>
+	<string name="room_booking">Book a room</string>
 
+	<!--FILTER SCREEN-->
     <string name="filter_by_type">Filter by event type</string>
     <string name="filter_type_public">Public</string>
     <string name="filter_type_noi">NOI only</string>
@@ -44,21 +69,6 @@
     <string name="filter_sector_food">Food</string>
     <string name="filter_sector_digital">Digital</string>
     <string name="filter_sector_automotiv">Automotiv</string>
-
     <string name="reset_btn">Reset all Filters</string>
     <string name="show_btn">Show results (%1$d)</string>
-
-    <string name="content_description_event_image">The image of the event.</string>
-    <string name="content_description_location_icon">Icon for event location</string>
-    <string name="content_description_time_icon">Icon for event time</string>
-    <string name="content_description_image_for_restaurant">Image for restaurant</string>
-
-    <string name="label_about">About</string>
-    <string name="label_interesting_for_you">Interesting for you?</string>
-    <string name="btn_find_on_maps">Find on maps</string>
-    <string name="btn_add_to_calendar">Add to calendar</string>
-    <string name="btn_menu">Menu</string>
-    <string name="label_events_empty_state_title">We are very sorry!</string>
-    <string name="label_events_empty_state_subtitle">But based on your filter settings, we could not find any events. Try to readjust your filters.</string>
-
 </resources>
