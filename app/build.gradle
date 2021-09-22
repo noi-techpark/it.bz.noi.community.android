@@ -18,12 +18,10 @@ android {
 
     def code = (versionProps['VERSION_CODE'] ?: "0").toInteger()
 
-    for (String task : gradle.startParameter.getTaskNames()) {
-        if (task.contains("assembleRelease")) {
-            code = code + 1
-            versionProps['VERSION_CODE'] = code.toString()
-            versionProps.store(versionPropsFile.newWriter(), null)
-        }
+    if ('bundleRelease' in gradle.startParameter.taskNames) {
+        code = code + 1
+        versionProps['VERSION_CODE'] = code.toString()
+        versionProps.store(versionPropsFile.newWriter(), null)
     }
     // Version Code Generation - End
 
