@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<color name="background_color">#000000</color>
+	<color name="primary_color">#FFFFFF</color>
 
-	<color name="background_color">#F1F1F1</color>
-	<color name="label_on_background_color">#000000</color>
+	<color name="secondary_background_color">#F1F1F1</color>
+	<color name="secondary_color">#000000</color>
 
-    <color name="fill_color">#000000</color>
-    <color name="label_on_fill_color">#FFFFFF</color>
+	<color name="tertiary_background_color">#FFFFFF</color>
 
-	<color name="buttons_container_background_color">#FFFFFF</color>
+	<color name="accent_color">#F4D100</color>
 
-	<color name="badge_background_color">#F4D100</color>
-	<color name="label_on_badge_background_color">#000000</color>
-
-    <color name="label_disabled_color">#828282</color>
+    <color name="disabled1_color">#828282</color>
+	<color name="disabled2_color">#E5E5E5</color>
 
 	<!-->DA RIVEDERE</!-->
     <color name="unselected_time_filter">#D9828282</color>
-    <color name="switch_color">#E5E5E5</color>
-
 </resources>

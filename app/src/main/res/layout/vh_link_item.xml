@@ -6,15 +6,15 @@
     android:layout_height="60dp"
     android:layout_marginTop="1dp"
     android:layout_marginBottom="1dp"
-    android:background="@color/buttons_container_background_color">
+    android:background="@color/tertiary_background_color">
 
     <TextView
         android:id="@+id/itemTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingStart="17dp"
-        android:textColor="@color/label_on_background_color"
-        android:textColorHint="@color/label_on_background_color"
+        android:textColor="@color/secondary_color"
+        android:textColorHint="@color/secondary_color"
         android:textSize="19sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

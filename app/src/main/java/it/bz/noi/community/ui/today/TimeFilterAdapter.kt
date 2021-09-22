@@ -44,14 +44,14 @@ class TimeFilterAdapter(
         fun bind(timeFilter: TimeFilter) {
             if (timeFilter.filterSelected) {
                 filterName.apply {
-                    setTextColor(view.resources.getColor(R.color.label_on_background_color))
+                    setTextColor(view.resources.getColor(R.color.secondary_color))
                     text = timeFilter.filterName
                 }
-                filterSelected.setBackgroundColor(view.resources.getColor(R.color.fill_color))
+                filterSelected.setBackgroundColor(view.resources.getColor(R.color.background_color))
             } else {
                 filterName.apply {
                     text = timeFilter.filterName
-                    setTextColor(view.resources.getColor(R.color.label_disabled_color))
+                    setTextColor(view.resources.getColor(R.color.disabled1_color))
                 }
                 filterSelected.setBackgroundColor(view.resources.getColor(R.color.unselected_time_filter))
             }
