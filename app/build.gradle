@@ -16,12 +16,12 @@ android {
         versionProps.load(new FileInputStream(versionPropsFile))
     }
 
-    def versionCode = (versionProps['VERSION_CODE'] ?: "0").toInteger()
+    def code = (versionProps['VERSION_CODE'] ?: "0").toInteger()
 
     for (String task : gradle.startParameter.getTaskNames()) {
         if (task.contains("assembleRelease")) {
-            versionCode = versionCode + 1
-            versionProps['VERSION_CODE'] = versionCode.toString()
+            code = code + 1
+            versionProps['VERSION_CODE'] = code.toString()
             versionProps.store(versionPropsFile.newWriter(), null)
         }
     }
@@ -31,7 +31,7 @@ android {
         applicationId "it.bz.noi.community"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode versionCode
+        versionCode code
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
