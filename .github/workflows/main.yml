@@ -65,4 +65,4 @@ jobs:
       - run: git config --global user.name 'NOI Techpark Bot'
       - run: git config --global user.email 'info@opendatahub.bz.it'
       - run: git add -A && git commit -m "[RELEASE] Automatically incrementing version code"
-      - run: git push -f
+      - run: git push
