@@ -40,6 +40,7 @@ import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.databinding.FragmentEventDetailsBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
+import it.bz.noi.community.ui.WebViewFragment
 import it.bz.noi.community.ui.today.EventClickListener
 import it.bz.noi.community.ui.today.EventsAdapter
 import it.bz.noi.community.utils.Constants
@@ -192,11 +193,11 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 				when (it.status) {
 					Status.SUCCESS -> {
 						binding.progressBarLoading.isVisible = false
-						val mapUrl = it.data?.get(roomName) ?: "https://maps.noi.bz.it/"
+						val mapUrl = it.data?.get(roomName) ?: resources.getString(R.string.url_map)
 						findNavController().navigate(
 							R.id.action_global_webViewFragment, bundleOf(
-								"title" to if (eventName.isNotEmpty()) eventName else "No title",
-								"url" to mapUrl
+								WebViewFragment.TITLE_ARG to if (eventName.isNotEmpty()) eventName else "No title",
+								WebViewFragment.URL_ARG to mapUrl
 							)
 						)
 					}

@@ -1,12 +1,9 @@
 package it.bz.noi.community.ui.today
 
-import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.text.bold
-import androidx.core.text.scale
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.models.TimeFilter

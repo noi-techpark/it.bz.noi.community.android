@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                         18f
 					if (destination.id == R.id.webViewFragment) {
 						arguments?.let {
-							supportActionBar?.title = arguments.getString(WebViewFragment.TITLE)
+							supportActionBar?.title = arguments.getString(WebViewFragment.TITLE_ARG)
 						}
 					}
                 }

@@ -54,7 +54,8 @@ class WebViewFragment : Fragment() {
     }
 
     companion object {
-        const val TITLE = "title"
+        const val TITLE_ARG = "title"
+		const val URL_ARG = "url"
     }
 
     inner class MyWebClient : WebViewClient() {
