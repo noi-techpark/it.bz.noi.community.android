@@ -51,18 +51,6 @@ jobs:
           alias: ${{ secrets.KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEYSTORE_PASSWORD_FOR_KEY }}
-      - name: Upload AAB as Github Artifact
-        uses: actions/upload-artifact@master
-        with:
-          name: release-${{ github.sha }}.aab
-          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
-      - name: Upload Mappings as Github Artifact, if file exists
-        uses: actions/upload-artifact@master
-        # Hack, because fileExists() is not implemented yet
-        if: hashFiles('app/build/outputs/mapping/release/mapping.txt') != ''
-        with:
-          name: mapping-${{ github.sha }}.txt
-          path: app/build/outputs/mapping/release/mapping.txt
       - name: Publish to Play Store internal test track
         uses: r0adkll/upload-google-play@v1
         with:
@@ -70,4 +58,5 @@ jobs:
           packageName: it.bz.noi.community
           releaseFiles: ${{ steps.sign_app.outputs.signedReleaseFile }}
           track: internal
+          status: draft
           #mappingFile: mapping-${{ github.sha }}.txt
