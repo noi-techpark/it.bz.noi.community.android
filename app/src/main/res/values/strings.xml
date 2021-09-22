@@ -34,6 +34,10 @@
 	<string name="content_description_time_icon">Icon for event time</string>
 	<string name="content_description_image_for_restaurant">Image for restaurant</string>
 
+	<!--TAB ORIENTATE-->
+	<string name="url_map">https://maps.noi.bz.it</string>
+	<string name="url_room_booking">https://outlook.com/owa/calendar/NOITechpark1@noi.bz.it/bookings/</string>
+
 	<!--TAB MEET-->
     <string name="meet_item_companies">Companies</string>
     <string name="meet_item_startups">Startups</string>
