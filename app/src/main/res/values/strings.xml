@@ -61,4 +61,8 @@
     <string name="label_events_empty_state_title">We are very sorry!</string>
     <string name="label_events_empty_state_subtitle">But based on your filter settings, we could not find any events. Try to readjust your filters.</string>
 
+	<string name="url_noisteria_menu">https://go.alumix.it/menu/noisteria/</string>
+	<string name="url_noi_bar_menu">https://www.rockinbeets.com/</string>
+	<string name="url_alumix_menu">https://go.alumix.it/menu/alumix/</string>
+
 </resources>
