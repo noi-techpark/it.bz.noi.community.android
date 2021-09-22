@@ -66,4 +66,6 @@
 	<string name="time_filter_this_month">This month</string>
     <string name="label_no_value">N/D</string>
 
+	<string name="url_map">https://maps.noi.bz.it</string>
+	<string name="url_room_booking">https://outlook.com/owa/calendar/NOITechpark1@noi.bz.it/bookings/</string>
 </resources>
