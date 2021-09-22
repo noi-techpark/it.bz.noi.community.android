@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.models.EventsResponse
+import it.bz.noi.community.utils.Constants
 import it.bz.noi.community.utils.Constants.getLocalDateFormatter
 import it.bz.noi.community.utils.Constants.getLocalTimeFormatter
 import it.bz.noi.community.utils.Constants.getMonthCode
@@ -51,7 +52,8 @@ class EventsAdapter(
     private val events: List<EventsResponse.Event>,
     private val listener: EventClickListener,
     private val fragment: Fragment,
-    private val isSuggestedEvents: Boolean = false
+    private val isSuggestedEvents: Boolean = false,
+	private val locale: String
 ) :
     RecyclerView.Adapter<EventsAdapter.EventViewHolder>() {
 
@@ -88,7 +90,9 @@ class EventsAdapter(
 
         init {
             view.rootView.setOnClickListener {
-                (fragment.exitTransition as TransitionSet).excludeTarget(view, true)
+				// it should be used for avoiding clicked view to fade out. But for letting other
+				// transactions to work in fragment I cannot use this
+                //(fragment.exitTransition as TransitionSet).excludeTarget(view, true)
                 listener.onEventClick(
                     cardEvent,
                     cardDate,
@@ -106,13 +110,20 @@ class EventsAdapter(
 
         fun bind(event: EventsResponse.Event) {
             this.event = event
-            eventName.text = if (!event.nameEN.isNullOrEmpty())
-                event.nameEN
-            else if (!event.name.isNullOrEmpty())
-            	event.name
-			else
-                SpannableStringBuilder()
-                    .italic { append("No title") }
+
+			val eventNamed: String? = when (locale) {
+				"it" -> {
+					event.nameIT ?: event.name
+				}
+				"de" -> {
+					event.nameDE ?: event.name
+				}
+				else -> {
+					event.nameEN ?: event.name
+				}
+			}
+
+            eventName.text = eventNamed
             eventLocation.text = event.location
 
             constraintLayout.transitionName = "constraintLayout_${event.eventId}"
@@ -133,12 +144,19 @@ class EventsAdapter(
             val eventDateString = if (startDate == endDate) {
                 "${getServerDatetimeParser().parse(event.startDate).date}.$month."
             } else {
-                "${getServerDatetimeParser().parse(event.startDate).date}.$month. - ${
-                    getServerDatetimeParser().parse(
-                        event.endDate
-                    ).date
-                }.$endMonth."
-            }
+				if (month == endMonth)
+					"${getServerDatetimeParser().parse(event.startDate).date}. -\n ${
+						getServerDatetimeParser().parse(
+							event.endDate
+						).date
+					}.$month.\n"
+				else
+					"${getServerDatetimeParser().parse(event.startDate).date}.$month. -\n ${
+						getServerDatetimeParser().parse(
+							event.endDate
+						).date
+					}.$endMonth.\n"
+			}
 
             eventDate.text = eventDateString
 
@@ -156,7 +174,7 @@ class EventsAdapter(
                     .centerCrop()
                     .into(eventImage)
             } else {
-                eventImage.setImageResource(R.drawable.srctest)
+                eventImage.setImageResource(R.drawable.img_event_placeholder)
             }
         }
     }
