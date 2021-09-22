@@ -34,11 +34,13 @@ jobs:
   ## Build and sign the app, and upload it as Github Artifact
   build_and_deploy_to_play_store:
     needs: [ unit_tests, android_tests ]
-    if: github.ref == 'refs/heads/development' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/development' && github.event_name == 'push' && !startsWith(github.event.head_commit.message, '[RELEASE]')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
       - name: Generate Release AAB
         run: ./gradlew bundleRelease
       - name: Sign AAB
@@ -51,18 +53,6 @@ jobs:
           alias: ${{ secrets.KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEYSTORE_PASSWORD_FOR_KEY }}
-      - name: Upload AAB as Github Artifact
-        uses: actions/upload-artifact@master
-        with:
-          name: release-${{ github.sha }}.aab
-          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
-      - name: Upload Mappings as Github Artifact, if file exists
-        uses: actions/upload-artifact@master
-        # Hack, because fileExists() is not implemented yet
-        if: hashFiles('app/build/outputs/mapping/release/mapping.txt') != ''
-        with:
-          name: mapping-${{ github.sha }}.txt
-          path: app/build/outputs/mapping/release/mapping.txt
       - name: Publish to Play Store internal test track
         uses: r0adkll/upload-google-play@v1
         with:
@@ -70,4 +60,9 @@ jobs:
           packageName: it.bz.noi.community
           releaseFiles: ${{ steps.sign_app.outputs.signedReleaseFile }}
           track: internal
+          status: draft
           #mappingFile: mapping-${{ github.sha }}.txt
+      - run: git config --global user.name 'NOI Techpark Bot'
+      - run: git config --global user.email 'info@opendatahub.bz.it'
+      - run: git add -A && git commit -m "[RELEASE] Automatically incrementing version code"
+      - run: git push

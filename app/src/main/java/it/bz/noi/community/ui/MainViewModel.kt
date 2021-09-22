@@ -15,12 +15,12 @@ import kotlinx.coroutines.Dispatchers
 import java.util.*
 
 class ViewModelFactory(private val apiHelper: ApiHelper) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            return MainViewModel(MainRepository(apiHelper)) as T
-        }
-        throw IllegalArgumentException("Unknown class name")
-    }
+	override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+		if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+			return MainViewModel(MainRepository(apiHelper)) as T
+		}
+		throw IllegalArgumentException("Unknown class name")
+	}
 }
 
 /**
@@ -31,121 +31,133 @@ class ViewModelFactory(private val apiHelper: ApiHelper) : ViewModelProvider.Fac
  * THIS_MONTH -> From today to the end of the current month
  */
 enum class TimeRange {
-    ALL,
-    TODAY,
-    THIS_WEEK,
-    THIS_MONTH
+	ALL,
+	TODAY,
+	THIS_WEEK,
+	THIS_MONTH
 }
 
 class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 
-    /**
-     * parameters of the url for filter the events
-     */
-    var urlParams = UrlParams(startDate = Constants.startDateFormatter().format(Date()))
+	val locale = Locale.getDefault().language
 
-    private lateinit var cachedParams: UrlParams
+	/**
+	 * parameters of the url for filter the events
+	 */
+	var urlParams = UrlParams(startDate = Constants.startDateFormatter().format(Date()))
 
-    fun getRoomMapping() = liveData(Dispatchers.IO) {
-        emit(Resource.loading(null))
-        try {
-            emit(Resource.success(data = mainRepository.getRoomMapping()))
-        } catch (exception: Exception) {
-            emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
-        }
-    }
+	/**
+	 * parameter used for caching filter situation
+	 */
+	private lateinit var cachedParams: UrlParams
 
-    /**
-     * live data of the events
-     */
-    private var events = liveData(Dispatchers.IO) {
-        emit(Resource.loading(data = null))
-        try {
-            emit(Resource.success(data = mainRepository.getEvents(urlParams).events))
-        } catch (exception: Exception) {
-            emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
-        }
-    }
+	fun getRoomMapping() = liveData(Dispatchers.IO) {
+		emit(Resource.loading(null))
+		try {
+			emit(Resource.success(data = mainRepository.getRoomMapping()))
+		} catch (exception: Exception) {
+			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
+		}
+	}
 
-    /**
-     * mediator live data that emits the events to the observers
-     */
-    val mediatorEvents = MediatorLiveData<Resource<List<EventsResponse.Event>>>()
+	/**
+	 * live data of the events
+	 */
+	private var events = liveData(Dispatchers.IO) {
+		emit(Resource.loading(data = null))
+		try {
+			emit(Resource.success(data = mainRepository.getEvents(urlParams).events))
+		} catch (exception: Exception) {
+			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
+		}
+	}
 
-    init {
-        mediatorEvents.addSource(events) {
-            mediatorEvents.value = it
-        }
-    }
+	/**
+	 * mediator live data that emits the events to the observers
+	 */
+	val mediatorEvents = MediatorLiveData<Resource<List<EventsResponse.Event>>>()
 
-    fun filterTime(timeRange: TimeRange) {
-        when (timeRange) {
-            TimeRange.ALL -> {
-                urlParams.startDate = Constants.startDateFormatter().format(Date())
-                urlParams.endDate = null
-            }
-            TimeRange.TODAY -> {
-                urlParams.startDate = Constants.startDateFormatter().format(Date())
-                urlParams.endDate = Constants.endDateFormatter().format(Date())
-            }
-            TimeRange.THIS_WEEK -> {
-                val calendar = getNoiCalendar()
-                urlParams.startDate = Constants.startDateFormatter().format(calendar.time)
-                calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
-                urlParams.endDate = Constants.endDateFormatter().format(calendar.time)
-            }
-            TimeRange.THIS_MONTH -> {
-                val calendar = getNoiCalendar()
-                urlParams.startDate = Constants.startDateFormatter().format(calendar.time)
-                calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DATE))
-                urlParams.endDate = Constants.endDateFormatter().format(calendar.time)
-            }
-        }
-        refreshData()
-    }
+	init {
+		mediatorEvents.addSource(events) {
+			mediatorEvents.value = it
+		}
+	}
 
-    /**
-     * public function for reloading data, it can be used for updating the results
-     */
-    fun refresh() {
-        refreshData()
-    }
+	fun filterTime(timeRange: TimeRange) {
+		when (timeRange) {
+			TimeRange.ALL -> {
+				urlParams.startDate = Constants.startDateFormatter().format(Date())
+				urlParams.endDate = null
+			}
+			TimeRange.TODAY -> {
+				urlParams.startDate = Constants.startDateFormatter().format(Date())
+				urlParams.endDate = Constants.endDateFormatter().format(Date())
+			}
+			TimeRange.THIS_WEEK -> {
+				val calendar = getNoiCalendar()
+				urlParams.startDate = Constants.startDateFormatter().format(calendar.time)
+				calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
+				urlParams.endDate = Constants.endDateFormatter().format(calendar.time)
+			}
+			TimeRange.THIS_MONTH -> {
+				val calendar = getNoiCalendar()
+				urlParams.startDate = Constants.startDateFormatter().format(calendar.time)
+				calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DATE))
+				urlParams.endDate = Constants.endDateFormatter().format(calendar.time)
+			}
+		}
+		refreshData()
+	}
 
-    /**
-     * force the mediatorEvents to trigger other data
-     */
-    private fun refreshData() {
-        mediatorEvents.removeSource(events)
-        events = liveData(Dispatchers.IO) {
-            emit(Resource.loading(data = null))
-            try {
-                emit(Resource.success(data = mainRepository.getEvents(urlParams).events))
-            } catch (exception: Exception) {
-                emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
-            }
-        }
-        mediatorEvents.addSource(events) {
-            mediatorEvents.value = it
-        }
-    }
+	/**
+	 * public function for reloading data, it can be used for updating the results
+	 */
+	fun refresh() {
+		refreshData()
+	}
 
-    /**
-     * function for getting the details of event
-     */
-    fun getEventDetails(eventId: String) = liveData(Dispatchers.IO) {
-        emit(Resource.loading(data = null))
-        try {
-            emit(Resource.success(data = mainRepository.getEventDetails(eventId)))
-        } catch (exception: Exception) {
-            emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
-        }
-    }
+	/**
+	 * force the mediatorEvents to trigger other data
+	 */
+	private fun refreshData() {
+		mediatorEvents.removeSource(events)
+		events = liveData(Dispatchers.IO) {
+			emit(Resource.loading(data = null))
+			try {
+				emit(Resource.success(data = mainRepository.getEvents(urlParams).events))
+			} catch (exception: Exception) {
+				emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
+			}
+		}
+		mediatorEvents.addSource(events) {
+			mediatorEvents.value = it
+		}
+	}
 
-    fun cacheFilters() {
-        cachedParams = urlParams.copy()
-    }
+	fun cacheFilters() {
+		cachedParams = urlParams.copy()
+	}
 
-    fun restoreCashedFilters() {
-        urlParams = cachedParams.copy()
-    }
+	fun restoreCachedFilters() {
+		urlParams = cachedParams.copy()
+	}
+
+	/**
+	 * Used for check if cached filters are identical to current filters
+	 */
+	fun isFiltersSameAsCached(): Boolean {
+		return urlParams == cachedParams
+	}
+
+	/**
+	 * function for getting the details of event
+	 */
+	fun getEventDetails(eventId: String) = liveData(Dispatchers.IO) {
+		emit(Resource.loading(data = null))
+		try {
+			emit(Resource.success(data = mainRepository.getEventDetails(eventId)))
+		} catch (exception: Exception) {
+			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
+		}
+	}
 }

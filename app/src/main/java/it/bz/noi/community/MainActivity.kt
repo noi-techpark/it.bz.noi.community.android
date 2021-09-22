@@ -63,20 +63,19 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_more -> {
                     supportActionBar?.hide()
                 }
-                R.id.eventDetailsFragment, R.id.webViewFragment -> {
+                R.id.eventDetailsFragment, R.id.webViewFragment, R.id.filtersFragment -> {
                     (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
                         18f
+					if (destination.id == R.id.webViewFragment) {
+						arguments?.let {
+							supportActionBar?.title = arguments.getString(WebViewFragment.TITLE)
+						}
+					}
                 }
                 else -> {
                     (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
                         26f
                     supportActionBar?.show()
-
-                    if (destination.id == R.id.webViewFragment) {
-                        arguments?.let {
-                            supportActionBar?.title = arguments.getString(WebViewFragment.TITLE)
-                        }
-                    }
                 }
             }
         }
@@ -84,8 +83,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         if (navController.currentBackStackEntry?.destination?.id == R.id.filtersFragment) {
-            mainViewModel.restoreCashedFilters()
-            mainViewModel.refresh()
+        	if (!mainViewModel.isFiltersSameAsCached()) {
+				mainViewModel.restoreCachedFilters()
+				mainViewModel.refresh()
+			}
         }
         navController.popBackStack()
         return super.onSupportNavigateUp()
