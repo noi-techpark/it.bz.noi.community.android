@@ -63,7 +63,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 	}
 
 	private val eventName by lazy {
-		arguments?.getString("eventName") ?: ""
+		arguments?.getString("eventName")!!
 	}
 
 	private val roomName by lazy {
@@ -114,17 +114,9 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
 		setDate(eventStartDate, eventEndDate)
 
-		(requireActivity() as AppCompatActivity).supportActionBar?.title =
-			if (eventName.isNotEmpty())
-				eventName
-			else
-				"No title"
+		(requireActivity() as AppCompatActivity).supportActionBar?.title = eventName
 
-		binding.tvEventName.text = if (eventName.isNotEmpty())
-			eventName
-		else
-			SpannableStringBuilder()
-				.italic { append("No title") }
+		binding.tvEventName.text = eventName
 		binding.tvEventLocation.text = eventLocation
 		binding.tvEventOrganizer.text = eventOrganizer
 		if (eventDescription.isNotEmpty())
@@ -311,15 +303,15 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		when (mainViewModel.locale) {
 			"it" -> {
 				eventNamed = event.nameIT ?: event.name
-				eventDescription = event.descriptionIT ?: event.description
+				eventDescription = event.descriptionIT  ?: getString(R.string.label_no_value)
 			}
 			"de" -> {
 				eventNamed = event.nameDE ?: event.name
-				eventDescription = event.descriptionDE ?: event.description
+				eventDescription = event.descriptionDE  ?: getString(R.string.label_no_value)
 			}
 			else -> {
 				eventNamed = event.nameEN ?: event.name
-				eventDescription = event.descriptionEN ?: event.description
+				eventDescription = event.descriptionEN  ?: getString(R.string.label_no_value)
 			}
 		}
 

@@ -64,5 +64,6 @@
 	<string name="time_filter_today">Today</string>
 	<string name="time_filter_this_week">This week</string>
 	<string name="time_filter_this_month">This month</string>
+    <string name="label_no_value">N/D</string>
 
 </resources>
