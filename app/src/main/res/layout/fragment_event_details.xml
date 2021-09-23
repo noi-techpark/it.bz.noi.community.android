@@ -5,7 +5,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:animateLayoutChanges="true"
-	android:background="@color/light_gray">
+	android:background="@color/secondary_background_color">
 
 	<androidx.core.widget.NestedScrollView
 		android:layout_width="match_parent"
@@ -33,7 +33,7 @@
 					android:id="@+id/constraintLayout"
 					android:layout_width="match_parent"
 					android:layout_height="match_parent"
-					android:background="@color/black">
+					android:background="@color/background_color">
 
 					<ImageView
 						android:id="@+id/ivEventImage"
@@ -50,8 +50,8 @@
 						android:layout_height="wrap_content"
 						android:paddingHorizontal="16dp"
 						android:paddingVertical="8dp"
-						android:textColor="@color/white"
-						android:textColorHint="@color/white"
+						android:textColor="@color/primary_color"
+						android:textColorHint="@color/primary_color"
 						android:textSize="25sp"
 						app:layout_constraintTop_toBottomOf="@id/cardViewDate"
 						tools:hint="Corso consulente energetico CasaClima" />
@@ -72,8 +72,8 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginStart="4dp"
-						android:textColor="@color/white"
-						android:textColorHint="@color/white"
+						android:textColor="@color/primary_color"
+						android:textColorHint="@color/primary_color"
 						app:layout_constraintStart_toEndOf="@id/ivLocation"
 						app:layout_constraintTop_toBottomOf="@id/tvEventName"
 						tools:hint="NOI Techpark" />
@@ -84,8 +84,8 @@
 						android:layout_height="wrap_content"
 						android:layout_marginTop="8dp"
 						android:paddingBottom="16dp"
-						android:textColor="@color/white"
-						android:textColorHint="@color/white"
+						android:textColor="@color/primary_color"
+						android:textColorHint="@color/primary_color"
 						app:layout_constraintStart_toStartOf="@id/ivLocation"
 						app:layout_constraintTop_toBottomOf="@id/ivLocation"
 						tools:hint="Green Technologies" />
@@ -107,8 +107,8 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginEnd="16dp"
-						android:textColor="@color/white"
-						android:textColorHint="@color/white"
+						android:textColor="@color/primary_color"
+						android:textColorHint="@color/primary_color"
 						app:layout_constraintEnd_toEndOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/tvEventName"
 						tools:hint="19:00 - 20:00" />
@@ -125,7 +125,7 @@
 						android:layout_height="60dp"
 						android:layout_marginTop="-25dp"
 						android:layout_marginEnd="16dp"
-						android:backgroundTint="@color/date_card_view"
+						android:backgroundTint="@color/accent_color"
 						android:transitionName="eventDate"
 						app:cardCornerRadius="30dp"
 						app:layout_constraintBottom_toBottomOf="@id/barrier"
@@ -140,8 +140,8 @@
 							android:lines="2"
 							android:padding="4dp"
 							android:textAlignment="center"
-							android:textColor="@color/black"
-							android:textColorHint="@color/black"
+							android:textColor="@color/secondary_color"
+							android:textColorHint="@color/secondary_color"
 							android:textSize="13sp"
 							android:textStyle="bold"
 							tools:hint="20.9. - 22.9." />
@@ -159,7 +159,7 @@
 				android:paddingTop="16dp"
 				android:paddingBottom="8dp"
 				android:text="@string/label_about"
-				android:textColor="@color/black"
+				android:textColor="@color/secondary_color"
 				android:textSize="19sp"
 				android:textStyle="bold"
 				app:layout_constraintTop_toBottomOf="@id/cardViewEvent" />
@@ -169,8 +169,8 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:paddingHorizontal="16dp"
-				android:textColor="@color/black"
-				android:textColorHint="@color/black"
+				android:textColor="@color/secondary_color"
+				android:textColorHint="@color/secondary_color"
 				app:layout_constraintTop_toBottomOf="@id/tvAboutLabel"
 				tools:hint="Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet." />
 
@@ -182,7 +182,7 @@
 				android:paddingTop="16dp"
 				android:paddingBottom="8dp"
 				android:text="@string/label_interesting_for_you"
-				android:textColor="@color/black"
+				android:textColor="@color/secondary_color"
 				android:textSize="19sp"
 				android:textStyle="bold"
 				app:layout_constraintTop_toBottomOf="@id/tvEventDescription" />
@@ -205,7 +205,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
 		android:layout_marginTop="-16dp"
-		android:background="@color/white"
+		android:background="@color/tertiary_background_color"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintTop_toTopOf="@id/btnFindOnMaps" />
 
@@ -237,12 +237,11 @@
 		android:id="@+id/progressBarLoading"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:indeterminateTint="@color/date_card_view"
+		android:indeterminateTint="@color/accent_color"
 		android:visibility="gone"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		tools:visibility="visible" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

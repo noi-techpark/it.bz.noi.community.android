@@ -34,9 +34,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             window.navigationBarColor =
-                resources.getColor(R.color.black, theme)
+                resources.getColor(R.color.background_color, theme)
         } else {
-            window.navigationBarColor = resources.getColor(R.color.black)
+            window.navigationBarColor = resources.getColor(R.color.background_color)
         }
 
         binding = ActivityMainBinding.inflate(layoutInflater)

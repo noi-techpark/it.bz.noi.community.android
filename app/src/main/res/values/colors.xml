@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+	<color name="background_color">#000000</color>
+	<color name="primary_color">#FFFFFF</color>
 
-    <color name="unselected">#828282</color>
+	<color name="secondary_background_color">#F1F1F1</color>
+	<color name="secondary_color">#000000</color>
 
-    <color name="date_card_view">#F4D100</color>
+	<color name="tertiary_background_color">#FFFFFF</color>
 
-    <color name="unselected_time_filter">#D9828282</color>
+	<color name="accent_color">#F4D100</color>
 
-    <color name="light_gray">#F1F1F1</color>
-    <color name="medium_gray">#E5E5E5</color>
-
+    <color name="disabled1_color">#828282</color>
+	<color name="disabled2_color">#E5E5E5</color>
 </resources>
