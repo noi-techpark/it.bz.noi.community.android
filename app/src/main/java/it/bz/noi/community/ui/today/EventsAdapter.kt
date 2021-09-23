@@ -21,7 +21,7 @@ import it.bz.noi.community.utils.Utils.getEventName
 
 /**
  * click listener for handling events click
- * the views are required to creare the shared animation
+ * the views are required to create the shared animation
  */
 interface EventClickListener {
 	fun onEventClick(
@@ -41,7 +41,7 @@ interface EventClickListener {
 /**
  * isSuggestedEvents is a boolean that is used for telling the adapter that is used in the event details
  * suggested events recyclerview
- * i need fragment parameter to avoid clicked view to have the fade out animation
+ * fragment parameter to avoid clicked view to have the fade out animation
  */
 class EventsAdapter(
 	private val events: List<EventsResponse.Event>,
