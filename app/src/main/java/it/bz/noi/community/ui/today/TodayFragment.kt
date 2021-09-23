@@ -9,12 +9,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -43,26 +41,37 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService))
 	})
 
-	private val timeFilterAdapter: TimeFilterAdapter by lazy {
-		TimeFilterAdapter(todayViewModel.timeFilters, this)
-	}
+	private lateinit var timeFilters: List<TimeFilter>
+
+	private lateinit var timeFilterAdapter: TimeFilterAdapter
 
 	private val eventsAdapter by lazy {
-		EventsAdapter(todayViewModel.events, this, this, locale = viewModel.locale)
+		EventsAdapter(todayViewModel.events, this, this)
 	}
 
 	private lateinit var layoutManagerFilters: LinearLayoutManager
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		todayViewModel.timeFilters.addAll(
-			listOf(
-				TimeFilter(resources.getString(R.string.time_filter_all), true),
-				TimeFilter(resources.getString(R.string.time_filter_today), false),
-				TimeFilter(resources.getString(R.string.time_filter_this_week), false),
-				TimeFilter(resources.getString(R.string.time_filter_this_month), false)
+		timeFilters = listOf(
+			TimeFilter(
+				resources.getString(R.string.time_filter_all),
+				viewModel.selectedTimeFilterIndex == TimeRange.ALL
+			),
+			TimeFilter(
+				resources.getString(R.string.time_filter_today),
+				viewModel.selectedTimeFilterIndex == TimeRange.TODAY
+			),
+			TimeFilter(
+				resources.getString(R.string.time_filter_this_week),
+				viewModel.selectedTimeFilterIndex == TimeRange.THIS_WEEK
+			),
+			TimeFilter(
+				resources.getString(R.string.time_filter_this_month),
+				viewModel.selectedTimeFilterIndex == TimeRange.THIS_MONTH
 			)
 		)
+		timeFilterAdapter = TimeFilterAdapter(timeFilters, this)
 	}
 
 	override fun onCreateView(
@@ -165,23 +174,6 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		exitTransition = TransitionInflater.from(context)
 			.inflateTransition(R.transition.events_exit_transition)
 
-		val eventDescription: String?
-		val eventNamed: String?
-		when (viewModel.locale) {
-			"it" -> {
-				eventNamed = event.nameIT ?: event.name ?: getString(R.string.label_no_value)
-				eventDescription = event.descriptionIT ?: getString(R.string.label_no_value)
-			}
-			"de" -> {
-				eventNamed = event.nameDE ?: event.name ?: getString(R.string.label_no_value)
-				eventDescription = event.descriptionDE ?: getString(R.string.label_no_value)
-			}
-			else -> {
-				eventNamed = event.nameEN ?: event.name ?: getString(R.string.label_no_value)
-				eventDescription = event.descriptionEN ?: getString(R.string.label_no_value)
-			}
-		}
-
 		val extras = FragmentNavigatorExtras(
 			constraintLayout to "constraintLayout_${event.eventId}",
 			eventName to "eventName_${event.eventId}",
@@ -192,43 +184,32 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 			locationIcon to "locationIcon_${event.eventId}",
 			timeIcon to "timeIcon_${event.eventId}"
 		)
+
 		findNavController().navigate(
-			R.id.action_navigation_today_to_eventDetailsFragment, bundleOf(
-				"eventID" to event.eventId,
-				"eventName" to eventNamed,
-				"eventLocation" to event.location,
-				"imageUrl" to event.imageGallery?.firstOrNull { it.imageUrl != null }?.imageUrl,
-				"eventStartDate" to event.startDate,
-				"eventEndDate" to event.endDate,
-				"eventDescription" to eventDescription,
-				"technologyFields" to event.technologyFields,
-				"eventOrganizer" to if (event.eventOrganizer.isNullOrEmpty()) event.eventOrganizerFallback else event.eventOrganizer,
-				"roomName" to event.roomName
-			), null, extras
+			TodayFragmentDirections.actionNavigationTodayToEventDetailsFragment(
+				todayViewModel.events.indexOf(event)
+			), extras
 		)
 	}
 
 	override fun onTimeFilterClick(position: Int) {
-		val oldSelected = todayViewModel.timeFilters.first {
-			it.filterSelected
-		}
-		val oldSelectedIndex = todayViewModel.timeFilters.indexOf(oldSelected)
-		todayViewModel.timeFilters[oldSelectedIndex].filterSelected = false
-		todayViewModel.timeFilters[position].filterSelected = true
-		timeFilterAdapter.notifyDataSetChanged()
+		if (position != viewModel.selectedTimeFilterIndex.ordinal) {
+			timeFilters[position].filterSelected = true
+			timeFilters[viewModel.selectedTimeFilterIndex.ordinal].filterSelected = false
+			// serve per evitare che venga selezionato un elemento in modo parziale
+			if (layoutManagerFilters.findLastCompletelyVisibleItemPosition() < position)
+				binding.rvTimeFilters.smoothScrollToPosition(timeFilters.lastIndex)
+			else if (layoutManagerFilters.findFirstCompletelyVisibleItemPosition() > position)
+				binding.rvTimeFilters.smoothScrollToPosition(0)
 
-		// serve per evitare che venga selezionato un elemento in modo parziale
-		if (layoutManagerFilters.findLastCompletelyVisibleItemPosition() < position)
-			binding.rvTimeFilters.smoothScrollToPosition(todayViewModel.timeFilters.lastIndex)
-		else if (layoutManagerFilters.findFirstCompletelyVisibleItemPosition() > position)
-			binding.rvTimeFilters.smoothScrollToPosition(0)
-
-		when (position) {
-			0 -> viewModel.filterTime(TimeRange.ALL)
-			1 -> viewModel.filterTime(TimeRange.TODAY)
-			2 -> viewModel.filterTime(TimeRange.THIS_WEEK)
-			3 -> viewModel.filterTime(TimeRange.THIS_MONTH)
-			else -> viewModel.filterTime(TimeRange.ALL)
+			when (position) {
+				0 -> viewModel.filterTime(TimeRange.ALL)
+				1 -> viewModel.filterTime(TimeRange.TODAY)
+				2 -> viewModel.filterTime(TimeRange.THIS_WEEK)
+				3 -> viewModel.filterTime(TimeRange.THIS_MONTH)
+				else -> viewModel.filterTime(TimeRange.ALL)
+			}
+			timeFilterAdapter.notifyDataSetChanged()
 		}
 	}
 }
