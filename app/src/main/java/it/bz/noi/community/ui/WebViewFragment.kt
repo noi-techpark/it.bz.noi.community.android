@@ -68,13 +68,5 @@ class WebViewFragment : Fragment() {
             isLoading.value = false
             super.onPageFinished(view, url)
         }
-
-		override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-			url?.let {
-				return it == resources.getString(R.string.url_room_booking)
-			}
-			return false
-		}
-
     }
 }
