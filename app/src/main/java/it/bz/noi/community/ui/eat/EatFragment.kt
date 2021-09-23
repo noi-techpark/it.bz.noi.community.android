@@ -24,7 +24,7 @@ class EatFragment : Fragment() {
 			val pos = eatRecyclerView.getChildLayoutPosition(it.parent?.parent as View)
 
 			val action = EatFragmentDirections.actionNavigationEatToWebViewFragment()
-			action.title = resources.getString(R.string.btn_menu)
+			action.title = resources.getString(R.string.title_menu, getRestaurantNameByPos(pos))
 			action.url = getMenuUrlByPos(pos)
 			findNavController().navigate(action)
 		}
@@ -77,5 +77,9 @@ class EatFragment : Fragment() {
 
 	private fun getMenuUrlByPos(pos: Int): String {
 		return restaurants[pos].menuUrl
+	}
+
+	private fun getRestaurantNameByPos(pos: Int): String {
+		return restaurants[pos].name
 	}
 }

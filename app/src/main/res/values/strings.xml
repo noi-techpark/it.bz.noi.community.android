@@ -71,4 +71,6 @@
 	<string name="url_alumix_menu">https://go.alumix.it/menu/alumix/</string>
 	<string name="url_map">https://maps.noi.bz.it</string>
 	<string name="url_room_booking">https://outlook.com/owa/calendar/NOITechpark1@noi.bz.it/bookings/</string>
+
+	<string name="title_menu">%1$s menu</string>
 </resources>
