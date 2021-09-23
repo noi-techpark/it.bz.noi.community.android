@@ -58,6 +58,7 @@
             tools:hint="19:00 - 20:00" />
 
         <com.google.android.material.button.MaterialButton
+			android:id="@+id/menuBtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="@string/btn_menu"

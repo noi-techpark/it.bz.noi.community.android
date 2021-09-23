@@ -38,7 +38,11 @@
         android:id="@+id/navigation_eat"
         android:name="it.bz.noi.community.ui.eat.EatFragment"
         android:label="@string/title_eat"
-        tools:layout="@layout/fragment_eat" />
+        tools:layout="@layout/fragment_eat" >
+		<action
+			android:id="@+id/action_navigation_eat_to_webViewFragment"
+			app:destination="@id/webViewFragment" />
+	</fragment>
 
     <fragment
         android:id="@+id/navigation_more"
