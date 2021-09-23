@@ -177,13 +177,16 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 				when (it.status) {
 					Status.SUCCESS -> {
 						binding.progressBarLoading.isVisible = false
-						val mapUrl =
-							it.data?.get(selectedEvent.roomName) ?: "https://maps.noi.bz.it/"
+
+						val mapTitle = if (it.data?.get(selectedEvent.roomName) != null)
+							selectedEvent.roomName!!
+						else
+							getString(R.string.title_generic_noi_techpark_map)
 
 						findNavController().navigate(
 							WebViewFragmentDirections.actionGlobalWebViewFragment().apply {
-								title = getEventName(selectedEvent)
-								url = mapUrl
+								title = mapTitle
+								url = it.data?.get(selectedEvent.roomName) ?: "https://maps.noi.bz.it/"
 							}
 						)
 					}
