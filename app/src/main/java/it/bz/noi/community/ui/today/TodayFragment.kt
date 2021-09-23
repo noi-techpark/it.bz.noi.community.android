@@ -25,9 +25,9 @@ import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.data.models.TimeFilter
+import it.bz.noi.community.data.models.TimeRange
 import it.bz.noi.community.databinding.FragmentTodayBinding
 import it.bz.noi.community.ui.MainViewModel
-import it.bz.noi.community.ui.TimeRange
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.utils.Status
 
@@ -56,19 +56,19 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		timeFilters = listOf(
 			TimeFilter(
 				resources.getString(R.string.time_filter_all),
-				viewModel.selectedTimeFilterIndex == TimeRange.ALL
+				viewModel.selectedTimeFilter == TimeRange.ALL
 			),
 			TimeFilter(
 				resources.getString(R.string.time_filter_today),
-				viewModel.selectedTimeFilterIndex == TimeRange.TODAY
+				viewModel.selectedTimeFilter == TimeRange.TODAY
 			),
 			TimeFilter(
 				resources.getString(R.string.time_filter_this_week),
-				viewModel.selectedTimeFilterIndex == TimeRange.THIS_WEEK
+				viewModel.selectedTimeFilter == TimeRange.THIS_WEEK
 			),
 			TimeFilter(
 				resources.getString(R.string.time_filter_this_month),
-				viewModel.selectedTimeFilterIndex == TimeRange.THIS_MONTH
+				viewModel.selectedTimeFilter == TimeRange.THIS_MONTH
 			)
 		)
 		timeFilterAdapter = TimeFilterAdapter(timeFilters, this)
@@ -170,7 +170,7 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		timeIcon: ImageView,
 		event: EventsResponse.Event
 	) {
-		// i add the fade out transition to have a better effect on shared animation
+		// fade out transition to have a better effect on shared animation
 		exitTransition = TransitionInflater.from(context)
 			.inflateTransition(R.transition.events_exit_transition)
 
@@ -193,10 +193,12 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 	}
 
 	override fun onTimeFilterClick(position: Int) {
-		if (position != viewModel.selectedTimeFilterIndex.ordinal) {
+		// used for avoiding reselection of one element
+		if (position != viewModel.selectedTimeFilter.ordinal) {
 			timeFilters[position].filterSelected = true
-			timeFilters[viewModel.selectedTimeFilterIndex.ordinal].filterSelected = false
-			// serve per evitare che venga selezionato un elemento in modo parziale
+			timeFilters[viewModel.selectedTimeFilter.ordinal].filterSelected = false
+
+			// used for avoiding UI partial filter selection
 			if (layoutManagerFilters.findLastCompletelyVisibleItemPosition() < position)
 				binding.rvTimeFilters.smoothScrollToPosition(timeFilters.lastIndex)
 			else if (layoutManagerFilters.findFirstCompletelyVisibleItemPosition() > position)
