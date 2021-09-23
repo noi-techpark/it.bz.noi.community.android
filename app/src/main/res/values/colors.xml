@@ -12,7 +12,4 @@
 
     <color name="disabled1_color">#828282</color>
 	<color name="disabled2_color">#E5E5E5</color>
-
-	<!-->DA RIVEDERE</!-->
-    <color name="unselected_time_filter">#D9828282</color>
 </resources>
