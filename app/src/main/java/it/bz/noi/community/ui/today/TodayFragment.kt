@@ -168,16 +168,16 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		val eventNamed: String?
 		when (viewModel.locale) {
 			"it" -> {
-				eventNamed = event.nameIT ?: event.name
-				eventDescription = event.descriptionIT ?: event.description
+				eventNamed = event.nameIT ?: event.name ?: getString(R.string.label_no_value)
+				eventDescription = event.descriptionIT ?: getString(R.string.label_no_value)
 			}
 			"de" -> {
-				eventNamed = event.nameDE ?: event.name
-				eventDescription = event.descriptionDE ?: event.description
+				eventNamed = event.nameDE ?: event.name ?: getString(R.string.label_no_value)
+				eventDescription = event.descriptionDE ?: getString(R.string.label_no_value)
 			}
 			else -> {
-				eventNamed = event.nameEN ?: event.name
-				eventDescription = event.descriptionEN ?: event.description
+				eventNamed = event.nameEN ?: event.name ?: getString(R.string.label_no_value)
+				eventDescription = event.descriptionEN ?: getString(R.string.label_no_value)
 			}
 		}
 

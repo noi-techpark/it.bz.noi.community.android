@@ -75,4 +75,7 @@
     <string name="filter_sector_automotiv">Automotiv</string>
     <string name="reset_btn">Reset all Filters</string>
     <string name="show_btn">Show results (%1$d)</string>
+
+    <string name="label_no_value">N/D</string>
+
 </resources>
