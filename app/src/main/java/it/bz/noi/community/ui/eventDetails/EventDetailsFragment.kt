@@ -14,7 +14,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -39,6 +38,7 @@ import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.databinding.FragmentEventDetailsBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
+import it.bz.noi.community.ui.WebViewFragmentDirections
 import it.bz.noi.community.ui.today.EventClickListener
 import it.bz.noi.community.ui.today.EventsAdapter
 import it.bz.noi.community.utils.Constants
@@ -82,9 +82,6 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		sharedElementEnterTransition =
 			TransitionInflater.from(context).inflateTransition(R.transition.change_bounds)
 		postponeEnterTransition()
-
-		exitTransition = TransitionInflater.from(context)
-			.inflateTransition(R.transition.events_exit_transition)
 	}
 
 	override fun onCreateView(
@@ -146,6 +143,10 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 						binding.tvInterestingForYou.isVisible = false
 					}
 				}
+				Status.ERROR -> {
+				}
+				Status.LOADING -> {
+				}
 			}
 		})
 
@@ -178,11 +179,12 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 						binding.progressBarLoading.isVisible = false
 						val mapUrl =
 							it.data?.get(selectedEvent.roomName) ?: "https://maps.noi.bz.it/"
+
 						findNavController().navigate(
-							R.id.action_global_webViewFragment, bundleOf(
-								"title" to getEventName(selectedEvent),
-								"url" to mapUrl
-							)
+							WebViewFragmentDirections.actionGlobalWebViewFragment().apply {
+								title = getEventName(selectedEvent)
+								url = mapUrl
+							}
 						)
 					}
 					Status.LOADING -> {
