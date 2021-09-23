@@ -4,8 +4,10 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
+import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.models.EventsResponse
+import it.bz.noi.community.data.models.TimeFilter
 import it.bz.noi.community.data.models.UrlParams
 import it.bz.noi.community.data.repository.MainRepository
 import it.bz.noi.community.utils.Constants
@@ -39,7 +41,7 @@ enum class TimeRange {
 
 class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 
-	val locale = Locale.getDefault().language
+	var selectedTimeFilterIndex: TimeRange = TimeRange.TODAY
 
 	/**
 	 * parameters of the url for filter the events
@@ -84,6 +86,7 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 	}
 
 	fun filterTime(timeRange: TimeRange) {
+		selectedTimeFilterIndex = timeRange
 		when (timeRange) {
 			TimeRange.ALL -> {
 				urlParams.startDate = Constants.startDateFormatter().format(Date())

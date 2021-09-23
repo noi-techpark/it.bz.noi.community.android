@@ -61,7 +61,11 @@
         android:name="it.bz.noi.community.ui.eventDetails.EventDetailsFragment"
         android:label=" "
         tools:layout="@layout/fragment_event_details">
-        <action
+		<argument
+			android:name="eventID"
+			app:argType="integer"
+			app:nullable="false"/>
+		<action
             android:id="@+id/action_eventDetailsFragment_self"
             app:destination="@id/eventDetailsFragment" />
     </fragment>
