@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
@@ -14,11 +16,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import it.bz.noi.community.R
-import it.bz.noi.community.databinding.FragmentEventDetailsBinding
 import it.bz.noi.community.databinding.FragmentWebviewBinding
 
 /**
- * 
+ *
  */
 class WebViewFragment : Fragment() {
 
@@ -67,5 +68,13 @@ class WebViewFragment : Fragment() {
             isLoading.value = false
             super.onPageFinished(view, url)
         }
+
+		override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+			url?.let {
+				return it == resources.getString(R.string.url_room_booking)
+			}
+			return false
+		}
+
     }
 }

@@ -14,7 +14,7 @@ class MeetFragment : Fragment() {
 
     private val openLinkClickListener = View.OnClickListener {
         it?.let {
-            val pos = recyclerView.getChildAdapterPosition((it.parent as View))
+            val pos = recyclerView.getChildAdapterPosition(it)
 
             val action = MeetFragmentDirections.actionNavigationMeetToWebViewFragment()
             action.title = items[pos]
@@ -50,7 +50,7 @@ class MeetFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_meet, container, false)
         recyclerView = root.findViewById(R.id.meetRecyclerView)
         recyclerView.adapter = meetAdapter
-
+		
         return root
     }
 
