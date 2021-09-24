@@ -66,6 +66,11 @@
 	<string name="time_filter_this_month">This month</string>
     <string name="label_no_value">N/D</string>
 
+	<string name="url_noisteria_menu">https://go.alumix.it/menu/noisteria/</string>
+	<string name="url_noi_bar_menu">https://www.rockinbeets.com/</string>
+	<string name="url_alumix_menu">https://go.alumix.it/menu/alumix/</string>
 	<string name="url_map">https://maps.noi.bz.it</string>
 	<string name="url_room_booking">https://outlook.com/owa/calendar/NOITechpark1@noi.bz.it/bookings/</string>
+
+	<string name="title_menu">%1$s menu</string>
 </resources>
