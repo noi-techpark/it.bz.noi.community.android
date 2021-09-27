@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.models.EventsResponse
@@ -149,15 +150,14 @@ class EventsAdapter(
 			eventTime.text = "$startHour - $endHour"
 
 			val eventImageUrl = event.imageGallery?.firstOrNull { it.imageUrl != null }?.imageUrl
-			if (eventImageUrl != null) {
-				Glide
-					.with(view.context)
-					.load(eventImageUrl)
-					.centerCrop()
-					.into(eventImage)
-			} else {
-				eventImage.setImageResource(R.drawable.img_event_placeholder)
-			}
+			val options: RequestOptions = RequestOptions()
+				.placeholder(R.drawable.img_event_placeholder)
+			Glide
+				.with(view.context)
+				.load(eventImageUrl)
+				.apply(options)
+				.centerCrop()
+				.into(eventImage)
 		}
 	}
 }
