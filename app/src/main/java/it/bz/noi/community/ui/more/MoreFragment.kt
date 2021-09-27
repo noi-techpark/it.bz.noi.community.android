@@ -20,9 +20,13 @@ class MoreFragment: Fragment() {
         items = listOf(
             resources.getString(R.string.room_booking),
             resources.getString(R.string.more_item_onboarding),
-            resources.getString(R.string.more_item_feedback),
-            resources.getString(R.string.more_item_account),
-            resources.getString(R.string.more_item_settings))
+            resources.getString(R.string.more_item_feedback))
+
+		/*
+		 * Items postponed to MVP2:
+         *  resources.getString(R.string.more_item_account)
+         *  resources.getString(R.string.more_item_settings)
+		 */
     }
 
 
