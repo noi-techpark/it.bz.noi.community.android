@@ -129,7 +129,7 @@ class FiltersFragment : Fragment() {
     }
 
     private fun updateNumberOfResults(numResults: Int?) {
-        binding.showBtn.text = getString(R.string.show_btn, numResults ?: 0)
+        binding.showBtn.text = getString(R.string.show_btn_format, numResults ?: 0)
     }
 
     private fun resetFilters() {
