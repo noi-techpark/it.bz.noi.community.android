@@ -149,7 +149,12 @@ class EventsAdapter(
 				getLocalTimeFormatter().format(getServerDatetimeParser().parse(event.endDate))
 			eventTime.text = "$startHour - $endHour"
 
-			val eventImageUrl = event.imageGallery?.firstOrNull { it.imageUrl != null }?.imageUrl
+			var eventImageUrl = event.imageGallery?.firstOrNull { it.imageUrl != null }?.imageUrl
+
+			if (eventImageUrl?.startsWith(HTTP_PREFIX) == true) {
+				eventImageUrl = GET_IMAGE_URL  + eventImageUrl
+			}
+
 			val options: RequestOptions = RequestOptions()
 				.placeholder(R.drawable.img_event_placeholder)
 			Glide
@@ -159,5 +164,11 @@ class EventsAdapter(
 				.centerCrop()
 				.into(eventImage)
 		}
+
+	}
+
+	companion object {
+		private const val HTTP_PREFIX = "http://"
+		private const val GET_IMAGE_URL = "https://images.opendatahub.bz.it/api/Image/GetImageByUrl?imageUrl="
 	}
 }
