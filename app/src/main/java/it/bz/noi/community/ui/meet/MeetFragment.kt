@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
 import it.bz.noi.community.ui.SimpleListAdapter
+import it.bz.noi.community.ui.WebViewFragmentDirections
 
 class MeetFragment : Fragment() {
 
@@ -16,9 +17,10 @@ class MeetFragment : Fragment() {
         it?.let {
             val pos = recyclerView.getChildAdapterPosition(it)
 
-            val action = MeetFragmentDirections.actionNavigationMeetToWebViewFragment()
-            action.title = items[pos]
-            action.url = getUrlByItemPosition(pos)
+            val action = WebViewFragmentDirections.actionGlobalWebViewFragment().apply {
+				title = items[pos]
+				url = getUrlByItemPosition(pos)
+			}
             findNavController().navigate(action)
         }
     }
@@ -50,7 +52,7 @@ class MeetFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_meet, container, false)
         recyclerView = root.findViewById(R.id.meetRecyclerView)
         recyclerView.adapter = meetAdapter
-		
+
         return root
     }
 

@@ -5,6 +5,5 @@ import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.data.models.TimeFilter
 
 class TodayViewModel : ViewModel() {
-	val timeFilters = arrayListOf<TimeFilter>()
 	val events = arrayListOf<EventsResponse.Event>()
 }

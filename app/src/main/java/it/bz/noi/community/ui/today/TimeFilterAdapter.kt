@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.models.TimeFilter
@@ -44,16 +46,21 @@ class TimeFilterAdapter(
         fun bind(timeFilter: TimeFilter) {
             if (timeFilter.filterSelected) {
                 filterName.apply {
-                    setTextColor(view.resources.getColor(R.color.black))
+					setTextColor(ContextCompat.getColor(context, R.color.secondary_color))
                     text = timeFilter.filterName
                 }
-                filterSelected.setBackgroundColor(view.resources.getColor(R.color.black))
+                filterSelected.apply {
+					setBackgroundColor(ContextCompat.getColor(context, R.color.background_color))
+                }
             } else {
                 filterName.apply {
                     text = timeFilter.filterName
-                    setTextColor(view.resources.getColor(R.color.unselected_time_filter))
+                    setTextColor(ContextCompat.getColor(context, R.color.disabled1_color))
                 }
-                filterSelected.setBackgroundColor(view.resources.getColor(R.color.unselected_time_filter))
+                filterSelected.apply {
+					// disabled1_color with alpha 85%
+					setBackgroundColor(ColorUtils.setAlphaComponent(ContextCompat.getColor(context, R.color.disabled1_color), 217))
+				}
             }
         }
     }

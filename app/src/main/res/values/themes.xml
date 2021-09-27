@@ -6,15 +6,15 @@
         <item name="windowNoTitle">true</item>
 
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/black</item>
-        <item name="colorPrimaryVariant">@color/black</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/background_color</item>
+        <item name="colorPrimaryVariant">@color/background_color</item>
+        <item name="colorOnPrimary">@color/primary_color</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/white</item>
-        <item name="colorSecondaryVariant">@color/white</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/primary_color</item>
+        <item name="colorSecondaryVariant">@color/primary_color</item>
+        <item name="colorOnSecondary">@color/background_color</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/background_color</item>
         <!-- Customize your theme here. -->
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowContentTransitions">true</item>
@@ -28,7 +28,7 @@
 
     <style name="ToolbarTheme" parent="@style/Widget.MaterialComponents.ActionBar.Primary">
         <!-- Customize color of navigation drawer icon and back arrow -->
-        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlNormal">@color/primary_color</item>
     </style>
 
     <style name="Widget.App.Switch" parent="Widget.MaterialComponents.CompoundButton.Switch">
@@ -40,19 +40,9 @@
         Switch unchecked: medium gray
     -->
     <style name="ThemeOverlay.App.Switch" parent="">
-        <item name="colorSecondary">@color/black</item>
-        <item name="colorSurface">@color/medium_gray</item>
-        <item name="colorOnSurface">@color/medium_gray</item>
-    </style>
-
-    <!--
-        Switch checked: medium gray
-        Switch unchecked: light gray
-    -->
-    <style name="ThemeOverlay.App.Switch2" parent="">
-        <item name="colorSecondary">@color/medium_gray</item>
-        <item name="colorSurface">@color/white</item>
-        <item name="colorOnSurface">@color/medium_gray</item>
+        <item name="colorSecondary">@color/background_color</item>
+        <item name="colorSurface">@color/disabled2_color</item>
+        <item name="colorOnSurface">@color/disabled2_color</item>
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">

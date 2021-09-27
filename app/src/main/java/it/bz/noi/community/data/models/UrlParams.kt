@@ -28,7 +28,7 @@ private fun UrlParams.getTechSectorRawFilter(): String? {
     var rawFilter: String? = null
     if (green || food || digital || automotiv) {
         rawFilter = "in(TechnologyFields.[],"
-        if (green) rawFilter = rawFilter.plus("\"Green\",")
+        if (green) rawFilter = rawFilter.plus("'Green',")
         if (food) rawFilter = rawFilter.plus("'Food',")
         if (digital) rawFilter = rawFilter.plus("'Digital',")
         if (automotiv) rawFilter = rawFilter.plus("'Automotiv',")
