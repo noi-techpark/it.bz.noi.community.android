@@ -16,6 +16,7 @@
         android:backgroundTint="@color/background_color"
         app:cardCornerRadius="0dp"
         app:cardElevation="0dp"
+		android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -37,10 +38,9 @@
         android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:paddingHorizontal="@dimen/activity_horizontal_margin"
-        app:layout_constraintBottom_toBottomOf="@id/cdFilterEvents"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/cdFilterEvents"
-        app:layout_constraintTop_toTopOf="@id/cdFilterEvents"
+		android:layout_marginTop="@dimen/activity_vertical_margin"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="1" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -50,7 +50,9 @@
         android:layout_marginTop="32dp"
         android:paddingHorizontal="32dp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/cdFilterEvents">
+        app:layout_constraintTop_toBottomOf="@id/rvTimeFilters"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
             android:id="@+id/tvEmptyStateTitle"
@@ -61,7 +63,9 @@
             android:textColor="@color/secondary_color"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"/>
 
         <TextView
             android:id="@+id/tvEmptyStateSubtitle"
@@ -71,7 +75,9 @@
             android:textAlignment="center"
             android:textColor="@color/secondary_color"
             android:textSize="18sp"
-            app:layout_constraintTop_toBottomOf="@id/tvEmptyStateTitle" />
+            app:layout_constraintTop_toBottomOf="@id/tvEmptyStateTitle"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -79,7 +85,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cdFilterEvents">
+        app:layout_constraintTop_toBottomOf="@id/rvTimeFilters">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvEvents"
@@ -88,7 +94,7 @@
             android:clipToPadding="false"
             android:paddingBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cdFilterEvents"
+            app:layout_constraintTop_toBottomOf="@id/rvTimeFilters"
             tools:listitem="@layout/view_holder_event" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
