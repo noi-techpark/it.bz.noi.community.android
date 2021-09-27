@@ -59,8 +59,7 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: it.bz.noi.community
           releaseFiles: ${{ steps.sign_app.outputs.signedReleaseFile }}
-          track: internal
-          status: draft
+          track: alpha
           #mappingFile: mapping-${{ github.sha }}.txt
       - run: git config --global user.name 'NOI Techpark Bot'
       - run: git config --global user.email 'info@opendatahub.bz.it'
