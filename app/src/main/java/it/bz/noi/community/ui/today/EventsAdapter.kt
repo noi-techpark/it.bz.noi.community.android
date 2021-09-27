@@ -17,10 +17,11 @@ import it.bz.noi.community.utils.Constants.getLocalDateFormatter
 import it.bz.noi.community.utils.Constants.getLocalTimeFormatter
 import it.bz.noi.community.utils.Constants.getMonthCode
 import it.bz.noi.community.utils.Constants.getServerDatetimeParser
+import it.bz.noi.community.utils.Utils.getEventName
 
 /**
  * click listener for handling events click
- * the views are required to creare the shared animation
+ * the views are required to create the shared animation
  */
 interface EventClickListener {
 	fun onEventClick(
@@ -40,14 +41,13 @@ interface EventClickListener {
 /**
  * isSuggestedEvents is a boolean that is used for telling the adapter that is used in the event details
  * suggested events recyclerview
- * i need fragment parameter to avoid clicked view to have the fade out animation
+ * fragment parameter to avoid clicked view to have the fade out animation
  */
 class EventsAdapter(
 	private val events: List<EventsResponse.Event>,
 	private val listener: EventClickListener,
 	private val fragment: Fragment,
-	private val isSuggestedEvents: Boolean = false,
-	private val locale: String
+	private val isSuggestedEvents: Boolean = false
 ) :
 	RecyclerView.Adapter<EventsAdapter.EventViewHolder>() {
 
@@ -105,19 +105,7 @@ class EventsAdapter(
 		fun bind(event: EventsResponse.Event) {
 			this.event = event
 
-			val eventNamed: String = when (locale) {
-				"it" -> {
-					event.nameIT ?: event.name ?: view.context.getString(R.string.label_no_value)
-				}
-				"de" -> {
-					event.nameDE ?: event.name ?: view.context.getString(R.string.label_no_value)
-				}
-				else -> {
-					event.nameEN ?: event.name ?: view.context.getString(R.string.label_no_value)
-				}
-			}
-
-			eventName.text = eventNamed
+			eventName.text = getEventName(event)
 			eventLocation.text = event.location
 
 			constraintLayout.transitionName = "constraintLayout_${event.eventId}"

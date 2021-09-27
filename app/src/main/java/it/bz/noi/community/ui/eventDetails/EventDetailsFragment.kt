@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.provider.CalendarContract.Events
-import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +14,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.os.bundleOf
-import androidx.core.text.italic
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -24,6 +21,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.transition.TransitionInflater
@@ -40,6 +38,7 @@ import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.databinding.FragmentEventDetailsBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
+import it.bz.noi.community.ui.WebViewFragmentDirections
 import it.bz.noi.community.ui.today.EventClickListener
 import it.bz.noi.community.ui.today.EventsAdapter
 import it.bz.noi.community.utils.Constants
@@ -47,36 +46,33 @@ import it.bz.noi.community.utils.Constants.getLocalDateFormatter
 import it.bz.noi.community.utils.Constants.getLocalTimeFormatter
 import it.bz.noi.community.utils.Constants.getMonthCode
 import it.bz.noi.community.utils.Status
+import it.bz.noi.community.utils.Utils.getEventDescription
+import it.bz.noi.community.utils.Utils.getEventName
+import it.bz.noi.community.utils.Utils.getEventOrganizer
+import it.bz.noi.community.utils.Utils.getImageUrl
 import java.util.*
 
 class EventDetailsFragment : Fragment(), EventClickListener {
 	private lateinit var binding: FragmentEventDetailsBinding
 
+	private val args: EventDetailsFragmentArgs by navArgs()
+
 	private val mainViewModel: MainViewModel by activityViewModels(factoryProducer = {
 		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService))
 	})
 
+	private lateinit var allEvents: ArrayList<EventsResponse.Event>
+
+	private lateinit var selectedEvent: EventsResponse.Event
+
 	private val suggestedEvents = arrayListOf<EventsResponse.Event>()
-
-	private val eventID by lazy {
-		arguments?.getString("eventID")!!
-	}
-
-	private val eventName by lazy {
-		arguments?.getString("eventName")!!
-	}
-
-	private val roomName by lazy {
-		arguments?.getString("roomName")
-	}
 
 	private val suggestedEventsAdapter by lazy {
 		EventsAdapter(
 			suggestedEvents,
 			this@EventDetailsFragment,
 			this@EventDetailsFragment,
-			true,
-			mainViewModel.locale
+			true
 		)
 	}
 
@@ -86,9 +82,6 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		sharedElementEnterTransition =
 			TransitionInflater.from(context).inflateTransition(R.transition.change_bounds)
 		postponeEnterTransition()
-
-		exitTransition = TransitionInflater.from(context)
-			.inflateTransition(R.transition.events_exit_transition)
 	}
 
 	override fun onCreateView(
@@ -102,29 +95,6 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		val eventLocation = arguments?.getString("eventLocation") ?: ""
-		val eventStartDate = arguments?.getString("eventStartDate")!!
-		val eventEndDate = arguments?.getString("eventEndDate")!!
-		val eventImageUrl = arguments?.getString("imageUrl")
-		val eventDescription = arguments?.getString("eventDescription") ?: ""
-		val technologyFields = arguments?.getStringArrayList("technologyFields") ?: listOf<String>()
-		val eventOrganizer = arguments?.getString("eventOrganizer")
-
-		setupTransitions(eventID, eventImageUrl)
-
-		setDate(eventStartDate, eventEndDate)
-
-		(requireActivity() as AppCompatActivity).supportActionBar?.title = eventName
-
-		binding.tvEventName.text = eventName
-		binding.tvEventLocation.text = eventLocation
-		binding.tvEventOrganizer.text = eventOrganizer
-		if (eventDescription.isNotEmpty())
-			binding.tvEventDescription.text = eventDescription
-		else {
-			binding.tvAboutLabel.isVisible = false
-			binding.tvEventDescription.isVisible = false
-		}
 
 		binding.rvSuggestedEvents.apply {
 			layoutManager = LinearLayoutManager(requireContext(), HORIZONTAL, false)
@@ -136,11 +106,30 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 				Status.SUCCESS -> {
 					val events = it.data
 					if (events != null && events.isNotEmpty()) {
+						allEvents = events as ArrayList<EventsResponse.Event>
+						selectedEvent = events[args.eventID]
+
+						(requireActivity() as AppCompatActivity).supportActionBar?.title =
+							getEventName(selectedEvent)
+
+						setupTransitions(selectedEvent.eventId!!, getImageUrl(selectedEvent))
+
+						setDate(selectedEvent.startDate, selectedEvent.endDate)
+
+						binding.tvEventName.text = getEventName(selectedEvent)
+						binding.tvEventLocation.text = selectedEvent.location
+						binding.tvEventOrganizer.text = getEventOrganizer(selectedEvent)
+						if (getEventDescription(selectedEvent).isNullOrEmpty()) {
+							binding.tvAboutLabel.isVisible = false
+							binding.tvEventDescription.isVisible = false
+						} else
+							binding.tvEventDescription.text = getEventDescription(selectedEvent)
+
 						suggestedEvents.clear()
 						for (event in events) {
 							if (suggestedEvents.size == 3)
 								break
-							for (field in technologyFields) {
+							for (field in selectedEvent.technologyFields ?: listOf()) {
 								if (event.technologyFields?.contains(field) == true) {
 									suggestedEvents.add(event)
 									break
@@ -154,12 +143,16 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 						binding.tvInterestingForYou.isVisible = false
 					}
 				}
+				Status.ERROR -> {
+				}
+				Status.LOADING -> {
+				}
 			}
 		})
 
 		binding.btnAddToCalendar.setOnClickListener {
-			val beginTime = Constants.getServerDatetimeParser().parse(eventStartDate).time
-			val endTime = Constants.getServerDatetimeParser().parse(eventEndDate).time
+			val beginTime = Constants.getServerDatetimeParser().parse(selectedEvent.startDate).time
+			val endTime = Constants.getServerDatetimeParser().parse(selectedEvent.endDate).time
 
 			val intent: Intent = Intent(Intent.ACTION_INSERT)
 				.setData(Events.CONTENT_URI)
@@ -171,9 +164,9 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 					CalendarContract.EXTRA_EVENT_END_TIME,
 					endTime
 				)
-				.putExtra(Events.TITLE, eventName)
-				.putExtra(Events.DESCRIPTION, eventDescription)
-				.putExtra(Events.EVENT_LOCATION, eventLocation)
+				.putExtra(Events.TITLE, getEventName(selectedEvent))
+				.putExtra(Events.DESCRIPTION, getEventDescription(selectedEvent))
+				.putExtra(Events.EVENT_LOCATION, selectedEvent.location)
 				.putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY)
 
 			startActivity(intent)
@@ -184,12 +177,17 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 				when (it.status) {
 					Status.SUCCESS -> {
 						binding.progressBarLoading.isVisible = false
-						val mapUrl = it.data?.get(roomName) ?: "https://maps.noi.bz.it/"
+
+						val mapTitle = if (it.data?.get(selectedEvent.roomName) != null)
+							selectedEvent.roomName!!
+						else
+							getString(R.string.title_generic_noi_techpark_map)
+
 						findNavController().navigate(
-							R.id.action_global_webViewFragment, bundleOf(
-								"title" to if (eventName.isNotEmpty()) eventName else "No title",
-								"url" to mapUrl
-							)
+							WebViewFragmentDirections.actionGlobalWebViewFragment().apply {
+								title = mapTitle
+								url = it.data?.get(selectedEvent.roomName) ?: "https://maps.noi.bz.it/"
+							}
 						)
 					}
 					Status.LOADING -> {
@@ -298,23 +296,6 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		timeIcon: ImageView,
 		event: EventsResponse.Event
 	) {
-		val eventDescription: String?
-		val eventNamed: String?
-		when (mainViewModel.locale) {
-			"it" -> {
-				eventNamed = event.nameIT ?: event.name
-				eventDescription = event.descriptionIT  ?: getString(R.string.label_no_value)
-			}
-			"de" -> {
-				eventNamed = event.nameDE ?: event.name
-				eventDescription = event.descriptionDE  ?: getString(R.string.label_no_value)
-			}
-			else -> {
-				eventNamed = event.nameEN ?: event.name
-				eventDescription = event.descriptionEN  ?: getString(R.string.label_no_value)
-			}
-		}
-
 		val extras = FragmentNavigatorExtras(
 			constraintLayout to "constraintLayout_${event.eventId}",
 			eventName to "eventName_${event.eventId}",
@@ -326,16 +307,10 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 			timeIcon to "timeIcon_${event.eventId}"
 		)
 		findNavController().navigate(
-			R.id.action_eventDetailsFragment_self, bundleOf(
-				"eventID" to event.eventId,
-				"eventName" to eventNamed,
-				"eventLocation" to event.location,
-				"imageUrl" to event.imageGallery?.firstOrNull { it.imageUrl != null }?.imageUrl,
-				"eventStartDate" to event.startDate,
-				"eventEndDate" to event.endDate,
-				"eventDescription" to eventDescription,
-				"technologyFields" to event.technologyFields
-			), null, extras
+			EventDetailsFragmentDirections.actionEventDetailsFragmentSelf(
+				allEvents.indexOf(event)
+			),
+			extras
 		)
 	}
 }

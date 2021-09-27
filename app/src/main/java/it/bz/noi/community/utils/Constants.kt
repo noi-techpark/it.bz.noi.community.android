@@ -5,7 +5,10 @@ import java.util.*
 
 object Constants {
 
-    fun getNoiCalendar() = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.getDefault())
+	/**
+	 * various formatter/parser used
+	 */
+    fun getNoiCalendar(): Calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.getDefault())
 
     fun getServerDatetimeParser() = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).apply {
         timeZone = TimeZone.getTimeZone("Europe/Rome")
