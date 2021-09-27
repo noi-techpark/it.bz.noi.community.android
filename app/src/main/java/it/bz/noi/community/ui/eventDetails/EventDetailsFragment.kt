@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -38,6 +39,7 @@ import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.databinding.FragmentEventDetailsBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
+import it.bz.noi.community.ui.WebViewFragment
 import it.bz.noi.community.ui.WebViewFragmentDirections
 import it.bz.noi.community.ui.today.EventClickListener
 import it.bz.noi.community.ui.today.EventsAdapter
@@ -182,13 +184,13 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 							selectedEvent.roomName!!
 						else
 							getString(R.string.title_generic_noi_techpark_map)
+						val mapUrl = it.data?.get(selectedEvent.roomName) ?: "https://maps.noi.bz.it/"
 
-						findNavController().navigate(
-							WebViewFragmentDirections.actionGlobalWebViewFragment().apply {
-								title = mapTitle
-								url = it.data?.get(selectedEvent.roomName) ?: "https://maps.noi.bz.it/"
-							}
-						)
+							findNavController().navigate(
+							R.id.action_global_webViewFragment, bundleOf(
+								WebViewFragment.TITLE_ARG to mapTitle,
+								WebViewFragment.URL_ARG to mapUrl
+							))
 					}
 					Status.LOADING -> {
 						binding.progressBarLoading.isVisible = true
