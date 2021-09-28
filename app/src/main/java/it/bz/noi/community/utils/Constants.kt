@@ -10,6 +10,20 @@ object Constants {
 	 */
     fun getNoiCalendar(): Calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.getDefault())
 
+	fun getEndOfThisWeek(): Calendar {
+		val calendar = getNoiCalendar()
+		val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+		val daysToAdd = if (dayOfWeek == Calendar.SUNDAY) 0 else (8-dayOfWeek)
+		calendar.add(Calendar.DATE, daysToAdd)
+		return calendar
+	}
+
+	fun getEndOfThisMonth(): Calendar {
+		val calendar = getNoiCalendar()
+		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DATE))
+		return calendar
+	}
+
     fun getServerDatetimeParser() = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).apply {
         timeZone = TimeZone.getTimeZone("Europe/Rome")
         calendar = getNoiCalendar()
