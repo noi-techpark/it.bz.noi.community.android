@@ -44,6 +44,7 @@ jobs:
           set -eo pipefail
           BUILD_NUMBER=$(date "+%Y%m%d%H%M%S")
           echo "VERSION_CODE=$BUILD_NUMBER" > app/version.properties
+          cat app/version.properties
       - name: Generate Release AAB
         run: ./gradlew bundleRelease
       - name: Sign AAB
