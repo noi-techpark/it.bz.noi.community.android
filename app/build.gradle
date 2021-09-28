@@ -8,7 +8,7 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
-    // Version Code Generation - Start
+    // Version Code - Start
     def Properties versionProps = new Properties()
     def versionPropsFile = file('version.properties')
     
@@ -17,13 +17,7 @@ android {
     }
 
     def code = (versionProps['VERSION_CODE'] ?: "0").toInteger()
-
-    if ('bundleRelease' in gradle.startParameter.taskNames) {
-        code = code + 1
-        versionProps['VERSION_CODE'] = code.toString()
-        versionProps.store(versionPropsFile.newWriter(), null)
-    }
-    // Version Code Generation - End
+    // Version Code - End
 
     defaultConfig {
         applicationId "it.bz.noi.community"

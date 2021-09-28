@@ -39,8 +39,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+      - name: Increment build number
+        run: |
+          set -eo pipefail
+          BUILD_NUMBER=$(date "+%Y%m%d%H%M%S")
+          echo "VERSION_CODE=$BUILD_NUMBER" > app/version.properties
       - name: Generate Release AAB
         run: ./gradlew bundleRelease
       - name: Sign AAB
@@ -62,7 +65,3 @@ jobs:
           track: internal
           status: draft
           #mappingFile: mapping-${{ github.sha }}.txt
-      - run: git config --global user.name 'NOI Techpark Bot'
-      - run: git config --global user.email 'info@opendatahub.bz.it'
-      - run: git add -A && git commit -m "[RELEASE] Automatically incrementing version code"
-      - run: git push
