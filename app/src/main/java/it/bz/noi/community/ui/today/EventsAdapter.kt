@@ -14,10 +14,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.models.EventsResponse
-import it.bz.noi.community.utils.Constants.getLocalDateFormatter
-import it.bz.noi.community.utils.Constants.getLocalTimeFormatter
-import it.bz.noi.community.utils.Constants.getMonthCode
-import it.bz.noi.community.utils.Constants.getServerDatetimeParser
+import it.bz.noi.community.utils.Constants.getDateIntervalString
+import it.bz.noi.community.utils.Constants.getHoursIntervalString
+import it.bz.noi.community.utils.Utils
 import it.bz.noi.community.utils.Utils.getEventName
 
 /**
@@ -118,48 +117,14 @@ class EventsAdapter(
 			locationIcon.transitionName = "locationIcon_${event.eventId}"
 			timeIcon.transitionName = "timeIcon_${event.eventId}"
 
-			val startDate =
-				getLocalDateFormatter().format(getServerDatetimeParser().parse(event.startDate))
-			val endDate =
-				getLocalDateFormatter().format(getServerDatetimeParser().parse(event.endDate))
-			val month = "${getMonthCode(getServerDatetimeParser().parse(event.startDate).month)}"
-			val endMonth = "${getMonthCode(getServerDatetimeParser().parse(event.endDate).month)}"
-			val eventDateString = if (startDate == endDate) {
-				"${getServerDatetimeParser().parse(event.startDate).date}.$month."
-			} else {
-				if (month == endMonth)
-					"${getServerDatetimeParser().parse(event.startDate).date}. -\n ${
-						getServerDatetimeParser().parse(
-							event.endDate
-						).date
-					}.$month.\n"
-				else
-					"${getServerDatetimeParser().parse(event.startDate).date}.$month. -\n ${
-						getServerDatetimeParser().parse(
-							event.endDate
-						).date
-					}.$endMonth.\n"
-			}
-
-			eventDate.text = eventDateString
-
-			val startHour =
-				getLocalTimeFormatter().format(getServerDatetimeParser().parse(event.startDate))
-			val endHour =
-				getLocalTimeFormatter().format(getServerDatetimeParser().parse(event.endDate))
-			eventTime.text = "$startHour - $endHour"
-
-			var eventImageUrl = event.imageGallery?.firstOrNull { it.imageUrl != null }?.imageUrl
-
-			if (eventImageUrl?.startsWith(HTTP_PREFIX) == true) {
-				eventImageUrl = GET_IMAGE_URL  + eventImageUrl
-			}
+			eventDate.text = getDateIntervalString(event.startDate, event.endDate)
+			eventTime.text = getHoursIntervalString(event.startDate, event.endDate)
 
 			val options: RequestOptions = RequestOptions()
 				.placeholder(R.drawable.img_event_placeholder)
 			Glide
 				.with(view.context)
-				.load(eventImageUrl)
+				.load(Utils.getImageUrl(event))
 				.apply(options)
 				.centerCrop()
 				.into(eventImage)
@@ -167,8 +132,4 @@ class EventsAdapter(
 
 	}
 
-	companion object {
-		private const val HTTP_PREFIX = "http://"
-		private const val GET_IMAGE_URL = "https://images.opendatahub.bz.it/api/Image/GetImageByUrl?imageUrl="
-	}
 }

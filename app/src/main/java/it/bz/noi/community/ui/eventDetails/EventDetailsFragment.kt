@@ -30,6 +30,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
@@ -40,13 +41,9 @@ import it.bz.noi.community.databinding.FragmentEventDetailsBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
-import it.bz.noi.community.ui.WebViewFragmentDirections
 import it.bz.noi.community.ui.today.EventClickListener
 import it.bz.noi.community.ui.today.EventsAdapter
 import it.bz.noi.community.utils.Constants
-import it.bz.noi.community.utils.Constants.getLocalDateFormatter
-import it.bz.noi.community.utils.Constants.getLocalTimeFormatter
-import it.bz.noi.community.utils.Constants.getMonthCode
 import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils.getEventDescription
 import it.bz.noi.community.utils.Utils.getEventName
@@ -217,9 +214,13 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		ViewCompat.setTransitionName(binding.ivLocation, "locationIcon_${eventID}")
 		ViewCompat.setTransitionName(binding.ivTime, "timeIcon_${eventID}")
 
+		val options: RequestOptions = RequestOptions()
+			.placeholder(R.drawable.img_event_placeholder)
+
 		Glide
 			.with(requireContext())
-			.load(eventImageUrl ?: R.drawable.img_event_placeholder)
+			.load(eventImageUrl)
+			.apply(options)
 			.listener(object : RequestListener<Drawable> {
 				override fun onLoadFailed(
 					e: GlideException?,
@@ -250,37 +251,8 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 	 * Parsing of the date to populate date container and time
 	 */
 	private fun setDate(startDatetime: String, endDatetime: String) {
-		val startDate =
-			getLocalDateFormatter().format(Constants.getServerDatetimeParser().parse(startDatetime))
-		val endDate =
-			getLocalDateFormatter().format(Constants.getServerDatetimeParser().parse(endDatetime))
-		val month =
-			"${getMonthCode(Constants.getServerDatetimeParser().parse(startDatetime).month)}"
-		val endMonth =
-			"${getMonthCode(Constants.getServerDatetimeParser().parse(endDatetime).month)}"
-		val eventDateString = if (startDate == endDate) {
-			"${Constants.getServerDatetimeParser().parse(startDatetime).date}.$month."
-		} else {
-			if (month == endMonth)
-				"${Constants.getServerDatetimeParser().parse(startDatetime).date}. -\n ${
-					Constants.getServerDatetimeParser().parse(
-						endDatetime
-					).date
-				}.$month.\n"
-			else
-				"${Constants.getServerDatetimeParser().parse(startDatetime).date}.$month. -\n ${
-					Constants.getServerDatetimeParser().parse(
-						endDatetime
-					).date
-				}.$endMonth.\n"
-		}
-		binding.tvEventDate.text = eventDateString
-
-		val startHour =
-			getLocalTimeFormatter().format(Constants.getServerDatetimeParser().parse(startDatetime))
-		val endHour =
-			getLocalTimeFormatter().format(Constants.getServerDatetimeParser().parse(endDatetime))
-		binding.tvEventTime.text = "$startHour - $endHour"
+		binding.tvEventDate.text = Constants.getDateIntervalString(startDatetime, endDatetime)
+		binding.tvEventTime.text = Constants.getHoursIntervalString(startDatetime, endDatetime)
 	}
 
 	/**

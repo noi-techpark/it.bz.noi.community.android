@@ -11,7 +11,7 @@ android {
     // Version Code Generation - Start
     def Properties versionProps = new Properties()
     def versionPropsFile = file('version.properties')
-    
+
     if(versionPropsFile.exists()) {
         versionProps.load(new FileInputStream(versionPropsFile))
     }
@@ -27,7 +27,7 @@ android {
 
     defaultConfig {
         applicationId "it.bz.noi.community"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 30
         versionCode code
         versionName "1.0"

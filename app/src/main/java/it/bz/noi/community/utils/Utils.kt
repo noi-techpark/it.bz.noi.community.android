@@ -4,6 +4,10 @@ import it.bz.noi.community.data.models.EventsResponse
 import java.util.*
 
 object Utils {
+	private const val HTTP_PREFIX = "http://"
+	private const val GET_IMAGE_URL =
+		"https://images.opendatahub.bz.it/api/Image/GetImageByUrl?imageUrl="
+
 	fun getEventDescription(event: EventsResponse.Event): String? {
 		return when (Locale.getDefault().language) {
 			"it" -> {
@@ -40,6 +44,11 @@ object Utils {
 	}
 
 	fun getImageUrl(event: EventsResponse.Event): String? {
-		return event.imageGallery?.firstOrNull { it.imageUrl != null }?.imageUrl
+		var eventImageUrl = event.imageGallery?.firstOrNull { it.imageUrl != null }?.imageUrl
+
+		if (eventImageUrl?.startsWith(HTTP_PREFIX) == true) {
+			eventImageUrl = GET_IMAGE_URL + eventImageUrl
+		}
+		return eventImageUrl
 	}
 }
