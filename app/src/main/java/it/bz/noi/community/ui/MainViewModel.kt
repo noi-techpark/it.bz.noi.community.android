@@ -11,9 +11,8 @@ import it.bz.noi.community.data.models.TimeRange
 import it.bz.noi.community.data.models.UrlParams
 import it.bz.noi.community.data.repository.MainRepository
 import it.bz.noi.community.utils.Constants
-import it.bz.noi.community.utils.Constants.getEndOfThisMonth
-import it.bz.noi.community.utils.Constants.getNoiCalendar
-import it.bz.noi.community.utils.Constants.getEndOfThisWeek
+import it.bz.noi.community.utils.Constants.lastDayOfCurrentMonth
+import it.bz.noi.community.utils.Constants.lastDayOfCurrentWeek
 import it.bz.noi.community.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import java.util.*
@@ -39,9 +38,9 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 		private const val TAG = "MainViewModel"
 	}
 
-	private val today = getNoiCalendar().time
-	private val endOfWeek = getEndOfThisWeek().time
-	private val endOfMonth = getEndOfThisMonth().time
+	private val today = Calendar.getInstance().time
+	private val endOfWeek = lastDayOfCurrentWeek()
+	private val endOfMonth = lastDayOfCurrentMonth()
 
 	/**
 	 * persist the time filter selection for having UI consistency
@@ -83,6 +82,7 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 			mediatorEvents.value = it
 		}
 	}
+
 
 	/**
 	 * function used to filter the events by time

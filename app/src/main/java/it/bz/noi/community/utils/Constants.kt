@@ -8,36 +8,38 @@ import java.util.*
 
 object Constants {
 
-	/**
-	 * various formatter/parser used
+	/*
+	 * Last day of week depends on Locale, i.e.:
+	 * - IT: week goes from MONDAY (id=2) to SUNDAY (id=1)
+	 * - US: week goes from SUNDAY (id=1) to SATURDAY (id=7)
 	 */
-    fun getNoiCalendar(): Calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.getDefault())
+	fun lastDayOfCurrentWeek(): Date {
+		return Calendar.getInstance().apply {
+			// The number of days per week depends on the calendar type
+			val numDaysInAWeek = getActualMaximum(Calendar.DAY_OF_WEEK)
 
-	fun getEndOfThisWeek(): Calendar {
-		val calendar = getNoiCalendar()
-		val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-		val daysToAdd = if (dayOfWeek == Calendar.SUNDAY) 0 else (8-dayOfWeek)
-		calendar.add(Calendar.DATE, daysToAdd)
-		return calendar
+			// Day ids are in range [1,7], so we have to map them to range [0,6]
+			// (this is why we have the two '-1' in this computation) and then
+			// re-map the result to range [1,7] (therefore the last '+1')
+			val lastWeekday = ((firstDayOfWeek-1) + (numDaysInAWeek-1) )%numDaysInAWeek +1
+			set(Calendar.DAY_OF_WEEK, lastWeekday)
+		}.time
 	}
 
-	fun getEndOfThisMonth(): Calendar {
-		val calendar = getNoiCalendar()
-		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DATE))
-		return calendar
+	fun lastDayOfCurrentMonth(): Date {
+		return Calendar.getInstance().apply {
+			set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
+		}.time
 	}
 
     fun getServerDatetimeParser() = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).apply {
         timeZone = TimeZone.getTimeZone("Europe/Rome")
-        calendar = getNoiCalendar()
     }
     fun startDateFormatter() = SimpleDateFormat("yyyy-MM-dd 00:00", Locale.getDefault()).apply {
         timeZone = TimeZone.getTimeZone("Europe/Rome")
-        calendar = getNoiCalendar()
     }
     fun endDateFormatter() = SimpleDateFormat("yyyy-MM-dd 23:59", Locale.getDefault()).apply {
         timeZone = TimeZone.getTimeZone("Europe/Rome")
-        calendar = getNoiCalendar()
     }
 
 	fun getDateIntervalString(eventStartDate: String, eventEndDate: String): String {
