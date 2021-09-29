@@ -11,8 +11,11 @@ import it.bz.noi.community.data.models.TimeRange
 import it.bz.noi.community.data.models.UrlParams
 import it.bz.noi.community.data.repository.MainRepository
 import it.bz.noi.community.utils.Constants
+import it.bz.noi.community.utils.Constants.endOfDay
 import it.bz.noi.community.utils.Constants.lastDayOfCurrentMonth
 import it.bz.noi.community.utils.Constants.lastDayOfCurrentWeek
+import it.bz.noi.community.utils.Constants.parameterDateFormatter
+import it.bz.noi.community.utils.Constants.startOfDay
 import it.bz.noi.community.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import java.util.*
@@ -38,9 +41,10 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 		private const val TAG = "MainViewModel"
 	}
 
-	private val today = Calendar.getInstance().time
 	private val endOfWeek = lastDayOfCurrentWeek()
 	private val endOfMonth = lastDayOfCurrentMonth()
+
+	private val startDate = Calendar.getInstance().startOfDay()
 
 	/**
 	 * persist the time filter selection for having UI consistency
@@ -50,7 +54,7 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 	/**
 	 * represents the parameters of the URL for filtering the events
 	 */
-	var urlParams = UrlParams(startDate = Constants.startDateFormatter().format(Date()))
+	var urlParams = UrlParams(startDate = parameterDateFormatter().format(startDate))
 
 	/**
 	 * parameter used for caching the initial filter situation in the Filters fragment
@@ -91,23 +95,23 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 		selectedTimeFilter = timeRange
 		when (timeRange) {
 			TimeRange.ALL -> {
-				urlParams.startDate = Constants.startDateFormatter().format(today)
+				urlParams.startDate = parameterDateFormatter().format(startDate)
 				urlParams.endDate = null
 				Log.d(TAG, "ALL filter: from ${urlParams.startDate} to ${urlParams.endDate}")
 			}
 			TimeRange.TODAY -> {
-				urlParams.startDate = Constants.startDateFormatter().format(today)
-				urlParams.endDate = Constants.endDateFormatter().format(today)
+				urlParams.startDate = parameterDateFormatter().format(startDate)
+				urlParams.endDate = Constants.parameterDateFormatter().format(Calendar.getInstance().endOfDay())
 				Log.d(TAG, "TODAY filter: from ${urlParams.startDate} to ${urlParams.endDate}")
 			}
 			TimeRange.THIS_WEEK -> {
-				urlParams.startDate = Constants.startDateFormatter().format(today)
-				urlParams.endDate = Constants.endDateFormatter().format(endOfWeek)
+				urlParams.startDate = parameterDateFormatter().format(startDate)
+				urlParams.endDate = Constants.parameterDateFormatter().format(endOfWeek.endOfDay())
 				Log.d(TAG, "THIS WEEK filter: from ${urlParams.startDate} to ${urlParams.endDate}")
 			}
 			TimeRange.THIS_MONTH -> {
-				urlParams.startDate = Constants.startDateFormatter().format(today)
-				urlParams.endDate = Constants.endDateFormatter().format(endOfMonth)
+				urlParams.startDate = parameterDateFormatter().format(startDate)
+				urlParams.endDate = Constants.parameterDateFormatter().format(endOfMonth.endOfDay())
 				Log.d(TAG, "THIS MONTH filter: from ${urlParams.startDate} to ${urlParams.endDate}")
 			}
 		}

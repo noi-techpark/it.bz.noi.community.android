@@ -13,7 +13,7 @@ object Constants {
 	 * - IT: week goes from MONDAY (id=2) to SUNDAY (id=1)
 	 * - US: week goes from SUNDAY (id=1) to SATURDAY (id=7)
 	 */
-	fun lastDayOfCurrentWeek(): Date {
+	fun lastDayOfCurrentWeek(): Calendar {
 		return Calendar.getInstance().apply {
 			// The number of days per week depends on the calendar type
 			val numDaysInAWeek = getActualMaximum(Calendar.DAY_OF_WEEK)
@@ -23,24 +23,34 @@ object Constants {
 			// re-map the result to range [1,7] (therefore the last '+1')
 			val lastWeekday = ((firstDayOfWeek-1) + (numDaysInAWeek-1) )%numDaysInAWeek +1
 			set(Calendar.DAY_OF_WEEK, lastWeekday)
-		}.time
+		}
 	}
 
-	fun lastDayOfCurrentMonth(): Date {
+	fun lastDayOfCurrentMonth(): Calendar {
 		return Calendar.getInstance().apply {
 			set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
-		}.time
+		}
+	}
+
+	fun Calendar.startOfDay(): Date {
+		set(Calendar.HOUR_OF_DAY, 0)
+		set(Calendar.MINUTE, 0)
+		return time
+	}
+
+	fun Calendar.endOfDay(): Date {
+		set(Calendar.HOUR_OF_DAY, 23)
+		set(Calendar.MINUTE, 59)
+		return time
 	}
 
     fun getServerDatetimeParser() = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).apply {
         timeZone = TimeZone.getTimeZone("Europe/Rome")
     }
-    fun startDateFormatter() = SimpleDateFormat("yyyy-MM-dd 00:00", Locale.getDefault()).apply {
-        timeZone = TimeZone.getTimeZone("Europe/Rome")
-    }
-    fun endDateFormatter() = SimpleDateFormat("yyyy-MM-dd 23:59", Locale.getDefault()).apply {
-        timeZone = TimeZone.getTimeZone("Europe/Rome")
-    }
+
+	fun parameterDateFormatter() = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).apply {
+		timeZone = TimeZone.getTimeZone("Europe/Rome")
+	}
 
 	fun getDateIntervalString(eventStartDate: String, eventEndDate: String): String {
 		val startDate = getServerDatetimeParser().parse(eventStartDate)
