@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity() {
                     supportActionBar?.hide()
                 }
                 R.id.eventDetailsFragment, R.id.webViewFragment, R.id.filtersFragment -> {
+					supportActionBar?.show()
                     (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
                         18f
 					if (destination.id == R.id.webViewFragment) {
