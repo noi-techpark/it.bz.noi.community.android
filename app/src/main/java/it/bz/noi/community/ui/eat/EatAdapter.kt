@@ -16,7 +16,6 @@ import it.bz.noi.community.R
 data class Restaurant(
     val name: String,
     val pictureIds: List<Int>,
-    val openingDays: String,
     val openingTime: String,
     val menuUrl: String
 )
@@ -32,7 +31,6 @@ class EatAdapter(private val items: List<Restaurant>, private val onMenuClickLis
 	inner class EatViewHolder(itemView: View, onMenuClickListener: View.OnClickListener) : RecyclerView.ViewHolder(itemView) {
 
 		private val nameTV: TextView = itemView.findViewById(R.id.tvRestName)
-		private val openingDaysTV: TextView = itemView.findViewById(R.id.tvRestOpeningDays)
 		private val openingTimeTV: TextView = itemView.findViewById(R.id.tvRestOpeningTime)
 		private val picturesRV: RecyclerView = itemView.findViewById(R.id.picturesRecyclerView)
 		private val menuBtn: MaterialButton = itemView.findViewById(R.id.menuBtn)
@@ -44,11 +42,9 @@ class EatAdapter(private val items: List<Restaurant>, private val onMenuClickLis
 		fun bind(
 			name: String,
 			pictureIds: List<Int>,
-			openingDays: String,
 			openingTime: String
 		) {
 			nameTV.text = name
-			openingDaysTV.text = openingDays
 			openingTimeTV.text = openingTime
 
 			picturesRV.layoutManager =
@@ -69,7 +65,6 @@ class EatAdapter(private val items: List<Restaurant>, private val onMenuClickLis
         holder.bind(
             restaurant.name,
             restaurant.pictureIds,
-            restaurant.openingDays,
             restaurant.openingTime
         )
     }
