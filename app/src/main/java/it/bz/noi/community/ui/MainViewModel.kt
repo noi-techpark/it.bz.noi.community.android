@@ -1,5 +1,6 @@
 package it.bz.noi.community.ui
 
+import android.util.Log
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -10,7 +11,11 @@ import it.bz.noi.community.data.models.TimeRange
 import it.bz.noi.community.data.models.UrlParams
 import it.bz.noi.community.data.repository.MainRepository
 import it.bz.noi.community.utils.Constants
-import it.bz.noi.community.utils.Constants.getNoiCalendar
+import it.bz.noi.community.utils.Constants.endOfDay
+import it.bz.noi.community.utils.Constants.lastDayOfCurrentMonth
+import it.bz.noi.community.utils.Constants.lastDayOfCurrentWeek
+import it.bz.noi.community.utils.Constants.parameterDateFormatter
+import it.bz.noi.community.utils.Constants.startOfDay
 import it.bz.noi.community.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import java.util.*
@@ -32,6 +37,15 @@ class ViewModelFactory(private val apiHelper: ApiHelper) : ViewModelProvider.Fac
  */
 class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 
+	companion object {
+		private const val TAG = "MainViewModel"
+	}
+
+	private val endOfWeek = lastDayOfCurrentWeek()
+	private val endOfMonth = lastDayOfCurrentMonth()
+
+	private val startDate = Calendar.getInstance().startOfDay()
+
 	/**
 	 * persist the time filter selection for having UI consistency
 	 */
@@ -40,7 +54,7 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 	/**
 	 * represents the parameters of the URL for filtering the events
 	 */
-	var urlParams = UrlParams(startDate = Constants.startDateFormatter().format(Date()))
+	var urlParams = UrlParams(startDate = parameterDateFormatter().format(startDate))
 
 	/**
 	 * parameter used for caching the initial filter situation in the Filters fragment
@@ -73,6 +87,7 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 		}
 	}
 
+
 	/**
 	 * function used to filter the events by time
 	 */
@@ -80,24 +95,24 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 		selectedTimeFilter = timeRange
 		when (timeRange) {
 			TimeRange.ALL -> {
-				urlParams.startDate = Constants.startDateFormatter().format(Date())
+				urlParams.startDate = parameterDateFormatter().format(startDate)
 				urlParams.endDate = null
+				Log.d(TAG, "ALL filter: from ${urlParams.startDate} to ${urlParams.endDate}")
 			}
 			TimeRange.TODAY -> {
-				urlParams.startDate = Constants.startDateFormatter().format(Date())
-				urlParams.endDate = Constants.endDateFormatter().format(Date())
+				urlParams.startDate = parameterDateFormatter().format(startDate)
+				urlParams.endDate = Constants.parameterDateFormatter().format(Calendar.getInstance().endOfDay())
+				Log.d(TAG, "TODAY filter: from ${urlParams.startDate} to ${urlParams.endDate}")
 			}
 			TimeRange.THIS_WEEK -> {
-				val calendar = getNoiCalendar()
-				urlParams.startDate = Constants.startDateFormatter().format(calendar.time)
-				calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
-				urlParams.endDate = Constants.endDateFormatter().format(calendar.time)
+				urlParams.startDate = parameterDateFormatter().format(startDate)
+				urlParams.endDate = Constants.parameterDateFormatter().format(endOfWeek.endOfDay())
+				Log.d(TAG, "THIS WEEK filter: from ${urlParams.startDate} to ${urlParams.endDate}")
 			}
 			TimeRange.THIS_MONTH -> {
-				val calendar = getNoiCalendar()
-				urlParams.startDate = Constants.startDateFormatter().format(calendar.time)
-				calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DATE))
-				urlParams.endDate = Constants.endDateFormatter().format(calendar.time)
+				urlParams.startDate = parameterDateFormatter().format(startDate)
+				urlParams.endDate = Constants.parameterDateFormatter().format(endOfMonth.endOfDay())
+				Log.d(TAG, "THIS MONTH filter: from ${urlParams.startDate} to ${urlParams.endDate}")
 			}
 		}
 		refreshData()
