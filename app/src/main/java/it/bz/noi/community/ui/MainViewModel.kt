@@ -41,9 +41,6 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 		private const val TAG = "MainViewModel"
 	}
 
-	private val endOfWeek = lastDayOfCurrentWeek()
-	private val endOfMonth = lastDayOfCurrentMonth()
-
 	private val startDate = Calendar.getInstance().startOfDay()
 
 	/**
@@ -106,12 +103,12 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 			}
 			TimeRange.THIS_WEEK -> {
 				urlParams.startDate = parameterDateFormatter().format(startDate)
-				urlParams.endDate = Constants.parameterDateFormatter().format(endOfWeek.endOfDay())
+				urlParams.endDate = Constants.parameterDateFormatter().format(lastDayOfCurrentWeek().endOfDay())
 				Log.d(TAG, "THIS WEEK filter: from ${urlParams.startDate} to ${urlParams.endDate}")
 			}
 			TimeRange.THIS_MONTH -> {
 				urlParams.startDate = parameterDateFormatter().format(startDate)
-				urlParams.endDate = Constants.parameterDateFormatter().format(endOfMonth.endOfDay())
+				urlParams.endDate = Constants.parameterDateFormatter().format(lastDayOfCurrentMonth().endOfDay())
 				Log.d(TAG, "THIS MONTH filter: from ${urlParams.startDate} to ${urlParams.endDate}")
 			}
 		}
