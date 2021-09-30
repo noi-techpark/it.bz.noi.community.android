@@ -37,7 +37,7 @@ class MeetFragment : Fragment() {
             resources.getString(R.string.meet_item_startups),
             resources.getString(R.string.meet_item_university),
             resources.getString(R.string.meet_item_research),
-            resources.getString(R.string.meet_item_support),
+            resources.getString(R.string.meet_item_institutions),
             resources.getString(R.string.meet_item_lab),
             resources.getString(R.string.meet_item_team))
     }

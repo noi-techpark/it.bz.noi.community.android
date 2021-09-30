@@ -43,7 +43,7 @@ class EatFragment : Fragment() {
 				R.drawable.noisteria_innen2,
 				R.drawable.noisteria_salad
             ),
-            resources.getString(R.string.Noisteria_openings),
+            resources.getString(R.string.noisteria_openings),
             resources.getString(R.string.url_noisteria_menu)
         )
         val rest2 = Restaurant(
@@ -53,7 +53,7 @@ class EatFragment : Fragment() {
 				R.drawable.rockinbeets_meal_prep,
 				R.drawable.rockinbeets_meals,
 				R.drawable.rockinbeets_obstmarkt),
-            resources.getString(R.string.Community_Bar_openings),
+            resources.getString(R.string.community_bar_openings),
 			resources.getString(R.string.url_noi_bar_menu)
         )
         val rest3 = Restaurant(
@@ -63,7 +63,7 @@ class EatFragment : Fragment() {
 				R.drawable.alumix_frittura,
 				R.drawable.alumix_pizza,
 				R.drawable.alumix_sala_garden),
-            resources.getString(R.string.Alumix_openings),
+            resources.getString(R.string.alumix_openings),
 			resources.getString(R.string.url_alumix_menu)
         )
 
