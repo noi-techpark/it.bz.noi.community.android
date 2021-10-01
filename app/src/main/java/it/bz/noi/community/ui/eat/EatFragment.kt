@@ -37,26 +37,33 @@ class EatFragment : Fragment() {
         val rest1 = Restaurant(
             "Noisteria",
             listOf(
-                R.drawable.restaurant_placeholder,
-                R.drawable.restaurant_placeholder,
-                R.drawable.restaurant_placeholder
+                R.drawable.noisteria_aussen,
+                R.drawable.noisteria_bar,
+                R.drawable.noisteria_innen,
+				R.drawable.noisteria_innen2,
+				R.drawable.noisteria_salad
             ),
-            "Mo - Sa",
-            "19:00 - 20:00",
+            resources.getString(R.string.noisteria_openings),
             resources.getString(R.string.url_noisteria_menu)
         )
         val rest2 = Restaurant(
             "NOI Community Bar",
-            listOf(R.drawable.restaurant_placeholder, R.drawable.restaurant_placeholder),
-            "Mo - Sa",
-            "19:00 - 20:00",
+            listOf(
+				R.drawable.rockinbeets_asparagi_lasagne,
+				R.drawable.rockinbeets_meal_prep,
+				R.drawable.rockinbeets_meals,
+				R.drawable.rockinbeets_obstmarkt),
+            resources.getString(R.string.community_bar_openings),
 			resources.getString(R.string.url_noi_bar_menu)
         )
         val rest3 = Restaurant(
             "Alumix",
-            listOf(R.drawable.restaurant_placeholder),
-            "Mo - Sa",
-            "19:00 - 20:00",
+            listOf(
+				R.drawable.alumix,
+				R.drawable.alumix_frittura,
+				R.drawable.alumix_pizza,
+				R.drawable.alumix_sala_garden),
+            resources.getString(R.string.alumix_openings),
 			resources.getString(R.string.url_alumix_menu)
         )
 
