@@ -35,33 +35,22 @@
         app:layout_constraintTop_toBottomOf="@id/tvRestName">
 
         <TextView
-            android:id="@+id/tvRestOpeningDays"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/secondary_color"
-            android:textColorHint="@color/secondary_color"
-            android:textSize="17sp"
-            app:layout_constraintBottom_toTopOf="@id/tvRestOpeningTime"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:hint="Mo - Sa" />
-
-        <TextView
             android:id="@+id/tvRestOpeningTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/secondary_color"
             android:textColorHint="@color/secondary_color"
+			android:textSize="17dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvRestOpeningDays"
-            tools:hint="19:00 - 20:00" />
+            tools:hint="Mon - Sat\n\n19:00 - 20:00" />
 
         <com.google.android.material.button.MaterialButton
 			android:id="@+id/menuBtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="@string/btn_menu"
+			android:textSize="19dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

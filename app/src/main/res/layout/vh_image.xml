@@ -4,15 +4,16 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/restImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/content_description_image_for_restaurant"
-        android:paddingEnd="7dp"
-        android:src="@drawable/restaurant_placeholder"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+	<ImageView
+		android:id="@+id/restImage"
+		android:layout_width="167dp"
+		android:layout_height="250dp"
+		android:contentDescription="@string/content_description_image_for_restaurant"
+		android:layout_marginEnd="7dp"
+		android:scaleType="centerCrop"
+		android:src="@drawable/restaurant_placeholder"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
