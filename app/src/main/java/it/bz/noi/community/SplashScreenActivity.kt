@@ -3,11 +3,7 @@ package it.bz.noi.community
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.MotionEvent
-import android.widget.MediaController
-import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
-import it.bz.noi.community.databinding.ActivityMainBinding
 import it.bz.noi.community.databinding.ActivitySplashBinding
 
 /**
@@ -28,17 +24,17 @@ class SplashScreenActivity : AppCompatActivity() {
 			binding.vwSplash.apply {
 				setVideoURI(video)
 				setOnCompletionListener {
-					jump()
+					goToMainActivity()
 				}
 				requestFocus()
 				start()
 			}
 		} catch (ex: Exception) {
-			jump()
+			goToMainActivity()
 		}
 	}
 
-	private fun jump() {
+	private fun goToMainActivity() {
 		if (isFinishing) return
 		startActivity(Intent(this, MainActivity::class.java))
 		finish()
