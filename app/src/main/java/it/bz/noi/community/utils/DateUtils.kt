@@ -3,11 +3,11 @@ package it.bz.noi.community.utils
 import android.icu.text.DateFormat
 import android.icu.text.DateIntervalFormat
 import android.icu.util.DateInterval
-import it.bz.noi.community.data.models.EventDateFormatter.Companion.LOCALE_EN_US
+import it.bz.noi.community.data.models.EventDateParser.Companion.LOCALE_EN_US_POSIX
 import java.text.SimpleDateFormat
 import java.util.*
 
-object Constants {
+object DateUtils {
 
 	/*
 	 * Last day of week depends on Locale, i.e.:
@@ -45,24 +45,8 @@ object Constants {
 		return time
 	}
 
-	// TODO eliminare
-    fun getServerDatetimeParser() = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", LOCALE_EN_US).apply {
-        timeZone = TimeZone.getTimeZone("Europe/Rome")
-    }
-
-	// TODO eliminare
-	fun parameterDateFormatter() = SimpleDateFormat("yyyy-MM-dd HH:mm", LOCALE_EN_US).apply {
+	fun parameterDateFormatter() = SimpleDateFormat("yyyy-MM-dd HH:mm", LOCALE_EN_US_POSIX).apply {
 		timeZone = TimeZone.getTimeZone("Europe/Rome")
-	}
-
-	fun getDateIntervalString(eventStartDate: String, eventEndDate: String): String {
-		val startDate = getServerDatetimeParser().parse(eventStartDate)
-		val endDate = getServerDatetimeParser().parse(eventEndDate)
-		val dateInterval = DateInterval(startDate.time, endDate.time)
-
-		val diFormatDays = DateIntervalFormat.getInstance(DateFormat.NUM_MONTH_DAY)
-		// TODO DateIntervalFormat per gestire intervalli a cavallo d'anno (es. 31/12/2021 - 01/01/2022)
-		return diFormatDays.format(dateInterval)
 	}
 
 	fun getDateIntervalString(startDate: Date, endDate: Date): String {
@@ -71,24 +55,6 @@ object Constants {
 		val diFormatDays = DateIntervalFormat.getInstance(DateFormat.NUM_MONTH_DAY)
 		// TODO DateIntervalFormat per gestire intervalli a cavallo d'anno (es. 31/12/2021 - 01/01/2022)
 		return diFormatDays.format(dateInterval)
-	}
-
-	fun getHoursIntervalString(eventStartDate: String, eventEndDate: String): String {
-		val startDate = getServerDatetimeParser().parse(eventStartDate)
-		val endDate = getServerDatetimeParser().parse(eventEndDate)
-
-		val endCal = Calendar.getInstance().apply {
-			time = endDate
-		}
-		val endHour = Calendar.getInstance().apply {
-			time = startDate
-			set(Calendar.HOUR_OF_DAY, endCal.get(Calendar.HOUR_OF_DAY))
-			set(Calendar.MINUTE, endCal.get(Calendar.MINUTE))
-		}.time
-		val hoursInterval = DateInterval(startDate.time, endHour.time)
-
-		val diFormatHours = DateIntervalFormat.getInstance(DateFormat.HOUR24_MINUTE)
-		return diFormatHours.format(hoursInterval)
 	}
 
 	fun getHoursIntervalString(startDate: Date, endDate: Date): String {
