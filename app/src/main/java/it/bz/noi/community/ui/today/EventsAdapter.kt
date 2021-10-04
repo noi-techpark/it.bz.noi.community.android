@@ -14,8 +14,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.models.EventsResponse
-import it.bz.noi.community.utils.Constants.getDateIntervalString
-import it.bz.noi.community.utils.Constants.getHoursIntervalString
+import it.bz.noi.community.utils.DateUtils.getDateIntervalString
+import it.bz.noi.community.utils.DateUtils.getHoursIntervalString
 import it.bz.noi.community.utils.Utils
 import it.bz.noi.community.utils.Utils.getEventName
 

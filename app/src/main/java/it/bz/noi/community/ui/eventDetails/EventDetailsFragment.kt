@@ -43,7 +43,7 @@ import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
 import it.bz.noi.community.ui.today.EventClickListener
 import it.bz.noi.community.ui.today.EventsAdapter
-import it.bz.noi.community.utils.Constants
+import it.bz.noi.community.utils.DateUtils
 import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils.getEventDescription
 import it.bz.noi.community.utils.Utils.getEventName
@@ -150,8 +150,8 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		})
 
 		binding.btnAddToCalendar.setOnClickListener {
-			val beginTime = Constants.getServerDatetimeParser().parse(selectedEvent.startDate).time
-			val endTime = Constants.getServerDatetimeParser().parse(selectedEvent.endDate).time
+			val beginTime = selectedEvent.startDate.time
+			val endTime = selectedEvent.endDate.time
 
 			val intent: Intent = Intent(Intent.ACTION_INSERT)
 				.setData(Events.CONTENT_URI)
@@ -250,9 +250,9 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 	/**
 	 * Parsing of the date to populate date container and time
 	 */
-	private fun setDate(startDatetime: String, endDatetime: String) {
-		binding.tvEventDate.text = Constants.getDateIntervalString(startDatetime, endDatetime)
-		binding.tvEventTime.text = Constants.getHoursIntervalString(startDatetime, endDatetime)
+	private fun setDate(startDatetime: Date, endDatetime: Date) {
+		binding.tvEventDate.text = DateUtils.getDateIntervalString(startDatetime, endDatetime)
+		binding.tvEventTime.text = DateUtils.getHoursIntervalString(startDatetime, endDatetime)
 	}
 
 	/**

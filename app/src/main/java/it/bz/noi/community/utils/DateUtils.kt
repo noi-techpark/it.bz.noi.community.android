@@ -3,10 +3,11 @@ package it.bz.noi.community.utils
 import android.icu.text.DateFormat
 import android.icu.text.DateIntervalFormat
 import android.icu.util.DateInterval
+import it.bz.noi.community.data.models.EventDateParser.Companion.LOCALE_EN_US_POSIX
 import java.text.SimpleDateFormat
 import java.util.*
 
-object Constants {
+object DateUtils {
 
 	/*
 	 * Last day of week depends on Locale, i.e.:
@@ -44,17 +45,11 @@ object Constants {
 		return time
 	}
 
-    fun getServerDatetimeParser() = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).apply {
-        timeZone = TimeZone.getTimeZone("Europe/Rome")
-    }
-
-	fun parameterDateFormatter() = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).apply {
+	fun parameterDateFormatter() = SimpleDateFormat("yyyy-MM-dd HH:mm", LOCALE_EN_US_POSIX).apply {
 		timeZone = TimeZone.getTimeZone("Europe/Rome")
 	}
 
-	fun getDateIntervalString(eventStartDate: String, eventEndDate: String): String {
-		val startDate = getServerDatetimeParser().parse(eventStartDate)
-		val endDate = getServerDatetimeParser().parse(eventEndDate)
+	fun getDateIntervalString(startDate: Date, endDate: Date): String {
 		val dateInterval = DateInterval(startDate.time, endDate.time)
 
 		val diFormatDays = DateIntervalFormat.getInstance(DateFormat.NUM_MONTH_DAY)
@@ -62,10 +57,7 @@ object Constants {
 		return diFormatDays.format(dateInterval)
 	}
 
-	fun getHoursIntervalString(eventStartDate: String, eventEndDate: String): String {
-		val startDate = getServerDatetimeParser().parse(eventStartDate)
-		val endDate = getServerDatetimeParser().parse(eventEndDate)
-
+	fun getHoursIntervalString(startDate: Date, endDate: Date): String {
 		val endCal = Calendar.getInstance().apply {
 			time = endDate
 		}
