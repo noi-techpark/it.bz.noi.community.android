@@ -39,7 +39,7 @@
 						android:id="@+id/ivEventImage"
 						android:layout_width="match_parent"
 						android:layout_height="400dp"
-						android:contentDescription="@string/content_description_event_image"
+						android:importantForAccessibility="no"
 						android:scaleType="centerCrop"
 						android:src="@drawable/img_event_placeholder"
 						app:layout_constraintTop_toTopOf="parent" />
@@ -61,7 +61,7 @@
 						android:layout_width="14dp"
 						android:layout_height="14dp"
 						android:layout_marginStart="16dp"
-						android:contentDescription="@string/content_description_location_icon"
+						android:importantForAccessibility="no"
 						android:src="@drawable/ic_location"
 						app:layout_constraintBottom_toBottomOf="@id/tvEventLocation"
 						app:layout_constraintStart_toStartOf="parent"
@@ -96,7 +96,7 @@
 						android:layout_height="14dp"
 						android:layout_marginStart="16dp"
 						android:layout_marginEnd="4dp"
-						android:contentDescription="@string/content_description_time_icon"
+						android:importantForAccessibility="no"
 						android:src="@drawable/ic_time"
 						app:layout_constraintBottom_toBottomOf="@id/tvEventLocation"
 						app:layout_constraintEnd_toStartOf="@id/tvEventTime"
@@ -212,12 +212,12 @@
 	<androidx.constraintlayout.helper.widget.Flow
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginBottom="@dimen/activity_vertical_margin"
 		android:layout_marginStart="@dimen/activity_horizontal_margin"
 		android:layout_marginEnd="@dimen/activity_horizontal_margin"
+		android:layout_marginBottom="@dimen/activity_vertical_margin"
 		app:constraint_referenced_ids="btnFindOnMaps,btnAddToCalendar"
 		app:flow_wrapMode="aligned"
-		app:layout_constraintBottom_toBottomOf="parent"/>
+		app:layout_constraintBottom_toBottomOf="parent" />
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/btnFindOnMaps"
@@ -226,8 +226,8 @@
 		android:text="@string/btn_find_on_maps"
 		app:cornerRadius="0dp"
 		app:elevation="0dp"
-		app:layout_constraintTop_toTopOf="@id/viewWhiteLayer"
-		app:layout_constraintStart_toStartOf="@id/viewWhiteLayer"/>
+		app:layout_constraintStart_toStartOf="@id/viewWhiteLayer"
+		app:layout_constraintTop_toTopOf="@id/viewWhiteLayer" />
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/btnAddToCalendar"
@@ -237,7 +237,7 @@
 		app:cornerRadius="0dp"
 		app:elevation="0dp"
 		app:layout_constraintBottom_toBottomOf="@id/viewWhiteLayer"
-		app:layout_constraintEnd_toEndOf="@id/viewWhiteLayer"/>
+		app:layout_constraintEnd_toEndOf="@id/viewWhiteLayer" />
 
 	<ProgressBar
 		android:id="@+id/progressBarLoading"
