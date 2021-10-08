@@ -43,6 +43,7 @@
 		android:layout_height="match_parent"
 		android:text="@string/btn_menu"
 		android:textSize="19sp"
+		app:cornerRadius="0dp"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/tvRestName"
 		app:layout_constraintStart_toEndOf="@id/tvRestOpeningTime"/>
