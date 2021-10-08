@@ -39,7 +39,7 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/filterstRV" />
 
-		<Button
+		<com.google.android.material.button.MaterialButton
 			android:id="@+id/showBtn"
 			android:layout_width="match_parent"
 			android:layout_height="50dp"
@@ -49,6 +49,7 @@
 			android:text="@string/show_btn_format"
 			android:textColor="@color/primary_color"
 			android:textSize="19sp"
+			app:cornerRadius="0dp"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
