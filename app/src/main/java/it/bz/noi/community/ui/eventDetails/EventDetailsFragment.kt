@@ -2,6 +2,7 @@ package it.bz.noi.community.ui.eventDetails
 
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.provider.CalendarContract.Events
@@ -181,13 +182,33 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 							selectedEvent.roomName!!
 						else
 							getString(R.string.title_generic_noi_techpark_map)
-						val mapUrl = it.data?.get(selectedEvent.roomName) ?: "https://maps.noi.bz.it/"
+						var mapUrl = it.data?.get(selectedEvent.roomName)
+							?: resources.getString(R.string.url_map)
 
-							findNavController().navigate(
+						val originalUri = Uri.parse(mapUrl)
+
+						val scheme = originalUri.scheme
+						val authority = originalUri.authority
+						val path = originalUri.path
+						val query = originalUri.query
+
+						val newUri = Uri.Builder()
+							.scheme(scheme)
+							.authority(authority)
+							.path(path)
+							.query(query)
+							.appendQueryParameter("fullview", "1")
+							.appendQueryParameter("hidezoom", "1")
+							.build()
+
+						mapUrl = newUri.toString()
+
+						findNavController().navigate(
 							R.id.action_global_webViewFragment, bundleOf(
 								WebViewFragment.TITLE_ARG to mapTitle,
 								WebViewFragment.URL_ARG to mapUrl
-							))
+							)
+						)
 					}
 					Status.LOADING -> {
 						binding.progressBarLoading.isVisible = true
