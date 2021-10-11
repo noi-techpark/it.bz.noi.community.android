@@ -1,5 +1,6 @@
 package it.bz.noi.community.utils
 
+import android.net.Uri
 import it.bz.noi.community.data.models.EventsResponse
 import java.util.*
 
@@ -7,6 +8,8 @@ object Utils {
 	private const val HTTP_PREFIX = "http://"
 	private const val GET_IMAGE_URL =
 		"https://images.opendatahub.bz.it/api/Image/GetImageByUrl?imageUrl="
+	private const val FULLVIEW_PARAM = "fullview"
+	private const val HIDEZOOM_PARAM = "hidezoom"
 
 	fun getEventDescription(event: EventsResponse.Event): String? {
 		return when (Locale.getDefault().language) {
@@ -50,5 +53,16 @@ object Utils {
 			eventImageUrl = GET_IMAGE_URL + eventImageUrl
 		}
 		return eventImageUrl
+	}
+
+	fun addParamsToUrl(originalUrl: String, fullview: Boolean, hidezoom: Boolean): String {
+		val newUriBuilder = Uri.parse(originalUrl).buildUpon()
+
+		if (fullview)
+			newUriBuilder.appendQueryParameter(FULLVIEW_PARAM, "1")
+		if (hidezoom)
+			newUriBuilder.appendQueryParameter(HIDEZOOM_PARAM, "1")
+
+		return newUriBuilder.build().toString()
 	}
 }

@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import it.bz.noi.community.R
 import it.bz.noi.community.ui.WebViewFragmentDirections
+import it.bz.noi.community.utils.Utils
 
 class OrientateFragment : Fragment() {
 
@@ -22,9 +23,9 @@ class OrientateFragment : Fragment() {
 
         val webView = root.findViewById<WebView>(R.id.orientateWV)
         webView.settings.javaScriptEnabled = true
-        webView.loadUrl(resources.getString(R.string.url_map))
+		webView.loadUrl(Utils.addParamsToUrl(resources.getString(R.string.url_map), fullview = true, hidezoom = true))
 
-        val btn = root.findViewById<MaterialButton>(R.id.roomBookingBtn)
+		val btn = root.findViewById<MaterialButton>(R.id.roomBookingBtn)
         btn.setOnClickListener {
             val action = WebViewFragmentDirections.actionGlobalWebViewFragment().apply {
 				title = resources.getString(R.string.room_booking)
