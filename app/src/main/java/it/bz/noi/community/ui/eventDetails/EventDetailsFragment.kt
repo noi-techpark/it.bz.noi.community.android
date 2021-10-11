@@ -46,6 +46,7 @@ import it.bz.noi.community.ui.today.EventClickListener
 import it.bz.noi.community.ui.today.EventsAdapter
 import it.bz.noi.community.utils.DateUtils
 import it.bz.noi.community.utils.Status
+import it.bz.noi.community.utils.Utils
 import it.bz.noi.community.utils.Utils.getEventDescription
 import it.bz.noi.community.utils.Utils.getEventName
 import it.bz.noi.community.utils.Utils.getEventOrganizer
@@ -182,31 +183,13 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 							selectedEvent.roomName!!
 						else
 							getString(R.string.title_generic_noi_techpark_map)
-						var mapUrl = it.data?.get(selectedEvent.roomName)
+						val mapUrl = it.data?.get(selectedEvent.roomName)
 							?: resources.getString(R.string.url_map)
-
-						val originalUri = Uri.parse(mapUrl)
-
-						val scheme = originalUri.scheme
-						val authority = originalUri.authority
-						val path = originalUri.path
-						val query = originalUri.query
-
-						val newUri = Uri.Builder()
-							.scheme(scheme)
-							.authority(authority)
-							.path(path)
-							.query(query)
-							.appendQueryParameter("fullview", "1")
-							.appendQueryParameter("hidezoom", "1")
-							.build()
-
-						mapUrl = newUri.toString()
 
 						findNavController().navigate(
 							R.id.action_global_webViewFragment, bundleOf(
 								WebViewFragment.TITLE_ARG to mapTitle,
-								WebViewFragment.URL_ARG to mapUrl
+								WebViewFragment.URL_ARG to Utils.addParamsToUrl(mapUrl, fullview = true, hidezoom = true)
 							)
 						)
 					}
