@@ -21,7 +21,7 @@ class EatFragment : Fragment() {
     private val onMenuClickListener = View.OnClickListener {
 
 		it?.let {
-			val pos = eatRecyclerView.getChildLayoutPosition(it.parent?.parent as View)
+			val pos = eatRecyclerView.getChildAdapterPosition(it.parent as View)
 
 			val action = EatFragmentDirections.actionNavigationEatToWebViewFragment()
 			action.title = resources.getString(R.string.title_menu_format, getRestaurantNameByPos(pos))
