@@ -1,47 +1,47 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.NOICommunity" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+	<!-- Base application theme. -->
+	<style name="Theme.NOICommunity" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
 
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
 
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/background_color</item>
-        <item name="colorPrimaryVariant">@color/background_color</item>
-        <item name="colorOnPrimary">@color/primary_color</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/primary_color</item>
-        <item name="colorSecondaryVariant">@color/primary_color</item>
-        <item name="colorOnSecondary">@color/background_color</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/background_color</item>
-        <!-- Customize your theme here. -->
-        <item name="android:windowActivityTransitions">true</item>
-        <item name="android:windowContentTransitions">true</item>
-        <item name="switchStyle">@style/Widget.App.Switch</item>
+		<!-- Primary brand color. -->
+		<item name="colorPrimary">@color/background_color</item>
+		<item name="colorPrimaryVariant">@color/background_color</item>
+		<item name="colorOnPrimary">@color/primary_color</item>
+		<!-- Secondary brand color. -->
+		<item name="colorSecondary">@color/primary_color</item>
+		<item name="colorSecondaryVariant">@color/primary_color</item>
+		<item name="colorOnSecondary">@color/background_color</item>
+		<!-- Status bar color. -->
+		<item name="android:statusBarColor" tools:targetApi="l">@color/background_color</item>
+		<!-- Customize your theme here. -->
+		<item name="android:windowActivityTransitions">true</item>
+		<item name="android:windowContentTransitions">true</item>
+		<item name="switchStyle">@style/Widget.App.Switch</item>
 
-    </style>
+	</style>
 
-    <style name="ToolbarTextAppearence">
-        <item name="android:textSize">26sp</item>
-    </style>
+	<style name="ToolbarTextAppearence">
+		<item name="android:textSize">26sp</item>
+	</style>
 
-    <style name="ToolbarTheme" parent="@style/Widget.MaterialComponents.ActionBar.Primary">
-        <!-- Customize color of navigation drawer icon and back arrow -->
-        <item name="colorControlNormal">@color/primary_color</item>
-    </style>
+	<style name="ToolbarTheme" parent="@style/Widget.MaterialComponents.ActionBar.Primary">
+		<!-- Customize color of navigation drawer icon and back arrow -->
+		<item name="colorControlNormal">@color/primary_color</item>
+	</style>
 
-    <style name="Widget.App.Switch" parent="Widget.MaterialComponents.CompoundButton.Switch">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Switch</item>
-    </style>
+	<style name="Widget.App.Switch" parent="Widget.MaterialComponents.CompoundButton.Switch">
+		<item name="materialThemeOverlay">@style/ThemeOverlay.App.Switch</item>
+	</style>
 
-    <!--
-        Switch checked: black
-        Switch unchecked: medium gray
-    -->
-    <style name="ThemeOverlay.App.Switch" parent="">
-        <item name="colorSecondary">@color/background_color</item>
-        <item name="colorSurface">@color/disabled2_color</item>
-        <item name="colorOnSurface">@color/disabled2_color</item>
-    </style>
+	<!--
+		Switch checked: black
+		Switch unchecked: medium gray
+	-->
+	<style name="ThemeOverlay.App.Switch" parent="">
+		<item name="colorSecondary">@color/background_color</item>
+		<item name="colorSurface">@color/disabled2_color</item>
+		<item name="colorOnSurface">@color/disabled2_color</item>
+	</style>
 </resources>
