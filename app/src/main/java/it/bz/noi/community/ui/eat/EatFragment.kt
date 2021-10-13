@@ -89,4 +89,5 @@ class EatFragment : Fragment() {
 	private fun getRestaurantNameByPos(pos: Int): String {
 		return restaurants[pos].name
 	}
+	
 }
