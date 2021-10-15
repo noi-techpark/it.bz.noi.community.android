@@ -5,18 +5,30 @@ import it.bz.noi.community.data.models.EventsResponse
 import java.util.*
 
 object Utils {
+
 	private const val HTTP_PREFIX = "http://"
 	private const val GET_IMAGE_URL =
 		"https://images.opendatahub.bz.it/api/Image/GetImageByUrl?imageUrl="
 	private const val FULLVIEW_PARAM = "fullview"
 	private const val HIDEZOOM_PARAM = "hidezoom"
+	private const val ENGLISH = "en"
+	private const val ITALIAN = "it"
+	private const val GERMAN = "de"
+
+	fun getAppLanguage(): String? {
+		val language = Locale.getDefault().language
+		if (language in listOf(ENGLISH, ITALIAN, GERMAN))
+			return language
+		else
+			return null
+	}
 
 	fun getEventDescription(event: EventsResponse.Event): String? {
 		return when (Locale.getDefault().language) {
-			"it" -> {
+			ITALIAN -> {
 				event.descriptionIT
 			}
-			"de" -> {
+			GERMAN -> {
 				event.descriptionDE
 			}
 			else -> {
@@ -27,10 +39,10 @@ object Utils {
 
 	fun getEventName(event: EventsResponse.Event, fallback: String = "N/D"): String {
 		return when (Locale.getDefault().language) {
-			"it" -> {
+			ITALIAN -> {
 				event.nameIT ?: event.name ?: fallback
 			}
-			"de" -> {
+			GERMAN -> {
 				event.nameDE ?: event.name ?: fallback
 			}
 			else -> {

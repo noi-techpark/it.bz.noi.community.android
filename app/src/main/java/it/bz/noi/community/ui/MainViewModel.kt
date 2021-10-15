@@ -16,6 +16,7 @@ import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentWeek
 import it.bz.noi.community.utils.DateUtils.parameterDateFormatter
 import it.bz.noi.community.utils.DateUtils.startOfDay
 import it.bz.noi.community.utils.Resource
+import it.bz.noi.community.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import java.util.*
 
@@ -145,7 +146,7 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 	fun getRoomMapping() = liveData(Dispatchers.IO) {
 		emit(Resource.loading(null))
 		try {
-			emit(Resource.success(data = mainRepository.getRoomMapping()))
+			emit(Resource.success(data = mainRepository.getRoomMapping(Utils.getAppLanguage())))
 		} catch (exception: Exception) {
 			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
 		}

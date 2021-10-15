@@ -9,5 +9,5 @@ class ApiHelper(private val apiService: ApiService) {
         return apiService.getEvents(startDate = urlParams.startDate, endDate = urlParams.endDate, rawFilter = urlParams.getRawFilter())
     }
     suspend fun getEventDetails(eventID: String) = apiService.getEventDetails(eventID)
-    suspend fun getRoomMapping() = apiService.getRoomMapping()
+    suspend fun getRoomMapping(language: String?) = apiService.getRoomMapping(language)
 }
