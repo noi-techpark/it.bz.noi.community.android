@@ -96,3 +96,5 @@ infrastructure/keystore
 .settings
 .env
 serviceAccountJson.json
+
+google-services.json
