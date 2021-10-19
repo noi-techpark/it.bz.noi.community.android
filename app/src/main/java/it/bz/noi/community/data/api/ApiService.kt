@@ -26,5 +26,7 @@ interface ApiService {
     ): EventDetailsResponse
 
     @GET("v1/EventShort/RoomMapping")
-    suspend fun getRoomMapping(): Map<String, String>
+    suspend fun getRoomMapping(
+		@Query("language") language: String?
+	): Map<String, String>
 }
