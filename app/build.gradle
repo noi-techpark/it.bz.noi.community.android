@@ -38,7 +38,6 @@ android {
 			enableGoogleServices = true
 		}
 		debug {
-			ext.enableCrashlytics = false
 			enableGoogleServices = false
 		}
 	}
