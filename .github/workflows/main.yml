@@ -16,7 +16,7 @@ jobs:
       - name: Inject google-services.json
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
+        run: if [ -z "$GOOGLE_SERVICES_JSON" ]; then echo "{}" > app/google-services.json; else echo "$GOOGLE_SERVICES_JSON" > app/google-services.json; fi
       - name: Build the app
         run: ./gradlew build
       - name: Test the app
@@ -32,7 +32,7 @@ jobs:
       - name: Inject google-services.json
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
+        run: if [ -z "$GOOGLE_SERVICES_JSON" ]; then echo "{}" > app/google-services.json; else echo "$GOOGLE_SERVICES_JSON" > app/google-services.json; fi
       - name: Instrumentation Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -50,7 +50,7 @@ jobs:
       - name: Inject google-services.json
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
+        run: if [ -z "$GOOGLE_SERVICES_JSON" ]; then echo "{}" > app/google-services.json; else echo "$GOOGLE_SERVICES_JSON" > app/google-services.json; fi
       - name: Increment build number
         run: |
           set -eo pipefail
