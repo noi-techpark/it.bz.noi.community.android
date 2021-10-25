@@ -219,7 +219,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		ViewCompat.setTransitionName(binding.ivTime, "timeIcon_${eventID}")
 
 		val options: RequestOptions = RequestOptions()
-			.placeholder(R.drawable.img_event_placeholder)
+			.placeholder(R.drawable.placeholder_noi_events)
 
 		Glide
 			.with(requireContext())

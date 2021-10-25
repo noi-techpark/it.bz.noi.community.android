@@ -121,7 +121,7 @@ class EventsAdapter(
 			eventTime.text = getHoursIntervalString(event.startDate, event.endDate)
 
 			val options: RequestOptions = RequestOptions()
-				.placeholder(R.drawable.img_event_placeholder)
+				.placeholder(R.drawable.placeholder_noi_events)
 			Glide
 				.with(view.context)
 				.load(Utils.getImageUrl(event))
