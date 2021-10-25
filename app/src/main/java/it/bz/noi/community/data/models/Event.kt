@@ -41,7 +41,9 @@ data class EventsResponse(
 		@SerializedName("ImageGallery")
 		val imageGallery: List<ImageGallery>? = null,
 		@SerializedName("AnchorVenueRoomMapping")
-		val roomName: String? = null
+		val roomName: String? = null,
+		@SerializedName("WebAddress")
+		val webAddress: String? = null
 	) {
 		data class ImageGallery(
 			@SerializedName("ImageUrl")

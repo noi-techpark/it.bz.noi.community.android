@@ -117,6 +117,83 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
 						setDate(selectedEvent.startDate, selectedEvent.endDate)
 
+						if (selectedEvent.webAddress != null) {
+							binding.btnAddToCalendar.text = getString(R.string.btn_sign_up)
+						} else {
+							binding.btnAddToCalendar.text = getString(R.string.btn_add_to_calendar)
+						}
+
+						binding.btnAddToCalendar.setOnClickListener {
+							if (selectedEvent.webAddress != null) {
+								val browserIntent =
+									Intent(Intent.ACTION_VIEW, Uri.parse(selectedEvent.webAddress))
+								startActivity(browserIntent)
+							} else {
+								val beginTime = selectedEvent.startDate.time
+								val endTime = selectedEvent.endDate.time
+
+								val intent: Intent = Intent(Intent.ACTION_INSERT)
+									.setData(Events.CONTENT_URI)
+									.putExtra(
+										CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+										beginTime
+									)
+									.putExtra(
+										CalendarContract.EXTRA_EVENT_END_TIME,
+										endTime
+									)
+									.putExtra(Events.TITLE, getEventName(selectedEvent))
+									.putExtra(
+										Events.DESCRIPTION,
+										getEventDescription(selectedEvent)
+									)
+									.putExtra(Events.EVENT_LOCATION, selectedEvent.location)
+									.putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY)
+
+								startActivity(intent)
+							}
+						}
+
+						binding.btnFindOnMaps.setOnClickListener {
+							mainViewModel.getRoomMapping().observe(viewLifecycleOwner, Observer {
+								when (it.status) {
+									Status.SUCCESS -> {
+										binding.progressBarLoading.isVisible = false
+
+										val mapTitle =
+											if (it.data?.get(selectedEvent.roomName) != null)
+												selectedEvent.roomName!!
+											else
+												getString(R.string.title_generic_noi_techpark_map)
+										val mapUrl = it.data?.get(selectedEvent.roomName)
+											?: resources.getString(R.string.url_map)
+
+										findNavController().navigate(
+											R.id.action_global_webViewFragment, bundleOf(
+												WebViewFragment.TITLE_ARG to mapTitle,
+												WebViewFragment.URL_ARG to Utils.addParamsToUrl(
+													mapUrl,
+													fullview = true,
+													hidezoom = true
+												)
+											)
+										)
+									}
+									Status.LOADING -> {
+										binding.progressBarLoading.isVisible = true
+									}
+									Status.ERROR -> {
+										binding.progressBarLoading.isVisible = false
+										Toast.makeText(
+											requireContext(),
+											it.message,
+											Toast.LENGTH_LONG
+										).show()
+									}
+								}
+							})
+						}
+
 						binding.tvEventName.text = getEventName(selectedEvent)
 						binding.tvEventLocation.text = selectedEvent.location
 						binding.tvEventOrganizer.text = getEventOrganizer(selectedEvent)
@@ -150,59 +227,6 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 				}
 			}
 		})
-
-		binding.btnAddToCalendar.setOnClickListener {
-			val beginTime = selectedEvent.startDate.time
-			val endTime = selectedEvent.endDate.time
-
-			val intent: Intent = Intent(Intent.ACTION_INSERT)
-				.setData(Events.CONTENT_URI)
-				.putExtra(
-					CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-					beginTime
-				)
-				.putExtra(
-					CalendarContract.EXTRA_EVENT_END_TIME,
-					endTime
-				)
-				.putExtra(Events.TITLE, getEventName(selectedEvent))
-				.putExtra(Events.DESCRIPTION, getEventDescription(selectedEvent))
-				.putExtra(Events.EVENT_LOCATION, selectedEvent.location)
-				.putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY)
-
-			startActivity(intent)
-		}
-
-		binding.btnFindOnMaps.setOnClickListener {
-			mainViewModel.getRoomMapping().observe(viewLifecycleOwner, Observer {
-				when (it.status) {
-					Status.SUCCESS -> {
-						binding.progressBarLoading.isVisible = false
-
-						val mapTitle = if (it.data?.get(selectedEvent.roomName) != null)
-							selectedEvent.roomName!!
-						else
-							getString(R.string.title_generic_noi_techpark_map)
-						val mapUrl = it.data?.get(selectedEvent.roomName)
-							?: resources.getString(R.string.url_map)
-
-						findNavController().navigate(
-							R.id.action_global_webViewFragment, bundleOf(
-								WebViewFragment.TITLE_ARG to mapTitle,
-								WebViewFragment.URL_ARG to Utils.addParamsToUrl(mapUrl, fullview = true, hidezoom = true)
-							)
-						)
-					}
-					Status.LOADING -> {
-						binding.progressBarLoading.isVisible = true
-					}
-					Status.ERROR -> {
-						binding.progressBarLoading.isVisible = false
-						Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
-					}
-				}
-			})
-		}
 	}
 
 	/**
