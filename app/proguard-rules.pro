@@ -16,6 +16,10 @@
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable
 
+# Get deobfuscated crash reports with the Firebase Crashlytics SDK
+-keepattributes SourceFile,LineNumberTable        # Keep file names and line numbers.
+-keep public class * extends java.lang.Exception  # Optional: Keep custom exceptions.
+
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
@@ -24,3 +28,4 @@
 	@com.google.gson.annotations.SerializedName <fields>;
 	@com.google.gson.annotations.Expose <fields>;
 }
+

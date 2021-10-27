@@ -4,6 +4,8 @@ plugins {
 	id 'androidx.navigation.safeargs'
 }
 
+def enableGoogleServices = false
+
 android {
 	compileSdkVersion 30
 	buildToolsVersion "30.0.3"
@@ -33,6 +35,10 @@ android {
 		release {
 			minifyEnabled true
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+			enableGoogleServices = true
+		}
+		debug {
+			enableGoogleServices = false
 		}
 	}
 	compileOptions {
@@ -85,4 +91,14 @@ dependencies {
 
 	// SwipeRefresh Layout
 	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+	// BoM for the Firebase platform
+	implementation platform('com.google.firebase:firebase-bom:28.4.2')
+	// When using the BoM, you don't specify versions in Firebase library dependencies
+	implementation 'com.google.firebase:firebase-crashlytics-ktx'
+}
+
+if(enableGoogleServices) {
+	apply plugin: 'com.google.gms.google-services'
+	apply plugin: 'com.google.firebase.crashlytics'
 }
