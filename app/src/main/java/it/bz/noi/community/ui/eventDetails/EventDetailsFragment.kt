@@ -203,20 +203,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 						} else
 							binding.tvEventDescription.text = getEventDescription(selectedEvent)
 
-						suggestedEvents.clear()
-						for (event in events) {
-							if (suggestedEvents.size == 3)
-								break
-							for (field in selectedEvent.technologyFields ?: listOf()) {
-								if (event.technologyFields?.contains(field) == true) {
-									suggestedEvents.add(event)
-									break
-								}
-							}
-						}
-						suggestedEventsAdapter.notifyItemRangeChanged(0, suggestedEvents.size)
-						if (suggestedEvents.isEmpty())
-							binding.tvInterestingForYou.isVisible = false
+						populateSuggestedEvents(events)
 					} else {
 						binding.tvInterestingForYou.isVisible = false
 					}
@@ -227,6 +214,28 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 				}
 			}
 		})
+	}
+
+	/**
+	 * populate the UI of the suggested filters
+	 */
+	private fun populateSuggestedEvents(events: List<EventsResponse.Event>) {
+		suggestedEvents.clear()
+		for (event in events) {
+			if (suggestedEvents.size == 3)
+				break
+			if (event.eventId != selectedEvent.eventId) {
+				for (field in selectedEvent.technologyFields ?: listOf()) {
+					if (event.technologyFields?.contains(field) == true) {
+						suggestedEvents.add(event)
+						break
+					}
+				}
+			}
+		}
+		suggestedEventsAdapter.notifyItemRangeChanged(0, suggestedEvents.size)
+		if (suggestedEvents.isEmpty())
+			binding.tvInterestingForYou.isVisible = false
 	}
 
 	/**
