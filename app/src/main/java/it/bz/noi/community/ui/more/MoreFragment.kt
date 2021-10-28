@@ -20,13 +20,11 @@ class MoreFragment : Fragment() {
 		it?.let {
 			val pos = binding.moreRecyclerView.getChildAdapterPosition(it)
 
-			getUrlByItemPosition(pos)?.let { linkUrl ->
-				val action = WebViewFragmentDirections.actionGlobalWebViewFragment()
-				action.title = items[pos]
-				action.url = linkUrl
-				findNavController().navigate(action)
+			val action = WebViewFragmentDirections.actionGlobalWebViewFragment().apply {
+				title = items[pos]
+				url = getUrlByItemPosition(pos)
 			}
-
+			findNavController().navigate(action)
 		}
 	}
 
@@ -68,10 +66,10 @@ class MoreFragment : Fragment() {
 		binding.moreRecyclerView.adapter = moreAdapter
 	}
 
-	private fun getUrlByItemPosition(pos: Int): String? {
+	private fun getUrlByItemPosition(pos: Int): String {
 		return when (pos) {
 			0 -> resources.getString(R.string.url_room_booking)
-			1 -> null
+			1 -> resources.getString(R.string.url_onboarding)
 			2 -> resources.getString(R.string.url_provide_feedback)
 			else -> throw Exception("Link not found")
 		}
