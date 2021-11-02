@@ -50,8 +50,8 @@ android {
 }
 
 android.applicationVariants.all { variant ->
-	if (variant.name == 'appDebug') {
-		project.tasks.getByName(':app:processDebugGoogleServices').enabled = false
+	if (variant.name == ('debug')) {
+		project.tasks.getByName('process' + variant.name.capitalize() + 'GoogleServices').enabled = false
 	}
 }
 
