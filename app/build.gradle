@@ -51,7 +51,7 @@ android {
 
 android.applicationVariants.all { variant ->
 	if (variant.name == 'appDebug') {
-		project.tasks.getByName('process' + variant.name + 'GoogleServices').enabled = false
+		project.tasks.getByName(':app:processDebugGoogleServices').enabled = false
 	}
 }
 
