@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
-      - name: Build the app
-        run: ./gradlew build
       - name: Test the app
         run: ./gradlew test
 
@@ -61,8 +59,6 @@ jobs:
           alias: ${{ secrets.KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEYSTORE_PASSWORD_FOR_KEY }}
-      - name: Find mapping.txt file
-        run: find . -name '*mapping*.txt'
       - name: Publish to Play Store closed alpha track
         uses: r0adkll/upload-google-play@v1
         with:
@@ -71,4 +67,3 @@ jobs:
           releaseFiles: ${{ steps.sign_app.outputs.signedReleaseFile }}
           track: alpha
           status: completed
-          # mappingFile: app/build/outputs/mapping/release/mapping.txt

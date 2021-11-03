@@ -2,9 +2,9 @@ plugins {
 	id 'com.android.application'
 	id 'kotlin-android'
 	id 'androidx.navigation.safeargs'
+	id 'com.google.gms.google-services'
+	id 'com.google.firebase.crashlytics'
 }
-
-def enableGoogleServices = false
 
 android {
 	compileSdkVersion 30
@@ -26,7 +26,7 @@ android {
 		minSdkVersion 24
 		targetSdkVersion 30
 		versionCode code
-		versionName "0.1.0"
+		versionName "0.1.0." + code
 
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 	}
@@ -35,10 +35,6 @@ android {
 		release {
 			minifyEnabled true
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-			enableGoogleServices = true
-		}
-		debug {
-			enableGoogleServices = false
 		}
 	}
 	compileOptions {
@@ -50,6 +46,12 @@ android {
 	}
 	buildFeatures {
 		viewBinding true
+	}
+}
+
+android.applicationVariants.all { variant ->
+	if (variant.name == 'debug') {
+		project.tasks.getByName('process' + variant.name.capitalize() + 'GoogleServices').enabled = false
 	}
 }
 
@@ -96,9 +98,4 @@ dependencies {
 	implementation platform('com.google.firebase:firebase-bom:28.4.2')
 	// When using the BoM, you don't specify versions in Firebase library dependencies
 	implementation 'com.google.firebase:firebase-crashlytics-ktx'
-}
-
-if(enableGoogleServices) {
-	apply plugin: 'com.google.gms.google-services'
-	apply plugin: 'com.google.firebase.crashlytics'
 }
