@@ -7,7 +7,8 @@ room for your next team meeting? Or do you simply want to know today's choice of
 dishes in the Community Bar? From now on, you can find all that in one
 application. More tools to come, so stay tuned!
 
-We have also an [App for iOS](https://github.com/noi-techpark/it.bz.noi.community.ios).
+We have also an [App for
+iOS](https://github.com/noi-techpark/it.bz.noi.community.ios).
 
 **Table of Contents**
 - [NOI-Community App for Android](#noi-community-app-for-android)
@@ -20,7 +21,6 @@ We have also an [App for iOS](https://github.com/noi-techpark/it.bz.noi.communit
 	- [Information](#information)
 		- [Support](#support)
 		- [Contributing](#contributing)
-		- [Documentation](#documentation)
 		- [License](#license)
 
 ## Getting started
@@ -62,12 +62,11 @@ The unit tests can be executed with the following command launched from the proj
 
 ## Deployment
 
-We deployment the application with Github Actions to the Internal Test Track, if
-someone pushes to the `development` branch, and prefixes the commit message with
-`[SNAPSHOT]`. See [.github/workflows] for details...
-
-A detailed description on how to release the application to the store, will
-follow when we do that the first time.
+We deploy the application with Github Actions to a Test Track, if someone pushes
+to the `development` branch. See [.github/workflows/main.yml](.github/workflows/main.yml) and [Continuous Deployment
+for Android
+Apps](https://github.com/noi-techpark/odh-docs/wiki/Continuous-Deployment-for-Android-Apps)
+for details...
 
 ## Information
 
@@ -81,12 +80,7 @@ If you'd like to contribute, please follow our [Getting
 Started](https://github.com/noi-techpark/odh-docs/wiki/Contributor-Guidelines:-Getting-started)
 instructions.
 
-### Documentation
-
-- [Continuous Deployment for Android
-  Apps](https://github.com/noi-techpark/odh-docs/wiki/Continuous-Deployment-for-Android-Apps)
-
 ### License
 
-The code in this project is licensed under the GNU GENERAL PUBLIC LICENSE 3.0 or later license.
-See the LICENSE file for more information.
+The code in this project is licensed under the GNU GENERAL PUBLIC LICENSE 3.0 or
+later license. See the LICENSE file for more information.
