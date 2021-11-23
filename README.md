@@ -1,10 +1,16 @@
-# it.bz.noi.community.android
-NOI Community App for Android
+# NOI-Community App for Android
 
-> TODO Describe what this App provides
+The NOI-Community App is your information and communication channel to keep in
+touch with the growing innovation district of NOI Techpark and its members. Are
+you looking for a specific company that is working here? Do you need to book a
+room for your next team meeting? Or do you simply want to know today's choice of
+dishes in the Community Bar? From now on, you can find all that in one
+application. More tools to come, so stay tuned!
 
-*Table of Contents*
-- [it.bz.noi.community.android](#itbznoicommunityandroid)
+We have also an [App for iOS](https://github.com/noi-techpark/it.bz.noi.community.ios).
+
+**Table of Contents**
+- [NOI-Community App for Android](#noi-community-app-for-android)
 	- [Getting started](#getting-started)
 		- [Prerequisites](#prerequisites)
 		- [Source code](#source-code)
@@ -28,6 +34,7 @@ To build the project, the following prerequisites must be met:
 
 1. [Android Studio](https://developer.android.com/studio) is strongly recommended,
    even if any other IDE that supports Android projects should be fine
+2. Gradle (tested with v6.5)
 
 
 ### Source code
@@ -70,21 +77,14 @@ For support, please contact [help@opendatahub.bz.it](mailto:help@opendatahub.bz.
 
 ### Contributing
 
-If you'd like to contribute, please follow the following instructions:
-
-- Fork the repository.
-
-- Checkout a topic branch from the `development` branch.
-
-- Make sure the tests are passing.
-
-- Create a pull request against the `development` branch.
+If you'd like to contribute, please follow our [Getting
+Started](https://github.com/noi-techpark/odh-docs/wiki/Contributor-Guidelines:-Getting-started)
+instructions.
 
 ### Documentation
 
-More documentation can be found at
-
-> TODO
+- [Continuous Deployment for Android
+  Apps](https://github.com/noi-techpark/odh-docs/wiki/Continuous-Deployment-for-Android-Apps)
 
 ### License
 
