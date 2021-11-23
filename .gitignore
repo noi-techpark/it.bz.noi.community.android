@@ -98,3 +98,5 @@ infrastructure/keystore
 serviceAccountJson.json
 
 google-services.json
+.vscode
+.classpath
