@@ -12,6 +12,7 @@ interface ApiService {
     suspend fun getEvents(
         @Query("onlyactive") onlyActive: Boolean = true,
 		@Query("removenullvalues") removeNullValues: Boolean = true,
+		@Query("optimizedates") optimizeDates: Boolean = true,
         @Query("eventlocation") eventLocation: String = "NOI",
         @Query("pagenumber") pageNumber: Int = 1,
         @Query("pagesize") pageSize: Int = 20,
@@ -22,7 +23,8 @@ interface ApiService {
 
     @GET("v1/EventShort/Detail/{id}")
     suspend fun getEventDetails(
-        @Path("id") eventID: String
+        @Path("id") eventID: String,
+		@Query("optimizedates") optimizeDates: Boolean = true,
     ): EventDetailsResponse
 
     @GET("v1/EventShort/RoomMapping")
