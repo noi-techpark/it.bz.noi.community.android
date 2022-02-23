@@ -12,6 +12,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
+import it.bz.noi.community.data.models.FilterValue
 import it.bz.noi.community.data.models.resetFilters
 import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.MainViewModel
@@ -20,7 +21,7 @@ import it.bz.noi.community.utils.Status
 
 class FiltersFragment : Fragment() {
 
-    private lateinit var items: List<FiltersAdapter.Item>
+    private lateinit var filters: List<FilterValue>
     private lateinit var filterAdapter: FiltersAdapter
     private lateinit var binding: FragmentFiltersBinding
 
@@ -34,6 +35,7 @@ class FiltersFragment : Fragment() {
             val filter = switch.text
             val checked = switch.isChecked
 
+			// TODO
             when (filter) {
                 getString(R.string.filter_type_public) -> mainViewModel.urlParams.public = checked
                 getString(R.string.filter_type_noi) -> mainViewModel.urlParams.noiOnly = checked
@@ -52,40 +54,7 @@ class FiltersFragment : Fragment() {
 
         mainViewModel.cacheFilters()
 
-        items = listOf(
-            FiltersAdapter.Item.Header(resources.getString(R.string.filter_by_type)),
-            FiltersAdapter.Item.Filter(
-                resources.getString(R.string.filter_type_public),
-                mainViewModel.urlParams.public,
-                FiltersAdapter.FilterType.EVENT_TYPE
-            ),
-            FiltersAdapter.Item.Filter(
-                resources.getString(R.string.filter_type_noi),
-                mainViewModel.urlParams.noiOnly,
-                FiltersAdapter.FilterType.EVENT_TYPE
-            ),
-            FiltersAdapter.Item.Header(resources.getString(R.string.filter_by_sector)),
-            FiltersAdapter.Item.Filter(
-                resources.getString(R.string.filter_sector_green),
-                mainViewModel.urlParams.green,
-                FiltersAdapter.FilterType.TECHNOLOGY_SECTOR
-            ),
-            FiltersAdapter.Item.Filter(
-                resources.getString(R.string.filter_sector_food),
-                mainViewModel.urlParams.food,
-                FiltersAdapter.FilterType.TECHNOLOGY_SECTOR
-            ),
-            FiltersAdapter.Item.Filter(
-                resources.getString(R.string.filter_sector_digital),
-                mainViewModel.urlParams.digital,
-                FiltersAdapter.FilterType.TECHNOLOGY_SECTOR
-            ),
-            FiltersAdapter.Item.Filter(
-                resources.getString(R.string.filter_sector_automotiv),
-                mainViewModel.urlParams.automotiv,
-                FiltersAdapter.FilterType.TECHNOLOGY_SECTOR
-            )
-        )
+		filters = mainViewModel.eventFilters?.value ?: emptyList()
     }
 
     override fun onCreateView(
@@ -113,7 +82,12 @@ class FiltersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        filterAdapter = FiltersAdapter(items, onSwitchClickListener)
+        filterAdapter = FiltersAdapter(
+			filters = filters,
+			eventTypeHeader = resources.getString(R.string.filter_by_type),
+			technlogySectorHeader = resources.getString(R.string.filter_by_sector),
+			onSwitchClickListener = onSwitchClickListener
+		)
         binding.apply {
             filterstRV.adapter = filterAdapter
 
@@ -133,14 +107,16 @@ class FiltersFragment : Fragment() {
     }
 
     private fun resetFilters() {
-        items.iterator().forEach { item ->
-            if (item is FiltersAdapter.Item.Filter) {
-                item.checked = false
-            }
+        filters.iterator().forEach { item ->
+			item.checked = false
         }
         filterAdapter.notifyDataSetChanged()
         mainViewModel.urlParams.resetFilters()
         mainViewModel.refresh()
     }
+
+	companion object {
+		private const val TAG = "FiltersFragment"
+	}
 
 }

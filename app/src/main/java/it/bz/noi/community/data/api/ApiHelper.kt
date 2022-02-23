@@ -10,4 +10,5 @@ class ApiHelper(private val apiService: ApiService) {
     }
     suspend fun getEventDetails(eventID: String) = apiService.getEventDetails(eventID)
     suspend fun getRoomMapping(language: String?) = apiService.getRoomMapping(language)
+	suspend fun getEventFilterValues() = apiService.getEventFilterValues()
 }
