@@ -7,8 +7,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import it.bz.noi.community.R
+import it.bz.noi.community.data.models.FilterValue
+import it.bz.noi.community.databinding.VhHeaderBinding
+import it.bz.noi.community.databinding.VhSwitchBinding
 
-class FiltersAdapter(private val items: List<Item>, private val onSwitchClickListener: View.OnClickListener) :
+class FiltersAdapter(private val filters: List<FilterValue>,
+					 private val eventTypeHeader: String,
+					 private val technlogySectorHeader: String,
+					 private val onSwitchClickListener: View.OnClickListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -16,20 +22,46 @@ class FiltersAdapter(private val items: List<Item>, private val onSwitchClickLis
         private const val FILTER = 1
     }
 
-    enum class FilterType {
-        EVENT_TYPE,
-        TECHNOLOGY_SECTOR
+    enum class FilterType(val typeDesc: String) {
+        EVENT_TYPE("CustomTagging"),
+        TECHNOLOGY_SECTOR("TechnologyFields")
     }
 
     sealed class Item {
         data class Header(val text: String): Item()
-        data class Filter(val filter: String, var checked: Boolean, val type: FilterType) : Item()
+        data class Filter(val filter: FilterValue) : Item()
     }
+
+	private val items: List<Item> = toItems()
+
+	private fun toItems(): List<Item> {
+
+		val filterItems = arrayListOf<Item>()
+
+		val eventTypeFilters = filters.filter { it.type == FilterType.EVENT_TYPE.typeDesc }
+		val technlogySectorFilters = filters.filter { it.type == FilterType.TECHNOLOGY_SECTOR.typeDesc }
+
+		if (eventTypeFilters.isNotEmpty()) {
+			filterItems.add(Item.Header(eventTypeHeader))
+			filterItems.addAll(eventTypeFilters.map {
+				Item.Filter(it)
+			})
+		}
+
+		if (technlogySectorFilters.isNotEmpty()) {
+			filterItems.add(Item.Header(technlogySectorHeader))
+			filterItems.addAll(technlogySectorFilters.map {
+				Item.Filter(it)
+			})
+		}
+
+		return filterItems
+	}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            HEADER -> HeaderViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.vh_header, parent, false))
-            FILTER -> FilterViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.vh_switch, parent, false), onSwitchClickListener)
+            HEADER -> HeaderViewHolder(VhHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            FILTER -> FilterViewHolder(VhSwitchBinding.inflate(LayoutInflater.from(parent.context), parent, false), onSwitchClickListener)
             else -> throw RuntimeException("Unsupported viewType $viewType")
         }
     }
@@ -43,7 +75,7 @@ class FiltersAdapter(private val items: List<Item>, private val onSwitchClickLis
             }
             is FilterViewHolder -> {
                 (getItem(position) as Item.Filter).let {
-                    holder.bind(it.filter, it.checked)
+                    holder.bind(it.filter)
                 }
             }
             else -> throw RuntimeException("Unsupported holder $holder")
@@ -67,27 +99,23 @@ class FiltersAdapter(private val items: List<Item>, private val onSwitchClickLis
 
 }
 
-class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-    private val headerTV: TextView = itemView.findViewById(R.id.headerTextView)
+class HeaderViewHolder(private val binding: VhHeaderBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(header: String) {
-        headerTV.text = header
+        binding.headerTextView.text = header
     }
 
 }
 
-class FilterViewHolder(itemView: View, onClickListener: View.OnClickListener) : RecyclerView.ViewHolder(itemView) {
-
-    val switchVH: SwitchMaterial = itemView.findViewById(R.id.switchVH)
+class FilterViewHolder(private val binding: VhSwitchBinding, onClickListener: View.OnClickListener) : RecyclerView.ViewHolder(binding.root) {
 
     init {
-        switchVH.setOnClickListener(onClickListener)
+        binding.switchVH.setOnClickListener(onClickListener)
     }
 
-    fun bind(filter: String, checked: Boolean) {
-        switchVH.text = filter
-        switchVH.isChecked = checked
+    fun bind(filter: FilterValue) {
+        binding.switchVH.text = filter.desc
+		binding.switchVH.isChecked = filter.checked
     }
 
 }

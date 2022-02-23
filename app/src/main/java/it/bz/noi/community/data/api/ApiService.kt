@@ -2,6 +2,7 @@ package it.bz.noi.community.data.api
 
 import it.bz.noi.community.data.models.EventDetailsResponse
 import it.bz.noi.community.data.models.EventsResponse
+import it.bz.noi.community.data.models.MultiLangFilterValue
 import retrofit2.http.*
 
 /**
@@ -31,4 +32,7 @@ interface ApiService {
     suspend fun getRoomMapping(
 		@Query("language") language: String?
 	): Map<String, String>
+
+	@GET("https://tourism.opendatahub.bz.it/v1/EventShortTypes?rawfilter=or(eq(Type,\"TechnologyFields\"),and(eq(Type,\"CustomTagging\"),eq(Parent,\"EventType\")))&fields=Id,Key,Type,TypeDesc")
+	suspend fun getEventFilterValues(): List<MultiLangFilterValue>
 }

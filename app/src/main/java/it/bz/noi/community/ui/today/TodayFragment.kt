@@ -148,6 +148,15 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 				}
 			}
 		})
+
+		viewModel.eventFilters.observe(viewLifecycleOwner) {
+			if (it == null) {
+				binding.cdFilterEvents.visibility = View.GONE // TODO isEnabled = false
+				Toast.makeText(requireContext(), "Filtri non disponibili", Toast.LENGTH_LONG).show()
+			} else {
+				binding.cdFilterEvents.visibility = View.VISIBLE // TODO isEnabled = true
+			}
+		}
 	}
 
 	private fun retrieveList(events: List<EventsResponse.Event>) {

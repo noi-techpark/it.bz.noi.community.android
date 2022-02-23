@@ -11,9 +11,10 @@ object Utils {
 		"https://images.opendatahub.bz.it/api/Image/GetImageByUrl?imageUrl="
 	private const val FULLVIEW_PARAM = "fullview"
 	private const val HIDEZOOM_PARAM = "hidezoom"
-	private const val ENGLISH = "en"
-	private const val ITALIAN = "it"
-	private const val GERMAN = "de"
+	const val ENGLISH = "en"
+	const val ITALIAN = "it"
+	const val GERMAN = "de"
+	const val FALLBACK_LANGUAGE = "en"
 
 	fun getAppLanguage(): String? {
 		val language = Locale.getDefault().language

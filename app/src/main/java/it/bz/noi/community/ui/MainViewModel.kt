@@ -1,14 +1,9 @@
 package it.bz.noi.community.ui
 
 import android.util.Log
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
 import it.bz.noi.community.data.api.ApiHelper
-import it.bz.noi.community.data.models.EventsResponse
-import it.bz.noi.community.data.models.TimeRange
-import it.bz.noi.community.data.models.UrlParams
+import it.bz.noi.community.data.models.*
 import it.bz.noi.community.data.repository.MainRepository
 import it.bz.noi.community.utils.DateUtils.endOfDay
 import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentMonth
@@ -16,6 +11,7 @@ import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentWeek
 import it.bz.noi.community.utils.DateUtils.parameterDateFormatter
 import it.bz.noi.community.utils.DateUtils.startOfDay
 import it.bz.noi.community.utils.Resource
+import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import java.util.*
@@ -70,6 +66,28 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 			emit(Resource.success(data = mainRepository.getEvents(urlParams).events))
 		} catch (exception: Exception) {
 			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
+		}
+	}
+
+	/**
+	 * live data of the event filters
+	 */
+	val eventFilters: LiveData<List<FilterValue>?> = getEventFilterValues().map {
+		when (it.status) {
+			Status.SUCCESS -> {
+				val language = Utils.getAppLanguage() ?: Utils.FALLBACK_LANGUAGE
+				it.data?.map {
+					it.toFilterValue(language)
+				}
+			}
+			Status.ERROR -> {
+				Log.d(TAG, "Caricamento filtri KO")
+				null
+			}
+			Status.LOADING -> {
+				Log.d(TAG, "Filtri in caricamento")
+				emptyList<FilterValue>()
+			}
 		}
 	}
 
@@ -147,6 +165,18 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 		emit(Resource.loading(null))
 		try {
 			emit(Resource.success(data = mainRepository.getRoomMapping(Utils.getAppLanguage())))
+		} catch (exception: Exception) {
+			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
+		}
+	}
+
+	/**
+	 * Loads filters to show in filter screen
+	 */
+	private fun getEventFilterValues() = liveData(Dispatchers.IO) {
+		emit(Resource.loading(null))
+		try {
+			emit(Resource.success(data = mainRepository.getEventFilterValues()))
 		} catch (exception: Exception) {
 			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
 		}
