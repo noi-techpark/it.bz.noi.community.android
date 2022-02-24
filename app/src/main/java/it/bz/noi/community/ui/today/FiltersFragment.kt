@@ -39,6 +39,10 @@ class FiltersFragment : Fragment() {
 
         mainViewModel.cacheFilters()
 		filters = mainViewModel.eventFilters?.value ?: emptyList()
+
+		filters.forEach { f ->
+			f.checked = mainViewModel.urlParams.filters.find { it.key == f.key } != null
+		}
     }
 
     override fun onCreateView(
@@ -98,9 +102,5 @@ class FiltersFragment : Fragment() {
         mainViewModel.urlParams.filters = emptyList()
         mainViewModel.refresh()
     }
-
-	companion object {
-		private const val TAG = "FiltersFragment"
-	}
 
 }
