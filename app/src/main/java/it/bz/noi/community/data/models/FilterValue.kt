@@ -4,10 +4,16 @@ import com.google.gson.annotations.SerializedName
 import it.bz.noi.community.utils.Utils
 
 data class MultiLangFilterValue(
+	@SerializedName("Id")
+	val id: String,
     @SerializedName("Key")
     val key: String,
     @SerializedName("Type")
     val type: String,
+	@SerializedName("Parent")
+	val parent: String,
+	@SerializedName("Bitmask")
+	val bitmask: String,
     @SerializedName("TypeDesc")
     val desc: TypeDesc
 )

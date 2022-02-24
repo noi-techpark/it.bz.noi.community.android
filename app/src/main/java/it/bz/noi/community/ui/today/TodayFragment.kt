@@ -26,6 +26,7 @@ import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.data.models.TimeFilter
 import it.bz.noi.community.data.models.TimeRange
+import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentTodayBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
@@ -38,7 +39,7 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 	private val todayViewModel: TodayViewModel by activityViewModels()
 
 	private val viewModel: MainViewModel by activityViewModels(factoryProducer = {
-		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService))
+		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(requireActivity().application, ""))
 	})
 
 	private lateinit var timeFilters: List<TimeFilter>
@@ -148,15 +149,6 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 				}
 			}
 		})
-
-		viewModel.eventFilters.observe(viewLifecycleOwner) {
-			if (it == null) {
-				binding.cdFilterEvents.visibility = View.GONE // TODO isEnabled = false
-				Toast.makeText(requireContext(), "Filtri non disponibili", Toast.LENGTH_LONG).show()
-			} else {
-				binding.cdFilterEvents.visibility = View.VISIBLE // TODO isEnabled = true
-			}
-		}
 	}
 
 	private fun retrieveList(events: List<EventsResponse.Event>) {

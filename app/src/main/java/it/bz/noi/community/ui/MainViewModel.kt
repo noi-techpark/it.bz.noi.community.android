@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.models.*
+import it.bz.noi.community.data.repository.FilterRepository
 import it.bz.noi.community.data.repository.MainRepository
 import it.bz.noi.community.utils.DateUtils.endOfDay
 import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentMonth
@@ -19,10 +20,10 @@ import java.util.*
 /**
  * Factory for creating the MainViewModel
  */
-class ViewModelFactory(private val apiHelper: ApiHelper) : ViewModelProvider.Factory {
+class ViewModelFactory(private val apiHelper: ApiHelper, private val filterRepo: FilterRepository) : ViewModelProvider.Factory {
 	override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 		if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-			return MainViewModel(MainRepository(apiHelper)) as T
+			return MainViewModel(MainRepository(apiHelper), filterRepo) as T
 		}
 		throw IllegalArgumentException("Unknown class name")
 	}
@@ -31,7 +32,7 @@ class ViewModelFactory(private val apiHelper: ApiHelper) : ViewModelProvider.Fac
 /**
  * The ViewModel shared between all the components of the app
  */
-class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
+class MainViewModel(private val mainRepository: MainRepository, private val filterRepo: FilterRepository) : ViewModel() {
 
 	companion object {
 		private const val TAG = "MainViewModel"
@@ -72,24 +73,33 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 	/**
 	 * live data of the event filters
 	 */
-	val eventFilters: LiveData<List<FilterValue>?> = getEventFilterValues().map {
+	val availableFilters: LiveData<List<FilterValue>> = getEventFilterValues().map {
 		when (it.status) {
 			Status.SUCCESS -> {
 				val language = Utils.getAppLanguage() ?: Utils.FALLBACK_LANGUAGE
-				it.data?.map {
+				it.data!!.map {
 					it.toFilterValue(language)
 				}
 			}
 			Status.ERROR -> {
 				Log.d(TAG, "Caricamento filtri KO")
-				null
+				emptyList()
 			}
 			Status.LOADING -> {
 				Log.d(TAG, "Filtri in caricamento")
-				emptyList<FilterValue>()
+				emptyList()
 			}
 		}
 	}
+
+	val selectedFilters = MutableLiveData(urlParams.selectedFilters)
+	val appliedFilters = MediatorLiveData<List<FilterValue>>()
+
+//	availableFilters.map { availableFiltersList ->
+//		availableFiltersList.map { f ->
+//			f.copy(checked = urlParams.selectedFilters.find { it.key == f.key } != null)
+//		}
+//	}
 
 	/**
 	 * mediator live data that emits the events to the observers
@@ -99,6 +109,17 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 	init {
 		mediatorEvents.addSource(events) {
 			mediatorEvents.value = it
+		}
+
+		appliedFilters.addSource(availableFilters) { newAvailableFilters ->
+			appliedFilters.value = newAvailableFilters.map { f ->
+				f.copy(checked = selectedFilters.value?.find { it.key == f.key } != null)
+			}
+		}
+		appliedFilters.addSource(selectedFilters) { newSelectedFilters ->
+			appliedFilters.value = availableFilters.value?.map {f ->
+				f.copy(checked = newSelectedFilters.find { it.key == f.key } != null)
+			}
 		}
 	}
 
@@ -175,11 +196,21 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 	 */
 	private fun getEventFilterValues() = liveData(Dispatchers.IO) {
 		emit(Resource.loading(null))
+		var filters: List<MultiLangFilterValue>
 		try {
-			emit(Resource.success(data = mainRepository.getEventFilterValues()))
+			filters = mainRepository.getEventFilterValues()
+			if (filters.isEmpty())
+				filters= filterRepo.loadFilters()
+			else
+				filterRepo.saveFilters(filters)
 		} catch (exception: Exception) {
-			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
+			filters= filterRepo.loadFilters()
 		}
+
+		if (filters != null && filters.isNotEmpty())
+			emit(Resource.success(data = filters))
+		else
+			emit(Resource.error(data = null, message = "Filter loading: error occurred!"))
 	}
 
 	/**
@@ -193,6 +224,7 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 	 * Used for check if cached filters are identical to current filters
 	 */
 	fun isFiltersSameAsCached(): Boolean {
-		return urlParams.filters == cachedParams.filters
+		return urlParams.selectedFilters == cachedParams.selectedFilters
 	}
+
 }
