@@ -36,3 +36,8 @@ fun MultiLangFilterValue.toFilterValue(language: String): FilterValue {
 	}
 	return FilterValue(key, type, description)
 }
+
+enum class FilterType(val typeDesc: String) {
+	EVENT_TYPE("CustomTagging"),
+	TECHNOLOGY_SECTOR("TechnologyFields")
+}

@@ -8,12 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.switchmaterial.SwitchMaterial
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.FilterValue
-import it.bz.noi.community.data.models.resetFilters
 import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
@@ -29,31 +27,17 @@ class FiltersFragment : Fragment() {
         ViewModelFactory(ApiHelper(RetrofitBuilder.apiService))
     })
 
-    private val onSwitchClickListener = View.OnClickListener{
-        it?.let {
-            val switch = it as SwitchMaterial
-            val filter = switch.text
-            val checked = switch.isChecked
-
-			// TODO
-            when (filter) {
-                getString(R.string.filter_type_public) -> mainViewModel.urlParams.public = checked
-                getString(R.string.filter_type_noi) -> mainViewModel.urlParams.noiOnly = checked
-                getString(R.string.filter_sector_green) -> mainViewModel.urlParams.green = checked
-                getString(R.string.filter_sector_food) -> mainViewModel.urlParams.food = checked
-                getString(R.string.filter_sector_digital) -> mainViewModel.urlParams.digital = checked
-                getString(R.string.filter_sector_automotiv) -> mainViewModel.urlParams.automotiv = checked
-                else -> throw (RuntimeException("Filter not matched!"))
-            }
-            mainViewModel.refresh()
-        }
-    }
+	private val updateResultsListener = object : UpdateResultsListener {
+		override fun updateResults() {
+			mainViewModel.urlParams.filters = filters.filter { it.checked == true }
+			mainViewModel.refresh()
+		}
+	}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         mainViewModel.cacheFilters()
-
 		filters = mainViewModel.eventFilters?.value ?: emptyList()
     }
 
@@ -86,7 +70,7 @@ class FiltersFragment : Fragment() {
 			filters = filters,
 			eventTypeHeader = resources.getString(R.string.filter_by_type),
 			technlogySectorHeader = resources.getString(R.string.filter_by_sector),
-			onSwitchClickListener = onSwitchClickListener
+			updateResultsListener = updateResultsListener
 		)
         binding.apply {
             filterstRV.adapter = filterAdapter
@@ -111,7 +95,7 @@ class FiltersFragment : Fragment() {
 			item.checked = false
         }
         filterAdapter.notifyDataSetChanged()
-        mainViewModel.urlParams.resetFilters()
+        mainViewModel.urlParams.filters = emptyList()
         mainViewModel.refresh()
     }
 
