@@ -3,10 +3,8 @@ package it.bz.noi.community.ui.today
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.switchmaterial.SwitchMaterial
-import it.bz.noi.community.R
+import it.bz.noi.community.data.models.FilterType
 import it.bz.noi.community.data.models.FilterValue
 import it.bz.noi.community.databinding.VhHeaderBinding
 import it.bz.noi.community.databinding.VhSwitchBinding
@@ -14,17 +12,12 @@ import it.bz.noi.community.databinding.VhSwitchBinding
 class FiltersAdapter(private val filters: List<FilterValue>,
 					 private val eventTypeHeader: String,
 					 private val technlogySectorHeader: String,
-					 private val onSwitchClickListener: View.OnClickListener) :
+					 private val updateResultsListener: UpdateResultsListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val HEADER = 0
         private const val FILTER = 1
-    }
-
-    enum class FilterType(val typeDesc: String) {
-        EVENT_TYPE("CustomTagging"),
-        TECHNOLOGY_SECTOR("TechnologyFields")
     }
 
     sealed class Item {
@@ -61,7 +54,7 @@ class FiltersAdapter(private val filters: List<FilterValue>,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             HEADER -> HeaderViewHolder(VhHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            FILTER -> FilterViewHolder(VhSwitchBinding.inflate(LayoutInflater.from(parent.context), parent, false), onSwitchClickListener)
+            FILTER -> FilterViewHolder(VhSwitchBinding.inflate(LayoutInflater.from(parent.context), parent, false), updateResultsListener)
             else -> throw RuntimeException("Unsupported viewType $viewType")
         }
     }
@@ -107,16 +100,26 @@ class HeaderViewHolder(private val binding: VhHeaderBinding) : RecyclerView.View
 
 }
 
-class FilterViewHolder(private val binding: VhSwitchBinding, onClickListener: View.OnClickListener) : RecyclerView.ViewHolder(binding.root) {
+class FilterViewHolder(private val binding: VhSwitchBinding, updateResultsListener: UpdateResultsListener) : RecyclerView.ViewHolder(binding.root) {
+
+	private lateinit var filter: FilterValue
 
     init {
-        binding.switchVH.setOnClickListener(onClickListener)
+        binding.switchVH.setOnClickListener(View.OnClickListener{
+        	filter.checked = binding.switchVH.isChecked
+			updateResultsListener.updateResults()
+		})
     }
 
-    fun bind(filter: FilterValue) {
+    fun bind(f: FilterValue) {
+		filter = f
         binding.switchVH.text = filter.desc
 		binding.switchVH.isChecked = filter.checked
     }
 
+}
+
+interface UpdateResultsListener {
+	fun updateResults()
 }
 
