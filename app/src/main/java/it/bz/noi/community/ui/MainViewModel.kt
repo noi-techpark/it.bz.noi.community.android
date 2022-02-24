@@ -193,6 +193,6 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 	 * Used for check if cached filters are identical to current filters
 	 */
 	fun isFiltersSameAsCached(): Boolean {
-		return urlParams == cachedParams
+		return urlParams.filters == cachedParams.filters
 	}
 }
