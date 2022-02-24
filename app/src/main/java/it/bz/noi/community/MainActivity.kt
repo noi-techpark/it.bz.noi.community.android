@@ -12,11 +12,11 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
+import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.ActivityMainBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val mainViewModel: MainViewModel by viewModels(factoryProducer = {
-        ViewModelFactory(ApiHelper(RetrofitBuilder.apiService))
+        ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(application, ""))
     })
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -4,14 +4,14 @@ data class UrlParams(
     var startDate: String,
     var endDate: String? = null,
 
-	var filters: List<FilterValue> = emptyList()
+	var selectedFilters: List<FilterValue> = emptyList()
 )
 
 private fun UrlParams.getEventTypeRawFilter(): String? {
     var rawFilter: String?
 
 	val rawFiltersList = mutableListOf<String>()
-	filters.filter { it.type == FilterType.EVENT_TYPE.typeDesc }.forEach {
+	selectedFilters.filter { it.type == FilterType.EVENT_TYPE.typeDesc }.forEach {
 		rawFiltersList.add("in(${FilterType.EVENT_TYPE.typeDesc}.[],\"${it.key}\")")
 	}
 
@@ -36,7 +36,7 @@ private fun UrlParams.getTechSectorRawFilter(): String? {
 	var rawFilter: String?
 
 	val rawFiltersList = mutableListOf<String>()
-	filters.filter { it.type == FilterType.TECHNOLOGY_SECTOR.typeDesc }.forEach {
+	selectedFilters.filter { it.type == FilterType.TECHNOLOGY_SECTOR.typeDesc }.forEach {
 		rawFiltersList.add("in(${FilterType.TECHNOLOGY_SECTOR.typeDesc}.[],\"${it.key}\")")
 	}
 
@@ -58,7 +58,7 @@ private fun UrlParams.getTechSectorRawFilter(): String? {
 }
 
 fun UrlParams.getRawFilter(): String? {
-	if (filters == null || filters.isEmpty())
+	if (selectedFilters == null || selectedFilters.isEmpty())
 		return null
 
     val eventTypeRawFilter = getEventTypeRawFilter()

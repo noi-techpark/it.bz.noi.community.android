@@ -9,8 +9,7 @@ import it.bz.noi.community.data.models.FilterValue
 import it.bz.noi.community.databinding.VhHeaderBinding
 import it.bz.noi.community.databinding.VhSwitchBinding
 
-class FiltersAdapter(private val filters: List<FilterValue>,
-					 private val eventTypeHeader: String,
+class FiltersAdapter(private val eventTypeHeader: String,
 					 private val technlogySectorHeader: String,
 					 private val updateResultsListener: UpdateResultsListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -25,7 +24,15 @@ class FiltersAdapter(private val filters: List<FilterValue>,
         data class Filter(val filter: FilterValue) : Item()
     }
 
-	private val items: List<Item> = toItems()
+	var filters: List<FilterValue> = emptyList()
+		set(value) {
+			if (value != field) {
+				field = value
+				items = toItems()
+				notifyDataSetChanged()
+			}
+		}
+	private var items: List<Item> = toItems()
 
 	private fun toItems(): List<Item> {
 

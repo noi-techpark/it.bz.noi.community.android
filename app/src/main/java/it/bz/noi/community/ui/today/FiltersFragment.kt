@@ -12,6 +12,7 @@ import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.FilterValue
+import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
@@ -19,17 +20,17 @@ import it.bz.noi.community.utils.Status
 
 class FiltersFragment : Fragment() {
 
-    private lateinit var filters: List<FilterValue>
+  //  private var filters: List<FilterValue> = emptyList()
     private lateinit var filterAdapter: FiltersAdapter
     private lateinit var binding: FragmentFiltersBinding
 
     private val mainViewModel: MainViewModel by activityViewModels(factoryProducer = {
-        ViewModelFactory(ApiHelper(RetrofitBuilder.apiService))
+		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(requireActivity().application, ""))
     })
 
 	private val updateResultsListener = object : UpdateResultsListener {
 		override fun updateResults() {
-			mainViewModel.urlParams.filters = filters.filter { it.checked == true }
+			mainViewModel.urlParams.selectedFilters = filterAdapter.filters.filter { it.checked == true }
 			mainViewModel.refresh()
 		}
 	}
@@ -37,12 +38,13 @@ class FiltersFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mainViewModel.cacheFilters()
-		filters = mainViewModel.eventFilters?.value ?: emptyList()
+		filterAdapter = FiltersAdapter(
+			eventTypeHeader = resources.getString(R.string.filter_by_type),
+			technlogySectorHeader = resources.getString(R.string.filter_by_sector),
+			updateResultsListener = updateResultsListener
+		)
 
-		filters.forEach { f ->
-			f.checked = mainViewModel.urlParams.filters.find { it.key == f.key } != null
-		}
+        mainViewModel.cacheFilters()
     }
 
     override fun onCreateView(
@@ -51,6 +53,11 @@ class FiltersFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFiltersBinding.inflate(inflater)
+
+		mainViewModel.appliedFilters.observe(requireActivity()) {
+			filterAdapter.filters = it
+		}
+
         mainViewModel.mediatorEvents.observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 Status.LOADING -> {
@@ -70,12 +77,6 @@ class FiltersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        filterAdapter = FiltersAdapter(
-			filters = filters,
-			eventTypeHeader = resources.getString(R.string.filter_by_type),
-			technlogySectorHeader = resources.getString(R.string.filter_by_sector),
-			updateResultsListener = updateResultsListener
-		)
         binding.apply {
             filterstRV.adapter = filterAdapter
 
@@ -95,11 +96,12 @@ class FiltersFragment : Fragment() {
     }
 
     private fun resetFilters() {
-        filters.iterator().forEach { item ->
-			item.checked = false
-        }
-        filterAdapter.notifyDataSetChanged()
-        mainViewModel.urlParams.filters = emptyList()
+//        filters.iterator().forEach { item ->
+//			item.checked = false
+//        }
+
+		mainViewModel.urlParams.selectedFilters = emptyList()
+        filterAdapter.filters = mainViewModel.availableFilters.value!!
         mainViewModel.refresh()
     }
 
