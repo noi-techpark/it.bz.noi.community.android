@@ -73,7 +73,7 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	/**
 	 * live data of the event filters
 	 */
-	val availableFilters: LiveData<List<FilterValue>> = getEventFilterValues().map {
+	private val availableFilters: LiveData<List<FilterValue>> = getEventFilterValues().map {
 		when (it.status) {
 			Status.SUCCESS -> {
 				val language = Utils.getAppLanguage() ?: Utils.FALLBACK_LANGUAGE
@@ -92,14 +92,14 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 		}
 	}
 
-	val selectedFilters = MutableLiveData(urlParams.selectedFilters)
+	private val selectedFilters = MutableLiveData(emptyList<FilterValue>())
+	fun updateSelectedFilters(filters: List<FilterValue>) {
+		selectedFilters.postValue(filters)
+		urlParams.selectedFilters = filters
+	}
+
 	val appliedFilters = MediatorLiveData<List<FilterValue>>()
 
-//	availableFilters.map { availableFiltersList ->
-//		availableFiltersList.map { f ->
-//			f.copy(checked = urlParams.selectedFilters.find { it.key == f.key } != null)
-//		}
-//	}
 
 	/**
 	 * mediator live data that emits the events to the observers
@@ -112,15 +112,17 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 		}
 
 		appliedFilters.addSource(availableFilters) { newAvailableFilters ->
-			appliedFilters.value = newAvailableFilters.map { f ->
-				f.copy(checked = selectedFilters.value?.find { it.key == f.key } != null)
-			}
+			appliedFilters.value = loadAppliedFilters()
 		}
 		appliedFilters.addSource(selectedFilters) { newSelectedFilters ->
-			appliedFilters.value = availableFilters.value?.map {f ->
-				f.copy(checked = newSelectedFilters.find { it.key == f.key } != null)
-			}
+			appliedFilters.value = loadAppliedFilters()
 		}
+	}
+
+	private fun loadAppliedFilters(): List<FilterValue> {
+		return availableFilters.value?.map {f ->
+			f.copy(checked = selectedFilters.value?.find { it.key == f.key } != null)
+		} ?: emptyList()
 	}
 
 
@@ -217,7 +219,7 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	 * restore the initial situation of filters
 	 */
 	fun restoreCachedFilters() {
-		urlParams = cachedParams.copy()
+		updateSelectedFilters(cachedParams.selectedFilters)
 	}
 
 	/**

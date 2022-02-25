@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
-import it.bz.noi.community.data.models.FilterValue
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.MainViewModel
@@ -20,7 +19,6 @@ import it.bz.noi.community.utils.Status
 
 class FiltersFragment : Fragment() {
 
-  //  private var filters: List<FilterValue> = emptyList()
     private lateinit var filterAdapter: FiltersAdapter
     private lateinit var binding: FragmentFiltersBinding
 
@@ -30,8 +28,7 @@ class FiltersFragment : Fragment() {
 
 	private val updateResultsListener = object : UpdateResultsListener {
 		override fun updateResults() {
-			mainViewModel.urlParams.selectedFilters = filterAdapter.filters.filter { it.checked == true }
-			mainViewModel.refresh()
+			mainViewModel.updateSelectedFilters(filterAdapter.filters.filter { it.checked == true })
 		}
 	}
 
@@ -56,6 +53,7 @@ class FiltersFragment : Fragment() {
 
 		mainViewModel.appliedFilters.observe(requireActivity()) {
 			filterAdapter.filters = it
+			mainViewModel.refresh()
 		}
 
         mainViewModel.mediatorEvents.observe(viewLifecycleOwner, Observer {
@@ -96,13 +94,7 @@ class FiltersFragment : Fragment() {
     }
 
     private fun resetFilters() {
-//        filters.iterator().forEach { item ->
-//			item.checked = false
-//        }
-
-		mainViewModel.urlParams.selectedFilters = emptyList()
-        filterAdapter.filters = mainViewModel.availableFilters.value!!
-        mainViewModel.refresh()
+		mainViewModel.updateSelectedFilters(emptyList())
     }
 
 }
