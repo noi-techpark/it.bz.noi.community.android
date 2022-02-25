@@ -23,7 +23,7 @@ class FiltersFragment : Fragment() {
     private lateinit var binding: FragmentFiltersBinding
 
     private val mainViewModel: MainViewModel by activityViewModels(factoryProducer = {
-		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(requireActivity().application, ""))
+		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(requireActivity().application))
     })
 
 	private val updateResultsListener = object : UpdateResultsListener {

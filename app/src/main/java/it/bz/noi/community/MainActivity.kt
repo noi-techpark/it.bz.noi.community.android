@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val mainViewModel: MainViewModel by viewModels(factoryProducer = {
-        ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(application, ""))
+        ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(application))
     })
 
     override fun onCreate(savedInstanceState: Bundle?) {

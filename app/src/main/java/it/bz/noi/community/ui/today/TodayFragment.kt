@@ -39,7 +39,7 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 	private val todayViewModel: TodayViewModel by activityViewModels()
 
 	private val viewModel: MainViewModel by activityViewModels(factoryProducer = {
-		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(requireActivity().application, ""))
+		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(requireActivity().application))
 	})
 
 	private lateinit var timeFilters: List<TimeFilter>
