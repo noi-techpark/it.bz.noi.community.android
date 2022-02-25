@@ -60,7 +60,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 	private val args: EventDetailsFragmentArgs by navArgs()
 
 	private val mainViewModel: MainViewModel by activityViewModels(factoryProducer = {
-		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(requireActivity().application, ""))
+		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(requireActivity().application))
 	})
 
 	private lateinit var allEvents: ArrayList<EventsResponse.Event>
