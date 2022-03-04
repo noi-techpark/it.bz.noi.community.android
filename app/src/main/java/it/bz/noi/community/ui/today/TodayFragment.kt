@@ -39,7 +39,10 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 	private val todayViewModel: TodayViewModel by activityViewModels()
 
 	private val viewModel: MainViewModel by activityViewModels(factoryProducer = {
-		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(requireActivity().application))
+		ViewModelFactory(
+			ApiHelper(RetrofitBuilder.apiService),
+			JsonFilterRepository(requireActivity().application)
+		)
 	})
 
 	private lateinit var timeFilters: List<TimeFilter>
@@ -149,6 +152,15 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 				}
 			}
 		})
+
+		viewModel.selectedFiltersCount.observe(viewLifecycleOwner) { count ->
+			if (count > 0) {
+				binding.appliedFiltersCount.visibility = View.VISIBLE
+				binding.appliedFiltersCount.text = "($count)"
+			} else {
+				binding.appliedFiltersCount.visibility = View.GONE
+			}
+		}
 	}
 
 	private fun retrieveList(events: List<EventsResponse.Event>) {
