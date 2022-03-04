@@ -7,6 +7,12 @@ data class UrlParams(
 	var selectedFilters: List<FilterValue> = emptyList()
 )
 
+/*
+ * Filtri per tipo evento:
+ * - sono mutualmente esclusivi
+ * - c'è un singolo filtro attivo e quando uno nuovo viene attivato si spengono gli altri.
+ * - Noi li implementiamo forgiando una query solo con solo un filtro attivo senza nessuna OR/AND
+ */
 private fun UrlParams.getEventTypeRawFilter(): String? {
     var rawFilter: String?
 
@@ -19,9 +25,11 @@ private fun UrlParams.getEventTypeRawFilter(): String? {
 		return null
 
 	if (rawFiltersList.size == 1) {
+			// Nella pratica, finiremo sempre in questo caso perchè i due filtri "Public" e "NOI-Only" sono mutuamente esclusivi,
+			// quindi se ne potrà selezionare solo uno dei due
 		rawFilter = rawFiltersList[0]
 	} else {
-		rawFilter = "or(" // FIXME giusto OR?
+		rawFilter = "or("
 		rawFiltersList.forEach {
 			rawFilter += it
 			rawFilter += ","
@@ -32,6 +40,12 @@ private fun UrlParams.getEventTypeRawFilter(): String? {
     return rawFilter
 }
 
+/*
+ * Filtri per settore tecnologico:
+ * - sono selezionabili più filtri
+ * - sono unione di insieme (cioè il numero di risultati crescerà).
+ * - Noi li implementiamo forgiando una query OR
+ */
 private fun UrlParams.getTechSectorRawFilter(): String? {
 	var rawFilter: String?
 
@@ -46,7 +60,7 @@ private fun UrlParams.getTechSectorRawFilter(): String? {
 	if (rawFiltersList.size == 1) {
 		rawFilter = rawFiltersList[0]
 	} else {
-		rawFilter = "or(" // FIXME giusto OR?
+		rawFilter = "or("
 		rawFiltersList.forEach {
 			rawFilter += it
 			rawFilter += ","
@@ -57,6 +71,9 @@ private fun UrlParams.getTechSectorRawFilter(): String? {
 	return rawFilter
 }
 
+/*
+ * Filtro complessivo
+ */
 fun UrlParams.getRawFilter(): String? {
 	if (selectedFilters == null || selectedFilters.isEmpty())
 		return null
@@ -66,7 +83,8 @@ fun UrlParams.getRawFilter(): String? {
 
     var rawFilter: String? = null
     if (eventTypeRawFilter != null && techSectorRawFilter != null)
-        rawFilter = "and(".plus(eventTypeRawFilter).plus(",").plus(techSectorRawFilter).plus(")") // FIXME giusto AND?
+    	// Filtro sia per evento sia per settore tecnologico: sono una intersezione di insiemi e quindi vanno messi in AND. Es eventi pubblici e del settore green
+        rawFilter = "and(".plus(eventTypeRawFilter).plus(",").plus(techSectorRawFilter).plus(")")
     else if (eventTypeRawFilter != null)
         rawFilter = eventTypeRawFilter
     else if (techSectorRawFilter != null)
