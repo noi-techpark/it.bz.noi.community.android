@@ -15,6 +15,8 @@ import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import java.util.*
 
 /**
@@ -100,6 +102,9 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 
 	val appliedFilters = MediatorLiveData<List<FilterValue>>()
 
+	val selectedFiltersCount = selectedFilters.asFlow().flatMapLatest {
+		flowOf(it.size)
+	}.asLiveData(Dispatchers.IO)
 
 	/**
 	 * mediator live data that emits the events to the observers

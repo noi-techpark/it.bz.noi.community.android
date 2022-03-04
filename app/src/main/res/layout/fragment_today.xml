@@ -9,8 +9,8 @@
 
 	<com.google.android.material.card.MaterialCardView
 		android:id="@+id/cdFilterEvents"
-		android:layout_width="40dp"
-		android:layout_height="40dp"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
 		android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
 		android:layout_marginTop="@dimen/activity_vertical_margin"
 		android:backgroundTint="@color/background_color"
@@ -19,15 +19,35 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent">
 
-		<ImageView
-			android:id="@+id/ivFilters"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:importantForAccessibility="no"
-			android:padding="8dp"
-			android:src="@drawable/ic_filter"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+
+			<ImageView
+				android:id="@+id/ivFilters"
+				android:layout_width="40dp"
+				android:layout_height="40dp"
+				android:importantForAccessibility="no"
+				android:padding="8dp"
+				android:src="@drawable/ic_filter"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintBottom_toBottomOf="parent"/>
+
+			<TextView
+				android:id="@+id/appliedFiltersCount"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:textColor="@color/primary_color"
+				android:visibility="gone"
+				android:paddingEnd="7dp"
+				app:layout_constraintStart_toEndOf="@id/ivFilters"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintBottom_toBottomOf="parent"
+				tools:visibility="visible"
+				tools:text="(2)"/>
+
+		</androidx.constraintlayout.widget.ConstraintLayout>
 
 	</com.google.android.material.card.MaterialCardView>
 
