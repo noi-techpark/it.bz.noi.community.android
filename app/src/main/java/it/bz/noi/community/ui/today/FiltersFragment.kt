@@ -1,12 +1,12 @@
 package it.bz.noi.community.ui.today
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
@@ -28,7 +28,7 @@ class FiltersFragment : Fragment() {
 
 	private val updateResultsListener = object : UpdateResultsListener {
 		override fun updateResults() {
-			mainViewModel.updateSelectedFilters(filterAdapter.filters.filter { it.checked == true })
+			mainViewModel.updateSelectedFilters(filterAdapter.filters.filter { it.checked })
 		}
 	}
 
@@ -48,7 +48,7 @@ class FiltersFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentFiltersBinding.inflate(inflater)
 
 		mainViewModel.appliedFilters.observe(requireActivity()) {
@@ -56,20 +56,22 @@ class FiltersFragment : Fragment() {
 			mainViewModel.refresh()
 		}
 
-        mainViewModel.mediatorEvents.observe(viewLifecycleOwner, Observer {
-            when (it.status) {
-                Status.LOADING -> {
-                    // TODO mostrare loader sul pulsante
-                }
-                Status.SUCCESS -> {
-                    updateNumberOfResults(it.data?.size ?: 0)
-                }
-                Status.ERROR -> {
-                    // TODO
-                }
-            }
-        })
-        return binding.root
+        mainViewModel.mediatorEvents.observe(viewLifecycleOwner) {
+			when (it.status) {
+				Status.LOADING -> {
+					// Continuiamo a mostrare il valore precedente, per evitare side effects grafici introducendo un loader sul pulsante
+					Log.d(TAG, "Loading results with new filters selection in progress...")
+				}
+				Status.SUCCESS -> {
+					updateNumberOfResults(it.data?.size ?: 0)
+				}
+				Status.ERROR -> {
+					// Continuiamo a mostrare il valore precedente
+					Log.e(TAG, "Error loading results with new filters selection")
+				}
+			}
+		}
+		return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,11 +92,15 @@ class FiltersFragment : Fragment() {
     }
 
     private fun updateNumberOfResults(numResults: Int?) {
-        binding.showBtn.text = getString(R.string.show_btn_format, numResults ?: 0)
+        binding.showBtn.text = getString(R.string.show_results_btn_format, numResults ?: 0)
     }
 
     private fun resetFilters() {
 		mainViewModel.updateSelectedFilters(emptyList())
     }
+
+	companion object {
+		private const val TAG = "FiltersFragment"
+	}
 
 }
