@@ -16,9 +16,8 @@ data class UrlParams(
 private fun UrlParams.getEventTypeRawFilter(): String? {
     var rawFilter: String?
 
-	val rawFiltersList = mutableListOf<String>()
-	selectedFilters.filter { it.type == FilterType.EVENT_TYPE.typeDesc }.forEach {
-		rawFiltersList.add("in(${FilterType.EVENT_TYPE.typeDesc}.[],\"${it.key}\")")
+	val rawFiltersList = selectedFilters.filter { it.type == FilterType.EVENT_TYPE.typeDesc }.map {
+		"in(${FilterType.EVENT_TYPE.typeDesc}.[],\"${it.key}\")"
 	}
 
 	if (rawFiltersList.isEmpty())
@@ -29,12 +28,7 @@ private fun UrlParams.getEventTypeRawFilter(): String? {
 			// quindi se ne potrà selezionare solo uno dei due
 		rawFilter = rawFiltersList[0]
 	} else {
-		rawFilter = "or("
-		rawFiltersList.forEach {
-			rawFilter += it
-			rawFilter += ","
-		}
-		rawFilter = rawFilter.substring(0, rawFilter.lastIndexOf(",")) + ")"
+		rawFilter = rawFiltersList.joinToString(prefix = "or(", separator = ",", postfix = ")")
 	}
 
     return rawFilter
@@ -49,9 +43,8 @@ private fun UrlParams.getEventTypeRawFilter(): String? {
 private fun UrlParams.getTechSectorRawFilter(): String? {
 	var rawFilter: String?
 
-	val rawFiltersList = mutableListOf<String>()
-	selectedFilters.filter { it.type == FilterType.TECHNOLOGY_SECTOR.typeDesc }.forEach {
-		rawFiltersList.add("in(${FilterType.TECHNOLOGY_SECTOR.typeDesc}.[],\"${it.key}\")")
+	val rawFiltersList = selectedFilters.filter { it.type == FilterType.TECHNOLOGY_SECTOR.typeDesc }.map {
+		"in(${FilterType.TECHNOLOGY_SECTOR.typeDesc}.[],\"${it.key}\")"
 	}
 
 	if (rawFiltersList.isEmpty())
@@ -60,12 +53,7 @@ private fun UrlParams.getTechSectorRawFilter(): String? {
 	if (rawFiltersList.size == 1) {
 		rawFilter = rawFiltersList[0]
 	} else {
-		rawFilter = "or("
-		rawFiltersList.forEach {
-			rawFilter += it
-			rawFilter += ","
-		}
-		rawFilter = rawFilter.substring(0, rawFilter.lastIndexOf(",")) + ")"
+		rawFilter = rawFiltersList.joinToString(prefix = "or(", separator = ",", postfix = ")")
 	}
 
 	return rawFilter
