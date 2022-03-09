@@ -46,7 +46,7 @@
 	</style>
 
 	<style name="ThemeOverlay.NOI.TimeFilterButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
-		<item name="strokeColor">@color/mtrl_btn_stroke_color_selector</item>
+		<item name="strokeColor">@color/filter_button_stroke_color_selector</item>
 		<item name="android:textColor">?attr/colorOnSecondary</item>
 		<item name="textAllCaps">false</item>
 		<item name="cornerRadius">2dp</item>

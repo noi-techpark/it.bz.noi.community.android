@@ -12,4 +12,5 @@
 
     <color name="disabled1_color">#828282</color>
 	<color name="disabled2_color">#E5E5E5</color>
+	<color name="inactive_color">#C8C8C8</color>
 </resources>
