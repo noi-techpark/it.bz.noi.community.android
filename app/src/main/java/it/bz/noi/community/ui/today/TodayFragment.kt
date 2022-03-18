@@ -26,6 +26,7 @@ import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.data.models.TimeFilter
 import it.bz.noi.community.data.models.TimeRange
+import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentTodayBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
@@ -38,7 +39,10 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 	private val todayViewModel: TodayViewModel by activityViewModels()
 
 	private val viewModel: MainViewModel by activityViewModels(factoryProducer = {
-		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService))
+		ViewModelFactory(
+			ApiHelper(RetrofitBuilder.apiService),
+			JsonFilterRepository(requireActivity().application)
+		)
 	})
 
 	private lateinit var timeFilters: List<TimeFilter>
@@ -148,6 +152,15 @@ class TodayFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 				}
 			}
 		})
+
+		viewModel.selectedFiltersCount.observe(viewLifecycleOwner) { count ->
+			if (count > 0) {
+				binding.appliedFiltersCount.visibility = View.VISIBLE
+				binding.appliedFiltersCount.text = "($count)"
+			} else {
+				binding.appliedFiltersCount.visibility = View.GONE
+			}
+		}
 	}
 
 	private fun retrieveList(events: List<EventsResponse.Event>) {

@@ -3,28 +3,20 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="wrap_content"
-	android:layout_height="wrap_content">
+	android:layout_height="@dimen/filters_bar_height"
+	android:paddingHorizontal="5dp">
 
-	<TextView
-		android:id="@+id/tvTimeFilter"
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/timeFilter"
+		android:insetTop="0dp"
+		android:insetBottom="0dp"
+		style="@style/ThemeOverlay.NOI.TimeFilterButton"
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:paddingHorizontal="16dp"
-		android:textColor="@color/secondary_color"
-		android:textColorHint="@color/secondary_color"
+		android:layout_height="@dimen/filters_bar_height"
 		android:textSize="18sp"
-		android:textStyle="bold"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		tools:hint="Today" />
+		android:checkable="true"
+		tools:text="Today" />
 
-	<View
-		android:id="@+id/viewFilterSelected"
-		android:layout_width="0dp"
-		android:layout_height="3dp"
-		android:layout_marginTop="4dp"
-		android:background="@color/background_color"
-		app:layout_constraintEnd_toEndOf="@id/tvTimeFilter"
-		app:layout_constraintStart_toStartOf="@id/tvTimeFilter"
-		app:layout_constraintTop_toBottomOf="@id/tvTimeFilter" />
 </androidx.constraintlayout.widget.ConstraintLayout>

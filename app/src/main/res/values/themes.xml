@@ -44,4 +44,12 @@
 		<item name="colorSurface">@color/disabled2_color</item>
 		<item name="colorOnSurface">@color/disabled2_color</item>
 	</style>
+
+	<style name="ThemeOverlay.NOI.TimeFilterButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+		<item name="strokeColor">@color/filter_button_stroke_color_selector</item>
+		<item name="android:textColor">?attr/colorOnSecondary</item>
+		<item name="textAllCaps">false</item>
+		<item name="cornerRadius">2dp</item>
+		<item name="backgroundTint">?attr/colorSecondary</item>
+	</style>
 </resources>

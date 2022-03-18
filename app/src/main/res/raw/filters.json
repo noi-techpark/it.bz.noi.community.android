@@ -1,0 +1,86 @@
+[
+	{
+		"Id":"noicommunity",
+		"Key":"NOI Community",
+		"Type":"CustomTagging",
+		"Parent":"EventType",
+		"Bitmask":0,
+		"TypeDesc":{
+			"de":"NOI Community",
+			"en":"NOI Community",
+			"it":"NOI Community"
+		}
+	},
+	{
+		"Id":"public",
+		"Key":"Public",
+		"Type":"CustomTagging",
+		"Parent":"EventType",
+		"Bitmask":0,
+		"TypeDesc":{
+			"de":"Public",
+			"en":"Public",
+			"it":"Public"
+		}
+	},
+	{
+		"Id":"alpine",
+		"Key":"Alpine",
+		"Type":"TechnologyFields",
+		"Parent":"",
+		"Bitmask":0,
+		"TypeDesc":{
+			"de":"Alpine",
+			"en":"Alpine",
+			"it":"Alpine"
+		}
+	},
+	{
+		"Id":"automotiveautomation",
+		"Key":"Automotive/Automation",
+		"Type":"TechnologyFields",
+		"Parent":"",
+		"Bitmask":0,
+		"TypeDesc":{
+			"de":"Automotive / Automation",
+			"en":"Automotive / Automation",
+			"it":"Automotive / Automation"
+		}
+	},
+	{
+		"Id":"digital",
+		"Key":"Digital",
+		"Type":"TechnologyFields",
+		"Parent":"",
+		"Bitmask":0,
+		"TypeDesc":{
+			"de":"Digital",
+			"en":"Digital",
+			"it":"Digital"
+		}
+	},
+	{
+		"Id":"food",
+		"Key":"Food",
+		"Type":"TechnologyFields",
+		"Parent":"",
+		"Bitmask":0,
+		"TypeDesc":{
+			"de":"Food",
+			"en":"Food",
+			"it":"Food"
+		}
+	},
+	{
+		"Id":"green",
+		"Key":"Green",
+		"Type":"TechnologyFields",
+		"Parent":"",
+		"Bitmask":0,
+		"TypeDesc":{
+			"de":"Green",
+			"en":"Green",
+			"it":"Green"
+		}
+	}
+]

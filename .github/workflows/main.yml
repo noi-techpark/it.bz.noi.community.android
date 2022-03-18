@@ -1,9 +1,9 @@
-### Continuous Integration
+### Continuous Integration & Deployment
 #
 # This file is inspired by
 # https://www.raywenderlich.com/19407406-continuous-delivery-for-android-using-github-actions
 
-name: CI
+name: CI/CD
 on: [pull_request, push]
 jobs:
 
@@ -13,12 +13,8 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
-      - name: Inject google-services.json
-        env:
-          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
       - name: Test the app
-        run: ./gradlew test
+        run: ./gradlew testDebug
 
   ## Run tests on an Android Simulator
   ## We use macos as it has hardware acceleration for that
@@ -36,7 +32,7 @@ jobs:
   ## Build and sign the app, and upload it as Github Artifact
   build_and_deploy_to_play_store:
     needs: [ unit_tests, android_tests ]
-    if: github.ref == 'refs/heads/development'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

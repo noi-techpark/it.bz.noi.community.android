@@ -80,7 +80,7 @@
     <fragment
         android:id="@+id/filtersFragment"
         android:name="it.bz.noi.community.ui.today.FiltersFragment"
-        android:label="Filter"
+        android:label="@string/title_filters"
         tools:layout="@layout/fragment_filters" />
     <action
         android:id="@+id/action_global_webViewFragment"

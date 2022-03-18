@@ -38,6 +38,7 @@ import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.EventsResponse
+import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentEventDetailsBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
@@ -59,7 +60,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 	private val args: EventDetailsFragmentArgs by navArgs()
 
 	private val mainViewModel: MainViewModel by activityViewModels(factoryProducer = {
-		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService))
+		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(requireActivity().application))
 	})
 
 	private lateinit var allEvents: ArrayList<EventsResponse.Event>
