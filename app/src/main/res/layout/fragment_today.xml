@@ -1,122 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:background="@color/secondary_background_color"
-	tools:context=".ui.today.TodayFragment">
+	android:layout_height="match_parent">
 
-	<com.google.android.material.card.MaterialCardView
-		android:id="@+id/cdFilterEvents"
-		android:layout_width="wrap_content"
+	<LinearLayout
+		android:id="@+id/tabsContainer"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-		android:layout_marginTop="@dimen/activity_vertical_margin"
-		android:backgroundTint="@color/background_color"
-		app:cardCornerRadius="0dp"
-		app:cardElevation="0dp"
+		android:background="@color/background_color"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent">
 
-		<androidx.constraintlayout.widget.ConstraintLayout
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content">
-
-			<ImageView
-				android:id="@+id/ivFilters"
-				android:layout_width="@dimen/filters_bar_height"
-				android:layout_height="@dimen/filters_bar_height"
-				android:importantForAccessibility="no"
-				android:padding="8dp"
-				android:src="@drawable/ic_filter"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toTopOf="parent"
-				app:layout_constraintBottom_toBottomOf="parent"/>
-
-			<TextView
-				android:id="@+id/appliedFiltersCount"
-				android:layout_width="wrap_content"
-				android:layout_height="match_parent"
-				android:textColor="@color/primary_color"
-				android:visibility="gone"
-				android:paddingEnd="7dp"
-				app:layout_constraintStart_toEndOf="@id/ivFilters"
-				app:layout_constraintTop_toTopOf="parent"
-				app:layout_constraintBottom_toBottomOf="parent"
-				tools:visibility="visible"
-				tools:text="(2)"/>
-
-		</androidx.constraintlayout.widget.ConstraintLayout>
-
-	</com.google.android.material.card.MaterialCardView>
-
-	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/rvTimeFilters"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="@dimen/activity_vertical_margin"
-		android:clipToPadding="false"
-		android:paddingHorizontal="@dimen/activity_horizontal_margin"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.0"
-		app:layout_constraintStart_toEndOf="@id/cdFilterEvents"
-		app:layout_constraintTop_toTopOf="parent"
-		tools:itemCount="4" />
-
-	<androidx.constraintlayout.widget.ConstraintLayout
-		android:id="@+id/clEmptyState"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="32dp"
-		android:paddingHorizontal="32dp"
-		android:visibility="gone"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/rvTimeFilters">
-
-		<TextView
-			android:id="@+id/tvEmptyStateTitle"
+		<com.google.android.material.tabs.TabLayout
+			android:id="@+id/tabs"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:text="@string/label_events_empty_state_title"
-			android:textAlignment="center"
-			android:textColor="@color/secondary_color"
-			android:textSize="20sp"
-			android:textStyle="bold"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
+			android:layout_margin="17dp"
+			style="@style/NOI.TabLayout"/>
+	</LinearLayout>
 
-		<TextView
-			android:id="@+id/tvEmptyStateSubtitle"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:text="@string/label_events_empty_state_subtitle"
-			android:textAlignment="center"
-			android:textColor="@color/secondary_color"
-			android:textSize="18sp"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/tvEmptyStateTitle" />
-	</androidx.constraintlayout.widget.ConstraintLayout>
-
-	<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-		android:id="@+id/swipeRefreshEvents"
+	<androidx.viewpager2.widget.ViewPager2
+		android:id="@+id/todayViewPager"
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/rvTimeFilters">
-
-		<androidx.recyclerview.widget.RecyclerView
-			android:id="@+id/rvEvents"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:clipToPadding="false"
-			android:paddingBottom="16dp"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/rvTimeFilters"
-			tools:listitem="@layout/view_holder_event" />
-
-	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/tabsContainer"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
