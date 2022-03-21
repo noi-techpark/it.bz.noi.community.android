@@ -11,6 +11,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentTodayBinding
 
 class TodayFragment : Fragment() {
@@ -66,7 +67,8 @@ class TodayFragment : Fragment() {
 		}
 
 		val tabsNames = listOf(
-			"News", "Events" // FIXME export resources
+			getString(R.string.news_top_tab),
+			getString(R.string.events_top_tab)
 		)
 
 		TabLayoutMediator(tabLayout, viewPager) { tab, position ->
