@@ -20,7 +20,6 @@ class TodayFragment : Fragment() {
 	private val binding get() = _binding!!
 
 	private val fragments = arrayListOf<Fragment>()
-	private lateinit var todayTabsAdapter: TodayTabsAdapter
 	private lateinit var tabLayout: TabLayout
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,12 +27,6 @@ class TodayFragment : Fragment() {
 
 		fragments.add(NewsFragment())
 		fragments.add(EventsFragment())
-
-		todayTabsAdapter = TodayTabsAdapter(
-			childFragmentManager,
-			lifecycle,
-			fragments
-		)
 	}
 
 	override fun onDestroyView() {
@@ -47,12 +40,12 @@ class TodayFragment : Fragment() {
 		savedInstanceState: Bundle?
 	): View {
 		_binding = FragmentTodayBinding.inflate(inflater)
+		createTabs()
 		return binding.root
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		createTabs()
 		tabLayout.selectTab(tabLayout.getTabAt(1)) // FIXME rimuovere?
 	}
 
@@ -61,9 +54,12 @@ class TodayFragment : Fragment() {
 
 		val viewPager: ViewPager2 = binding.todayViewPager
 		viewPager.apply {
-			adapter = todayTabsAdapter
-			offscreenPageLimit = 1
-			setUserInputEnabled(false)
+			adapter = TodayTabsAdapter(
+				childFragmentManager,
+				lifecycle,
+				fragments
+			)
+			isUserInputEnabled = false
 		}
 
 		val tabsNames = listOf(
