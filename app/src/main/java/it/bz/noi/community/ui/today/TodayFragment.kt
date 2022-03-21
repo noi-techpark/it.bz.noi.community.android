@@ -52,15 +52,17 @@ class TodayFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		createTabs()
-		tabLayout.selectTab(tabLayout.getTabAt(1))
+		tabLayout.selectTab(tabLayout.getTabAt(1)) // FIXME rimuovere?
 	}
 
 	private fun createTabs() {
 		tabLayout = binding.tabs
+
 		val viewPager: ViewPager2 = binding.todayViewPager
 		viewPager.apply {
 			adapter = todayTabsAdapter
 			offscreenPageLimit = 1
+			setUserInputEnabled(false)
 		}
 
 		val tabsNames = listOf(
@@ -72,6 +74,7 @@ class TodayFragment : Fragment() {
 			tab.text = tabsNames[position]
 		}.attach()
 	}
+
 }
 
 class TodayTabsAdapter(
