@@ -11,18 +11,26 @@ jobs:
   unit_tests:
     runs-on: ubuntu-20.04
     steps:
-      - name: Checkout the code
+      - name: Checkout code
         uses: actions/checkout@v2
+      - name: Inject google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
       - name: Test the app
-        run: ./gradlew testDebug
+        run: ./gradlew test
 
   ## Run tests on an Android Simulator
   ## We use macos as it has hardware acceleration for that
   android_tests:
     runs-on: macos-latest
     steps:
-      - name: Checkout the code
+      - name: Checkout code
         uses: actions/checkout@v2
+      - name: Inject google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
       - name: Instrumentation Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
