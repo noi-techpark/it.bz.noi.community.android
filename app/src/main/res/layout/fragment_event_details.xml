@@ -223,7 +223,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/btn_find_on_maps"
-		app:cornerRadius="0dp"
+		app:cornerRadius="@dimen/cornerRadius"
 		app:elevation="0dp"
 		app:layout_constraintStart_toStartOf="@id/viewWhiteLayer"
 		app:layout_constraintTop_toTopOf="@id/viewWhiteLayer" />
@@ -233,7 +233,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/btn_add_to_calendar"
-		app:cornerRadius="0dp"
+		app:cornerRadius="@dimen/cornerRadius"
 		app:elevation="0dp"
 		app:layout_constraintBottom_toBottomOf="@id/viewWhiteLayer"
 		app:layout_constraintEnd_toEndOf="@id/viewWhiteLayer" />
