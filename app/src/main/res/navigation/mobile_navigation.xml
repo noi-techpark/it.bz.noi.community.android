@@ -20,7 +20,10 @@
         <action
             android:id="@+id/action_navigation_today_to_eventDetailsFragment"
             app:destination="@id/eventDetailsFragment" />
-    </fragment>
+		<action
+			android:id="@+id/action_navigation_today_to_newsDetails"
+			app:destination="@id/newsDetails" />
+	</fragment>
 
     <fragment
         android:id="@+id/navigation_orientate"
@@ -89,4 +92,8 @@
         app:exitAnim="@anim/fade_out"
         app:popEnterAnim="@anim/fade_in"
         app:popExitAnim="@anim/slide_out_up" />
+	<fragment
+		android:id="@+id/newsDetails"
+		android:name="it.bz.noi.community.ui.newsDetails.NewsDetailsFragment"
+		android:label="NewsDetails" />
 </navigation>

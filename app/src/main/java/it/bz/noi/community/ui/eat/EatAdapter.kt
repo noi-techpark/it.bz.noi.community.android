@@ -93,7 +93,7 @@ class PictureAdapter(private val pictures: List<Int>) : RecyclerView.Adapter<Pic
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PictureViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.vh_image, parent, false)
+            .inflate(R.layout.vh_vertical_image, parent, false)
         return PictureViewHolder(view)
     }
 

@@ -30,7 +30,7 @@
 		android:elevation="20dp">
 
 		<com.google.android.material.button.MaterialButton
-			android:id="@+id/showBtn"
+			android:id="@+id/externalLink"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:text="@string/show_results_btn_format"
@@ -49,7 +49,7 @@
 			android:textColor="@color/secondary_color"
 			android:textSize="19sp"
 			android:textStyle="bold"
-			app:layout_constraintTop_toBottomOf="@id/showBtn"
+			app:layout_constraintTop_toBottomOf="@id/externalLink"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent" />
 
