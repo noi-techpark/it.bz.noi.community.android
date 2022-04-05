@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_marginBottom="10dp"
+	app:cardCornerRadius="0dp"
+	app:cardElevation="0dp">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_margin="@dimen/default_margin">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/header"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<ImageView
+			android:id="@+id/logo"
+			android:layout_width="50dp"
+			android:layout_height="50dp"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:background="@drawable/black_circle"
+			tools:src="@drawable/ic_noi" />
+
+		<TextView
+			android:id="@+id/publisher"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="10dp"
+			android:textColor="@color/secondary_color"
+			android:textSize="17sp"
+			android:textStyle="bold"
+			app:layout_constraintStart_toEndOf="@id/logo"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:text="NOI Techpark" />
+
+		<TextView
+			android:id="@+id/date"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="10dp"
+			android:textColor="@color/secondary_color"
+			android:textSize="17sp"
+			app:layout_constraintStart_toEndOf="@id/logo"
+			app:layout_constraintTop_toBottomOf="@id/publisher"
+			tools:text="26.2.2022" />
+
+		<TextView
+			android:id="@+id/importantTag"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textColor="@color/secondary_color"
+			android:textSize="14sp"
+			android:textStyle="bold"
+			android:textAllCaps="true"
+			android:background="@drawable/yelow_pillow"
+			android:paddingStart="10dp"
+			android:paddingEnd="10dp"
+			android:paddingTop="4dp"
+			android:paddingBottom="4dp"
+			android:visibility="gone"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintBaseline_toBaselineOf="@id/publisher"
+			tools:text="Important"
+			tools:visibility="visible"/>
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+	<TextView
+		android:id="@+id/title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:textColor="@color/secondary_color"
+		android:textSize="17sp"
+		android:textStyle="bold"
+		android:layout_marginTop="17dp"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/header"
+		tools:text="Marie commodo ligula eget dolor." />
+
+	<TextView
+		android:id="@+id/shortText"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:textColor="@color/secondary_color"
+		android:textSize="17sp"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/title"
+		tools:text="Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Magnis dis parturient montes." />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
