@@ -78,4 +78,18 @@ object Utils {
 
 		return newUriBuilder.build().toString()
 	}
+
+	fun getPushNotificationTopic(): String {
+		return when (Locale.getDefault().language) {
+			ITALIAN -> {
+				"newsfeednoi_it"
+			}
+			GERMAN -> {
+				"newsfeednoi_de"
+			}
+			else -> {
+				"newsfeednoi_en"
+			}
+		}
+	}
 }
