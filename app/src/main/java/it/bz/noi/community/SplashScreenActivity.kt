@@ -8,8 +8,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import it.bz.noi.community.databinding.ActivitySplashBinding
-import it.bz.noi.community.notifications.MessagingService
-import it.bz.noi.community.utils.Utils
 
 /**
  * Activity used only for displaying the Splash/Launch Screen
@@ -32,8 +30,6 @@ class SplashScreenActivity : AppCompatActivity() {
 			goToMainActivity()
 			return
 		}
-
-		MessagingService.subscribeToTopic(Utils.getPushNotificationTopic())
 
 		binding = ActivitySplashBinding.inflate(layoutInflater)
 		setContentView(binding.root)

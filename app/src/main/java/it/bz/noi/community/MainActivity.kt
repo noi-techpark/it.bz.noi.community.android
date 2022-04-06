@@ -14,9 +14,11 @@ import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.ActivityMainBinding
+import it.bz.noi.community.notifications.MessagingService
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
+import it.bz.noi.community.utils.Utils
 
 class MainActivity : AppCompatActivity() {
 
@@ -80,6 +82,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+		MessagingService.subscribeToTopic(Utils.getPushNotificationTopic())
     }
 
     override fun onSupportNavigateUp(): Boolean {
