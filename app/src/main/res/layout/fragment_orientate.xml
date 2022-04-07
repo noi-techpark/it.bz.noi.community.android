@@ -14,47 +14,27 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
 
-	<androidx.cardview.widget.CardView
+	<com.google.android.material.button.MaterialButton
 		android:id="@+id/bookARoom"
 		android:layout_width="69dp"
 		android:layout_height="69dp"
 		android:layout_margin="@dimen/default_margin"
-		android:backgroundTint="@color/background_color"
+		android:background="@drawable/black_circle"
 		android:elevation="10dp"
-		app:cardCornerRadius="100dp"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent">
-
-		<androidx.constraintlayout.widget.ConstraintLayout
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:padding="4dp"
-			android:layout_gravity="center"
-			android:backgroundTint="@color/background_color">
-
-			<ImageView
-				android:id="@+id/calendarIcon"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:foregroundTint="@color/primary_color"
-				android:src="@drawable/ic_calendar"
-				app:tint="@color/primary_color"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintTop_toTopOf="parent"/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:lines="2"
-				android:text="@string/room_booking"
-				android:textAlignment="center"
-				android:textColor="@color/primary_color"
-				android:textSize="13sp"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/calendarIcon" />
-		</androidx.constraintlayout.widget.ConstraintLayout>
-	</androidx.cardview.widget.CardView>
+		android:lineSpacingMultiplier="0.9"
+		android:lines="2"
+		android:paddingStart="0dp"
+		android:paddingEnd="0dp"
+		android:text="@string/room_booking"
+		android:textAlignment="center"
+		android:textAllCaps="false"
+		android:textColor="@color/primary_color"
+		android:textSize="13sp"
+		app:icon="@drawable/ic_calendar"
+		app:iconTint="@color/primary_color"
+		app:iconGravity="top"
+		app:iconPadding="0dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
