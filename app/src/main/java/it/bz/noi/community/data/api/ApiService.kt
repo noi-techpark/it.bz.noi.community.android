@@ -41,7 +41,7 @@ interface ApiService {
 		@Query("articletype") endDate: String = "newsfeednoi",
 		@Query("rawsort") rawFilter: String = "-ArticleDate",
 		@Query("fields") fields: String = "Id,Detail,ContactInfos,ImageGallery",
-		@Query("pagesize") pageSize: Int = 10,
+		@Query("pagesize") pageSize: Int,
 		@Query("pagenumber") pageNumber: Int,
 		@Query("startdate") startDate: String,
 		@Query("language") language: String?

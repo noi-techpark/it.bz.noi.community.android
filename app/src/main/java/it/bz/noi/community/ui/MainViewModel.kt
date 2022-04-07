@@ -50,14 +50,14 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	/**
 	 * represents the parameters of the URL for filtering the events
 	 */
-	var urlParams = UrlParams(startDate = parameterDateFormatter().format(startDate))
+	var eventsParams = EventsParams(startDate = parameterDateFormatter().format(startDate))
 
 	/**
 	 * parameter used for caching the initial filter situation in the Filters fragment
 	 */
-	private lateinit var cachedParams: UrlParams
+	private lateinit var cachedParams: EventsParams
 	fun cacheFilters() {
-		cachedParams = urlParams.copy()
+		cachedParams = eventsParams.copy()
 	}
 
 	/**
@@ -66,7 +66,7 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	private var events = liveData(Dispatchers.IO) {
 		emit(Resource.loading(data = null))
 		try {
-			emit(Resource.success(data = mainRepository.getEvents(urlParams).events))
+			emit(Resource.success(data = mainRepository.getEvents(eventsParams).events))
 		} catch (exception: Exception) {
 			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
 		}
@@ -97,7 +97,7 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	private val selectedFilters = MutableLiveData(emptyList<FilterValue>())
 	fun updateSelectedFilters(filters: List<FilterValue>) {
 		selectedFilters.postValue(filters)
-		urlParams.selectedFilters = filters
+		eventsParams.selectedFilters = filters
 	}
 
 	val appliedFilters = MediatorLiveData<List<FilterValue>>()
@@ -138,24 +138,24 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 		selectedTimeFilter = timeRange
 		when (timeRange) {
 			TimeRange.ALL -> {
-				urlParams.startDate = parameterDateFormatter().format(startDate)
-				urlParams.endDate = null
-				Log.d(TAG, "ALL filter: from ${urlParams.startDate} to ${urlParams.endDate}")
+				eventsParams.startDate = parameterDateFormatter().format(startDate)
+				eventsParams.endDate = null
+				Log.d(TAG, "ALL filter: from ${eventsParams.startDate} to ${eventsParams.endDate}")
 			}
 			TimeRange.TODAY -> {
-				urlParams.startDate = parameterDateFormatter().format(startDate)
-				urlParams.endDate = parameterDateFormatter().format(Calendar.getInstance().endOfDay())
-				Log.d(TAG, "TODAY filter: from ${urlParams.startDate} to ${urlParams.endDate}")
+				eventsParams.startDate = parameterDateFormatter().format(startDate)
+				eventsParams.endDate = parameterDateFormatter().format(Calendar.getInstance().endOfDay())
+				Log.d(TAG, "TODAY filter: from ${eventsParams.startDate} to ${eventsParams.endDate}")
 			}
 			TimeRange.THIS_WEEK -> {
-				urlParams.startDate = parameterDateFormatter().format(startDate)
-				urlParams.endDate = parameterDateFormatter().format(lastDayOfCurrentWeek().endOfDay())
-				Log.d(TAG, "THIS WEEK filter: from ${urlParams.startDate} to ${urlParams.endDate}")
+				eventsParams.startDate = parameterDateFormatter().format(startDate)
+				eventsParams.endDate = parameterDateFormatter().format(lastDayOfCurrentWeek().endOfDay())
+				Log.d(TAG, "THIS WEEK filter: from ${eventsParams.startDate} to ${eventsParams.endDate}")
 			}
 			TimeRange.THIS_MONTH -> {
-				urlParams.startDate = parameterDateFormatter().format(startDate)
-				urlParams.endDate = parameterDateFormatter().format(lastDayOfCurrentMonth().endOfDay())
-				Log.d(TAG, "THIS MONTH filter: from ${urlParams.startDate} to ${urlParams.endDate}")
+				eventsParams.startDate = parameterDateFormatter().format(startDate)
+				eventsParams.endDate = parameterDateFormatter().format(lastDayOfCurrentMonth().endOfDay())
+				Log.d(TAG, "THIS MONTH filter: from ${eventsParams.startDate} to ${eventsParams.endDate}")
 			}
 		}
 		refreshData()
@@ -176,7 +176,7 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 		events = liveData(Dispatchers.IO) {
 			emit(Resource.loading(data = null))
 			try {
-				emit(Resource.success(data = mainRepository.getEvents(urlParams).events))
+				emit(Resource.success(data = mainRepository.getEvents(eventsParams).events))
 			} catch (exception: Exception) {
 				emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
 			}
@@ -231,7 +231,7 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	 * Used for check if cached filters are identical to current filters
 	 */
 	fun isFiltersSameAsCached(): Boolean {
-		return urlParams.selectedFilters == cachedParams.selectedFilters
+		return eventsParams.selectedFilters == cachedParams.selectedFilters
 	}
 
 }

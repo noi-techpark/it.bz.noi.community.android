@@ -1,6 +1,6 @@
 package it.bz.noi.community.data.models
 
-data class UrlParams(
+data class EventsParams(
     var startDate: String,
     var endDate: String? = null,
 
@@ -13,7 +13,7 @@ data class UrlParams(
  * - c'è un singolo filtro attivo e quando uno nuovo viene attivato si spengono gli altri.
  * - Noi li implementiamo forgiando una query solo con solo un filtro attivo senza nessuna OR/AND
  */
-private fun UrlParams.getEventTypeRawFilter(): String? {
+private fun EventsParams.getEventTypeRawFilter(): String? {
     var rawFilter: String?
 
 	val rawFiltersList = selectedFilters.filter { it.type == FilterType.EVENT_TYPE.typeDesc }.map {
@@ -40,7 +40,7 @@ private fun UrlParams.getEventTypeRawFilter(): String? {
  * - sono unione di insieme (cioè il numero di risultati crescerà).
  * - Noi li implementiamo forgiando una query OR
  */
-private fun UrlParams.getTechSectorRawFilter(): String? {
+private fun EventsParams.getTechSectorRawFilter(): String? {
 	var rawFilter: String?
 
 	val rawFiltersList = selectedFilters.filter { it.type == FilterType.TECHNOLOGY_SECTOR.typeDesc }.map {
@@ -62,7 +62,7 @@ private fun UrlParams.getTechSectorRawFilter(): String? {
 /*
  * Filtro complessivo
  */
-fun UrlParams.getRawFilter(): String? {
+fun EventsParams.getRawFilter(): String? {
 	if (selectedFilters == null || selectedFilters.isEmpty())
 		return null
 

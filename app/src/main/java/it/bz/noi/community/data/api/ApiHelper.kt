@@ -1,16 +1,13 @@
 package it.bz.noi.community.data.api
 
-import it.bz.noi.community.data.models.EventsResponse
-import it.bz.noi.community.data.models.NewsResponse
-import it.bz.noi.community.data.models.UrlParams
-import it.bz.noi.community.data.models.getRawFilter
+import it.bz.noi.community.data.models.*
 
 class ApiHelper(private val apiService: ApiService) {
 	// EVENTS
-	suspend fun getEvents(urlParams: UrlParams): EventsResponse = apiService.getEvents(
-		startDate = urlParams.startDate,
-		endDate = urlParams.endDate,
-		rawFilter = urlParams.getRawFilter()
+	suspend fun getEvents(eventsParams: EventsParams): EventsResponse = apiService.getEvents(
+		startDate = eventsParams.startDate,
+		endDate = eventsParams.endDate,
+		rawFilter = eventsParams.getRawFilter()
 	)
 
 	suspend fun getEventDetails(eventID: String) = apiService.getEventDetails(eventID)
@@ -20,8 +17,13 @@ class ApiHelper(private val apiService: ApiService) {
 	suspend fun getRoomMapping(language: String?) = apiService.getRoomMapping(language)
 
 	// NEWS
-	suspend fun getNews(startDate: String, pageNumber: Int, language: String?): NewsResponse =
-		apiService.getNews(startDate = startDate, pageNumber = pageNumber, language = language)
+	suspend fun getNews(newsParams: NewsParams): NewsResponse =
+		apiService.getNews(
+			startDate = newsParams.startDate,
+			pageNumber = newsParams.pageNumber,
+			pageSize = newsParams.pageSize,
+			language = newsParams.language
+		)
 
 	suspend fun getNewsDetails(newsId: String, language: String?) =
 		apiService.getNewsDetails(newsId = newsId, language = language)
