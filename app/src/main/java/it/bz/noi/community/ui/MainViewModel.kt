@@ -158,20 +158,20 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 				Log.d(TAG, "THIS MONTH filter: from ${eventsParams.startDate} to ${eventsParams.endDate}")
 			}
 		}
-		refreshData()
+		refreshEventsData()
 	}
 
 	/**
 	 * public function for reloading data, it can be used for updating the results
 	 */
 	fun refresh() {
-		refreshData()
+		refreshEventsData()
 	}
 
 	/**
 	 * force the mediatorEvents to make another event request
 	 */
-	private fun refreshData() {
+	private fun refreshEventsData() {
 		mediatorEvents.removeSource(events)
 		events = liveData(Dispatchers.IO) {
 			emit(Resource.loading(data = null))

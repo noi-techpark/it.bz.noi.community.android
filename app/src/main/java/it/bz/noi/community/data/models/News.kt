@@ -137,5 +137,5 @@ data class NewsResponse(
 	@SerializedName("NextPage")
 	val nextPage: String?,
 	@SerializedName("Items")
-	val news: News
+	val news: List<News>
 )

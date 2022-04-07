@@ -44,11 +44,6 @@ class TodayFragment : Fragment() {
 		return binding.root
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
-		tabLayout.selectTab(tabLayout.getTabAt(1)) // FIXME rimuovere?
-	}
-
 	private fun createTabs() {
 		tabLayout = binding.tabs
 
