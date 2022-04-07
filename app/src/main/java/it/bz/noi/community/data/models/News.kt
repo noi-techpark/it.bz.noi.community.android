@@ -124,3 +124,18 @@ fun News.getEmail(): String? {
 		else -> emailEN
 	}
 }
+
+data class NewsResponse(
+	@SerializedName("TotalResults")
+	val totalResult: Int,
+	@SerializedName("TotalPages")
+	val totalPages: Int,
+	@SerializedName("CurrentPage")
+	val currentPage: Int,
+	@SerializedName("PreviousPage")
+	val previousPage: String?,
+	@SerializedName("NextPage")
+	val nextPage: String?,
+	@SerializedName("Items")
+	val news: News
+)
