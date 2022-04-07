@@ -2,10 +2,15 @@ package it.bz.noi.community.ui
 
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.models.*
 import it.bz.noi.community.data.repository.FilterRepository
 import it.bz.noi.community.data.repository.MainRepository
+import it.bz.noi.community.ui.today.NewsPagingSource
 import it.bz.noi.community.utils.DateUtils.endOfDay
 import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentMonth
 import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentWeek
@@ -15,6 +20,7 @@ import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import java.util.*
@@ -233,5 +239,11 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	fun isFiltersSameAsCached(): Boolean {
 		return eventsParams.selectedFilters == cachedParams.selectedFilters
 	}
+
+
+	// FIXME prova
+	val newsFlow: Flow<PagingData<News>> = Pager(PagingConfig(pageSize = NewsPagingSource.PAGE_ITEMS)) {
+		NewsPagingSource(mainRepository)
+	}.flow.cachedIn(viewModelScope)
 
 }
