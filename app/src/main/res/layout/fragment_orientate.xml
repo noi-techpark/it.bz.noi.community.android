@@ -19,7 +19,7 @@
 		android:layout_width="69dp"
 		android:layout_height="69dp"
 		android:layout_margin="@dimen/default_margin"
-		android:backgroundTint="?attr/colorPrimary"
+		android:backgroundTint="@color/background_color"
 		android:elevation="10dp"
 		app:cardCornerRadius="100dp"
 		app:layout_constraintEnd_toEndOf="parent"
@@ -29,15 +29,16 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:padding="4dp"
-			android:layout_gravity="center">
+			android:layout_gravity="center"
+			android:backgroundTint="@color/background_color">
 
 			<ImageView
 				android:id="@+id/calendarIcon"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:foregroundTint="?attr/colorOnPrimary"
+				android:foregroundTint="@color/primary_color"
 				android:src="@drawable/ic_calendar"
-				app:tint="?attr/colorOnPrimary"
+				app:tint="@color/primary_color"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintTop_toTopOf="parent"/>
@@ -48,7 +49,7 @@
 				android:lines="2"
 				android:text="@string/room_booking"
 				android:textAlignment="center"
-				android:textColor="?attr/colorOnPrimary"
+				android:textColor="@color/primary_color"
 				android:textSize="13sp"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
