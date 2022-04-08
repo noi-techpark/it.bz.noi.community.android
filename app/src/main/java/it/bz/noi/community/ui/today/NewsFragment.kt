@@ -1,5 +1,7 @@
 package it.bz.noi.community.ui.today
 
+import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +12,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.News
-import it.bz.noi.community.data.models.getAbstract
-import it.bz.noi.community.data.models.getPublisher
-import it.bz.noi.community.data.models.getTitle
+import it.bz.noi.community.data.models.getContactInfo
+import it.bz.noi.community.data.models.getDetail
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentNewsBinding
 import it.bz.noi.community.databinding.ViewHolderNewsBinding
@@ -23,6 +25,12 @@ import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalAccessor
+import java.util.*
 
 class NewsFragment  : Fragment() {
 
@@ -70,12 +78,23 @@ class NewsFragment  : Fragment() {
 
 class NewsVH(private val binding: ViewHolderNewsBinding) : RecyclerView.ViewHolder(binding.root) {
 
+	private val df = DateFormat.getDateInstance(DateFormat.SHORT) // FIXME chiedere tipo di formattazione
+
 	fun bind(news: News) {
-		binding.title.text = news.getTitle()
-		binding.shortText.text = news.getAbstract()
-		//binding.logo.setImageDrawable() // TODO
-		binding.publisher.text = news.getPublisher()
-		//binding.date.text = news.date.toString() // FIXME
+		news.getDetail()?.let { detail ->
+			binding.title.text = detail.title
+			binding.shortText.text = detail.abstract
+		}
+		news.getContactInfo()?.let { contactInfo ->
+			binding.publisher.text = contactInfo.publisher
+			Glide
+				.with(binding.root.context)
+				.load(contactInfo.logo)
+				.centerCrop()
+				.into(binding.logo)
+
+		}
+		binding.date.text = df.format(news.date)
 	}
 
 }

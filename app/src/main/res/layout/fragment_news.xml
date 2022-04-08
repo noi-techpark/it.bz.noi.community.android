@@ -4,9 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:background="@color/secondary_background_color"
-	android:paddingTop="@dimen/default_margin"
-	android:paddingBottom="@dimen/default_margin">
+	android:background="@color/secondary_background_color">
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/news"
