@@ -1,7 +1,5 @@
 package it.bz.noi.community.ui.today
 
-import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -26,11 +25,6 @@ import it.bz.noi.community.ui.ViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.format.DateTimeFormatter
-import java.time.temporal.TemporalAccessor
-import java.util.*
 
 class NewsFragment  : Fragment() {
 
@@ -44,7 +38,12 @@ class NewsFragment  : Fragment() {
 		)
 	})
 
-	private val newsAdapter = PagingNewsAdapter(NewsComparator)
+	private val newsAdapter = PagingNewsAdapter(NewsComparator, object : NewsDetailListener {
+		override fun openNewsDetail(newsId: String) {
+			findNavController().navigate(TodayFragmentDirections.actionNavigationTodayToNewsDetails(newsId))
+		}
+
+	})
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -76,11 +75,23 @@ class NewsFragment  : Fragment() {
 
 }
 
-class NewsVH(private val binding: ViewHolderNewsBinding) : RecyclerView.ViewHolder(binding.root) {
+interface NewsDetailListener {
+	fun openNewsDetail(newsId: String)
+}
+
+class NewsVH(private val binding: ViewHolderNewsBinding, detailListener: NewsDetailListener) : RecyclerView.ViewHolder(binding.root) {
 
 	private val df = DateFormat.getDateInstance(DateFormat.SHORT) // FIXME chiedere tipo di formattazione
+	private lateinit var newsId: String
+
+	init {
+	    binding.root.setOnClickListener {
+			detailListener.openNewsDetail(newsId)
+		}
+	}
 
 	fun bind(news: News) {
+		newsId = news.id
 		news.getDetail()?.let { detail ->
 			binding.title.text = detail.title
 			binding.shortText.text = detail.abstract
@@ -99,7 +110,7 @@ class NewsVH(private val binding: ViewHolderNewsBinding) : RecyclerView.ViewHold
 
 }
 
-class PagingNewsAdapter(diffCallback: DiffUtil.ItemCallback<News>) : PagingDataAdapter<News, NewsVH>(diffCallback) {
+class PagingNewsAdapter(diffCallback: DiffUtil.ItemCallback<News>, private val detailListener: NewsDetailListener) : PagingDataAdapter<News, NewsVH>(diffCallback) {
 	override fun onBindViewHolder(holder: NewsVH, position: Int) {
 		getItem(position)?.let {
 			holder.bind(it)
@@ -107,7 +118,7 @@ class PagingNewsAdapter(diffCallback: DiffUtil.ItemCallback<News>) : PagingDataA
 	}
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsVH {
-		return NewsVH(ViewHolderNewsBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+		return NewsVH(ViewHolderNewsBinding.inflate(LayoutInflater.from(parent.context), parent, false), detailListener)
 	}
 
 }
