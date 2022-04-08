@@ -3,102 +3,119 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:layout_marginTop="@dimen/default_margin">
+	android:layout_height="match_parent">
 
-	<androidx.constraintlayout.widget.ConstraintLayout
-		android:id="@+id/header"
+	<androidx.core.widget.NestedScrollView
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="0dp"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		android:layout_marginStart="@dimen/default_margin"
-		android:layout_marginEnd="@dimen/default_margin">
+		app:layout_constraintBottom_toTopOf="@id/footer">
 
-		<ImageView
-			android:id="@+id/logo"
-			android:layout_width="50dp"
-			android:layout_height="50dp"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
-			tools:background="@drawable/black_circle"
-			tools:src="@drawable/ic_noi" />
-
-		<TextView
-			android:id="@+id/publisher"
-			android:layout_width="0dp"
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="10dp"
-			android:textColor="@color/secondary_color"
-			android:textSize="17sp"
-			android:textStyle="bold"
-			app:layout_constraintStart_toEndOf="@id/logo"
-			app:layout_constraintTop_toTopOf="parent"
-			tools:text="NOI Techpark" />
+			android:layout_marginTop="@dimen/default_margin"
+			android:layout_marginBottom="@dimen/default_margin">
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:id="@+id/header"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				android:layout_marginStart="@dimen/default_margin"
+				android:layout_marginEnd="@dimen/default_margin">
 
-		<TextView
-			android:id="@+id/date"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="10dp"
-			android:textColor="@color/secondary_color"
-			android:textSize="17sp"
-			app:layout_constraintStart_toEndOf="@id/logo"
-			app:layout_constraintTop_toBottomOf="@id/publisher"
-			tools:text="26.2.2022" />
-	</androidx.constraintlayout.widget.ConstraintLayout>
+				<ImageView
+					android:id="@+id/logo"
+					android:layout_width="50dp"
+					android:layout_height="50dp"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					android:background="@drawable/black_circle"
+					tools:src="@drawable/ic_noi" />
 
-	<androidx.constraintlayout.widget.ConstraintLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="@dimen/default_margin"
-		android:layout_marginEnd="@dimen/default_margin"
-		app:layout_constraintTop_toBottomOf="@id/header">
-		<TextView
-			android:id="@+id/title"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:textColor="@color/secondary_color"
-			android:textSize="17sp"
-			android:textStyle="bold"
-			android:layout_marginTop="17dp"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
-			tools:text="Marie commodo ligula eget dolor." />
+				<TextView
+					android:id="@+id/publisher"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="10dp"
+					android:textColor="@color/secondary_color"
+					android:textSize="17sp"
+					android:textStyle="bold"
+					app:layout_constraintStart_toEndOf="@id/logo"
+					app:layout_constraintTop_toTopOf="parent"
+					tools:text="NOI Techpark" />
 
-		<TextView
-			android:id="@+id/shortText"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:textColor="@color/secondary_color"
-			android:textSize="17sp"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/title"
-			tools:text="Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Magnis dis parturient montes." />
+				<TextView
+					android:id="@+id/date"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="10dp"
+					android:textColor="@color/secondary_color"
+					android:textSize="17sp"
+					app:layout_constraintStart_toEndOf="@id/logo"
+					app:layout_constraintTop_toBottomOf="@id/publisher"
+					tools:text="26.2.2022" />
+			</androidx.constraintlayout.widget.ConstraintLayout>
 
-		<androidx.recyclerview.widget.RecyclerView
-			android:id="@+id/images"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/shortText"
-			android:layout_marginTop="20dp"
-			tools:itemCount="1"
-			tools:listitem="@layout/vh_horizontal_image"/>
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/default_margin"
+				android:layout_marginEnd="@dimen/default_margin"
+				app:layout_constraintTop_toBottomOf="@id/header">
+				<TextView
+					android:id="@+id/title"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:textColor="@color/secondary_color"
+					android:textSize="17sp"
+					android:textStyle="bold"
+					android:layout_marginTop="17dp"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					tools:text="Marie commodo ligula eget dolor." />
 
-		<TextView
-			android:id="@+id/longText"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="20dp"
-			android:textColor="@color/secondary_color"
-			android:textSize="17sp"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/images"
-			tools:text="Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet.
+				<TextView
+					android:id="@+id/shortText"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:textColor="@color/secondary_color"
+					android:textSize="17sp"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/title"
+					tools:text="Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Magnis dis parturient montes." />
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/images"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/shortText"
+					android:layout_marginTop="20dp"
+					tools:itemCount="1"
+					tools:listitem="@layout/vh_horizontal_image"/>
+
+				<TextView
+					android:id="@+id/longText"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="20dp"
+					android:textColor="@color/secondary_color"
+					android:textSize="17sp"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/images"
+					tools:text="Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet.
 Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet." />
 
-	</androidx.constraintlayout.widget.ConstraintLayout>
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+	</androidx.core.widget.NestedScrollView>
+
+
 
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:id="@+id/footer"
