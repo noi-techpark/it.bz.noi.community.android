@@ -115,8 +115,6 @@ Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et 
 
 	</androidx.core.widget.NestedScrollView>
 
-
-
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:id="@+id/footer"
 		android:layout_width="match_parent"
@@ -149,7 +147,7 @@ Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et 
 			android:id="@+id/askQuestion"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="@dimen/default_margin"
+			android:layout_marginTop="10dp"
 			android:text="@string/btn_ask_a_question"
 			app:icon="@drawable/ic_mail"
 			app:iconGravity="textStart"

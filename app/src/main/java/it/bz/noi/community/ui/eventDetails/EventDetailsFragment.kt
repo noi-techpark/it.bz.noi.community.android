@@ -119,12 +119,12 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 						setDate(selectedEvent.startDate, selectedEvent.endDate)
 
 						if (selectedEvent.webAddress != null) {
-							binding.btnAddToCalendar.text = getString(R.string.btn_sign_up)
+							binding.addToCalendar.text = getString(R.string.btn_sign_up)
 						} else {
-							binding.btnAddToCalendar.text = getString(R.string.btn_add_to_calendar)
+							binding.addToCalendar.text = getString(R.string.btn_add_to_calendar)
 						}
 
-						binding.btnAddToCalendar.setOnClickListener {
+						binding.addToCalendar.setOnClickListener {
 							if (selectedEvent.webAddress != null) {
 								val browserIntent =
 									Intent(Intent.ACTION_VIEW, Uri.parse(selectedEvent.webAddress))
@@ -155,7 +155,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 							}
 						}
 
-						binding.btnFindOnMaps.setOnClickListener {
+						binding.findOnMaps.setOnClickListener {
 							mainViewModel.getRoomMapping().observe(viewLifecycleOwner, Observer {
 								when (it.status) {
 									Status.SUCCESS -> {

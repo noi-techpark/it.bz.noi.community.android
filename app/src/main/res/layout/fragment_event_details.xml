@@ -12,7 +12,7 @@
 		android:layout_height="0dp"
 		android:clipToPadding="false"
 		android:paddingBottom="16dp"
-		app:layout_constraintBottom_toTopOf="@id/viewWhiteLayer"
+		app:layout_constraintBottom_toTopOf="@id/footer"
 		app:layout_constraintTop_toTopOf="parent">
 
 		<androidx.constraintlayout.widget.ConstraintLayout
@@ -199,40 +199,47 @@
 
 	</androidx.core.widget.NestedScrollView>
 
-	<View
-		android:id="@+id/viewWhiteLayer"
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/footer"
 		android:layout_width="match_parent"
-		android:layout_height="0dp"
-		android:layout_marginTop="-16dp"
-		android:background="@color/tertiary_background_color"
+		android:layout_height="wrap_content"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintTop_toTopOf="@id/btnFindOnMaps" />
+		android:background="@color/tertiary_background_color"
+		android:paddingStart="@dimen/default_margin"
+		android:paddingEnd="@dimen/default_margin"
+		android:paddingBottom="@dimen/default_margin"
+		android:elevation="20dp">
 
-	<androidx.constraintlayout.helper.widget.Flow
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="@dimen/activity_horizontal_margin"
-		android:layout_marginEnd="@dimen/activity_horizontal_margin"
-		android:layout_marginBottom="@dimen/activity_vertical_margin"
-		app:constraint_referenced_ids="btnFindOnMaps,btnAddToCalendar"
-		app:flow_wrapMode="aligned"
-		app:layout_constraintBottom_toBottomOf="parent" />
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/addToCalendar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/default_margin"
+			android:text="@string/btn_add_to_calendar"
+			android:textAllCaps="false"
+			app:icon="@drawable/ic_add_to_calendar"
+			app:iconGravity="textStart"
+			app:iconPadding="12dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"/>
 
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/btnFindOnMaps"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/btn_find_on_maps"
-		app:layout_constraintStart_toStartOf="@id/viewWhiteLayer"
-		app:layout_constraintTop_toTopOf="@id/viewWhiteLayer" />
-
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/btnAddToCalendar"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/btn_add_to_calendar"
-		app:layout_constraintBottom_toBottomOf="@id/viewWhiteLayer"
-		app:layout_constraintEnd_toEndOf="@id/viewWhiteLayer" />
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/findOnMaps"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:text="@string/btn_find_on_maps"
+			app:icon="@drawable/ic_find_on_maps"
+			app:iconGravity="textStart"
+			app:iconPadding="12dp"
+			style="@style/ThemeOverlay.NOI.OutlinedButton"
+			app:layout_constraintTop_toBottomOf="@id/addToCalendar"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"/>
+	</androidx.constraintlayout.widget.ConstraintLayout>
 
 	<ProgressBar
 		android:id="@+id/progressBarLoading"
