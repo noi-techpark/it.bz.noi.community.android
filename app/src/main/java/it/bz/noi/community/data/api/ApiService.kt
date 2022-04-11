@@ -40,7 +40,7 @@ interface ApiService {
 		@Query("removenullvalues") removeNullValues: Boolean = true,
 		@Query("articletype") endDate: String = "newsfeednoi",
 		@Query("rawsort") rawFilter: String = "-ArticleDate",
-		@Query("fields") fields: String = "Id,ArticleDate,Detail,ContactInfos,ImageGallery",
+		@Query("fields") fields: String = "Id,ArticleDate,Detail,ContactInfos,ImageGallery,ODHTags",
 		@Query("pagesize") pageSize: Int,
 		@Query("pagenumber") pageNumber: Int,
 		@Query("startdate") startDate: String,
@@ -50,7 +50,8 @@ interface ApiService {
 	@GET("v1/Article/{id}")
 	suspend fun getNewsDetails(
 		@Path("id") newsId: String,
-		@Query("fields") fields: String = "Id,ArticleDate,Detail,ContactInfos,ImageGallery",
+		@Query("removenullvalues") removeNullValues: Boolean = true,
+		@Query("fields") fields: String = "Id,ArticleDate,Detail,ContactInfos,ImageGallery,ODHTags",
 		@Query("language") language: String?
 	): News
 }

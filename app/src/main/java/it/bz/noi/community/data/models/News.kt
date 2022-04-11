@@ -14,13 +14,20 @@ data class News(
 	@SerializedName("ContactInfos")
 	val contactInfo: Map<String, ContactInfo>,
 	@SerializedName("ImageGallery")
-	val images: List<NewsImage>?
+	val images: List<NewsImage>?,
+	@SerializedName("ODHTags")
+	val tags: List<Tag>?
+)
+
+data class Tag(
+	@SerializedName("Id")
+	val id: String?
 )
 
 data class Detail(
 	@SerializedName("Title")
 	val title: String?,
-	@SerializedName("AdditionalText") // FIXME da confermare
+	@SerializedName("AdditionalText")
 	val abstract: String?,
 	@SerializedName("BaseText")
 	val text: String?,
@@ -50,6 +57,9 @@ fun News.getContactInfo(): ContactInfo? {
 	return contactInfo[Utils.getAppLanguage()]
 }
 
+fun News.hasImportantFlag(): Boolean {
+	return tags != null && tags.filter { it.id == "important" }.isNotEmpty()
+}
 
 data class NewsResponse(
 	@SerializedName("TotalResults")

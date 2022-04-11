@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -17,6 +18,7 @@ import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.News
 import it.bz.noi.community.data.models.getContactInfo
 import it.bz.noi.community.data.models.getDetail
+import it.bz.noi.community.data.models.hasImportantFlag
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentNewsBinding
 import it.bz.noi.community.databinding.ViewHolderNewsBinding
@@ -92,6 +94,8 @@ class NewsVH(private val binding: ViewHolderNewsBinding, detailListener: NewsDet
 
 	fun bind(news: News) {
 		newsId = news.id
+		binding.date.text = df.format(news.date)
+		binding.importantTag.isVisible = news.hasImportantFlag()
 		news.getDetail()?.let { detail ->
 			binding.title.text = detail.title
 			binding.shortText.text = detail.abstract
@@ -105,7 +109,6 @@ class NewsVH(private val binding: ViewHolderNewsBinding, detailListener: NewsDet
 				.into(binding.logo)
 
 		}
-		binding.date.text = df.format(news.date)
 	}
 
 }

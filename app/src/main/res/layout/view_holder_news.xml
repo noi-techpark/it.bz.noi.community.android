@@ -66,10 +66,10 @@
 			android:paddingTop="4dp"
 			android:paddingBottom="4dp"
 			android:visibility="gone"
+			android:text="@string/important_tag"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintBaseline_toBaselineOf="@id/publisher"
-			tools:text="Important"
 			tools:visibility="visible"/>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
