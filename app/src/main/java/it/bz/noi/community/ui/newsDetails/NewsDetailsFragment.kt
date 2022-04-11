@@ -1,5 +1,9 @@
 package it.bz.noi.community.ui.newsDetails
 
+import android.content.ActivityNotFoundException
+import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
@@ -55,11 +59,16 @@ class NewsDetailsFragment: Fragment() {
 			when (it.status) {
 				Status.SUCCESS -> {
 					val news = it.data!!
+					binding.date.text = df.format(news.date)
+
 					news.getDetail()?.let { detail ->
 						binding.title.text = detail.title
 						binding.shortText.text = detail.abstract
 						binding.longText.text = Html.fromHtml(detail.text, Html.FROM_HTML_MODE_COMPACT)
 					}
+
+					var isExternalLink = false
+					var isEmail = false
 					news.getContactInfo()?.let { contactInfo ->
 						binding.publisher.text = contactInfo.publisher
 						Glide
@@ -68,8 +77,23 @@ class NewsDetailsFragment: Fragment() {
 							.centerCrop()
 							.into(binding.logo)
 
+						isExternalLink = !contactInfo.externalLink.isNullOrEmpty()
+						if (isExternalLink) {
+							binding.externalLink.setOnClickListener {
+								openExternalLink(contactInfo.externalLink!!)
+							}
+						}
+
+						isEmail = !contactInfo.email.isNullOrEmpty()
+						if (isEmail) {
+							binding.askQuestion.setOnClickListener {
+								writeEmail(contactInfo.email!!)
+							}
+						}
 					}
-					binding.date.text = df.format(news.date)
+					binding.externalLink.isVisible = isExternalLink
+					binding.askQuestion.isVisible = isEmail
+					binding.footer.isVisible = isExternalLink || isEmail
 
 					if (news.images != null && news.images.isNotEmpty()) {
 						binding.images.isVisible = true
@@ -88,6 +112,25 @@ class NewsDetailsFragment: Fragment() {
 			}
 		}
 
+	}
+
+	private fun writeEmail(receiverAddress: String) {
+		val intent = Intent(Intent.ACTION_SENDTO).apply {
+			data = Uri.parse("mailto:") // only email apps should handle this
+			putExtra(Intent.EXTRA_EMAIL, Array(1) {receiverAddress})
+		}
+		if (intent.resolveActivity(requireContext().packageManager) != null) {
+			startActivity(intent)
+		}
+	}
+
+	private fun openExternalLink(url: String) {
+		val intent = Intent(Intent.ACTION_VIEW).apply {
+			data = Uri.parse(url)
+		}
+		if (intent.resolveActivity(requireContext().packageManager) != null) {
+			startActivity(intent)
+		}
 	}
 
 }

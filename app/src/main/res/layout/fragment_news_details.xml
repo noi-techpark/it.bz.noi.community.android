@@ -125,13 +125,17 @@ Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et 
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintBottom_toBottomOf="parent"
 		android:background="@color/tertiary_background_color"
-		android:padding="17dp"
-		android:elevation="20dp">
+		android:paddingStart="@dimen/default_margin"
+		android:paddingEnd="@dimen/default_margin"
+		android:paddingBottom="@dimen/default_margin"
+		android:elevation="20dp"
+		android:visibility="gone">
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/externalLink"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/default_margin"
 			android:text="@string/btn_external_link"
 			android:textAllCaps="false"
 			app:icon="@drawable/ic_external_link"
@@ -145,7 +149,7 @@ Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et 
 			android:id="@+id/askQuestion"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="17dp"
+			android:layout_marginTop="@dimen/default_margin"
 			android:text="@string/btn_ask_a_question"
 			app:icon="@drawable/ic_mail"
 			app:iconGravity="textStart"
