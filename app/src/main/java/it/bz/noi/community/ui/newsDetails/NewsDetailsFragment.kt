@@ -1,7 +1,5 @@
 package it.bz.noi.community.ui.newsDetails
 
-import android.content.ActivityNotFoundException
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +7,7 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -62,6 +61,8 @@ class NewsDetailsFragment: Fragment() {
 					binding.date.text = df.format(news.date)
 
 					news.getDetail()?.let { detail ->
+						(requireActivity() as AppCompatActivity).supportActionBar?.title = detail.title
+
 						binding.title.text = detail.title
 						binding.shortText.text = detail.abstract
 						binding.longText.text = Html.fromHtml(detail.text, Html.FROM_HTML_MODE_COMPACT)

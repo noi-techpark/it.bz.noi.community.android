@@ -95,7 +95,7 @@
 	<fragment
 		android:id="@+id/newsDetails"
 		android:name="it.bz.noi.community.ui.newsDetails.NewsDetailsFragment"
-		android:label="NewsDetails" >
+		android:label=" " >
 		<argument
 			android:name="newsId"
 			app:argType="string" />
