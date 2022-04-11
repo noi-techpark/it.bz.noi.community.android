@@ -20,6 +20,7 @@ iOS](https://github.com/noi-techpark/it.bz.noi.community.ios).
 		- [Configure the project](#configure-the-project)
 	- [Running tests](#running-tests)
 	- [Deployment](#deployment)
+		- [How to check the application version?](#how-to-check-the-application-version)
 	- [Information](#information)
 		- [Support](#support)
 		- [Contributing](#contributing)
@@ -65,10 +66,26 @@ The unit tests can be executed with the following command launched from the proj
 ## Deployment
 
 We deploy the application with Github Actions to a Test Track, if someone pushes
-to the `development` branch. See [.github/workflows/main.yml](.github/workflows/main.yml) and [Continuous Deployment
-for Android
-Apps](https://github.com/noi-techpark/odh-docs/wiki/Continuous-Deployment-for-Android-Apps)
-for details...
+to the `main` branch. See
+[.github/workflows/main.yml](.github/workflows/main.yml) and [Continuous
+Deployment for Android Apps] for details.
+
+Go to https://play.google.com/console to configure the Alpha channel releases.
+
+If the App is still an older version on your phone, please consider to go to
+https://play.google.com/store/apps/details?id=it.bz.noi.community, which opens
+the Google Play Store and see if it provides a manual update.
+
+### How to check the application version?
+Open the app and go to "More". You find the actual version under the NOI logo,
+where the first three numbers represent the semantic version and the last the
+timestamp of the release.
+
+For example: `0.1.0.1649084864`, means that we have a version `0.1.0` released
+on `Mon Apr 04 2022 17:07:44 GMT+0200 (Central European Summer Time)`. You can
+use https://www.unixtimestamp.com/ for conversions.
+
+[Continuous Deployment for Android Apps]: https://github.com/noi-techpark/odh-docs/wiki/Continuous-Deployment-for-Android-Apps
 
 ## Information
 
