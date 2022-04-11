@@ -57,6 +57,8 @@ class NewsDetailsFragment: Fragment() {
 		viewModel.news.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) {
 			when (it.status) {
 				Status.SUCCESS -> {
+					binding.newsLoader.isVisible = false
+
 					val news = it.data!!
 					binding.date.text = df.format(news.date)
 
@@ -105,10 +107,10 @@ class NewsDetailsFragment: Fragment() {
 					}
 				}
 				Status.ERROR -> {
-
+					binding.newsLoader.isVisible = false
 				}
 				Status.LOADING -> {
-
+					binding.newsLoader.isVisible = true
 				}
 			}
 		}
