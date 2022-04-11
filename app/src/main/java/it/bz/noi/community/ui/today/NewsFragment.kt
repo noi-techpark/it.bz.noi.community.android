@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -84,7 +85,7 @@ class NewsFragment  : Fragment() {
 					}
 					is LoadState.Error -> {
 						binding.swipeRefreshNews.isRefreshing = false
-						// TODO
+						Toast.makeText(requireContext(), (loadStates.refresh as LoadState.Error).error.message, Toast.LENGTH_LONG).show()
 					}
 					is LoadState.NotLoading -> {
 						binding.swipeRefreshNews.isRefreshing = false
@@ -97,7 +98,7 @@ class NewsFragment  : Fragment() {
 					}
 					is LoadState.Error -> {
 						binding.swipeRefreshNews.isRefreshing = false
-						// TODO
+						Toast.makeText(requireContext(), (loadStates.append as LoadState.Error).error.message, Toast.LENGTH_LONG).show()
 					}
 					is LoadState.NotLoading -> {
 						binding.swipeRefreshNews.isRefreshing = false
@@ -119,7 +120,7 @@ interface NewsDetailListener {
 
 class NewsVH(private val binding: ViewHolderNewsBinding, detailListener: NewsDetailListener) : RecyclerView.ViewHolder(binding.root) {
 
-	private val df = DateFormat.getDateInstance(DateFormat.SHORT) // FIXME chiedere tipo di formattazione
+	private val df = DateFormat.getDateInstance(DateFormat.SHORT)
 	private lateinit var newsId: String
 
 	init {

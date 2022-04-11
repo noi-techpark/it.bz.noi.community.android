@@ -7,6 +7,7 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -35,7 +36,7 @@ class NewsDetailsFragment: Fragment() {
 		NewsDetailViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.apiService), this@NewsDetailsFragment)
 	})
 
-	private val df = DateFormat.getDateInstance(DateFormat.SHORT) // FIXME chiedere tipo di formattazione
+	private val df = DateFormat.getDateInstance(DateFormat.SHORT)
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -74,6 +75,8 @@ class NewsDetailsFragment: Fragment() {
 					var isEmail = false
 					news.getContactInfo()?.let { contactInfo ->
 						binding.publisher.text = contactInfo.publisher
+
+						binding.logo.isVisible = true
 						Glide
 							.with(binding.root.context)
 							.load(contactInfo.logo)
@@ -108,6 +111,7 @@ class NewsDetailsFragment: Fragment() {
 				}
 				Status.ERROR -> {
 					binding.newsLoader.isVisible = false
+					Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
 				}
 				Status.LOADING -> {
 					binding.newsLoader.isVisible = true

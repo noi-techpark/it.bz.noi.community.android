@@ -33,22 +33,20 @@ class NewsPagingSource(private val mainRepository: MainRepository) :
 			language = Utils.getAppLanguage()
 		)
 
-        try {
+		return try {
+			val newsResponse = mainRepository.getNews(newsParams)
 
-        	val newsResponse = mainRepository.getNews(newsParams)
-
-			return LoadResult.Page(
+			LoadResult.Page(
 				data = newsResponse.news,
 				prevKey = null, // Only paging forward.
 				nextKey = if (newsResponse.nextPage != null) newsResponse.currentPage + 1 else null
 			)
-        } catch (ex: Exception) {
-            Log.e(TAG, "Error loading news", ex)
-            FirebaseCrashlytics.getInstance().recordException(ex)
-            return LoadResult.Error(ex)
-        }
+		} catch (ex: Exception) {
+			Log.e(TAG, "Error loading news", ex)
+			FirebaseCrashlytics.getInstance().recordException(ex)
+			LoadResult.Error(ex)
+		}
 
-        return LoadResult.Error(Throwable("Error loading news: something went wrong!"))
     }
 
     override fun getRefreshKey(state: PagingState<Int, News>): Int? {

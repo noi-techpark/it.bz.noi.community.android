@@ -33,7 +33,9 @@
 					app:layout_constraintStart_toStartOf="parent"
 					app:layout_constraintTop_toTopOf="parent"
 					android:background="@drawable/black_circle"
-					tools:src="@drawable/ic_noi" />
+					android:visibility="gone"
+					tools:src="@drawable/ic_noi"
+					tools:visibility="visible"/>
 
 				<TextView
 					android:id="@+id/publisher"
