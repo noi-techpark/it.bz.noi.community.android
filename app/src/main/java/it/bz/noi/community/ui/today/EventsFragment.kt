@@ -114,7 +114,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		}
 
 		binding.swipeRefreshEvents.setOnRefreshListener {
-			viewModel.refresh()
+			viewModel.refreshEvents()
 		}
 
 		setupObservers()

@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -72,6 +74,40 @@ class NewsFragment  : Fragment() {
 			viewModel.newsFlow.collectLatest { pagingData ->
 				newsAdapter.submitData(pagingData)
 			}
+		}
+
+		viewLifecycleOwner.lifecycleScope.launch {
+			newsAdapter.loadStateFlow.collectLatest { loadStates: CombinedLoadStates ->
+				when (loadStates.refresh) {
+					is LoadState.Loading -> {
+						binding.swipeRefreshNews.isRefreshing = true
+					}
+					is LoadState.Error -> {
+						binding.swipeRefreshNews.isRefreshing = false
+						// TODO
+					}
+					is LoadState.NotLoading -> {
+						binding.swipeRefreshNews.isRefreshing = false
+					}
+				}
+
+				when (loadStates.append) {
+					is LoadState.Loading -> {
+						binding.swipeRefreshNews.isRefreshing = true
+					}
+					is LoadState.Error -> {
+						binding.swipeRefreshNews.isRefreshing = false
+						// TODO
+					}
+					is LoadState.NotLoading -> {
+						binding.swipeRefreshNews.isRefreshing = false
+					}
+				}
+			}
+		}
+
+		binding.swipeRefreshNews.setOnRefreshListener {
+			viewModel.refreshNews()
 		}
 	}
 

@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         if (navController.currentBackStackEntry?.destination?.id == R.id.filtersFragment) {
         	if (!mainViewModel.isFiltersSameAsCached()) {
 				mainViewModel.restoreCachedFilters()
-				mainViewModel.refresh()
+				mainViewModel.refreshEvents()
 			}
         }
         navController.popBackStack()

@@ -20,9 +20,7 @@ import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.*
 import java.util.*
 
 /**
@@ -170,7 +168,7 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	/**
 	 * public function for reloading data, it can be used for updating the results
 	 */
-	fun refresh() {
+	fun refreshEvents() {
 		refreshEventsData()
 	}
 
@@ -240,10 +238,20 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 		return eventsParams.selectedFilters == cachedParams.selectedFilters
 	}
 
+	private val reloadNewsTickerFlow = MutableSharedFlow<Unit>(replay = 1).apply {
+		tryEmit(Unit)
+	}
 
-	// FIXME prova
-	val newsFlow: Flow<PagingData<News>> = Pager(PagingConfig(pageSize = NewsPagingSource.PAGE_ITEMS)) {
+	val newsFlow: Flow<PagingData<News>> = reloadNewsTickerFlow.flatMapLatest {
+		loadNews()
+	}
+
+	private fun loadNews(): Flow<PagingData<News>> = Pager(PagingConfig(pageSize = NewsPagingSource.PAGE_ITEMS)) {
 		NewsPagingSource(mainRepository)
 	}.flow.cachedIn(viewModelScope)
+
+	fun refreshNews() {
+		reloadNewsTickerFlow.tryEmit(Unit)
+	}
 
 }

@@ -53,7 +53,7 @@ class FiltersFragment : Fragment() {
 
 		mainViewModel.appliedFilters.observe(requireActivity()) {
 			filterAdapter.filters = it
-			mainViewModel.refresh()
+			mainViewModel.refreshEvents()
 		}
 
         mainViewModel.mediatorEvents.observe(viewLifecycleOwner) {
