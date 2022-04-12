@@ -3,6 +3,7 @@ buildscript {
     ext.kotlin_version = "1.4.32"
     ext.nav_version = "2.3.5"
     repositories {
+		jcenter()
         mavenCentral()
         google()
     }
@@ -21,6 +22,7 @@ buildscript {
 
 allprojects {
     repositories {
+		jcenter()
         mavenCentral()
         google()
     }
