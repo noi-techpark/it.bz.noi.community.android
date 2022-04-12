@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
 	android:layout_margin="@dimen/default_margin">
 
-	<androidx.viewpager.widget.ViewPager
+	<androidx.viewpager2.widget.ViewPager2
 		android:id="@+id/pager"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
@@ -13,34 +13,42 @@
 		app:layout_constraintTop_toTopOf="parent" />
 
 	<com.matthewtamlin.sliding_intro_screen_library.indicators.DotIndicator
-		android:id="@+id/dotnIdicator"
+		android:id="@+id/dotIndicator"
 		android:layout_width="0dp"
 		android:layout_height="14dp"
-		app:selectedDotDiameter="6dp"
-		app:unselectedDotDiameter="6dp"
-		app:selectedDotColor="@color/primary_color"
-		app:unselectedDotColor="@color/disabled1_color"
-		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintBottom_toTopOf="@id/login"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintBottom_toTopOf="@id/login"/>
+		app:layout_constraintStart_toStartOf="parent"
+		app:selectedDotColor="@color/primary_color"
+		app:selectedDotDiameter="6dp"
+		app:unselectedDotColor="@color/disabled1_color"
+		app:unselectedDotDiameter="6dp" />
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/login"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_marginBottom="20dp"
+		android:backgroundTint="@color/tertiary_background_color"
+		android:backgroundTintMode="src_in"
 		android:text="Login"
+		android:textAllCaps="false"
+		android:textColor="@color/secondary_color"
+		android:textStyle="bold"
 		app:layout_constraintBottom_toTopOf="@id/signup"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent" />
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/signup"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+		style="@style/ThemeOverlay.NOI.TextButton"
+		android:layout_width="wrap_content"
+		android:layout_height="27dp"
 		android:layout_marginBottom="60dp"
+		android:textColor="@color/primary_color"
 		android:text="Sign up"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
