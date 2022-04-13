@@ -27,7 +27,9 @@ class SplashScreenActivity : AppCompatActivity() {
 		 * (see https://github.com/noi-techpark/it.bz.noi.community.android/issues/74)
 		 */
 		if (sharedPreferences.getBoolean(SKIP_PARAM, false)) {
-			goToMainActivity()
+			//goToMainActivity()
+				// TODO controllo su authState
+			goToOnboardingActivity()
 			return
 		}
 
@@ -43,21 +45,26 @@ class SplashScreenActivity : AppCompatActivity() {
 					sharedPreferences.edit {
 						putBoolean(SKIP_PARAM, true)
 					}
-					goToMainActivity()
+					goToOnboardingActivity()
 				}
 				requestFocus()
 				start()
 			}
 		} catch (ex: Exception) {
-			goToMainActivity()
+			goToOnboardingActivity()
 		}
-
 
 	}
 
 	private fun goToMainActivity() {
 		if (isFinishing) return
 		startActivity(Intent(this, MainActivity::class.java))
+		finish()
+	}
+
+	private fun goToOnboardingActivity() {
+		if (isFinishing) return
+		startActivity(Intent(this, OnboardingActivity::class.java))
 		finish()
 	}
 

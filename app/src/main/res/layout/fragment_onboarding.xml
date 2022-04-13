@@ -9,10 +9,11 @@
 		android:id="@+id/image"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:foreground="@drawable/onboarding_gradient"
 		android:scaleType="centerCrop"
-		tools:src="@drawable/restaurant_placeholder"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent"/>
+		app:layout_constraintTop_toTopOf="parent"
+		tools:src="@drawable/onboarding1_placeholder" />
 
 	<TextView
 		android:id="@+id/title"
@@ -24,7 +25,6 @@
 		android:textAlignment="center"
 		android:textColor="@color/primary_color"
 		android:textSize="25sp"
-		android:textStyle="bold"
 		app:layout_constraintBottom_toTopOf="@id/description"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
@@ -39,10 +39,11 @@
 		android:textAlignment="center"
 		android:textColor="@color/primary_color"
 		android:textSize="17sp"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintBottom_toBottomOf="parent"
-		tools:text="Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."/>
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintVertical_bias="0.75"
+		tools:text="Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus." />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
