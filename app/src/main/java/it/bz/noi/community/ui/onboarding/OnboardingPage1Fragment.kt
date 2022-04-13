@@ -12,7 +12,7 @@ class OnboardingPage1Fragment : BaseOnboardingFragment() {
 		binding.apply {
 			title.text = getString(R.string.onboarding_news_title)
 			description.text = getString(R.string.onboarding_news_text)
-			image.setImageResource(R.drawable.onboarding1_placeholder)
+			image.setImageResource(R.drawable.welcome_news)
 		}
 	}
 
