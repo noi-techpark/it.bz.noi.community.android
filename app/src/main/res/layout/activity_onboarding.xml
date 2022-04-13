@@ -11,12 +11,18 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
 
+	<androidx.constraintlayout.widget.Guideline
+		android:id="@+id/guideline"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		app:layout_constraintGuide_percent="0.7"/>
+
 	<com.matthewtamlin.sliding_intro_screen_library.indicators.DotIndicator
 		android:id="@+id/dotIndicator"
 		android:layout_width="0dp"
 		android:layout_height="14dp"
-		android:layout_marginBottom="40dp"
-		app:layout_constraintBottom_toTopOf="@id/login"
+		app:layout_constraintTop_toBottomOf="@id/guideline"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:selectedDotColor="@color/primary_color"
@@ -30,13 +36,13 @@
 		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/default_margin"
 		android:layout_marginEnd="@dimen/default_margin"
-		android:layout_marginBottom="20dp"
+		android:layout_marginTop="40dp"
 		android:backgroundTint="@color/tertiary_background_color"
 		android:backgroundTintMode="src_in"
 		android:text="Login"
 		android:textAllCaps="false"
 		android:textColor="@color/secondary_color"
-		app:layout_constraintBottom_toTopOf="@id/signup"
+		app:layout_constraintTop_toBottomOf="@id/dotIndicator"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent" />
 
@@ -47,10 +53,10 @@
 		android:layout_height="27dp"
 		android:layout_marginStart="@dimen/default_margin"
 		android:layout_marginEnd="@dimen/default_margin"
-		android:layout_marginBottom="17dp"
+		android:layout_marginTop="20dp"
 		android:text="Sign up"
 		android:textColor="@color/primary_color"
-		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/login"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent" />
 
