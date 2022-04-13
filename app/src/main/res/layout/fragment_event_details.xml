@@ -213,18 +213,18 @@
 		android:elevation="20dp">
 
 		<com.google.android.material.button.MaterialButton
-			android:id="@+id/addToCalendar"
+			android:id="@+id/addToCalendarOrSignup"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="@dimen/default_margin"
-			android:text="@string/btn_add_to_calendar"
 			android:textAllCaps="false"
-			app:icon="@drawable/ic_add_to_calendar"
 			app:iconGravity="textStart"
 			app:iconPadding="12dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"/>
+			app:layout_constraintTop_toTopOf="parent"
+			tools:text="@string/btn_add_to_calendar"
+			tools:icon="@drawable/ic_add_to_calendar"/>
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/findOnMaps"
@@ -236,7 +236,7 @@
 			app:iconGravity="textStart"
 			app:iconPadding="12dp"
 			style="@style/ThemeOverlay.NOI.OutlinedButton"
-			app:layout_constraintTop_toBottomOf="@id/addToCalendar"
+			app:layout_constraintTop_toBottomOf="@id/addToCalendarOrSignup"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"/>
 	</androidx.constraintlayout.widget.ConstraintLayout>
