@@ -88,8 +88,6 @@ dependencies {
 	// SwipeRefresh Layout
 	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
-	implementation 'com.matthew-tamlin:sliding-intro-screen:3.2.0'
-
 	// BoM for the Firebase platform
 	implementation platform('com.google.firebase:firebase-bom:28.4.2')
 	// When using the BoM, you don't specify versions in Firebase library dependencies

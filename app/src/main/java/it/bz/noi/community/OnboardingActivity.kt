@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayoutMediator
 import it.bz.noi.community.databinding.ActivityOnboardingBinding
 import it.bz.noi.community.ui.onboarding.OnboardingPage1Fragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage2Fragment
@@ -24,18 +25,9 @@ class OnboardingActivity : AppCompatActivity() {
 		viewPager = binding.pager
 		viewPager.apply {
 			adapter = stateAdapter
-			registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-				override fun onPageSelected(position: Int) {
-					super.onPageSelected(position)
-					binding.dotIndicator.setSelectedItem(position, false)
-				}
-			})
 		}
 
-		binding.dotIndicator.apply {
-			numberOfItems = stateAdapter.itemCount
-			setSelectedItem(0, false)
-		}
+		TabLayoutMediator(binding.tabLayout, viewPager) { _, _ -> }.attach()
 	}
 
 }
