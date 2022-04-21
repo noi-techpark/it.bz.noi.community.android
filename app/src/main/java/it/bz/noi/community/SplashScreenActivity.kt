@@ -69,7 +69,7 @@ class SplashScreenActivity : AppCompatActivity() {
 	}
 
 	companion object {
-		private const val SHARED_PREFS_NAME = "noi_shared_prefs"
+		const val SHARED_PREFS_NAME = "noi_shared_prefs" // TODO spostare
 		private const val SKIP_PARAM = "skip_splash_screen"
 	}
 }

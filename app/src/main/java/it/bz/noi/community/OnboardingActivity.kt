@@ -7,6 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import it.bz.noi.community.databinding.ActivityOnboardingBinding
+import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.ui.onboarding.OnboardingPage1Fragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage2Fragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage3Fragment
@@ -28,6 +29,15 @@ class OnboardingActivity : AppCompatActivity() {
 		}
 
 		TabLayoutMediator(binding.tabLayout, viewPager) { _, _ -> }.attach()
+
+		binding.login.setOnClickListener {
+			AuthManager.login(this, AUTH_REQUEST)
+		}
+	}
+
+	companion object {
+		const val AUTH_REQUEST = 111
+		const val REQUEST_LOGOUT = 112
 	}
 
 }
