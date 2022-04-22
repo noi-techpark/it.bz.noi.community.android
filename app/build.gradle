@@ -30,7 +30,7 @@ android {
 
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-		manifestPlaceholders = [
+		manifestPlaceholders += [
 			'appAuthRedirectScheme': 'noi-community'
 		]
 	}
