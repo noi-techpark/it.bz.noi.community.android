@@ -4,7 +4,7 @@
 # https://www.raywenderlich.com/19407406-continuous-delivery-for-android-using-github-actions
 
 name: CI/CD
-on: [pull_request, push]
+on: [ pull_request, push ]
 jobs:
 
   ## Build the app and run unit tests
@@ -25,6 +25,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Java setup
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu' # See 'Supported distributions' for available options
+          java-version: '11'
       - name: Mock google-services.json
         run: mv app/google-services-mock.json app/google-services.json
       - name: Instrumentation Tests
