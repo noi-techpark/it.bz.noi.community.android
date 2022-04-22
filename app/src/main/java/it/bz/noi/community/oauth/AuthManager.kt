@@ -21,7 +21,7 @@ object AuthManager {
 
 	// *************** TODO SPOSTARE in BUILD CONFIG?
 	private const val REDIRECT_URL: String =
-		"noi-community://oauth2redirect/login-callback" // FIXME ricontrollare: Scheme must match appAuthRedirectScheme in the manifest
+		"noi-community://oauth2redirect/login-callback"
 	private const val BASE_ENDPOINT: String = "https://auth.opendatahub.testingmachine.eu/auth/realms/noi/protocol/openid-connect"
 	private const val CLIENT_ID: String = "it.bz.noi.community"
 	private const val CLIENT_SECRET: String = ""
