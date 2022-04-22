@@ -31,6 +31,7 @@
 				<action android:name="android.intent.action.VIEW"/>
 				<category android:name="android.intent.category.DEFAULT"/>
 				<category android:name="android.intent.category.BROWSABLE"/>
+			<!--	<data android:scheme="noi-community://oauth2redirect/login-callback"/>-->
 				<data android:scheme="https"
 					android:host="noi-community"
 					android:path="/oauth2redirect"/>

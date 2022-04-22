@@ -3,11 +3,10 @@ package it.bz.noi.community.oauth
 import android.app.Activity
 import android.app.Application
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
-import android.content.SharedPreferences
 import android.net.Uri
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import it.bz.noi.community.SplashScreenActivity.Companion.SHARED_PREFS_NAME
@@ -23,7 +22,7 @@ object AuthManager {
 	// *************** TODO SPOSTARE in BUILD CONFIG?
 	private const val REDIRECT_URL: String =
 		"noi-community://oauth2redirect/login-callback" // FIXME ricontrollare: Scheme must match appAuthRedirectScheme in the manifest
-	private const val AUTH_ENDPOINT: String = "https://auth.opendatahub.testingmachine.eu/auth/realms/noi/protocol/openid-connect"
+	private const val BASE_ENDPOINT: String = "https://auth.opendatahub.testingmachine.eu/auth/realms/noi/protocol/openid-connect"
 	private const val CLIENT_ID: String = "it.bz.noi.community"
 	private const val CLIENT_SECRET: String = ""
 	// ***************
@@ -57,8 +56,8 @@ object AuthManager {
 		.build()
 
 	private val authServiceConfig = AuthorizationServiceConfiguration(
-		Uri.parse("${AUTH_ENDPOINT}/auth"),  // authorization endpoint
-		Uri.parse("${AUTH_ENDPOINT}/token") // token endpoint
+		Uri.parse("${BASE_ENDPOINT}/auth"),  // authorization endpoint
+		Uri.parse("${BASE_ENDPOINT}/token") // token endpoint
 	)
 
 	fun login(context: Activity, requestCode: Int) {
@@ -74,7 +73,7 @@ object AuthManager {
 			Uri.parse(REDIRECT_URL)
 		)
 			.setPrompt(AuthorizationRequest.Prompt.LOGIN)
-			.setScope(AuthorizationRequest.Scope.OPENID)
+			.setScopes(AuthorizationRequest.Scope.OPENID, AuthorizationRequest.Scope.PROFILE)
 			.build()
 
 		try {
@@ -84,11 +83,8 @@ object AuthManager {
 			AlertDialog.Builder(context).apply {
 				// TODO export stringhe
 				setTitle("Error")
-				//(context.getString(R.string.error))
 				setMessage("È necessario aver installato un browser compatibile (Chrome, Firefox o Samsung Browser) per proseguire con l\\'autenticazione. Se lo hai già installato riavvia l\\'app e riprova.")
-				//(context.getString(R.string.login_error_msg))
 				setPositiveButton("Ok")
-				//(context.getString(R.string.btn_ok))
 				{ dialogInterFace: DialogInterface, _ ->
 					dialogInterFace.dismiss()
 				}
@@ -101,9 +97,31 @@ object AuthManager {
 	fun onAuthorization(response: AuthorizationResponse?, exception: AuthorizationException?) {
 		val state = createAuthState()
 		state.update(response, exception)
-		val test = state.isAuthorized
 		writeAuthState(state)
+		if (state.lastAuthorizationResponse != null && state.needsTokenRefresh) {
+			obtainToken(state.lastAuthorizationResponse!!)
+		}
 	}
+
+	fun obtainToken(authResponse: AuthorizationResponse) {
+		authorizationService.performTokenRequest(
+			authResponse.createTokenExchangeRequest(),
+			ClientSecretPost(CLIENT_SECRET)
+		) { response, ex ->
+			ex?.let {
+				Log.d(TAG, "Token request result", ex)
+			}
+			onTokenObtained(response, ex)
+		}
+	}
+
+	private fun onTokenObtained(tokenResponse: TokenResponse?, exception: AuthorizationException?) {
+		//FIXME
+		val currentAuthState = readAuthState()
+		currentAuthState.update(tokenResponse, exception)
+		writeAuthState(currentAuthState)
+	}
+
 
 	private fun createAuthState() = AuthState(authServiceConfig)
 
