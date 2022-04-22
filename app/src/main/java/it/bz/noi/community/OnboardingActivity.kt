@@ -1,6 +1,8 @@
 package it.bz.noi.community
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -11,6 +13,8 @@ import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.ui.onboarding.OnboardingPage1Fragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage2Fragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage3Fragment
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationResponse
 
 class OnboardingActivity : AppCompatActivity() {
 
@@ -35,7 +39,26 @@ class OnboardingActivity : AppCompatActivity() {
 		}
 	}
 
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		Log.d(TAG, "onActivityResult")
+		when (requestCode) {
+			AUTH_REQUEST -> {
+				val response: AuthorizationResponse? = data?.let {
+					AuthorizationResponse.fromIntent(it)
+				}
+				val exception: AuthorizationException? = data?.let {
+					AuthorizationException.fromIntent(it)
+				}
+				AuthManager.onAuthorization(response, exception)
+			}
+			else -> {
+				super.onActivityResult(requestCode, resultCode, data)
+			}
+		}
+	}
+
 	companion object {
+		private const val TAG = "OnboardingActivity"
 		const val AUTH_REQUEST = 111
 		const val REQUEST_LOGOUT = 112
 	}

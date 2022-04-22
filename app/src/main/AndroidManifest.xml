@@ -33,7 +33,7 @@
 				<category android:name="android.intent.category.BROWSABLE"/>
 				<data android:scheme="https"
 					android:host="noi-community"
-					android:path="/oauth2redirect/login-callback"/>
+					android:path="/oauth2redirect"/>
 			</intent-filter>
 		</activity>
 	</application>

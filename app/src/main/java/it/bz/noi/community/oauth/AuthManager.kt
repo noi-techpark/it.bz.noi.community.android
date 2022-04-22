@@ -3,12 +3,18 @@ package it.bz.noi.community.oauth
 import android.app.Activity
 import android.app.Application
 import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.edit
+import it.bz.noi.community.SplashScreenActivity.Companion.SHARED_PREFS_NAME
 import net.openid.appauth.*
 import net.openid.appauth.browser.BrowserAllowList
 import net.openid.appauth.browser.VersionedBrowserMatcher
+
 
 object AuthManager {
 
@@ -22,6 +28,7 @@ object AuthManager {
 	private const val CLIENT_SECRET: String = ""
 	// ***************
 
+	private const val PREF_AUTH_STATE = "authState"
 
 
 
@@ -89,5 +96,32 @@ object AuthManager {
 			}
 		}
 
+	}
+
+	fun onAuthorization(response: AuthorizationResponse?, exception: AuthorizationException?) {
+		val state = createAuthState()
+		state.update(response, exception)
+		val test = state.isAuthorized
+		writeAuthState(state)
+	}
+
+	private fun createAuthState() = AuthState(authServiceConfig)
+
+	fun readAuthState(): AuthState {
+		return application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).getString(PREF_AUTH_STATE, null)?.let {
+			AuthState.jsonDeserialize(it)
+		} ?: createAuthState()
+	}
+
+	fun writeAuthState(state: AuthState) {
+		application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).edit {
+			putString(PREF_AUTH_STATE, state.jsonSerializeString())
+		}
+	}
+
+	private fun deleteAuthState() {
+		application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).edit {
+			remove(PREF_AUTH_STATE)
+		}
 	}
 }
