@@ -27,6 +27,7 @@ object AuthManager {
 	// ***************
 
 	private const val PREF_AUTH_STATE = "authState"
+	private const val ACCESS_GRANTED_ROLE = "ACCESS_GRANTED"
 
 	lateinit var application: Application
 
@@ -105,15 +106,27 @@ object AuthManager {
 		authorizationService.performTokenRequest(
 			authResponse.createTokenExchangeRequest()
 		) { response, ex ->
-			ex?.let {
+			if (ex != null) {
 				Log.d(TAG, "Token request result", ex)
+				onTokenObtained(response, ex)
+			} else {
+				response!!.accessToken?.let { jwtToken ->
+					decode(jwtToken)?.let { decodedToken ->
+						if (verifyToken(decodedToken)) {
+							onTokenObtained(response, ex)
+						} else {
+							// FIXME
+							Log.d(TAG, "Not authorized")
+						}
+					}
+				}
 			}
-			onTokenObtained(response, ex)
 		}
 	}
 
+	private fun verifyToken(token: NOIJwtAccessToken) = token.checkResourceAccessRoles(CLIENT_ID, listOf(ACCESS_GRANTED_ROLE))
+
 	private fun onTokenObtained(tokenResponse: TokenResponse?, exception: AuthorizationException?) {
-		//FIXME
 		val currentAuthState = readAuthState()
 		currentAuthState.update(tokenResponse, exception)
 		writeAuthState(currentAuthState)
@@ -125,7 +138,7 @@ object AuthManager {
 		} ?: AuthState()
 	}
 
-	fun writeAuthState(state: AuthState) {
+	private fun writeAuthState(state: AuthState) {
 		application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).edit {
 			putString(PREF_AUTH_STATE, state.jsonSerializeString())
 		}
