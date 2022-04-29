@@ -11,9 +11,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import it.bz.noi.community.SplashScreenActivity.Companion.SHARED_PREFS_NAME
 import net.openid.appauth.*
+import net.openid.appauth.AuthorizationServiceConfiguration.RetrieveConfigurationCallback
 import net.openid.appauth.browser.BrowserAllowList
 import net.openid.appauth.browser.VersionedBrowserMatcher
-
 
 object AuthManager {
 
@@ -22,15 +22,11 @@ object AuthManager {
 	// *************** TODO SPOSTARE in BUILD CONFIG?
 	private const val REDIRECT_URL: String =
 		"noi-community://oauth2redirect/login-callback"
-	private const val BASE_ENDPOINT: String = "https://auth.opendatahub.testingmachine.eu/auth/realms/noi/protocol/openid-connect"
+	private const val ISSUER_URL: String = "https://auth.opendatahub.testingmachine.eu/auth/realms/noi/"
 	private const val CLIENT_ID: String = "it.bz.noi.community"
-	private const val CLIENT_SECRET: String = ""
 	// ***************
 
 	private const val PREF_AUTH_STATE = "authState"
-
-
-
 
 	lateinit var application: Application
 
@@ -55,17 +51,20 @@ object AuthManager {
 		)
 		.build()
 
-	private val authServiceConfig = AuthorizationServiceConfiguration(
-		Uri.parse("${BASE_ENDPOINT}/auth"),  // authorization endpoint
-		Uri.parse("${BASE_ENDPOINT}/token") // token endpoint
-	)
-
 	fun login(context: Activity, requestCode: Int) {
+		AuthorizationServiceConfiguration.fetchFromIssuer(
+			Uri.parse(ISSUER_URL),
+			RetrieveConfigurationCallback { serviceConfiguration, ex ->
+				if (ex != null) {
+					Log.e(TAG, "failed to fetch configuration")
+					return@RetrieveConfigurationCallback
+				}
 
-		// val authServiceConfig = runBlocking {
-		//			authState.first().authorizationServiceConfiguration!!
-		//		}
+				login(serviceConfiguration!!, context, requestCode)
+			})
+	}
 
+	private fun login(authServiceConfig: AuthorizationServiceConfiguration, context: Activity, requestCode: Int) {
 		val authRequest = AuthorizationRequest.Builder(
 			authServiceConfig,
 			CLIENT_ID,
@@ -91,11 +90,10 @@ object AuthManager {
 				show()
 			}
 		}
-
 	}
 
 	fun onAuthorization(response: AuthorizationResponse?, exception: AuthorizationException?) {
-		val state = createAuthState()
+		val state = AuthState()
 		state.update(response, exception)
 		writeAuthState(state)
 		if (state.lastAuthorizationResponse != null && state.needsTokenRefresh) {
@@ -105,8 +103,7 @@ object AuthManager {
 
 	fun obtainToken(authResponse: AuthorizationResponse) {
 		authorizationService.performTokenRequest(
-			authResponse.createTokenExchangeRequest(),
-			ClientSecretPost(CLIENT_SECRET)
+			authResponse.createTokenExchangeRequest()
 		) { response, ex ->
 			ex?.let {
 				Log.d(TAG, "Token request result", ex)
@@ -122,13 +119,10 @@ object AuthManager {
 		writeAuthState(currentAuthState)
 	}
 
-
-	private fun createAuthState() = AuthState(authServiceConfig)
-
 	fun readAuthState(): AuthState {
 		return application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).getString(PREF_AUTH_STATE, null)?.let {
 			AuthState.jsonDeserialize(it)
-		} ?: createAuthState()
+		} ?: AuthState()
 	}
 
 	fun writeAuthState(state: AuthState) {
