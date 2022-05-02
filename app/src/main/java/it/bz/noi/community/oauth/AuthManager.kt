@@ -10,12 +10,41 @@ import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import it.bz.noi.community.SplashScreenActivity.Companion.SHARED_PREFS_NAME
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.runBlocking
 import net.openid.appauth.*
 import net.openid.appauth.AuthorizationServiceConfiguration.RetrieveConfigurationCallback
 import net.openid.appauth.browser.BrowserAllowList
 import net.openid.appauth.browser.VersionedBrowserMatcher
 
+sealed class AuthStateStatus {
+	sealed class Unauthorized : AuthStateStatus() {
+		object UserAuthRequired : Unauthorized()
+		object PendingToken : Unauthorized()
+		object NotValidRole : Unauthorized()
+	}
+
+	data class Authorized(val state: AuthState) : AuthStateStatus()
+	data class Error(val exception: Exception) : AuthStateStatus()
+}
+
+/**
+ * OAuth specific exception.
+ */
+class UnauthorizedException(original: AuthorizationException) : Exception(original)
+
 object AuthManager {
+
+	private fun AuthState.toStatus(): AuthStateStatus {
+		return when {
+			authorizationException != null -> AuthStateStatus.Error(UnauthorizedException(authorizationException!!))
+			isAuthorized -> AuthStateStatus.Authorized(this)
+			lastAuthorizationResponse != null && needsTokenRefresh -> AuthStateStatus.Unauthorized.PendingToken
+			else -> AuthStateStatus.Unauthorized.UserAuthRequired
+		}
+	}
 
 	private const val TAG = "AuthManager"
 
@@ -36,6 +65,28 @@ object AuthManager {
 	 */
 	fun setup(application: Application) {
 		this.application = application
+	}
+
+	@OptIn(ObsoleteCoroutinesApi::class)
+	private val authState: MutableSharedFlow<AuthState> by lazy {
+		MutableSharedFlow<AuthState>(1, 0, BufferOverflow.DROP_OLDEST).apply {
+			tryEmit(readAuthState())
+		}
+	}
+
+	@OptIn(ObsoleteCoroutinesApi::class)
+	fun refreshState() {
+		runBlocking {
+			authState.first().let { state ->
+				writeAuthState(state)
+				authState.emit(state)
+			}
+		}
+	}
+
+	@OptIn(ObsoleteCoroutinesApi::class)
+	val status: Flow<AuthStateStatus> by lazy {
+		authState.filterNotNull().map { state -> state.toStatus() }.distinctUntilChanged()
 	}
 
 	private val authorizationService: AuthorizationService by lazy {
@@ -97,12 +148,12 @@ object AuthManager {
 		val state = AuthState()
 		state.update(response, exception)
 		writeAuthState(state)
-		if (state.lastAuthorizationResponse != null && state.needsTokenRefresh) {
+		if (state.lastAuthorizationResponse != null) {
 			obtainToken(state.lastAuthorizationResponse!!)
 		}
 	}
 
-	fun obtainToken(authResponse: AuthorizationResponse) {
+	private fun obtainToken(authResponse: AuthorizationResponse) {
 		authorizationService.performTokenRequest(
 			authResponse.createTokenExchangeRequest()
 		) { response, ex ->
@@ -127,9 +178,13 @@ object AuthManager {
 	private fun verifyToken(token: NOIJwtAccessToken) = token.checkResourceAccessRoles(CLIENT_ID, listOf(ACCESS_GRANTED_ROLE))
 
 	private fun onTokenObtained(tokenResponse: TokenResponse?, exception: AuthorizationException?) {
-		val currentAuthState = readAuthState()
-		currentAuthState.update(tokenResponse, exception)
-		writeAuthState(currentAuthState)
+		runBlocking {
+			authState.first().let { state ->
+				state.update(tokenResponse, exception)
+				writeAuthState(state)
+				authState.emit(state)
+			}
+		}
 	}
 
 	fun readAuthState(): AuthState {

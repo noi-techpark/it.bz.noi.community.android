@@ -7,8 +7,11 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.lifecycle.asLiveData
 import it.bz.noi.community.databinding.ActivitySplashBinding
 import it.bz.noi.community.oauth.AuthManager
+import it.bz.noi.community.oauth.AuthStateStatus
+import kotlinx.coroutines.Dispatchers
 
 /**
  * Activity used only for displaying the Splash/Launch Screen
@@ -28,12 +31,12 @@ class SplashScreenActivity : AppCompatActivity() {
 		 * (see https://github.com/noi-techpark/it.bz.noi.community.android/issues/74)
 		 */
 		if (sharedPreferences.getBoolean(SKIP_PARAM, false)) {
-			// FIXME
-			val currentAuthState = AuthManager.readAuthState()
-			if (currentAuthState.isAuthorized)
-				goToMainActivity()
-			else
-				goToOnboardingActivity()
+			AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
+				when (status) {
+					is AuthStateStatus.Authorized -> goToMainActivity()
+					else -> goToOnboardingActivity()
+				}
+			}
 			return
 		}
 

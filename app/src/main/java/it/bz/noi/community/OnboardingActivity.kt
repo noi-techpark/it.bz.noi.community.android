@@ -5,14 +5,17 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.asLiveData
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import it.bz.noi.community.databinding.ActivityOnboardingBinding
 import it.bz.noi.community.oauth.AuthManager
+import it.bz.noi.community.oauth.AuthStateStatus
 import it.bz.noi.community.ui.onboarding.OnboardingPage1Fragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage2Fragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage3Fragment
+import kotlinx.coroutines.Dispatchers
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
 
@@ -24,6 +27,17 @@ class OnboardingActivity : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+
+		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
+			when (status) {
+				is AuthStateStatus.Authorized -> goToMainActivity()
+//				is AuthStateStatus.Error -> TODO()
+//				AuthStateStatus.Unauthorized.NotValidRole -> TODO()
+//				AuthStateStatus.Unauthorized.PendingToken -> TODO()
+//				AuthStateStatus.Unauthorized.UserAuthRequired -> TODO()
+			}
+		}
+
 		binding = ActivityOnboardingBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 
@@ -55,6 +69,10 @@ class OnboardingActivity : AppCompatActivity() {
 				super.onActivityResult(requestCode, resultCode, data)
 			}
 		}
+	}
+
+	private fun goToMainActivity() {
+		startActivity(Intent(this, MainActivity::class.java))
 	}
 
 	companion object {

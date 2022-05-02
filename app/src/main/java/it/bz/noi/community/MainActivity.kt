@@ -1,9 +1,11 @@
 package it.bz.noi.community
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -14,9 +16,12 @@ import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.ActivityMainBinding
+import it.bz.noi.community.oauth.AuthManager
+import it.bz.noi.community.oauth.AuthStateStatus
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
+import kotlinx.coroutines.Dispatchers
 
 class MainActivity : AppCompatActivity() {
 
@@ -80,6 +85,20 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+
+		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
+			when (status) {
+//				is AuthStateStatus.Authorized ->
+				is AuthStateStatus.Error,
+				AuthStateStatus.Unauthorized.UserAuthRequired -> {
+					goToOnboardingActivity()
+				}
+//				AuthStateStatus.Unauthorized.NotValidRole -> TODO()
+//				AuthStateStatus.Unauthorized.PendingToken -> TODO()
+
+			}
+		}
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -92,4 +111,9 @@ class MainActivity : AppCompatActivity() {
         navController.popBackStack()
         return super.onSupportNavigateUp()
     }
+
+	private fun goToOnboardingActivity() {
+		startActivity(Intent(this, OnboardingActivity::class.java))
+	}
+
 }
