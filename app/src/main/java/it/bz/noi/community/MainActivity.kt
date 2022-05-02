@@ -2,7 +2,9 @@ package it.bz.noi.community
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.asLiveData
@@ -22,6 +24,9 @@ import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
 import kotlinx.coroutines.Dispatchers
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationResponse
+import net.openid.appauth.EndSessionResponse
 
 class MainActivity : AppCompatActivity() {
 
@@ -119,6 +124,31 @@ class MainActivity : AppCompatActivity() {
 
 	private fun goToOnboardingActivity() {
 		startActivity(Intent(this, OnboardingActivity::class.java))
+	}
+
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		Log.d(TAG, "onActivityResult")
+		when (requestCode) {
+			END_SESSION_REQUEST_CODE -> {
+				val exception: AuthorizationException? = data?.let {
+					AuthorizationException.fromIntent(it)
+				}
+				if (exception != null) {
+					// TODO
+					Toast.makeText(this, "Logout error", Toast.LENGTH_SHORT).show()
+				} else {
+					AuthManager.onEndSession()
+				}
+			}
+			else -> {
+				super.onActivityResult(requestCode, resultCode, data)
+			}
+		}
+	}
+
+	companion object {
+		private const val TAG = "MainActivity"
+		const val END_SESSION_REQUEST_CODE = 911
 	}
 
 }

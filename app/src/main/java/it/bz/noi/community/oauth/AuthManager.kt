@@ -5,19 +5,27 @@ import android.app.Application
 import android.content.ActivityNotFoundException
 import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
+import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.edit
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import it.bz.noi.community.MainActivity.Companion.END_SESSION_REQUEST_CODE
 import it.bz.noi.community.SplashScreenActivity.Companion.SHARED_PREFS_NAME
-import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.runBlocking
 import net.openid.appauth.*
 import net.openid.appauth.AuthorizationServiceConfiguration.RetrieveConfigurationCallback
 import net.openid.appauth.browser.BrowserAllowList
 import net.openid.appauth.browser.VersionedBrowserMatcher
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
+import java.net.URLEncoder
 
 sealed class AuthStateStatus {
 	sealed class Unauthorized : AuthStateStatus() {
@@ -51,6 +59,7 @@ object AuthManager {
 	// *************** TODO SPOSTARE in BUILD CONFIG?
 	private const val REDIRECT_URL: String =
 		"noi-community://oauth2redirect/login-callback"
+	private const val END_SESSION_URL = "noi-community://oauth2redirect/end_session-callback"
 	private const val ISSUER_URL: String = "https://auth.opendatahub.testingmachine.eu/auth/realms/noi/"
 	private const val CLIENT_ID: String = "it.bz.noi.community"
 	// ***************
@@ -145,11 +154,14 @@ object AuthManager {
 	}
 
 	fun onAuthorization(response: AuthorizationResponse?, exception: AuthorizationException?) {
-		val state = AuthState()
-		state.update(response, exception)
-		writeAuthState(state)
-		if (state.lastAuthorizationResponse != null) {
-			obtainToken(state.lastAuthorizationResponse!!)
+		runBlocking {
+			authState.first().let { state ->
+				state.update(response, exception)
+				writeAuthState(state)
+				if (state.lastAuthorizationResponse != null) {
+					obtainToken(state.lastAuthorizationResponse!!)
+				}
+			}
 		}
 	}
 
@@ -187,11 +199,50 @@ object AuthManager {
 		}
 	}
 
-	fun logout() {
-		// TODO
+	// FIXME
+	fun logout(context: Activity, requestCode: Int) {
+		AuthorizationServiceConfiguration.fetchFromIssuer(
+			Uri.parse(ISSUER_URL),
+			RetrieveConfigurationCallback { serviceConfiguration, ex ->
+				if (ex != null) {
+					Log.e(TAG, "failed to fetch configuration")
+					return@RetrieveConfigurationCallback
+				}
+
+				logout(serviceConfiguration!!, context, requestCode)
+			})
 	}
 
-	fun readAuthState(): AuthState {
+	private fun logout(authServiceConfig: AuthorizationServiceConfiguration, context: Activity, requestCode: Int) {
+		// TODO
+
+		runBlocking {
+			authState.first().let { currentState ->
+				if (authServiceConfig.endSessionEndpoint != null) {
+					val endSessionIntent: Intent = authorizationService.getEndSessionRequestIntent(
+						EndSessionRequest.Builder(authServiceConfig)
+							.setIdTokenHint(currentState.idToken)
+							.setPostLogoutRedirectUri(Uri.parse(END_SESSION_URL))
+							.build()
+					)
+					try {
+						context.startActivityForResult(endSessionIntent, requestCode)
+					} catch (ex: ActivityNotFoundException) {
+						Log.e(TAG, "End session error: " + ex.toString())
+					}
+
+				}
+			}
+		}
+
+	}
+
+	fun onEndSession() {
+		deleteAuthState()
+		runBlocking { authState.emit(AuthState()) }
+	}
+
+	private fun readAuthState(): AuthState {
 		return application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).getString(PREF_AUTH_STATE, null)?.let {
 			AuthState.jsonDeserialize(it)
 		} ?: AuthState()
