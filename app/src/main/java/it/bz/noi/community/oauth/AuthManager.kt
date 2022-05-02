@@ -187,6 +187,10 @@ object AuthManager {
 		}
 	}
 
+	fun logout() {
+		// TODO
+	}
+
 	fun readAuthState(): AuthState {
 		return application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).getString(PREF_AUTH_STATE, null)?.let {
 			AuthState.jsonDeserialize(it)
@@ -204,4 +208,5 @@ object AuthManager {
 			remove(PREF_AUTH_STATE)
 		}
 	}
+
 }

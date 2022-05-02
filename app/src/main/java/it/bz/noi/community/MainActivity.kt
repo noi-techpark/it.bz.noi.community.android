@@ -68,15 +68,20 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_more -> {
                     supportActionBar?.hide()
                 }
-                R.id.eventDetailsFragment, R.id.webViewFragment, R.id.filtersFragment -> {
+				R.id.webViewFragment -> {
 					supportActionBar?.show()
-                    (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
-                        18f
+					(findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
+						18f
 					if (destination.id == R.id.webViewFragment) {
 						arguments?.let {
 							supportActionBar?.title = arguments.getString(WebViewFragment.TITLE_ARG)
 						}
 					}
+				}
+                R.id.eventDetailsFragment, R.id.filtersFragment, R.id.myAccount -> {
+					supportActionBar?.show()
+                    (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
+                        18f
                 }
                 else -> {
                     (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =

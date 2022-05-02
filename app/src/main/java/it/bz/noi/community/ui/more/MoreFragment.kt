@@ -20,11 +20,15 @@ class MoreFragment : Fragment() {
 		it?.let {
 			val pos = binding.moreRecyclerView.getChildAdapterPosition(it)
 
-			val action = WebViewFragmentDirections.actionGlobalWebViewFragment().apply {
-				title = items[pos]
-				url = getUrlByItemPosition(pos)
+			if (pos == MY_ACCOUNT_ITEM) {
+				findNavController().navigate(MoreFragmentDirections.actionMoreToMyAccount())
+			} else {
+				val action = WebViewFragmentDirections.actionGlobalWebViewFragment().apply {
+					title = items[pos]
+					url = getUrlByItemPosition(pos)
+				}
+				findNavController().navigate(action)
 			}
-			findNavController().navigate(action)
 		}
 	}
 
@@ -41,14 +45,9 @@ class MoreFragment : Fragment() {
 		items = listOf(
 			resources.getString(R.string.room_booking),
 			resources.getString(R.string.more_item_onboarding),
-			resources.getString(R.string.more_item_feedback)
+			resources.getString(R.string.more_item_feedback),
+			resources.getString(R.string.more_item_account)
 		)
-
-		/*
-		 * Items postponed to MVP2:
-         *  resources.getString(R.string.more_item_account)
-         *  resources.getString(R.string.more_item_settings)
-		 */
 	}
 
 	override fun onCreateView(
@@ -73,6 +72,10 @@ class MoreFragment : Fragment() {
 			2 -> resources.getString(R.string.url_provide_feedback)
 			else -> throw Exception("Link not found")
 		}
+	}
+
+	companion object {
+		private const val MY_ACCOUNT_ITEM = 3
 	}
 
 }
