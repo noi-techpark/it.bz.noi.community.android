@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import it.bz.noi.community.MainActivity.Companion.END_SESSION_REQUEST_CODE
+import it.bz.noi.community.OnboardingActivity.Companion.LOGOUT_REQUEST
 import it.bz.noi.community.databinding.FragmentMyAccountBinding
 import it.bz.noi.community.oauth.AuthManager
 
@@ -31,7 +31,7 @@ class MyAccountFragment : Fragment() {
 		binding.email.text = "email" // TODO
 		binding.logout.setOnClickListener {
 			// FIXME
-			AuthManager.logout(requireActivity(), END_SESSION_REQUEST_CODE)
+			AuthManager.logout(requireActivity(), LOGOUT_REQUEST)
 			Toast.makeText(requireContext(), "Logout", Toast.LENGTH_SHORT).show()
 		}
 	}

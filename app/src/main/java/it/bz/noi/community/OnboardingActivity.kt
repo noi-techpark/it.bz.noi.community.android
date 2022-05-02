@@ -3,8 +3,11 @@ package it.bz.noi.community
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
 import androidx.lifecycle.asLiveData
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -12,6 +15,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import it.bz.noi.community.databinding.ActivityOnboardingBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
+import it.bz.noi.community.ui.onboarding.AuthorizationErrorFragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage1Fragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage2Fragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage3Fragment
@@ -31,8 +35,11 @@ class OnboardingActivity : AppCompatActivity() {
 		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
 			when (status) {
 				is AuthStateStatus.Authorized -> goToMainActivity()
+				AuthStateStatus.Unauthorized.NotValidRole -> {
+					if (savedInstanceState == null)
+						openAuthorizationErrorFragment()
+				}
 //				is AuthStateStatus.Error -> TODO()
-//				AuthStateStatus.Unauthorized.NotValidRole -> TODO()
 //				AuthStateStatus.Unauthorized.PendingToken -> TODO()
 //				AuthStateStatus.Unauthorized.UserAuthRequired -> TODO()
 			}
@@ -75,10 +82,17 @@ class OnboardingActivity : AppCompatActivity() {
 		startActivity(Intent(this, MainActivity::class.java))
 	}
 
+	private fun openAuthorizationErrorFragment() {
+			supportFragmentManager.commit {
+				setReorderingAllowed(true)
+				add<AuthorizationErrorFragment>(R.id.fragment_container_view)
+			}
+	}
+
 	companion object {
 		private const val TAG = "OnboardingActivity"
 		const val AUTH_REQUEST = 111
-		const val REQUEST_LOGOUT = 112
+		const val LOGOUT_REQUEST = 112
 	}
 
 }

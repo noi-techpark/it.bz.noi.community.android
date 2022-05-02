@@ -9,11 +9,7 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.edit
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import it.bz.noi.community.MainActivity.Companion.END_SESSION_REQUEST_CODE
 import it.bz.noi.community.SplashScreenActivity.Companion.SHARED_PREFS_NAME
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
@@ -22,10 +18,6 @@ import net.openid.appauth.*
 import net.openid.appauth.AuthorizationServiceConfiguration.RetrieveConfigurationCallback
 import net.openid.appauth.browser.BrowserAllowList
 import net.openid.appauth.browser.VersionedBrowserMatcher
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
-import java.net.URLEncoder
 
 sealed class AuthStateStatus {
 	sealed class Unauthorized : AuthStateStatus() {
@@ -38,6 +30,8 @@ sealed class AuthStateStatus {
 	data class Error(val exception: Exception) : AuthStateStatus()
 }
 
+data class UserState(val authState: AuthState, val validRole: Boolean)
+
 /**
  * OAuth specific exception.
  */
@@ -45,11 +39,12 @@ class UnauthorizedException(original: AuthorizationException) : Exception(origin
 
 object AuthManager {
 
-	private fun AuthState.toStatus(): AuthStateStatus {
+	private fun UserState.toStatus(): AuthStateStatus {
 		return when {
-			authorizationException != null -> AuthStateStatus.Error(UnauthorizedException(authorizationException!!))
-			isAuthorized -> AuthStateStatus.Authorized(this)
-			lastAuthorizationResponse != null && needsTokenRefresh -> AuthStateStatus.Unauthorized.PendingToken
+			!validRole -> AuthStateStatus.Unauthorized.NotValidRole
+			authState.authorizationException != null -> AuthStateStatus.Error(UnauthorizedException(authState.authorizationException!!))
+			authState.isAuthorized -> AuthStateStatus.Authorized(authState)
+			authState.lastAuthorizationResponse != null && authState.needsTokenRefresh -> AuthStateStatus.Unauthorized.PendingToken
 			else -> AuthStateStatus.Unauthorized.UserAuthRequired
 		}
 	}
@@ -65,6 +60,7 @@ object AuthManager {
 	// ***************
 
 	private const val PREF_AUTH_STATE = "authState"
+	private const val PREF_ACCESS_GRANTED_STATE = "accessGrantedState"
 	private const val ACCESS_GRANTED_ROLE = "ACCESS_GRANTED"
 
 	lateinit var application: Application
@@ -77,25 +73,15 @@ object AuthManager {
 	}
 
 	@OptIn(ObsoleteCoroutinesApi::class)
-	private val authState: MutableSharedFlow<AuthState> by lazy {
-		MutableSharedFlow<AuthState>(1, 0, BufferOverflow.DROP_OLDEST).apply {
+	private val userState: MutableSharedFlow<UserState> by lazy {
+		MutableSharedFlow<UserState>(1, 0, BufferOverflow.DROP_OLDEST).apply {
 			tryEmit(readAuthState())
 		}
 	}
 
 	@OptIn(ObsoleteCoroutinesApi::class)
-	fun refreshState() {
-		runBlocking {
-			authState.first().let { state ->
-				writeAuthState(state)
-				authState.emit(state)
-			}
-		}
-	}
-
-	@OptIn(ObsoleteCoroutinesApi::class)
 	val status: Flow<AuthStateStatus> by lazy {
-		authState.filterNotNull().map { state -> state.toStatus() }.distinctUntilChanged()
+		userState.filterNotNull().map { state -> state.toStatus() }.distinctUntilChanged()
 	}
 
 	private val authorizationService: AuthorizationService by lazy {
@@ -155,31 +141,32 @@ object AuthManager {
 
 	fun onAuthorization(response: AuthorizationResponse?, exception: AuthorizationException?) {
 		runBlocking {
-			authState.first().let { state ->
-				state.update(response, exception)
+			userState.first().let { state ->
+				state.authState.update(response, exception)
 				writeAuthState(state)
-				if (state.lastAuthorizationResponse != null) {
-					obtainToken(state.lastAuthorizationResponse!!)
+				if (state.authState.lastAuthorizationResponse != null) {
+					obtainToken(state.authState.lastAuthorizationResponse!!, state.validRole)
 				}
 			}
 		}
 	}
 
-	private fun obtainToken(authResponse: AuthorizationResponse) {
+	private fun obtainToken(authResponse: AuthorizationResponse, currentValidRole: Boolean) {
 		authorizationService.performTokenRequest(
 			authResponse.createTokenExchangeRequest()
 		) { response, ex ->
 			if (ex != null) {
 				Log.d(TAG, "Token request result", ex)
-				onTokenObtained(response, ex)
+				onTokenObtained(response, ex, currentValidRole)
 			} else {
 				response!!.accessToken?.let { jwtToken ->
 					decode(jwtToken)?.let { decodedToken ->
 						if (verifyToken(decodedToken)) {
-							onTokenObtained(response, ex)
+							onTokenObtained(response, ex, true)
 						} else {
 							// FIXME
 							Log.d(TAG, "Not authorized")
+							onTokenObtained(response, ex, false)
 						}
 					}
 				}
@@ -189,12 +176,13 @@ object AuthManager {
 
 	private fun verifyToken(token: NOIJwtAccessToken) = token.checkResourceAccessRoles(CLIENT_ID, listOf(ACCESS_GRANTED_ROLE))
 
-	private fun onTokenObtained(tokenResponse: TokenResponse?, exception: AuthorizationException?) {
+	private fun onTokenObtained(tokenResponse: TokenResponse?, exception: AuthorizationException?, validRole: Boolean) {
 		runBlocking {
-			authState.first().let { state ->
-				state.update(tokenResponse, exception)
-				writeAuthState(state)
-				authState.emit(state)
+			userState.first().let { currentState ->
+				val newState = UserState(currentState.authState, validRole)
+				newState.authState.update(tokenResponse, exception)
+				writeAuthState(newState)
+				userState.emit(newState)
 			}
 		}
 	}
@@ -217,11 +205,11 @@ object AuthManager {
 		// TODO
 
 		runBlocking {
-			authState.first().let { currentState ->
+			userState.first().let { currentUserState ->
 				if (authServiceConfig.endSessionEndpoint != null) {
 					val endSessionIntent: Intent = authorizationService.getEndSessionRequestIntent(
 						EndSessionRequest.Builder(authServiceConfig)
-							.setIdTokenHint(currentState.idToken)
+							.setIdTokenHint(currentUserState.authState.idToken)
 							.setPostLogoutRedirectUri(Uri.parse(END_SESSION_URL))
 							.build()
 					)
@@ -238,25 +226,34 @@ object AuthManager {
 	}
 
 	fun onEndSession() {
-		deleteAuthState()
-		runBlocking { authState.emit(AuthState()) }
+		deleteUserState()
+		runBlocking { userState.emit(UserState(AuthState(), true)) }
 	}
 
-	private fun readAuthState(): AuthState {
-		return application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).getString(PREF_AUTH_STATE, null)?.let {
-			AuthState.jsonDeserialize(it)
-		} ?: AuthState()
+	private fun readAuthState(): UserState {
+		application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).apply {
+			val authState = getString(PREF_AUTH_STATE, null)?.let {
+				AuthState.jsonDeserialize(it)
+			} ?: AuthState()
+
+			val isValidRole = getBoolean(PREF_ACCESS_GRANTED_STATE, true)
+
+			return UserState(authState, isValidRole)
+		}
+
 	}
 
-	private fun writeAuthState(state: AuthState) {
+	private fun writeAuthState(userState: UserState) {
 		application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).edit {
-			putString(PREF_AUTH_STATE, state.jsonSerializeString())
+			putString(PREF_AUTH_STATE, userState.authState.jsonSerializeString())
+			putBoolean(PREF_ACCESS_GRANTED_STATE, userState.validRole)
 		}
 	}
 
-	private fun deleteAuthState() {
+	private fun deleteUserState() {
 		application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).edit {
 			remove(PREF_AUTH_STATE)
+			remove(PREF_ACCESS_GRANTED_STATE)
 		}
 	}
 

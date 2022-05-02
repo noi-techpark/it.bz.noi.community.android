@@ -14,6 +14,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
+import it.bz.noi.community.OnboardingActivity.Companion.LOGOUT_REQUEST
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.repository.JsonFilterRepository
@@ -25,8 +26,6 @@ import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
 import kotlinx.coroutines.Dispatchers
 import net.openid.appauth.AuthorizationException
-import net.openid.appauth.AuthorizationResponse
-import net.openid.appauth.EndSessionResponse
 
 class MainActivity : AppCompatActivity() {
 
@@ -129,7 +128,7 @@ class MainActivity : AppCompatActivity() {
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		Log.d(TAG, "onActivityResult")
 		when (requestCode) {
-			END_SESSION_REQUEST_CODE -> {
+			LOGOUT_REQUEST -> {
 				val exception: AuthorizationException? = data?.let {
 					AuthorizationException.fromIntent(it)
 				}
@@ -148,7 +147,6 @@ class MainActivity : AppCompatActivity() {
 
 	companion object {
 		private const val TAG = "MainActivity"
-		const val END_SESSION_REQUEST_CODE = 911
 	}
 
 }
