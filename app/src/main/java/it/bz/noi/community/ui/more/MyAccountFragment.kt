@@ -30,9 +30,7 @@ class MyAccountFragment : Fragment() {
 		binding.name.text = "Nome" // TODO
 		binding.email.text = "email" // TODO
 		binding.logout.setOnClickListener {
-			// FIXME
 			AuthManager.logout(requireActivity(), LOGOUT_REQUEST)
-			Toast.makeText(requireContext(), "Logout", Toast.LENGTH_SHORT).show()
 		}
 	}
 

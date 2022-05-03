@@ -5,8 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.add
+import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.fragment.app.commit
 import androidx.lifecycle.asLiveData
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -32,32 +33,38 @@ class OnboardingActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
+		binding = ActivityOnboardingBinding.inflate(layoutInflater)
+		setContentView(binding.root)
+
 		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
 			when (status) {
 				is AuthStateStatus.Authorized -> goToMainActivity()
 				AuthStateStatus.Unauthorized.NotValidRole -> {
+					showWizard(false)
 					if (savedInstanceState == null)
 						openAuthorizationErrorFragment()
 				}
-//				is AuthStateStatus.Error -> TODO()
-//				AuthStateStatus.Unauthorized.PendingToken -> TODO()
-//				AuthStateStatus.Unauthorized.UserAuthRequired -> TODO()
+				else -> {
+					showWizard(true)
+				}
 			}
 		}
-
-		binding = ActivityOnboardingBinding.inflate(layoutInflater)
-		setContentView(binding.root)
 
 		viewPager = binding.pager
 		viewPager.apply {
 			adapter = stateAdapter
 		}
-
 		TabLayoutMediator(binding.tabLayout, viewPager) { _, _ -> }.attach()
-
 		binding.login.setOnClickListener {
 			AuthManager.login(this, AUTH_REQUEST)
 		}
+	}
+
+	private fun showWizard(show: Boolean) {
+		binding.login.isVisible = show
+		binding.signup.isVisible = show
+		binding.pager.isVisible = show
+		binding.tabLayout.isVisible = show
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -72,6 +79,18 @@ class OnboardingActivity : AppCompatActivity() {
 				}
 				AuthManager.onAuthorization(response, exception)
 			}
+			LOGOUT_REQUEST -> {
+				val exception: AuthorizationException? = data?.let {
+					AuthorizationException.fromIntent(it)
+				}
+				if (exception != null) {
+					// TODO
+					Toast.makeText(this, "Logout error", Toast.LENGTH_SHORT).show()
+				} else {
+					AuthManager.onEndSession()
+					closeAuthorizationErrorFragment()
+				}
+			}
 			else -> {
 				super.onActivityResult(requestCode, resultCode, data)
 			}
@@ -83,21 +102,31 @@ class OnboardingActivity : AppCompatActivity() {
 	}
 
 	private fun openAuthorizationErrorFragment() {
-			supportFragmentManager.commit {
-				setReorderingAllowed(true)
-				add<AuthorizationErrorFragment>(R.id.fragment_container_view)
-			}
+		supportFragmentManager.commit {
+			setReorderingAllowed(true)
+			replace(R.id.fragment_container_view, AuthorizationErrorFragment())
+			addToBackStack(AUTH_ERROR_TRANSACTION_NAME)
+		}
+	}
+
+	private fun closeAuthorizationErrorFragment() {
+		supportFragmentManager.popBackStack(
+			AUTH_ERROR_TRANSACTION_NAME,
+			POP_BACK_STACK_INCLUSIVE
+		)
 	}
 
 	companion object {
 		private const val TAG = "OnboardingActivity"
+		private const val AUTH_ERROR_TRANSACTION_NAME = "addAuthorizationErrorFragment"
 		const val AUTH_REQUEST = 111
 		const val LOGOUT_REQUEST = 112
 	}
 
 }
 
-private class OnboardingStateAdapter(activity: OnboardingActivity) : FragmentStateAdapter(activity) {
+private class OnboardingStateAdapter(activity: OnboardingActivity) :
+	FragmentStateAdapter(activity) {
 	override fun getItemCount(): Int = 3
 
 	override fun createFragment(position: Int): Fragment {
