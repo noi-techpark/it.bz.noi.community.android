@@ -10,6 +10,8 @@ import android.net.Uri
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.gson.GsonBuilder
 import it.bz.noi.community.SplashScreenActivity.Companion.SHARED_PREFS_NAME
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
@@ -18,6 +20,16 @@ import net.openid.appauth.*
 import net.openid.appauth.AuthorizationServiceConfiguration.RetrieveConfigurationCallback
 import net.openid.appauth.browser.BrowserAllowList
 import net.openid.appauth.browser.VersionedBrowserMatcher
+import okio.buffer
+import okio.source
+import org.json.JSONException
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
+import java.nio.charset.Charset
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 sealed class AuthStateStatus {
 	sealed class Unauthorized : AuthStateStatus() {
@@ -41,8 +53,8 @@ object AuthManager {
 
 	private fun UserState.toStatus(): AuthStateStatus {
 		return when {
-			!validRole -> AuthStateStatus.Unauthorized.NotValidRole
 			authState.authorizationException != null -> AuthStateStatus.Error(UnauthorizedException(authState.authorizationException!!))
+			!validRole -> AuthStateStatus.Unauthorized.NotValidRole
 			authState.isAuthorized -> AuthStateStatus.Authorized(authState)
 			authState.lastAuthorizationResponse != null && authState.needsTokenRefresh -> AuthStateStatus.Unauthorized.PendingToken
 			else -> AuthStateStatus.Unauthorized.UserAuthRequired
@@ -70,6 +82,14 @@ object AuthManager {
 	 */
 	fun setup(application: Application) {
 		this.application = application
+
+		try {
+			fetchUserInfo()
+		} catch (ex: AuthorizationException) {
+			if (ex.type == AuthorizationException.TYPE_OAUTH_AUTHORIZATION_ERROR) {
+			//	deleteUserState()
+			}
+		}
 	}
 
 	@OptIn(ObsoleteCoroutinesApi::class)
@@ -168,6 +188,12 @@ object AuthManager {
 							Log.d(TAG, "Not authorized")
 							onTokenObtained(response, ex, false)
 						}
+
+//						try {
+//							fetchUserInfo(accessToken = jwtToken)
+//						} catch (ex: AuthorizationException) {
+//							Log.d(TAG, "Fetch user info exception: ${ex.error}")
+//						}
 					}
 				}
 			}
@@ -202,8 +228,6 @@ object AuthManager {
 	}
 
 	private fun logout(authServiceConfig: AuthorizationServiceConfiguration, context: Activity, requestCode: Int) {
-		// TODO
-
 		runBlocking {
 			userState.first().let { currentUserState ->
 				if (authServiceConfig.endSessionEndpoint != null) {
@@ -222,12 +246,129 @@ object AuthManager {
 				}
 			}
 		}
-
 	}
 
 	fun onEndSession() {
 		deleteUserState()
 		runBlocking { userState.emit(UserState(AuthState(), true)) }
+	}
+
+	@OptIn(ObsoleteCoroutinesApi::class)
+	suspend fun <T> doAuthenticatedAction(action: (token: String) -> T): T {
+		val userState = userState.first()
+
+		val token = suspendCoroutine<String> { cont ->
+			userState.authState.performActionWithFreshTokens(
+				authorizationService
+			) { accessToken, _, ex ->
+				if (ex != null) {
+					FirebaseCrashlytics.getInstance().recordException(ex)
+					if (ex.type != AuthorizationException.TYPE_GENERAL_ERROR) {
+						refreshState()
+					}
+					cont.resumeWithException(ex)
+				} else if (accessToken != null) {
+					try {
+						cont.resume(accessToken)
+					} catch (ex: Exception) {
+						cont.resumeWithException(ex)
+					}
+				}
+				writeAuthState(userState)
+			}
+		}
+		return action(token)
+	}
+
+	@OptIn(ObsoleteCoroutinesApi::class)
+	private fun refreshState() {
+		runBlocking {
+			userState.first().let { state ->
+				writeAuthState(state)
+				userState.emit(state)
+			}
+		}
+	}
+
+	fun fetchUserInfo()  {
+
+
+			AuthorizationServiceConfiguration.fetchFromIssuer(
+				Uri.parse(ISSUER_URL),
+				RetrieveConfigurationCallback { serviceConfiguration, ex ->
+					if (ex != null) {
+						Log.e(TAG, "failed to fetch configuration")
+						return@RetrieveConfigurationCallback
+					}
+					serviceConfiguration!!.discoveryDoc?.userinfoEndpoint?.let {
+
+						fetchUserInfo(it)
+					} ?: throw Exception("missing userinfoEndpoint")
+
+				})
+
+
+	}
+
+//	private fun fetchUserInfo(accessToken: String) {
+//		AuthorizationServiceConfiguration.fetchFromIssuer(
+//			Uri.parse(ISSUER_URL),
+//			RetrieveConfigurationCallback { serviceConfiguration, ex ->
+//				if (ex != null) {
+//					Log.e(TAG, "failed to fetch configuration")
+//					return@RetrieveConfigurationCallback
+//				}
+//				serviceConfiguration!!.discoveryDoc?.userinfoEndpoint?.let {
+//				//	fetchUserInfo(accessToken, it)
+//				} ?: throw Exception("missing userinfoEndpoint")
+//
+//			})
+//	}
+
+	private fun fetchUserInfo(userInfoEndpoint: Uri)  {
+		runBlocking {
+			userState.first().authState
+		}.let { authState ->
+			authState.performActionWithFreshTokens(
+				authorizationService,
+			) { accessToken, _, ex ->
+				if (ex == null) {
+					GlobalScope.launch(Dispatchers.IO) {
+						try {
+
+							val conn = URL(userInfoEndpoint.toString()).openConnection() as HttpURLConnection
+							conn.setRequestProperty("Authorization", "Bearer $accessToken")
+							conn.instanceFollowRedirects = false
+							conn.connect()
+							when (val responseCode = conn.responseCode) {
+								in 300..399,
+								in 200..299 -> {
+									val response = conn.inputStream.source().buffer()
+										.readString(Charset.forName("UTF-8"))
+									val gson = GsonBuilder().create()
+									val userInfo = gson.fromJson(response, UserInfo::class.java)
+									Log.d(TAG, "user info: $userInfo")
+								}
+								else -> {
+									Log.d(TAG, "User info failed with response code $responseCode: ${conn.responseMessage}")
+								}
+							}
+
+						} catch (ioEx: IOException) {
+							Log.e(
+								TAG,
+								"Network error when querying userinfo endpoint",
+								ioEx
+							)
+							//showSnackbar("Fetching user info failed")
+						} catch (jsonEx: JSONException) {
+							Log.e(TAG, "Failed to parse userinfo response")
+							//showSnackbar("Failed to parse user info")
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private fun readAuthState(): UserState {
