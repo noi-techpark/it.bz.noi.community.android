@@ -20,6 +20,7 @@ import it.bz.noi.community.ui.onboarding.AuthorizationErrorFragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage1Fragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage2Fragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage3Fragment
+import it.bz.noi.community.utils.Utils.openLinkInExternalBrowser
 import kotlinx.coroutines.Dispatchers
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
@@ -54,9 +55,14 @@ class OnboardingActivity : AppCompatActivity() {
 		viewPager.apply {
 			adapter = stateAdapter
 		}
+
 		TabLayoutMediator(binding.tabLayout, viewPager) { _, _ -> }.attach()
+
 		binding.login.setOnClickListener {
 			AuthManager.login(this, AUTH_REQUEST)
+		}
+		binding.signup.setOnClickListener {
+			openLinkInExternalBrowser(SIGNUP_URL)
 		}
 	}
 
@@ -121,6 +127,9 @@ class OnboardingActivity : AppCompatActivity() {
 		private const val AUTH_ERROR_TRANSACTION_NAME = "addAuthorizationErrorFragment"
 		const val AUTH_REQUEST = 111
 		const val LOGOUT_REQUEST = 112
+
+		// FIXME SPOSTARE
+		private const val SIGNUP_URL = "https://auth.opendatahub.testingmachine.eu/auth/realms/noi/protocol/openid-connect/registrations?client_id=it.bz.noi.community&redirect_uri=https://noi.bz.it&response_type=code&scope=openid"
 	}
 
 }
