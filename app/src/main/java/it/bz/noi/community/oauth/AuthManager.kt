@@ -10,6 +10,8 @@ import android.net.Uri
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.GsonBuilder
 import it.bz.noi.community.SplashScreenActivity.Companion.SHARED_PREFS_NAME
@@ -32,6 +34,8 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 sealed class AuthStateStatus {
+	object Initial: AuthStateStatus()
+
 	sealed class Unauthorized : AuthStateStatus() {
 		object UserAuthRequired : Unauthorized()
 		object PendingToken : Unauthorized()
@@ -42,7 +46,7 @@ sealed class AuthStateStatus {
 	data class Error(val exception: Exception) : AuthStateStatus()
 }
 
-data class UserState(val authState: AuthState, val validRole: Boolean)
+data class UserState(val authState: AuthState, val validRole: Boolean, val initial: Boolean)
 
 /**
  * OAuth specific exception.
@@ -54,6 +58,7 @@ object AuthManager {
 	private fun UserState.toStatus(): AuthStateStatus {
 		return when {
 			authState.authorizationException != null -> AuthStateStatus.Error(UnauthorizedException(authState.authorizationException!!))
+			initial -> AuthStateStatus.Initial
 			!validRole -> AuthStateStatus.Unauthorized.NotValidRole
 			authState.isAuthorized -> AuthStateStatus.Authorized(authState)
 			authState.lastAuthorizationResponse != null && authState.needsTokenRefresh -> AuthStateStatus.Unauthorized.PendingToken
@@ -77,19 +82,15 @@ object AuthManager {
 
 	lateinit var application: Application
 
+	private var _userInfo = MutableLiveData<UserInfo?>(null)
+	val userInfo: LiveData<UserInfo?>
+		get() = _userInfo
+
 	/**
 	 * Must be called in Application's onCreate.
 	 */
 	fun setup(application: Application) {
 		this.application = application
-
-		try {
-			fetchUserInfo()
-		} catch (ex: AuthorizationException) {
-			if (ex.type == AuthorizationException.TYPE_OAUTH_AUTHORIZATION_ERROR) {
-			//	deleteUserState()
-			}
-		}
 	}
 
 	@OptIn(ObsoleteCoroutinesApi::class)
@@ -163,7 +164,7 @@ object AuthManager {
 		runBlocking {
 			userState.first().let { state ->
 				state.authState.update(response, exception)
-				writeAuthState(state)
+				writeAuthState(state.copy(initial = false))
 				if (state.authState.lastAuthorizationResponse != null) {
 					obtainToken(state.authState.lastAuthorizationResponse!!, state.validRole)
 				}
@@ -189,11 +190,7 @@ object AuthManager {
 							onTokenObtained(response, ex, false)
 						}
 
-//						try {
-//							fetchUserInfo(accessToken = jwtToken)
-//						} catch (ex: AuthorizationException) {
-//							Log.d(TAG, "Fetch user info exception: ${ex.error}")
-//						}
+						fetchUserInfo()
 					}
 				}
 			}
@@ -205,7 +202,7 @@ object AuthManager {
 	private fun onTokenObtained(tokenResponse: TokenResponse?, exception: AuthorizationException?, validRole: Boolean) {
 		runBlocking {
 			userState.first().let { currentState ->
-				val newState = UserState(currentState.authState, validRole)
+				val newState = UserState(currentState.authState, validRole, false)
 				newState.authState.update(tokenResponse, exception)
 				writeAuthState(newState)
 				userState.emit(newState)
@@ -250,7 +247,7 @@ object AuthManager {
 
 	fun onEndSession() {
 		deleteUserState()
-		runBlocking { userState.emit(UserState(AuthState(), true)) }
+		runBlocking { userState.emit(UserState(AuthState(), true, false)) }
 	}
 
 	@OptIn(ObsoleteCoroutinesApi::class)
@@ -285,14 +282,13 @@ object AuthManager {
 		runBlocking {
 			userState.first().let { state ->
 				writeAuthState(state)
-				userState.emit(state)
+				userState.emit(state.copy(initial = false))
 			}
 		}
 	}
 
+	// FIXME
 	fun fetchUserInfo()  {
-
-
 			AuthorizationServiceConfiguration.fetchFromIssuer(
 				Uri.parse(ISSUER_URL),
 				RetrieveConfigurationCallback { serviceConfiguration, ex ->
@@ -302,28 +298,12 @@ object AuthManager {
 					}
 					serviceConfiguration!!.discoveryDoc?.userinfoEndpoint?.let {
 
-						fetchUserInfo(it)
+							fetchUserInfo(it)
+
 					} ?: throw Exception("missing userinfoEndpoint")
 
 				})
-
-
 	}
-
-//	private fun fetchUserInfo(accessToken: String) {
-//		AuthorizationServiceConfiguration.fetchFromIssuer(
-//			Uri.parse(ISSUER_URL),
-//			RetrieveConfigurationCallback { serviceConfiguration, ex ->
-//				if (ex != null) {
-//					Log.e(TAG, "failed to fetch configuration")
-//					return@RetrieveConfigurationCallback
-//				}
-//				serviceConfiguration!!.discoveryDoc?.userinfoEndpoint?.let {
-//				//	fetchUserInfo(accessToken, it)
-//				} ?: throw Exception("missing userinfoEndpoint")
-//
-//			})
-//	}
 
 	private fun fetchUserInfo(userInfoEndpoint: Uri)  {
 		runBlocking {
@@ -333,6 +313,7 @@ object AuthManager {
 				authorizationService,
 			) { accessToken, _, ex ->
 				if (ex == null) {
+
 					GlobalScope.launch(Dispatchers.IO) {
 						try {
 
@@ -346,8 +327,7 @@ object AuthManager {
 									val response = conn.inputStream.source().buffer()
 										.readString(Charset.forName("UTF-8"))
 									val gson = GsonBuilder().create()
-									val userInfo = gson.fromJson(response, UserInfo::class.java)
-									Log.d(TAG, "user info: $userInfo")
+									_userInfo.postValue(gson.fromJson(response, UserInfo::class.java))
 								}
 								else -> {
 									Log.d(TAG, "User info failed with response code $responseCode: ${conn.responseMessage}")
@@ -360,12 +340,14 @@ object AuthManager {
 								"Network error when querying userinfo endpoint",
 								ioEx
 							)
-							//showSnackbar("Fetching user info failed")
 						} catch (jsonEx: JSONException) {
 							Log.e(TAG, "Failed to parse userinfo response")
-							//showSnackbar("Failed to parse user info")
 						}
+						refreshState()
 					}
+				}
+				else {
+					refreshState()
 				}
 			}
 		}
@@ -379,7 +361,7 @@ object AuthManager {
 
 			val isValidRole = getBoolean(PREF_ACCESS_GRANTED_STATE, true)
 
-			return UserState(authState, isValidRole)
+			return UserState(authState, isValidRole, true)
 		}
 
 	}
@@ -395,6 +377,13 @@ object AuthManager {
 		application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).edit {
 			remove(PREF_AUTH_STATE)
 			remove(PREF_ACCESS_GRANTED_STATE)
+		}
+		_userInfo.value = null
+	}
+
+	fun retrieveUserInfo() {
+		if (userInfo.value == null) {
+			fetchUserInfo()
 		}
 	}
 

@@ -33,8 +33,13 @@ class SplashScreenActivity : AppCompatActivity() {
 		if (sharedPreferences.getBoolean(SKIP_PARAM, false)) {
 			AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
 				when (status) {
+					AuthStateStatus.Initial -> {
+						AuthManager.fetchUserInfo()
+					}
 					is AuthStateStatus.Authorized -> goToMainActivity()
-					else -> goToOnboardingActivity()
+					else -> {  // Error or Unauthorized
+						goToOnboardingActivity()
+					}
 				}
 			}
 			return
