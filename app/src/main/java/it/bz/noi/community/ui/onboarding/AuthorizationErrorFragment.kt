@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import it.bz.noi.community.OnboardingActivity
+import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentAuthorizationErrorBinding
 import it.bz.noi.community.oauth.AuthManager
 
@@ -18,13 +19,19 @@ class AuthorizationErrorFragment : Fragment() {
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 		savedInstanceState: Bundle?
-	): View? {
+	): View {
 		_binding = FragmentAuthorizationErrorBinding.inflate(inflater, container, false)
 		return binding.root
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+
+		AuthManager.userInfo.observe(viewLifecycleOwner) {
+			it?.let { userInfo ->
+				binding.message.text = getString(R.string.access_not_granted_format, userInfo.fullname, userInfo.email)
+			}
+		}
 
 		binding.logout.setOnClickListener {
 			AuthManager.logout(requireActivity(), OnboardingActivity.LOGOUT_REQUEST)
