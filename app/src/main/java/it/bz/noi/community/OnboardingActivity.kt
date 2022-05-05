@@ -62,7 +62,7 @@ class OnboardingActivity : AppCompatActivity() {
 			AuthManager.login(this, AUTH_REQUEST)
 		}
 		binding.signup.setOnClickListener {
-			openLinkInExternalBrowser(SIGNUP_URL)
+			openLinkInExternalBrowser(BuildConfig.SIGNUP_URL)
 		}
 	}
 
@@ -127,9 +127,6 @@ class OnboardingActivity : AppCompatActivity() {
 		private const val AUTH_ERROR_TRANSACTION_NAME = "addAuthorizationErrorFragment"
 		const val AUTH_REQUEST = 111
 		const val LOGOUT_REQUEST = 112
-
-		// FIXME SPOSTARE
-		private const val SIGNUP_URL = "https://auth.opendatahub.testingmachine.eu/auth/realms/noi/protocol/openid-connect/registrations?client_id=it.bz.noi.community&redirect_uri=https://noi.bz.it&response_type=code&scope=openid"
 	}
 
 }

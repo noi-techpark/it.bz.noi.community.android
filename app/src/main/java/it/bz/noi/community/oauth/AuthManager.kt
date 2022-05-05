@@ -14,6 +14,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.GsonBuilder
+import it.bz.noi.community.BuildConfig
 import it.bz.noi.community.SplashScreenActivity.Companion.SHARED_PREFS_NAME
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
@@ -68,13 +69,10 @@ object AuthManager {
 
 	private const val TAG = "AuthManager"
 
-	// *************** TODO SPOSTARE in BUILD CONFIG?
 	private const val REDIRECT_URL: String =
 		"noi-community://oauth2redirect/login-callback"
 	private const val END_SESSION_URL = "noi-community://oauth2redirect/end_session-callback"
-	private const val ISSUER_URL: String = "https://auth.opendatahub.testingmachine.eu/auth/realms/noi/"
 	private const val CLIENT_ID: String = "it.bz.noi.community"
-	// ***************
 
 	private const val PREF_AUTH_STATE = "authState"
 	private const val PREF_ACCESS_GRANTED_STATE = "accessGrantedState"
@@ -121,7 +119,7 @@ object AuthManager {
 
 	fun login(context: Activity, requestCode: Int) {
 		AuthorizationServiceConfiguration.fetchFromIssuer(
-			Uri.parse(ISSUER_URL),
+			Uri.parse(BuildConfig.ISSUER_URL),
 			RetrieveConfigurationCallback { serviceConfiguration, ex ->
 				if (ex != null) {
 					Log.e(TAG, "failed to fetch configuration")
@@ -213,7 +211,7 @@ object AuthManager {
 	// FIXME
 	fun logout(context: Activity, requestCode: Int) {
 		AuthorizationServiceConfiguration.fetchFromIssuer(
-			Uri.parse(ISSUER_URL),
+			Uri.parse(BuildConfig.ISSUER_URL),
 			RetrieveConfigurationCallback { serviceConfiguration, ex ->
 				if (ex != null) {
 					Log.e(TAG, "failed to fetch configuration")
@@ -290,7 +288,7 @@ object AuthManager {
 	// FIXME
 	fun fetchUserInfo()  {
 			AuthorizationServiceConfiguration.fetchFromIssuer(
-				Uri.parse(ISSUER_URL),
+				Uri.parse(BuildConfig.ISSUER_URL),
 				RetrieveConfigurationCallback { serviceConfiguration, ex ->
 					if (ex != null) {
 						Log.e(TAG, "failed to fetch configuration")
