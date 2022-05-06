@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.lifecycle.asLiveData
@@ -31,11 +32,13 @@ class SplashScreenActivity : AppCompatActivity() {
 		 * (see https://github.com/noi-techpark/it.bz.noi.community.android/issues/74)
 		 */
 		if (sharedPreferences.getBoolean(SKIP_PARAM, false)) {
+
+			AuthManager.userInfo.asLiveData(Dispatchers.Main).observe(this) {
+				Log.d(TAG, "Fetch user info")
+			}
+
 			AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
 				when (status) {
-					AuthStateStatus.Initial -> {
-						AuthManager.fetchUserInfo()
-					}
 					is AuthStateStatus.Authorized -> goToMainActivity()
 					else -> {  // Error or Unauthorized
 						goToOnboardingActivity()
@@ -81,6 +84,7 @@ class SplashScreenActivity : AppCompatActivity() {
 	}
 
 	companion object {
+		private const val TAG = "SplashScreenActivity"
 		const val SHARED_PREFS_NAME = "noi_shared_prefs" // TODO spostare
 		private const val SKIP_PARAM = "skip_splash_screen"
 	}

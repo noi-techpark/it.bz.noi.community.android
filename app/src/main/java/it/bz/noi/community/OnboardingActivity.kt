@@ -37,6 +37,10 @@ class OnboardingActivity : AppCompatActivity() {
 		binding = ActivityOnboardingBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 
+		AuthManager.userInfo.asLiveData(Dispatchers.Main).observe(this) {
+			Log.d(TAG, "Fetch user info")
+		}
+
 		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
 			when (status) {
 				is AuthStateStatus.Authorized -> goToMainActivity()

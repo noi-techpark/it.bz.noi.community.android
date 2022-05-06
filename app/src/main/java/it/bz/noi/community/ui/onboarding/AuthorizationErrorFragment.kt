@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.asLiveData
 import it.bz.noi.community.OnboardingActivity
 import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentAuthorizationErrorBinding
 import it.bz.noi.community.oauth.AuthManager
+import it.bz.noi.community.utils.Status
+import kotlinx.coroutines.Dispatchers
 
 class AuthorizationErrorFragment : Fragment() {
 
@@ -27,9 +30,19 @@ class AuthorizationErrorFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		AuthManager.userInfo.observe(viewLifecycleOwner) {
-			it?.let { userInfo ->
-				binding.message.text = getString(R.string.access_not_granted_format, userInfo.fullname, userInfo.email)
+		AuthManager.userInfo.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) {
+			it?.let { userInfoRes ->
+				when (userInfoRes.status) {
+					Status.SUCCESS -> {
+						val userInfo = userInfoRes.data!!
+						binding.message.text = getString(R.string.access_not_granted_format, userInfo.fullname, userInfo.email)
+					}
+					else -> {
+						// TODO
+					}
+				}
+
+
 			}
 		}
 

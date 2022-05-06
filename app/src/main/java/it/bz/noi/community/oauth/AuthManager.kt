@@ -10,12 +10,11 @@ import android.net.Uri
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.GsonBuilder
 import it.bz.noi.community.BuildConfig
 import it.bz.noi.community.SplashScreenActivity.Companion.SHARED_PREFS_NAME
+import it.bz.noi.community.utils.Resource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
@@ -35,8 +34,6 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 sealed class AuthStateStatus {
-	object Initial: AuthStateStatus()
-
 	sealed class Unauthorized : AuthStateStatus() {
 		object UserAuthRequired : Unauthorized()
 		object PendingToken : Unauthorized()
@@ -47,7 +44,7 @@ sealed class AuthStateStatus {
 	data class Error(val exception: Exception) : AuthStateStatus()
 }
 
-data class UserState(val authState: AuthState, val validRole: Boolean, val initial: Boolean)
+data class UserState(val authState: AuthState, val validRole: Boolean)
 
 /**
  * OAuth specific exception.
@@ -58,8 +55,11 @@ object AuthManager {
 
 	private fun UserState.toStatus(): AuthStateStatus {
 		return when {
-			authState.authorizationException != null -> AuthStateStatus.Error(UnauthorizedException(authState.authorizationException!!))
-			initial -> AuthStateStatus.Initial
+			authState.authorizationException != null -> AuthStateStatus.Error(
+				UnauthorizedException(
+					authState.authorizationException!!
+				)
+			)
 			!validRole -> AuthStateStatus.Unauthorized.NotValidRole
 			authState.isAuthorized -> AuthStateStatus.Authorized(authState)
 			authState.lastAuthorizationResponse != null && authState.needsTokenRefresh -> AuthStateStatus.Unauthorized.PendingToken
@@ -80,27 +80,11 @@ object AuthManager {
 
 	lateinit var application: Application
 
-	private var _userInfo = MutableLiveData<UserInfo?>(null)
-	val userInfo: LiveData<UserInfo?>
-		get() = _userInfo
-
 	/**
 	 * Must be called in Application's onCreate.
 	 */
 	fun setup(application: Application) {
 		this.application = application
-	}
-
-	@OptIn(ObsoleteCoroutinesApi::class)
-	private val userState: MutableSharedFlow<UserState> by lazy {
-		MutableSharedFlow<UserState>(1, 0, BufferOverflow.DROP_OLDEST).apply {
-			tryEmit(readAuthState())
-		}
-	}
-
-	@OptIn(ObsoleteCoroutinesApi::class)
-	val status: Flow<AuthStateStatus> by lazy {
-		userState.filterNotNull().map { state -> state.toStatus() }.distinctUntilChanged()
 	}
 
 	private val authorizationService: AuthorizationService by lazy {
@@ -117,6 +101,133 @@ object AuthManager {
 		)
 		.build()
 
+	@OptIn(ObsoleteCoroutinesApi::class)
+	private val userState: MutableSharedFlow<UserState> by lazy {
+		MutableSharedFlow<UserState>(1, 0, BufferOverflow.DROP_OLDEST).apply {
+			tryEmit(readAuthState())
+		}
+	}
+
+	@OptIn(ObsoleteCoroutinesApi::class)
+	val status: Flow<AuthStateStatus> by lazy {
+		userState.filterNotNull().map { state -> state.toStatus() }.distinctUntilChanged()
+	}
+
+	 val userInfo: Flow<Resource<UserInfo>?>  by lazy {
+		 status.flatMapLatest {
+			 when (it) {
+				 is AuthStateStatus.Authorized,
+				 is AuthStateStatus.Unauthorized.NotValidRole -> {
+					 getUserInfo()
+				 }
+				 else -> flowOf(null)
+			 }
+		 }
+	 }
+
+	@OptIn(ObsoleteCoroutinesApi::class)
+	private suspend fun obtainAuthServiceConfig(): AuthorizationServiceConfiguration = suspendCoroutine<AuthorizationServiceConfiguration> { cont ->
+		AuthorizationServiceConfiguration.fetchFromIssuer(
+			Uri.parse(BuildConfig.ISSUER_URL)
+		) { serviceConfiguration, ex ->
+			if (ex != null) {
+				FirebaseCrashlytics.getInstance().recordException(ex)
+				cont.resumeWithException(ex)
+			} else if (serviceConfiguration != null) {
+				try {
+					cont.resume(serviceConfiguration)
+				} catch (ex: Exception) {
+					cont.resumeWithException(ex)
+				}
+			}
+		}
+	}
+
+	@OptIn(ObsoleteCoroutinesApi::class)
+	private suspend fun obtainFreshToken(): String {
+		val userState = userState.first()
+
+		return suspendCoroutine { cont ->
+			userState.authState.performActionWithFreshTokens(
+				authorizationService
+			) { accessToken, _, ex ->
+				if (ex != null) {
+					FirebaseCrashlytics.getInstance().recordException(ex)
+					if (ex.type != AuthorizationException.TYPE_GENERAL_ERROR) {
+						refreshState()
+					}
+					cont.resumeWithException(ex)
+				} else if (accessToken != null) {
+					try {
+						cont.resume(accessToken)
+					} catch (ex: Exception) {
+						cont.resumeWithException(ex)
+					}
+				}
+				writeAuthState(userState)
+			}
+		}
+	}
+
+	private suspend fun getUserInfo() = flow {
+		val authServiceConfig = obtainAuthServiceConfig()
+		val userInfo = getUserInfo(authServiceConfig)
+		emit(userInfo)
+	}
+
+	private suspend fun getUserInfo(authServiceConfig: AuthorizationServiceConfiguration): Resource<UserInfo> {
+		val userinfoEndpoint = authServiceConfig.discoveryDoc?.userinfoEndpoint
+		return if (userinfoEndpoint != null) {
+			val accessToken = obtainFreshToken()
+			fetchUserInfo(accessToken, userinfoEndpoint)
+		} else {
+			Resource.error(data = null, message = "Missing discoveryDoc userinfoEndpoint")
+		}
+	}
+
+	private suspend fun fetchUserInfo(accessToken: String, userInfoEndpoint: Uri): Resource<UserInfo> = withContext(Dispatchers.IO) {
+		try {
+			val conn = URL(userInfoEndpoint.toString()).openConnection() as HttpURLConnection
+			conn.setRequestProperty("Authorization", "Bearer $accessToken")
+			conn.instanceFollowRedirects = false
+			conn.connect()
+			when (val responseCode = conn.responseCode) {
+				in 300..399,
+				in 200..299 -> {
+					val response = conn.inputStream.source().buffer()
+						.readString(Charset.forName("UTF-8"))
+
+					val userInfo = parseUserInfoResponse(response)
+					Resource.success(userInfo)
+				}
+				else -> {
+					Log.d(
+						TAG,
+						"User info failed with response code $responseCode: ${conn.responseMessage}"
+					)
+					Resource.error(
+						data = null,
+						message = "User info failed with response code $responseCode"
+					)
+				}
+			}
+		} catch (ioEx: IOException) {
+			Log.e(TAG, "Network error when querying userinfo endpoint", ioEx)
+			Resource.error(
+				data = null,
+				message = "Network error when querying userinfo endpoint"
+			)
+		} catch (jsonEx: JSONException) {
+			Log.e(TAG, "Failed to parse userinfo response")
+			Resource.error(data = null, message = "Failed to parse userinfo response")
+		}
+	}
+
+	private suspend fun parseUserInfoResponse(userInfoResponse: String) : UserInfo = withContext(Dispatchers.Default) {
+		val gson = GsonBuilder().create()
+		gson.fromJson(userInfoResponse, UserInfo::class.java)
+	}
+
 	fun login(context: Activity, requestCode: Int) {
 		AuthorizationServiceConfiguration.fetchFromIssuer(
 			Uri.parse(BuildConfig.ISSUER_URL),
@@ -130,7 +241,11 @@ object AuthManager {
 			})
 	}
 
-	private fun login(authServiceConfig: AuthorizationServiceConfiguration, context: Activity, requestCode: Int) {
+	private fun login(
+		authServiceConfig: AuthorizationServiceConfiguration,
+		context: Activity,
+		requestCode: Int
+	) {
 		val authRequest = AuthorizationRequest.Builder(
 			authServiceConfig,
 			CLIENT_ID,
@@ -162,7 +277,7 @@ object AuthManager {
 		runBlocking {
 			userState.first().let { state ->
 				state.authState.update(response, exception)
-				writeAuthState(state.copy(initial = false))
+				writeAuthState(state)
 				if (state.authState.lastAuthorizationResponse != null) {
 					obtainToken(state.authState.lastAuthorizationResponse!!, state.validRole)
 				}
@@ -187,20 +302,23 @@ object AuthManager {
 							Log.d(TAG, "Not authorized")
 							onTokenObtained(response, ex, false)
 						}
-
-						fetchUserInfo()
 					}
 				}
 			}
 		}
 	}
 
-	private fun verifyToken(token: NOIJwtAccessToken) = token.checkResourceAccessRoles(CLIENT_ID, listOf(ACCESS_GRANTED_ROLE))
+	private fun verifyToken(token: NOIJwtAccessToken) =
+		token.checkResourceAccessRoles(CLIENT_ID, listOf(ACCESS_GRANTED_ROLE))
 
-	private fun onTokenObtained(tokenResponse: TokenResponse?, exception: AuthorizationException?, validRole: Boolean) {
+	private fun onTokenObtained(
+		tokenResponse: TokenResponse?,
+		exception: AuthorizationException?,
+		validRole: Boolean
+	) {
 		runBlocking {
 			userState.first().let { currentState ->
-				val newState = UserState(currentState.authState, validRole, false)
+				val newState = UserState(currentState.authState, validRole)
 				newState.authState.update(tokenResponse, exception)
 				writeAuthState(newState)
 				userState.emit(newState)
@@ -222,7 +340,11 @@ object AuthManager {
 			})
 	}
 
-	private fun logout(authServiceConfig: AuthorizationServiceConfiguration, context: Activity, requestCode: Int) {
+	private fun logout(
+		authServiceConfig: AuthorizationServiceConfiguration,
+		context: Activity,
+		requestCode: Int
+	) {
 		runBlocking {
 			userState.first().let { currentUserState ->
 				if (authServiceConfig.endSessionEndpoint != null) {
@@ -245,108 +367,16 @@ object AuthManager {
 
 	fun onEndSession() {
 		deleteUserState()
-		runBlocking { userState.emit(UserState(AuthState(), true, false)) }
+		runBlocking { userState.emit(UserState(AuthState(), true)) }
 	}
 
-	@OptIn(ObsoleteCoroutinesApi::class)
-	suspend fun <T> doAuthenticatedAction(action: (token: String) -> T): T {
-		val userState = userState.first()
-
-		val token = suspendCoroutine<String> { cont ->
-			userState.authState.performActionWithFreshTokens(
-				authorizationService
-			) { accessToken, _, ex ->
-				if (ex != null) {
-					FirebaseCrashlytics.getInstance().recordException(ex)
-					if (ex.type != AuthorizationException.TYPE_GENERAL_ERROR) {
-						refreshState()
-					}
-					cont.resumeWithException(ex)
-				} else if (accessToken != null) {
-					try {
-						cont.resume(accessToken)
-					} catch (ex: Exception) {
-						cont.resumeWithException(ex)
-					}
-				}
-				writeAuthState(userState)
-			}
-		}
-		return action(token)
-	}
 
 	@OptIn(ObsoleteCoroutinesApi::class)
 	private fun refreshState() {
 		runBlocking {
 			userState.first().let { state ->
 				writeAuthState(state)
-				userState.emit(state.copy(initial = false))
-			}
-		}
-	}
-
-	// FIXME
-	fun fetchUserInfo()  {
-			AuthorizationServiceConfiguration.fetchFromIssuer(
-				Uri.parse(BuildConfig.ISSUER_URL),
-				RetrieveConfigurationCallback { serviceConfiguration, ex ->
-					if (ex != null) {
-						Log.e(TAG, "failed to fetch configuration")
-						return@RetrieveConfigurationCallback
-					}
-					serviceConfiguration!!.discoveryDoc?.userinfoEndpoint?.let {
-
-							fetchUserInfo(it)
-
-					} ?: throw Exception("missing userinfoEndpoint")
-
-				})
-	}
-
-	private fun fetchUserInfo(userInfoEndpoint: Uri)  {
-		runBlocking {
-			userState.first().authState
-		}.let { authState ->
-			authState.performActionWithFreshTokens(
-				authorizationService,
-			) { accessToken, _, ex ->
-				if (ex == null) {
-
-					GlobalScope.launch(Dispatchers.IO) {
-						try {
-
-							val conn = URL(userInfoEndpoint.toString()).openConnection() as HttpURLConnection
-							conn.setRequestProperty("Authorization", "Bearer $accessToken")
-							conn.instanceFollowRedirects = false
-							conn.connect()
-							when (val responseCode = conn.responseCode) {
-								in 300..399,
-								in 200..299 -> {
-									val response = conn.inputStream.source().buffer()
-										.readString(Charset.forName("UTF-8"))
-									val gson = GsonBuilder().create()
-									_userInfo.postValue(gson.fromJson(response, UserInfo::class.java))
-								}
-								else -> {
-									Log.d(TAG, "User info failed with response code $responseCode: ${conn.responseMessage}")
-								}
-							}
-
-						} catch (ioEx: IOException) {
-							Log.e(
-								TAG,
-								"Network error when querying userinfo endpoint",
-								ioEx
-							)
-						} catch (jsonEx: JSONException) {
-							Log.e(TAG, "Failed to parse userinfo response")
-						}
-						refreshState()
-					}
-				}
-				else {
-					refreshState()
-				}
+				userState.emit(state)
 			}
 		}
 	}
@@ -359,7 +389,7 @@ object AuthManager {
 
 			val isValidRole = getBoolean(PREF_ACCESS_GRANTED_STATE, true)
 
-			return UserState(authState, isValidRole, true)
+			return UserState(authState, isValidRole)
 		}
 
 	}
@@ -375,13 +405,6 @@ object AuthManager {
 		application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).edit {
 			remove(PREF_AUTH_STATE)
 			remove(PREF_ACCESS_GRANTED_STATE)
-		}
-		_userInfo.value = null
-	}
-
-	fun retrieveUserInfo() {
-		if (userInfo.value == null) {
-			fetchUserInfo()
 		}
 	}
 
