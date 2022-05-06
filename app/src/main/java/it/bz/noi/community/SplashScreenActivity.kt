@@ -9,6 +9,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.lifecycle.asLiveData
+import it.bz.noi.community.NoiApplication.Companion.SHARED_PREFS_NAME
 import it.bz.noi.community.databinding.ActivitySplashBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
@@ -85,7 +86,6 @@ class SplashScreenActivity : AppCompatActivity() {
 
 	companion object {
 		private const val TAG = "SplashScreenActivity"
-		const val SHARED_PREFS_NAME = "noi_shared_prefs" // TODO spostare
 		private const val SKIP_PARAM = "skip_splash_screen"
 	}
 }

@@ -13,7 +13,7 @@ import androidx.core.content.edit
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.GsonBuilder
 import it.bz.noi.community.BuildConfig
-import it.bz.noi.community.SplashScreenActivity.Companion.SHARED_PREFS_NAME
+import it.bz.noi.community.NoiApplication.Companion.SHARED_PREFS_NAME
 import it.bz.noi.community.utils.Resource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow

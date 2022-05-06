@@ -10,4 +10,8 @@ class NoiApplication : Application() {
 		AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 		AuthManager.setup(this)
 	}
+
+	companion object {
+		const val SHARED_PREFS_NAME = "noi_shared_prefs"
+	}
 }
