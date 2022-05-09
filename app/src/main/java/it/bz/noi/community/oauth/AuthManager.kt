@@ -4,12 +4,11 @@ import android.app.Activity
 import android.app.Application
 import android.content.ActivityNotFoundException
 import android.content.Context.MODE_PRIVATE
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.GsonBuilder
 import it.bz.noi.community.BuildConfig
@@ -49,7 +48,7 @@ data class UserState(val authState: AuthState, val validRole: Boolean)
  */
 class UnauthorizedException(original: AuthorizationException) : Exception(original)
 
-@OptIn(ExperimentalCoroutinesApi::class,ObsoleteCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
 object AuthManager {
 
 	private fun UserState.toStatus(): AuthStateStatus {
@@ -189,6 +188,15 @@ object AuthManager {
 		}
 	}
 
+	private fun refreshState() {
+		mainCoroutineScope.launch {
+			userState.first().let { state ->
+				writeAuthState(state)
+				userState.emit(state)
+			}
+		}
+	}
+
 	private suspend fun getUserInfo() = flow {
 		emit(Resource.loading(null))
 		val authServiceConfig = obtainAuthServiceConfig()
@@ -278,13 +286,10 @@ object AuthManager {
 			val intent = authorizationService.getAuthorizationRequestIntent(authRequest)
 			context.startActivityForResult(intent, requestCode)
 		} catch (e: ActivityNotFoundException) {
-			AlertDialog.Builder(context).apply {
+			MaterialAlertDialogBuilder(context).apply {
 				setTitle(context.getString(R.string.error_title))
 				setMessage(context.getString(R.string.login_browser_error_msg))
-				setPositiveButton(context.getString(R.string.ok_button))
-				{ dialogInterFace: DialogInterface, _ ->
-					dialogInterFace.dismiss()
-				}
+				setPositiveButton(context.getString(R.string.ok_button)) { _, _ -> }
 				show()
 			}
 		}
@@ -295,14 +300,17 @@ object AuthManager {
 			val state = userState.first()
 			state.authState.update(response, exception)
 			writeAuthState(state)
-			if (state.authState.lastAuthorizationResponse != null) {
+			val authResponse = state.authState.lastAuthorizationResponse
+			if (authResponse != null) {
 				try {
-					val tokenResponse = obtainToken(state.authState.lastAuthorizationResponse!!)
+					val tokenResponse = obtainToken(authResponse)
 					tokenResponse.accessToken?.let { jwtToken ->
 						decode(jwtToken)?.let { decodedToken ->
 							if (verifyToken(decodedToken)) {
+								Log.d(TAG, "Access granted role check: true")
 								onTokenObtained(tokenResponse, null, true)
 							} else {
+								Log.d(TAG, "Access granted role check: false")
 								onTokenObtained(tokenResponse, null, false)
 							}
 						}
@@ -357,36 +365,30 @@ object AuthManager {
 		context: Activity,
 		requestCode: Int
 	) {
-		userState.first().let { currentUserState ->
-			if (authServiceConfig.endSessionEndpoint != null) {
-				val endSessionIntent: Intent = authorizationService.getEndSessionRequestIntent(
-					EndSessionRequest.Builder(authServiceConfig)
-						.setIdTokenHint(currentUserState.authState.idToken)
-						.setPostLogoutRedirectUri(Uri.parse(END_SESSION_URL))
-						.build()
-				)
-				try {
-					context.startActivityForResult(endSessionIntent, requestCode)
-				} catch (ex: ActivityNotFoundException) {
-					Log.e(TAG, "End session error: $ex")
-				}
-
+		val currentUserState = userState.first()
+		val endSessionIntent: Intent = authorizationService.getEndSessionRequestIntent(
+			EndSessionRequest.Builder(authServiceConfig)
+				.setIdTokenHint(currentUserState.authState.idToken)
+				.setPostLogoutRedirectUri(Uri.parse(END_SESSION_URL))
+				.build()
+		)
+		try {
+			context.startActivityForResult(endSessionIntent, requestCode)
+		} catch (ex: ActivityNotFoundException) {
+			Log.e(TAG, "End session error: $ex")
+			MaterialAlertDialogBuilder(context).apply {
+				setTitle(context.getString(R.string.error_title))
+				setMessage(context.getString(R.string.logout_error_msg))
+				setPositiveButton(context.getString(R.string.ok_button)) { _, _ -> }
+				show()
 			}
 		}
+
 	}
 
 	fun onEndSession() {
 		deleteUserState()
-		runBlocking { userState.emit(UserState(AuthState(), true)) }
-	}
-
-	private fun refreshState() {
-		runBlocking {
-			userState.first().let { state ->
-				writeAuthState(state)
-				userState.emit(state)
-			}
-		}
+		mainCoroutineScope.launch { userState.emit(UserState(AuthState(), true)) }
 	}
 
 	private fun readAuthState(): UserState {
