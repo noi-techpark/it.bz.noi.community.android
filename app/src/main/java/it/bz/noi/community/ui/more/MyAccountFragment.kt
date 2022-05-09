@@ -1,12 +1,15 @@
 package it.bz.noi.community.ui.more
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.bz.noi.community.OnboardingActivity.Companion.LOGOUT_REQUEST
+import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentMyAccountBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.utils.Status
@@ -16,6 +19,8 @@ class MyAccountFragment : Fragment() {
 
 	private var _binding: FragmentMyAccountBinding? = null
 	private val binding get() = _binding!!
+
+	private var reloadUserInfo = true
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -40,9 +45,20 @@ class MyAccountFragment : Fragment() {
 								binding.email.text = userInfo.email
 							}
 							Status.ERROR -> {
-								AuthManager.relaodUserInfo()
+								if (reloadUserInfo) {
+									AuthManager.relaodUserInfo()
+								} else {
+									MaterialAlertDialogBuilder(requireContext())
+										.setTitle(R.string.error_title)
+										.setMessage(R.string.user_info_error_msg)
+										.setPositiveButton(R.string.ok_button) { _, _ -> }
+										.show()
+								}
+								reloadUserInfo = !reloadUserInfo
 							}
-							else -> {}
+							Status.LOADING -> {
+								Log.d(TAG, "Loading user info...")
+							}
 						}
 					}
 				}
@@ -57,6 +73,10 @@ class MyAccountFragment : Fragment() {
 	override fun onDestroyView() {
 		super.onDestroyView()
 		_binding = null
+	}
+
+	companion object {
+		private const val TAG = "MyAccountFragment"
 	}
 
 }

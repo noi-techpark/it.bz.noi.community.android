@@ -193,6 +193,7 @@ object AuthManager {
 	}
 
 	private suspend fun getUserInfo() = flow {
+		emit(Resource.loading(null))
 		val authServiceConfig = obtainAuthServiceConfig()
 		val userInfo = getUserInfo(authServiceConfig)
 		emit(userInfo)
