@@ -14,6 +14,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.GsonBuilder
 import it.bz.noi.community.BuildConfig
 import it.bz.noi.community.NoiApplication.Companion.SHARED_PREFS_NAME
+import it.bz.noi.community.R
 import it.bz.noi.community.utils.Resource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
@@ -129,7 +130,6 @@ object AuthManager {
 			when (it) {
 				is AuthStateStatus.Authorized,
 				is AuthStateStatus.Unauthorized.NotValidRole -> {
-					//getUserInfo()
 					 reloadableUserInfoFlow()
 				}
 				else -> flowOf(null)
@@ -281,10 +281,9 @@ object AuthManager {
 			context.startActivityForResult(intent, requestCode)
 		} catch (e: ActivityNotFoundException) {
 			AlertDialog.Builder(context).apply {
-				// TODO export stringhe
-				setTitle("Error")
-				setMessage("È necessario aver installato un browser compatibile (Chrome, Firefox o Samsung Browser) per proseguire con l\\'autenticazione. Se lo hai già installato riavvia l\\'app e riprova.")
-				setPositiveButton("Ok")
+				setTitle(context.getString(R.string.error_title))
+				setMessage(context.getString(R.string.login_browser_error_msg))
+				setPositiveButton(context.getString(R.string.ok_button))
 				{ dialogInterFace: DialogInterface, _ ->
 					dialogInterFace.dismiss()
 				}
