@@ -49,6 +49,7 @@ data class UserState(val authState: AuthState, val validRole: Boolean)
  */
 class UnauthorizedException(original: AuthorizationException) : Exception(original)
 
+@OptIn(ExperimentalCoroutinesApi::class,ObsoleteCoroutinesApi::class)
 object AuthManager {
 
 	private fun UserState.toStatus(): AuthStateStatus {
@@ -107,14 +108,12 @@ object AuthManager {
 		)
 		.build()
 
-	@OptIn(ObsoleteCoroutinesApi::class)
 	private val userState: MutableSharedFlow<UserState> by lazy {
 		MutableSharedFlow<UserState>(1, 0, BufferOverflow.DROP_OLDEST).apply {
 			tryEmit(readAuthState())
 		}
 	}
 
-	@OptIn(ObsoleteCoroutinesApi::class)
 	val status: Flow<AuthStateStatus> by lazy {
 		userState.filterNotNull().map { state ->
 			state.toStatus()
@@ -148,7 +147,6 @@ object AuthManager {
 		client.newCall(request).execute()
 	}
 
-	@OptIn(ObsoleteCoroutinesApi::class)
 	private suspend fun obtainAuthServiceConfig(): AuthorizationServiceConfiguration =
 		suspendCoroutine { cont ->
 			AuthorizationServiceConfiguration.fetchFromIssuer(
@@ -167,7 +165,6 @@ object AuthManager {
 			}
 		}
 
-	@OptIn(ObsoleteCoroutinesApi::class)
 	private suspend fun obtainFreshToken(): String {
 		val userState = userState.first()
 
@@ -225,16 +222,16 @@ object AuthManager {
 				.build()
 
 			val response = blockingNetworkRequest(request)
-			if (response.isSuccessful) {
+			return if (response.isSuccessful) {
 				val responseBody = response.body?.string()
 				val userInfo = parseUserInfoResponse(responseBody!!)
-				return Resource.success(userInfo)
+				Resource.success(userInfo)
 			} else {
 				Log.d(
 					TAG,
 					"User info failed with response code ${response.code}: ${response.message}"
 				)
-				return Resource.error(
+				Resource.error(
 					data = null,
 					message = "User info failed with response code ${response.code}"
 				)
@@ -371,7 +368,7 @@ object AuthManager {
 				try {
 					context.startActivityForResult(endSessionIntent, requestCode)
 				} catch (ex: ActivityNotFoundException) {
-					Log.e(TAG, "End session error: " + ex.toString())
+					Log.e(TAG, "End session error: $ex")
 				}
 
 			}
@@ -383,7 +380,6 @@ object AuthManager {
 		runBlocking { userState.emit(UserState(AuthState(), true)) }
 	}
 
-	@OptIn(ObsoleteCoroutinesApi::class)
 	private fun refreshState() {
 		runBlocking {
 			userState.first().let { state ->

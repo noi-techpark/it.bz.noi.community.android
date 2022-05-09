@@ -43,6 +43,14 @@ android {
 		release {
 			minifyEnabled true
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+			kotlinOptions {
+				freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+			}
+		}
+		debug {
+			kotlinOptions {
+				freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+			}
 		}
 	}
 	compileOptions {
