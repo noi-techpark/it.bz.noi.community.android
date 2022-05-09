@@ -19,16 +19,13 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import net.openid.appauth.*
-import net.openid.appauth.AuthorizationServiceConfiguration.RetrieveConfigurationCallback
 import net.openid.appauth.browser.BrowserAllowList
 import net.openid.appauth.browser.VersionedBrowserMatcher
-import okio.buffer
-import okio.source
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONException
 import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
-import java.nio.charset.Charset
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -78,6 +75,14 @@ object AuthManager {
 	private const val PREF_ACCESS_GRANTED_STATE = "accessGrantedState"
 	private const val ACCESS_GRANTED_ROLE = "ACCESS_GRANTED"
 
+	private val mainCoroutineScope = CoroutineScope(Dispatchers.Main + Job())
+
+	private val interceptor = HttpLoggingInterceptor().apply {
+		setLevel(HttpLoggingInterceptor.Level.BODY)
+	}
+	private val client = OkHttpClient.Builder().addInterceptor(interceptor)
+		.build()
+
 	lateinit var application: Application
 
 	/**
@@ -110,38 +115,57 @@ object AuthManager {
 
 	@OptIn(ObsoleteCoroutinesApi::class)
 	val status: Flow<AuthStateStatus> by lazy {
-		userState.filterNotNull().map { state -> state.toStatus() }.distinctUntilChanged()
+		userState.filterNotNull().map { state ->
+			state.toStatus()
+		}.distinctUntilChanged()
 	}
 
-	 val userInfo: Flow<Resource<UserInfo>?>  by lazy {
-		 status.flatMapLatest {
-			 when (it) {
-				 is AuthStateStatus.Authorized,
-				 is AuthStateStatus.Unauthorized.NotValidRole -> {
-					 getUserInfo()
-				 }
-				 else -> flowOf(null)
-			 }
-		 }
-	 }
+	private val reloadTickerFlow = MutableSharedFlow<Unit>(replay = 1).apply {
+		tryEmit(Unit)
+	}
+
+	val userInfo: StateFlow<Resource<UserInfo>?> by lazy {
+		status.flatMapLatest {
+			when (it) {
+				is AuthStateStatus.Authorized,
+				is AuthStateStatus.Unauthorized.NotValidRole -> {
+					//getUserInfo()
+					 reloadableUserInfoFlow()
+				}
+				else -> flowOf(null)
+			}
+		}.stateIn(mainCoroutineScope, SharingStarted.Lazily,null)
+	}
+
+	fun relaodUserInfo() {
+		reloadTickerFlow.tryEmit(Unit)
+	}
+
+	private fun reloadableUserInfoFlow() =
+		reloadTickerFlow.flatMapLatest { getUserInfo() }
+
+	private suspend fun blockingNetworkRequest(request: Request) = withContext(Dispatchers.IO) {
+		client.newCall(request).execute()
+	}
 
 	@OptIn(ObsoleteCoroutinesApi::class)
-	private suspend fun obtainAuthServiceConfig(): AuthorizationServiceConfiguration = suspendCoroutine<AuthorizationServiceConfiguration> { cont ->
-		AuthorizationServiceConfiguration.fetchFromIssuer(
-			Uri.parse(BuildConfig.ISSUER_URL)
-		) { serviceConfiguration, ex ->
-			if (ex != null) {
-				FirebaseCrashlytics.getInstance().recordException(ex)
-				cont.resumeWithException(ex)
-			} else if (serviceConfiguration != null) {
-				try {
-					cont.resume(serviceConfiguration)
-				} catch (ex: Exception) {
+	private suspend fun obtainAuthServiceConfig(): AuthorizationServiceConfiguration =
+		suspendCoroutine { cont ->
+			AuthorizationServiceConfiguration.fetchFromIssuer(
+				Uri.parse(BuildConfig.ISSUER_URL)
+			) { serviceConfiguration, ex ->
+				if (ex != null) {
+					FirebaseCrashlytics.getInstance().recordException(ex)
 					cont.resumeWithException(ex)
+				} else if (serviceConfiguration != null) {
+					try {
+						cont.resume(serviceConfiguration)
+					} catch (ex: Exception) {
+						cont.resumeWithException(ex)
+					}
 				}
 			}
 		}
-	}
 
 	@OptIn(ObsoleteCoroutinesApi::class)
 	private suspend fun obtainFreshToken(): String {
@@ -164,7 +188,6 @@ object AuthManager {
 						cont.resumeWithException(ex)
 					}
 				}
-				writeAuthState(userState)
 			}
 		}
 	}
@@ -178,67 +201,64 @@ object AuthManager {
 	private suspend fun getUserInfo(authServiceConfig: AuthorizationServiceConfiguration): Resource<UserInfo> {
 		val userinfoEndpoint = authServiceConfig.discoveryDoc?.userinfoEndpoint
 		return if (userinfoEndpoint != null) {
-			val accessToken = obtainFreshToken()
-			fetchUserInfo(accessToken, userinfoEndpoint)
+			try {
+				val accessToken = obtainFreshToken()
+				fetchUserInfo(accessToken, userinfoEndpoint)
+			} catch (ex: AuthorizationException) {
+				Resource.error(data = null, message = "AuthorizationException: ${ex.error}")
+			}
 		} else {
 			Resource.error(data = null, message = "Missing discoveryDoc userinfoEndpoint")
 		}
 	}
 
-	private suspend fun fetchUserInfo(accessToken: String, userInfoEndpoint: Uri): Resource<UserInfo> = withContext(Dispatchers.IO) {
+	private suspend fun fetchUserInfo(
+		accessToken: String,
+		userInfoEndpoint: Uri
+	): Resource<UserInfo> {
 		try {
-			val conn = URL(userInfoEndpoint.toString()).openConnection() as HttpURLConnection
-			conn.setRequestProperty("Authorization", "Bearer $accessToken")
-			conn.instanceFollowRedirects = false
-			conn.connect()
-			when (val responseCode = conn.responseCode) {
-				in 300..399,
-				in 200..299 -> {
-					val response = conn.inputStream.source().buffer()
-						.readString(Charset.forName("UTF-8"))
+			val request: Request = Request.Builder()
+				.url(userInfoEndpoint.toString())
+				.addHeader("Authorization", "Bearer $accessToken")
+				.get()
+				.build()
 
-					val userInfo = parseUserInfoResponse(response)
-					Resource.success(userInfo)
-				}
-				else -> {
-					Log.d(
-						TAG,
-						"User info failed with response code $responseCode: ${conn.responseMessage}"
-					)
-					Resource.error(
-						data = null,
-						message = "User info failed with response code $responseCode"
-					)
-				}
+			val response = blockingNetworkRequest(request)
+			if (response.isSuccessful) {
+				val responseBody = response.body?.string()
+				val userInfo = parseUserInfoResponse(responseBody!!)
+				return Resource.success(userInfo)
+			} else {
+				Log.d(
+					TAG,
+					"User info failed with response code ${response.code}: ${response.message}"
+				)
+				return Resource.error(
+					data = null,
+					message = "User info failed with response code ${response.code}"
+				)
 			}
 		} catch (ioEx: IOException) {
 			Log.e(TAG, "Network error when querying userinfo endpoint", ioEx)
-			Resource.error(
+			return Resource.error(
 				data = null,
 				message = "Network error when querying userinfo endpoint"
 			)
 		} catch (jsonEx: JSONException) {
 			Log.e(TAG, "Failed to parse userinfo response")
-			Resource.error(data = null, message = "Failed to parse userinfo response")
+			return Resource.error(data = null, message = "Failed to parse userinfo response")
 		}
 	}
 
-	private suspend fun parseUserInfoResponse(userInfoResponse: String) : UserInfo = withContext(Dispatchers.Default) {
-		val gson = GsonBuilder().create()
-		gson.fromJson(userInfoResponse, UserInfo::class.java)
-	}
+	private suspend fun parseUserInfoResponse(userInfoResponse: String): UserInfo =
+		withContext(Dispatchers.Default) {
+			val gson = GsonBuilder().create()
+			gson.fromJson(userInfoResponse, UserInfo::class.java)
+		}
 
-	fun login(context: Activity, requestCode: Int) {
-		AuthorizationServiceConfiguration.fetchFromIssuer(
-			Uri.parse(BuildConfig.ISSUER_URL),
-			RetrieveConfigurationCallback { serviceConfiguration, ex ->
-				if (ex != null) {
-					Log.e(TAG, "failed to fetch configuration")
-					return@RetrieveConfigurationCallback
-				}
-
-				login(serviceConfiguration!!, context, requestCode)
-			})
+	fun login(context: Activity, requestCode: Int) = mainCoroutineScope.launch {
+		val authServiceConfig = obtainAuthServiceConfig()
+		login(authServiceConfig, context, requestCode)
 	}
 
 	private fun login(
@@ -326,41 +346,30 @@ object AuthManager {
 		}
 	}
 
-	// FIXME
-	fun logout(context: Activity, requestCode: Int) {
-		AuthorizationServiceConfiguration.fetchFromIssuer(
-			Uri.parse(BuildConfig.ISSUER_URL),
-			RetrieveConfigurationCallback { serviceConfiguration, ex ->
-				if (ex != null) {
-					Log.e(TAG, "failed to fetch configuration")
-					return@RetrieveConfigurationCallback
-				}
-
-				logout(serviceConfiguration!!, context, requestCode)
-			})
+	fun logout(context: Activity, requestCode: Int) = mainCoroutineScope.launch {
+		val authServiceConfig = obtainAuthServiceConfig()
+		logout(authServiceConfig, context, requestCode)
 	}
 
-	private fun logout(
+	private suspend fun logout(
 		authServiceConfig: AuthorizationServiceConfiguration,
 		context: Activity,
 		requestCode: Int
 	) {
-		runBlocking {
-			userState.first().let { currentUserState ->
-				if (authServiceConfig.endSessionEndpoint != null) {
-					val endSessionIntent: Intent = authorizationService.getEndSessionRequestIntent(
-						EndSessionRequest.Builder(authServiceConfig)
-							.setIdTokenHint(currentUserState.authState.idToken)
-							.setPostLogoutRedirectUri(Uri.parse(END_SESSION_URL))
-							.build()
-					)
-					try {
-						context.startActivityForResult(endSessionIntent, requestCode)
-					} catch (ex: ActivityNotFoundException) {
-						Log.e(TAG, "End session error: " + ex.toString())
-					}
-
+		userState.first().let { currentUserState ->
+			if (authServiceConfig.endSessionEndpoint != null) {
+				val endSessionIntent: Intent = authorizationService.getEndSessionRequestIntent(
+					EndSessionRequest.Builder(authServiceConfig)
+						.setIdTokenHint(currentUserState.authState.idToken)
+						.setPostLogoutRedirectUri(Uri.parse(END_SESSION_URL))
+						.build()
+				)
+				try {
+					context.startActivityForResult(endSessionIntent, requestCode)
+				} catch (ex: ActivityNotFoundException) {
+					Log.e(TAG, "End session error: " + ex.toString())
 				}
+
 			}
 		}
 	}
@@ -369,7 +378,6 @@ object AuthManager {
 		deleteUserState()
 		runBlocking { userState.emit(UserState(AuthState(), true)) }
 	}
-
 
 	@OptIn(ObsoleteCoroutinesApi::class)
 	private fun refreshState() {

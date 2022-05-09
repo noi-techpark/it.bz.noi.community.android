@@ -9,7 +9,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.fragment.app.commit
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
@@ -22,6 +25,7 @@ import it.bz.noi.community.ui.onboarding.OnboardingPage2Fragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage3Fragment
 import it.bz.noi.community.utils.Utils.openLinkInExternalBrowser
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
 
@@ -37,8 +41,12 @@ class OnboardingActivity : AppCompatActivity() {
 		binding = ActivityOnboardingBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 
-		AuthManager.userInfo.asLiveData(Dispatchers.Main).observe(this) {
-			Log.d(TAG, "Fetch user info")
+		lifecycleScope.launch {
+			repeatOnLifecycle(Lifecycle.State.STARTED) {
+				AuthManager.userInfo.collect {
+					Log.d(TAG, "Fetch user info")
+				}
+			}
 		}
 
 		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->

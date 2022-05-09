@@ -8,12 +8,16 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import it.bz.noi.community.NoiApplication.Companion.SHARED_PREFS_NAME
 import it.bz.noi.community.databinding.ActivitySplashBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * Activity used only for displaying the Splash/Launch Screen
@@ -34,8 +38,12 @@ class SplashScreenActivity : AppCompatActivity() {
 		 */
 		if (sharedPreferences.getBoolean(SKIP_PARAM, false)) {
 
-			AuthManager.userInfo.asLiveData(Dispatchers.Main).observe(this) {
-				Log.d(TAG, "Fetch user info")
+			lifecycleScope.launch {
+				repeatOnLifecycle(Lifecycle.State.STARTED) {
+					AuthManager.userInfo.collect {
+						Log.d(TAG, "Fetch user info")
+					}
+				}
 			}
 
 			AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
