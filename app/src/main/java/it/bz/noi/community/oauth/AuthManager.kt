@@ -130,11 +130,11 @@ object AuthManager {
 			when (it) {
 				is AuthStateStatus.Authorized,
 				is AuthStateStatus.Unauthorized.NotValidRole -> {
-					 reloadableUserInfoFlow()
+					reloadableUserInfoFlow()
 				}
 				else -> flowOf(null)
 			}
-		}.stateIn(mainCoroutineScope, SharingStarted.Lazily,null)
+		}.stateIn(mainCoroutineScope, SharingStarted.Lazily, null)
 	}
 
 	fun relaodUserInfo() {
@@ -293,56 +293,60 @@ object AuthManager {
 	}
 
 	fun onAuthorization(response: AuthorizationResponse?, exception: AuthorizationException?) {
-		runBlocking {
-			userState.first().let { state ->
-				state.authState.update(response, exception)
-				writeAuthState(state)
-				if (state.authState.lastAuthorizationResponse != null) {
-					obtainToken(state.authState.lastAuthorizationResponse!!, state.validRole)
+		mainCoroutineScope.launch {
+			val state = userState.first()
+			state.authState.update(response, exception)
+			writeAuthState(state)
+			if (state.authState.lastAuthorizationResponse != null) {
+				try {
+					val tokenResponse = obtainToken(state.authState.lastAuthorizationResponse!!)
+					tokenResponse.accessToken?.let { jwtToken ->
+						decode(jwtToken)?.let { decodedToken ->
+							if (verifyToken(decodedToken)) {
+								onTokenObtained(tokenResponse, null, true)
+							} else {
+								onTokenObtained(tokenResponse, null, false)
+							}
+						}
+					}
+				} catch (ex: AuthorizationException) {
+					onTokenObtained(null, ex, state.validRole)
 				}
+
 			}
 		}
 	}
 
-	private fun obtainToken(authResponse: AuthorizationResponse, currentValidRole: Boolean) {
-		authorizationService.performTokenRequest(
-			authResponse.createTokenExchangeRequest()
-		) { response, ex ->
-			if (ex != null) {
-				Log.d(TAG, "Token request result", ex)
-				onTokenObtained(response, ex, currentValidRole)
-			} else {
-				response!!.accessToken?.let { jwtToken ->
-					decode(jwtToken)?.let { decodedToken ->
-						if (verifyToken(decodedToken)) {
-							onTokenObtained(response, ex, true)
-						} else {
-							// FIXME
-							Log.d(TAG, "Not authorized")
-							onTokenObtained(response, ex, false)
-						}
+	private suspend fun obtainToken(authResponse: AuthorizationResponse): TokenResponse =
+		suspendCoroutine { cont ->
+			authorizationService.performTokenRequest(
+				authResponse.createTokenExchangeRequest()
+			) { response, ex ->
+				if (ex != null) {
+					FirebaseCrashlytics.getInstance().recordException(ex)
+					cont.resumeWithException(ex)
+				} else if (response != null) {
+					try {
+						cont.resume(response)
+					} catch (ex: Exception) {
+						cont.resumeWithException(ex)
 					}
 				}
 			}
 		}
-	}
 
 	private fun verifyToken(token: NOIJwtAccessToken) =
 		token.checkResourceAccessRoles(CLIENT_ID, listOf(ACCESS_GRANTED_ROLE))
 
-	private fun onTokenObtained(
+	private suspend fun onTokenObtained(
 		tokenResponse: TokenResponse?,
 		exception: AuthorizationException?,
 		validRole: Boolean
 	) {
-		runBlocking {
-			userState.first().let { currentState ->
-				val newState = UserState(currentState.authState, validRole)
-				newState.authState.update(tokenResponse, exception)
-				writeAuthState(newState)
-				userState.emit(newState)
-			}
-		}
+		val newState = UserState(userState.first().authState, validRole)
+		newState.authState.update(tokenResponse, exception)
+		writeAuthState(newState)
+		userState.emit(newState)
 	}
 
 	fun logout(context: Activity, requestCode: Int) = mainCoroutineScope.launch {
