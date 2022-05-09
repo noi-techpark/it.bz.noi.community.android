@@ -57,13 +57,13 @@ jobs:
           echo "VERSION_CODE=$BUILD_NUMBER" > app/version.properties
           cat app/version.properties
       - name: Generate Release AAB
-        run: ./gradlew bundleRelease
+        run: ./gradlew bundleProductionRelease
       - name: Sign AAB
         uses: r0adkll/sign-android-release@v1
         # ID used to access action output
         id: sign_app
         with:
-          releaseDirectory: app/build/outputs/bundle/release
+          releaseDirectory: app/build/outputs/bundle/productionRelease
           signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY }}
           alias: ${{ secrets.KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
