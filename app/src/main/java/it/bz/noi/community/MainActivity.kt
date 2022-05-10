@@ -83,8 +83,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-		MessagingService.subscribeToTopic(Utils.getPushNotificationTopic())
+		if (BuildConfig.DEBUG) {
+			MessagingService.registrationToken()
+		}
+		subscribeToNewsTopic(Utils.getPreferredNoiNewsTopic())
     }
+
+	private fun subscribeToNewsTopic(preferredNewsTopic: String) {
+		// Per gestire eventuale cambio lingua del dispositivo, faccio prima l'unsubscribe dai topics delle altre lingue
+		Utils.allNoiNewsTopics
+			.filter { it != preferredNewsTopic }
+			.forEach { newsTopic ->
+				MessagingService.unsubscribeFromTopic(newsTopic)
+			}
+		MessagingService.subscribeToTopic(preferredNewsTopic)
+	}
 
     override fun onSupportNavigateUp(): Boolean {
         if (navController.currentBackStackEntry?.destination?.id == R.id.filtersFragment) {
