@@ -105,9 +105,12 @@
 	<fragment
 		android:id="@+id/newsDetails"
 		android:name="it.bz.noi.community.ui.newsDetails.NewsDetailsFragment"
-		android:label=" " >
+		android:label=" ">
 		<argument
 			android:name="newsId"
 			app:argType="string" />
+		<deepLink
+			android:id="@+id/newsDetailsDeepLink"
+			app:uri="app://it.bz.community.noi/newsDetails/{newsId}" />
 	</fragment>
 </navigation>

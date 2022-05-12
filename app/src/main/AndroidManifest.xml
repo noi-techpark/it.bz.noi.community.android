@@ -22,6 +22,9 @@
 				<data android:scheme="mailto" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
+
+			<!-- Enable implicit deep linking -->
+			<nav-graph android:value="@navigation/mobile_navigation" />
 		</activity>
 		<activity android:name=".OnboardingActivity"/>
 		<activity android:name=".SplashScreenActivity">
