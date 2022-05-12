@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-	compileSdkVersion 30
+	compileSdkVersion 31
 	buildToolsVersion "30.0.3"
 
 	// Version Code - Start
@@ -67,8 +67,8 @@ dependencies {
 	androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
 	// Android LifeCycle
-	implementation 'androidx.lifecycle:lifecycle-common:2.3.1'
-	implementation 'androidx.lifecycle:lifecycle-runtime:2.3.1'
+	implementation 'androidx.lifecycle:lifecycle-common:2.4.1'
+	implementation 'androidx.lifecycle:lifecycle-runtime:2.4.1'
 	implementation 'android.arch.lifecycle:extensions:2.2.0'
 	implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
 
@@ -87,6 +87,9 @@ dependencies {
 
 	// SwipeRefresh Layout
 	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+	// Paging 3
+	implementation "androidx.paging:paging-runtime:3.1.1"
 
 	// BoM for the Firebase platform
 	implementation platform('com.google.firebase:firebase-bom:28.4.2')

@@ -1,7 +1,7 @@
 package it.bz.noi.community.data.api
 
 import com.google.gson.*
-import it.bz.noi.community.data.models.EventDateParser
+import it.bz.noi.community.utils.NOIDateParser
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -20,7 +20,7 @@ object RetrofitBuilder {
 		val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
 		val gsonBuilder = GsonBuilder()
-		gsonBuilder.registerTypeAdapter(Date::class.java, EventDateDeserializer)
+		gsonBuilder.registerTypeAdapter(Date::class.java, NOIDateDeserializer)
 
 		return Retrofit.Builder()
 			.baseUrl(BASE_URL)
@@ -32,9 +32,9 @@ object RetrofitBuilder {
 	val apiService: ApiService = getRetrofit().create(ApiService::class.java)
 }
 
-object EventDateDeserializer : JsonDeserializer<Date> {
+object NOIDateDeserializer : JsonDeserializer<Date> {
 
-	private val eventDateParser = EventDateParser()
+	private val dateParser = NOIDateParser()
 
 	override fun deserialize(
 		json: JsonElement?,
@@ -52,7 +52,7 @@ object EventDateDeserializer : JsonDeserializer<Date> {
 		}
 
 		return try {
-			eventDateParser.parse(json.asString)
+			dateParser.parse(json.asString)
 		} catch (e: Exception) {
 			throw JsonParseException("DateParseException: $json.asString", e)
 		}

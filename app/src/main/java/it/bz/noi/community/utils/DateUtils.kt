@@ -3,7 +3,7 @@ package it.bz.noi.community.utils
 import android.icu.text.DateFormat
 import android.icu.text.DateIntervalFormat
 import android.icu.util.DateInterval
-import it.bz.noi.community.data.models.EventDateParser.Companion.LOCALE_EN_US_POSIX
+import it.bz.noi.community.utils.NOIDateParser.Companion.LOCALE_EN_US_POSIX
 import java.text.SimpleDateFormat
 import java.util.*
 

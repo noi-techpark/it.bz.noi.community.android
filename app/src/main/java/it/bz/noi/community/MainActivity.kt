@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_more -> {
                     supportActionBar?.hide()
                 }
-                R.id.eventDetailsFragment, R.id.webViewFragment, R.id.filtersFragment -> {
+                R.id.eventDetailsFragment, R.id.newsDetails, R.id.webViewFragment, R.id.filtersFragment -> {
 					supportActionBar?.show()
                     (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
                         18f
@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         if (navController.currentBackStackEntry?.destination?.id == R.id.filtersFragment) {
         	if (!mainViewModel.isFiltersSameAsCached()) {
 				mainViewModel.restoreCachedFilters()
-				mainViewModel.refresh()
+				mainViewModel.refreshEvents()
 			}
         }
         navController.popBackStack()

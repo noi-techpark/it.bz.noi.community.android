@@ -60,7 +60,10 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 	private val args: EventDetailsFragmentArgs by navArgs()
 
 	private val mainViewModel: MainViewModel by activityViewModels(factoryProducer = {
-		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(requireActivity().application))
+		ViewModelFactory(
+			ApiHelper(RetrofitBuilder.apiService),
+			JsonFilterRepository(requireActivity().application)
+		)
 	})
 
 	private lateinit var allEvents: ArrayList<EventsResponse.Event>
@@ -119,17 +122,18 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 						setDate(selectedEvent.startDate, selectedEvent.endDate)
 
 						if (selectedEvent.webAddress != null) {
-							binding.btnAddToCalendar.text = getString(R.string.btn_sign_up)
-						} else {
-							binding.btnAddToCalendar.text = getString(R.string.btn_add_to_calendar)
-						}
-
-						binding.btnAddToCalendar.setOnClickListener {
-							if (selectedEvent.webAddress != null) {
+							binding.addToCalendarOrSignup.text = getString(R.string.btn_sign_up)
+							binding.addToCalendarOrSignup.setIconResource(R.drawable.ic_sign_up)
+							binding.addToCalendarOrSignup.setOnClickListener {
 								val browserIntent =
 									Intent(Intent.ACTION_VIEW, Uri.parse(selectedEvent.webAddress))
 								startActivity(browserIntent)
-							} else {
+							}
+						} else {
+							binding.addToCalendarOrSignup.text =
+								getString(R.string.btn_add_to_calendar)
+							binding.addToCalendarOrSignup.setIconResource(R.drawable.ic_add_to_calendar)
+							binding.addToCalendarOrSignup.setOnClickListener {
 								val beginTime = selectedEvent.startDate.time
 								val endTime = selectedEvent.endDate.time
 
@@ -155,7 +159,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 							}
 						}
 
-						binding.btnFindOnMaps.setOnClickListener {
+						binding.findOnMaps.setOnClickListener {
 							mainViewModel.getRoomMapping().observe(viewLifecycleOwner, Observer {
 								when (it.status) {
 									Status.SUCCESS -> {
