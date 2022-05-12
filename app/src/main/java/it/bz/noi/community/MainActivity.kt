@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
 						}
 					}
 				}
-                R.id.eventDetailsFragment, R.id.filtersFragment, R.id.myAccount -> {
+                R.id.eventDetailsFragment, R.id.newsDetails, R.id.filtersFragment, R.id.myAccount -> {
 					supportActionBar?.show()
                     (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
                         18f
@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
         if (navController.currentBackStackEntry?.destination?.id == R.id.filtersFragment) {
         	if (!mainViewModel.isFiltersSameAsCached()) {
 				mainViewModel.restoreCachedFilters()
-				mainViewModel.refresh()
+				mainViewModel.refreshEvents()
 			}
         }
         navController.popBackStack()

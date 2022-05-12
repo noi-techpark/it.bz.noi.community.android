@@ -12,30 +12,24 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/Theme.NOICommunity">
-
-		<activity android:name=".MainActivity"/>
-
+		<activity android:name=".MainActivity">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.SENDTO" />
+				<data android:scheme="mailto" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
 		<activity android:name=".OnboardingActivity"/>
-
 		<activity android:name=".SplashScreenActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-
-<!--		<activity
-			android:name="net.openid.appauth.RedirectUriReceiverActivity"
-			android:exported="true">
-			<intent-filter>
-				<action android:name="android.intent.action.VIEW"/>
-				<category android:name="android.intent.category.DEFAULT"/>
-				<category android:name="android.intent.category.BROWSABLE"/>
-				<data android:scheme="noi-community"
-					android:host="oauth2redirect"
-					android:path="/login-callback"/>
-			</intent-filter>
-		</activity>-->
 	</application>
 
 </manifest>

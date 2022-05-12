@@ -2,10 +2,15 @@ package it.bz.noi.community.ui
 
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.models.*
 import it.bz.noi.community.data.repository.FilterRepository
 import it.bz.noi.community.data.repository.MainRepository
+import it.bz.noi.community.ui.today.NewsPagingSource
 import it.bz.noi.community.utils.DateUtils.endOfDay
 import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentMonth
 import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentWeek
@@ -15,8 +20,7 @@ import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.*
 import java.util.*
 
 /**
@@ -50,14 +54,14 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	/**
 	 * represents the parameters of the URL for filtering the events
 	 */
-	var urlParams = UrlParams(startDate = parameterDateFormatter().format(startDate))
+	var eventsParams = EventsParams(startDate = parameterDateFormatter().format(startDate))
 
 	/**
 	 * parameter used for caching the initial filter situation in the Filters fragment
 	 */
-	private lateinit var cachedParams: UrlParams
+	private lateinit var cachedParams: EventsParams
 	fun cacheFilters() {
-		cachedParams = urlParams.copy()
+		cachedParams = eventsParams.copy()
 	}
 
 	/**
@@ -66,7 +70,7 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	private var events = liveData(Dispatchers.IO) {
 		emit(Resource.loading(data = null))
 		try {
-			emit(Resource.success(data = mainRepository.getEvents(urlParams).events))
+			emit(Resource.success(data = mainRepository.getEvents(eventsParams).events))
 		} catch (exception: Exception) {
 			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
 		}
@@ -97,7 +101,7 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	private val selectedFilters = MutableLiveData(emptyList<FilterValue>())
 	fun updateSelectedFilters(filters: List<FilterValue>) {
 		selectedFilters.postValue(filters)
-		urlParams.selectedFilters = filters
+		eventsParams.selectedFilters = filters
 	}
 
 	val appliedFilters = MediatorLiveData<List<FilterValue>>()
@@ -138,45 +142,45 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 		selectedTimeFilter = timeRange
 		when (timeRange) {
 			TimeRange.ALL -> {
-				urlParams.startDate = parameterDateFormatter().format(startDate)
-				urlParams.endDate = null
-				Log.d(TAG, "ALL filter: from ${urlParams.startDate} to ${urlParams.endDate}")
+				eventsParams.startDate = parameterDateFormatter().format(startDate)
+				eventsParams.endDate = null
+				Log.d(TAG, "ALL filter: from ${eventsParams.startDate} to ${eventsParams.endDate}")
 			}
 			TimeRange.TODAY -> {
-				urlParams.startDate = parameterDateFormatter().format(startDate)
-				urlParams.endDate = parameterDateFormatter().format(Calendar.getInstance().endOfDay())
-				Log.d(TAG, "TODAY filter: from ${urlParams.startDate} to ${urlParams.endDate}")
+				eventsParams.startDate = parameterDateFormatter().format(startDate)
+				eventsParams.endDate = parameterDateFormatter().format(Calendar.getInstance().endOfDay())
+				Log.d(TAG, "TODAY filter: from ${eventsParams.startDate} to ${eventsParams.endDate}")
 			}
 			TimeRange.THIS_WEEK -> {
-				urlParams.startDate = parameterDateFormatter().format(startDate)
-				urlParams.endDate = parameterDateFormatter().format(lastDayOfCurrentWeek().endOfDay())
-				Log.d(TAG, "THIS WEEK filter: from ${urlParams.startDate} to ${urlParams.endDate}")
+				eventsParams.startDate = parameterDateFormatter().format(startDate)
+				eventsParams.endDate = parameterDateFormatter().format(lastDayOfCurrentWeek().endOfDay())
+				Log.d(TAG, "THIS WEEK filter: from ${eventsParams.startDate} to ${eventsParams.endDate}")
 			}
 			TimeRange.THIS_MONTH -> {
-				urlParams.startDate = parameterDateFormatter().format(startDate)
-				urlParams.endDate = parameterDateFormatter().format(lastDayOfCurrentMonth().endOfDay())
-				Log.d(TAG, "THIS MONTH filter: from ${urlParams.startDate} to ${urlParams.endDate}")
+				eventsParams.startDate = parameterDateFormatter().format(startDate)
+				eventsParams.endDate = parameterDateFormatter().format(lastDayOfCurrentMonth().endOfDay())
+				Log.d(TAG, "THIS MONTH filter: from ${eventsParams.startDate} to ${eventsParams.endDate}")
 			}
 		}
-		refreshData()
+		refreshEventsData()
 	}
 
 	/**
 	 * public function for reloading data, it can be used for updating the results
 	 */
-	fun refresh() {
-		refreshData()
+	fun refreshEvents() {
+		refreshEventsData()
 	}
 
 	/**
 	 * force the mediatorEvents to make another event request
 	 */
-	private fun refreshData() {
+	private fun refreshEventsData() {
 		mediatorEvents.removeSource(events)
 		events = liveData(Dispatchers.IO) {
 			emit(Resource.loading(data = null))
 			try {
-				emit(Resource.success(data = mainRepository.getEvents(urlParams).events))
+				emit(Resource.success(data = mainRepository.getEvents(eventsParams).events))
 			} catch (exception: Exception) {
 				emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
 			}
@@ -231,7 +235,23 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	 * Used for check if cached filters are identical to current filters
 	 */
 	fun isFiltersSameAsCached(): Boolean {
-		return urlParams.selectedFilters == cachedParams.selectedFilters
+		return eventsParams.selectedFilters == cachedParams.selectedFilters
+	}
+
+	private val reloadNewsTickerFlow = MutableSharedFlow<Unit>(replay = 1).apply {
+		tryEmit(Unit)
+	}
+
+	val newsFlow: Flow<PagingData<News>> = reloadNewsTickerFlow.flatMapLatest {
+		loadNews()
+	}
+
+	private fun loadNews(): Flow<PagingData<News>> = Pager(PagingConfig(pageSize = NewsPagingSource.PAGE_ITEMS)) {
+		NewsPagingSource(mainRepository)
+	}.flow.cachedIn(viewModelScope)
+
+	fun refreshNews() {
+		reloadNewsTickerFlow.tryEmit(Unit)
 	}
 
 }

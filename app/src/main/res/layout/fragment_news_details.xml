@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toTopOf="@id/footer">
+
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/default_margin"
+			android:layout_marginBottom="@dimen/default_margin">
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:id="@+id/header"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				android:layout_marginStart="@dimen/default_margin"
+				android:layout_marginEnd="@dimen/default_margin">
+
+				<ImageView
+					android:id="@+id/logo"
+					android:layout_width="50dp"
+					android:layout_height="50dp"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					android:background="@drawable/black_circle"
+					android:visibility="gone"
+					tools:src="@drawable/ic_noi"
+					tools:visibility="visible"/>
+
+				<TextView
+					android:id="@+id/publisher"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="10dp"
+					android:textColor="@color/secondary_color"
+					android:textSize="17sp"
+					android:textStyle="bold"
+					app:layout_constraintStart_toEndOf="@id/logo"
+					app:layout_constraintTop_toTopOf="parent"
+					tools:text="NOI Techpark" />
+
+				<TextView
+					android:id="@+id/date"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="10dp"
+					android:textColor="@color/secondary_color"
+					android:textSize="17sp"
+					app:layout_constraintStart_toEndOf="@id/logo"
+					app:layout_constraintTop_toBottomOf="@id/publisher"
+					tools:text="26.2.2022" />
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/default_margin"
+				android:layout_marginEnd="@dimen/default_margin"
+				app:layout_constraintTop_toBottomOf="@id/header">
+				<TextView
+					android:id="@+id/title"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:textColor="@color/secondary_color"
+					android:textSize="17sp"
+					android:textStyle="bold"
+					android:layout_marginTop="17dp"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					tools:text="Marie commodo ligula eget dolor." />
+
+				<TextView
+					android:id="@+id/shortText"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:textColor="@color/secondary_color"
+					android:textSize="17sp"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/title"
+					tools:text="Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Magnis dis parturient montes." />
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/images"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/shortText"
+					android:layout_marginTop="20dp"
+					tools:itemCount="1"
+					tools:listitem="@layout/vh_horizontal_image"/>
+
+				<TextView
+					android:id="@+id/longText"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="20dp"
+					android:textColor="@color/secondary_color"
+					android:textSize="17sp"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/images"
+					tools:text="Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet.
+Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet." />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+	</androidx.core.widget.NestedScrollView>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/footer"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintBottom_toBottomOf="parent"
+		android:background="@color/tertiary_background_color"
+		android:paddingStart="@dimen/default_margin"
+		android:paddingEnd="@dimen/default_margin"
+		android:paddingBottom="@dimen/default_margin"
+		android:elevation="20dp"
+		android:visibility="gone">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/externalLink"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/default_margin"
+			android:text="@string/btn_external_link"
+			android:textAllCaps="false"
+			app:icon="@drawable/ic_external_link"
+			app:iconGravity="textStart"
+			app:iconPadding="12dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"/>
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/askQuestion"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:text="@string/btn_ask_a_question"
+			app:icon="@drawable/ic_mail"
+			app:iconGravity="textStart"
+			app:iconPadding="12dp"
+			style="@style/ThemeOverlay.NOI.OutlinedButton"
+			app:layout_constraintTop_toBottomOf="@id/externalLink"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"/>
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+	<ProgressBar
+		android:id="@+id/newsLoader"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:indeterminateTint="@color/accent_color"
+		android:visibility="gone"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:visibility="visible" />
+</androidx.constraintlayout.widget.ConstraintLayout>
