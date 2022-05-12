@@ -16,6 +16,11 @@ jobs:
       - name: Mock google-services.json
         run: mv app/google-services-mock.json app/google-services.json
       - name: Test the app
+        # If you want to test a specific variant, use one of the following:
+        # testDevelopmentDebugUnitTest - Run unit tests for the developmentDebug build.
+        # testDevelopmentReleaseUnitTest - Run unit tests for the developmentRelease build.
+        # testProductionDebugUnitTest - Run unit tests for the productionDebug build.
+        # testProductionReleaseUnitTest - Run unit tests for the productionRelease build.
         run: ./gradlew test
 
   ## Run tests on an Android Simulator
@@ -36,6 +41,9 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
+          # If you want to test only a specific variant, use one of the following:
+          # connectedDevelopmentDebugAndroidTest - Installs and runs the tests for developmentDebug on connected devices.
+          # connectedProductionDebugAndroidTest - Installs and runs the tests for productionDebug on connected devices.
           script: ./gradlew connectedAndroidTest
 
   ## Build and sign the app, and upload it as Github Artifact
@@ -57,13 +65,15 @@ jobs:
           echo "VERSION_CODE=$BUILD_NUMBER" > app/version.properties
           cat app/version.properties
       - name: Generate Release AAB
-        run: ./gradlew bundleProductionRelease
+        # For PRODUCTION USE --> run: ./gradlew bundleProductionRelease
+        run: ./gradlew bundleDevelopmentRelease
       - name: Sign AAB
         uses: r0adkll/sign-android-release@v1
         # ID used to access action output
         id: sign_app
         with:
-          releaseDirectory: app/build/outputs/bundle/productionRelease
+          # For PRODUCTION USE --> releaseDirectory: app/build/outputs/bundle/productionRelease
+          releaseDirectory: app/build/outputs/bundle/developmentRelease
           signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY }}
           alias: ${{ secrets.KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
