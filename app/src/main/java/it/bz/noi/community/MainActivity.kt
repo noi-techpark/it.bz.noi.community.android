@@ -110,6 +110,7 @@ class MainActivity : AppCompatActivity() {
 			}
 		}
 
+		MessagingService.createChannelIfNeeded(this)
 		if (BuildConfig.DEBUG) {
 			MessagingService.registrationToken()
 		}
