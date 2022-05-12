@@ -5,9 +5,19 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import it.bz.noi.community.NoiApplication.Companion.SHARED_PREFS_NAME
 import it.bz.noi.community.databinding.ActivitySplashBinding
+import it.bz.noi.community.oauth.AuthManager
+import it.bz.noi.community.oauth.AuthStateStatus
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * Activity used only for displaying the Splash/Launch Screen
@@ -27,7 +37,23 @@ class SplashScreenActivity : AppCompatActivity() {
 		 * (see https://github.com/noi-techpark/it.bz.noi.community.android/issues/74)
 		 */
 		if (sharedPreferences.getBoolean(SKIP_PARAM, false)) {
-			goToMainActivity()
+
+			lifecycleScope.launch {
+				repeatOnLifecycle(Lifecycle.State.STARTED) {
+					AuthManager.userInfo.collect {
+						Log.d(TAG, "Fetch user info")
+					}
+				}
+			}
+
+			AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
+				when (status) {
+					is AuthStateStatus.Authorized -> goToMainActivity()
+					else -> {  // Error or Unauthorized
+						goToOnboardingActivity()
+					}
+				}
+			}
 			return
 		}
 
@@ -42,13 +68,13 @@ class SplashScreenActivity : AppCompatActivity() {
 					sharedPreferences.edit {
 						putBoolean(SKIP_PARAM, true)
 					}
-					goToMainActivity()
+					goToOnboardingActivity()
 				}
 				requestFocus()
 				start()
 			}
 		} catch (ex: Exception) {
-			goToMainActivity()
+			goToOnboardingActivity()
 		}
 
 	}
@@ -59,8 +85,14 @@ class SplashScreenActivity : AppCompatActivity() {
 		finish()
 	}
 
+	private fun goToOnboardingActivity() {
+		if (isFinishing) return
+		startActivity(Intent(this, OnboardingActivity::class.java))
+		finish()
+	}
+
 	companion object {
-		private const val SHARED_PREFS_NAME = "noi_shared_prefs"
+		private const val TAG = "SplashScreenActivity"
 		private const val SKIP_PARAM = "skip_splash_screen"
 	}
 }

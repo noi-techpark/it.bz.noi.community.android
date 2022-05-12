@@ -1,5 +1,7 @@
 package it.bz.noi.community.utils
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import it.bz.noi.community.data.models.EventsResponse
 import java.util.*
@@ -92,4 +94,10 @@ object Utils {
 		}
 	}
 
+	fun Context.openLinkInExternalBrowser(url: String) {
+		val intent = Intent(Intent.ACTION_VIEW).apply {
+			data = Uri.parse(url)
+		}
+		startActivity(intent)
+	}
 }

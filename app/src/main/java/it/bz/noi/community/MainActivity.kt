@@ -1,15 +1,20 @@
 package it.bz.noi.community
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
+import it.bz.noi.community.OnboardingActivity.Companion.LOGOUT_REQUEST
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.repository.JsonFilterRepository
@@ -19,6 +24,10 @@ import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
 import it.bz.noi.community.utils.Utils
+import it.bz.noi.community.oauth.AuthManager
+import it.bz.noi.community.oauth.AuthStateStatus
+import kotlinx.coroutines.Dispatchers
+import net.openid.appauth.AuthorizationException
 
 class MainActivity : AppCompatActivity() {
 
@@ -65,15 +74,20 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_more -> {
                     supportActionBar?.hide()
                 }
-                R.id.eventDetailsFragment, R.id.newsDetails, R.id.webViewFragment, R.id.filtersFragment -> {
+				R.id.webViewFragment -> {
 					supportActionBar?.show()
-                    (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
-                        18f
+					(findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
+						18f
 					if (destination.id == R.id.webViewFragment) {
 						arguments?.let {
 							supportActionBar?.title = arguments.getString(WebViewFragment.TITLE_ARG)
 						}
 					}
+				}
+                R.id.eventDetailsFragment, R.id.newsDetails, R.id.filtersFragment, R.id.myAccount -> {
+					supportActionBar?.show()
+                    (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
+                        18f
                 }
                 else -> {
                     (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
@@ -82,6 +96,19 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
+			when (status) {
+//				is AuthStateStatus.Authorized ->
+				is AuthStateStatus.Error,
+				AuthStateStatus.Unauthorized.UserAuthRequired -> {
+					goToOnboardingActivity()
+				}
+//				AuthStateStatus.Unauthorized.NotValidRole -> TODO()
+//				AuthStateStatus.Unauthorized.PendingToken -> TODO()
+
+			}
+		}
 
 		if (BuildConfig.DEBUG) {
 			MessagingService.registrationToken()
@@ -109,4 +136,33 @@ class MainActivity : AppCompatActivity() {
         navController.popBackStack()
         return super.onSupportNavigateUp()
     }
+
+	private fun goToOnboardingActivity() {
+		startActivity(Intent(this, OnboardingActivity::class.java))
+	}
+
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		Log.d(TAG, "onActivityResult")
+		when (requestCode) {
+			LOGOUT_REQUEST -> {
+				val exception: AuthorizationException? = data?.let {
+					AuthorizationException.fromIntent(it)
+				}
+				if (exception != null) {
+					// TODO
+					Toast.makeText(this, "Logout error", Toast.LENGTH_SHORT).show()
+				} else {
+					AuthManager.onEndSession()
+				}
+			}
+			else -> {
+				super.onActivityResult(requestCode, resultCode, data)
+			}
+		}
+	}
+
+	companion object {
+		private const val TAG = "MainActivity"
+	}
+
 }

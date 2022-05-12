@@ -51,7 +51,17 @@
         android:id="@+id/navigation_more"
         android:name="it.bz.noi.community.ui.more.MoreFragment"
         android:label="@string/title_more"
-        tools:layout="@layout/fragment_more" />
+        tools:layout="@layout/fragment_more" >
+		<action
+			android:id="@+id/action_more_to_myAccount"
+			app:destination="@id/myAccount" />
+	</fragment>
+
+	<fragment
+		android:id="@+id/myAccount"
+		android:name="it.bz.noi.community.ui.more.MyAccountFragment"
+		android:label="@string/more_item_account"
+		tools:layout="@layout/fragment_my_account" />
 
     <fragment
         android:id="@+id/eventDetailsFragment"
