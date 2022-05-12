@@ -20,6 +20,7 @@ iOS](https://github.com/noi-techpark/it.bz.noi.community.ios).
 		- [Configure the project](#configure-the-project)
 	- [Running tests](#running-tests)
 	- [Deployment](#deployment)
+		- [Variants](#variants)
 		- [How to check the application version?](#how-to-check-the-application-version)
 	- [Information](#information)
 		- [Support](#support)
@@ -75,6 +76,41 @@ Go to https://play.google.com/console to configure the Alpha channel releases.
 If the App is still an older version on your phone, please consider to go to
 https://play.google.com/store/apps/details?id=it.bz.noi.community, which opens
 the Google Play Store and see if it provides a manual update.
+
+### Variants
+We have two different build variants:
+- `development` -> uses testing machine authentication flow
+- `production` -> uses production authentication flow
+
+Eventually change the CI/CD job `build_and_deploy_to_play_store` to use production authentication flow:
+
+![](docs/github-action-diff.png)
+
+If you want to generate an app bundle for testing machine use case, you have to execute `./gradlew bundleDevelopmentRelease` command and retrieve the `.aab` file from `app/build/outputs/bundle/developmentRelease` directory.
+
+Similarly, if you want to generate the app file instead of the bundle:
+- _development_
+      - command: `./gradlew assembleDevelopmentRelease`
+      - directory: `app/build/outputs/bundle/apk/development/release`
+- _production_
+      - command: `./gradlew assembleProductionRelease`
+      - directory: `app/build/outputs/bundle/apk/production/release`
+
+I left invariant the two tests jobs. From Gradle tasks documentation, we have that:
+- test: Run unit tests for all variants
+- connectedAndroidTest - Installs and runs instrumentation tests for all flavors on connected devices
+
+If you want to run tests only for a specific variant, you can change the relative job with these possibilities:
+
+`unit_tests` job:
+- testDevelopmentDebugUnitTest - Run unit tests for the developmentDebug build.
+- testDevelopmentReleaseUnitTest - Run unit tests for the developmentRelease build.
+- testProductionDebugUnitTest - Run unit tests for the productionDebug build.
+- testProductionReleaseUnitTest - Run unit tests for the productionRelease build.
+
+`android_tests` job:
+- connectedDevelopmentDebugAndroidTest - Installs and runs the tests for developmentDebug on connected devices.
+- connectedProductionDebugAndroidTest - Installs and runs the tests for productionDebug on connected devices.
 
 ### How to check the application version?
 Open the app and go to "More". You find the actual version under the NOI logo,
