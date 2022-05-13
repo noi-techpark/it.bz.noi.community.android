@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.flow
 class NewsDetailViewModel(private val mainRepository: MainRepository, savedStateHandle: SavedStateHandle) : ViewModel() {
 
 	companion object {
-		private const val NEWS_ID_ARG = "newsId"
+		const val NEWS_ID_ARG = "newsId"
 	}
 
 	private val _newsId = MutableStateFlow<String>(
