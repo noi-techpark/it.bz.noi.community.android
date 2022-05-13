@@ -242,7 +242,7 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 		tryEmit(Unit)
 	}
 
-	val newsFlow: Flow<PagingData<News>> = reloadNewsTickerFlow.flatMapLatest {
+	val newsFlow: Flow<PagingData<News>> = reloadNewsTickerFlow.combine(NewsTickerFlow.ticker) { _, _ -> }.flatMapLatest {
 		loadNews()
 	}
 
@@ -255,3 +255,11 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	}
 
 }
+
+object NewsTickerFlow {
+	val ticker = MutableSharedFlow<Unit>(replay = 1).apply {
+		tryEmit(Unit)
+	}
+	fun tick() = ticker.tryEmit(Unit)
+}
+

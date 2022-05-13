@@ -18,6 +18,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.google.firebase.messaging.ktx.messaging
 import it.bz.noi.community.MainActivity
 import it.bz.noi.community.R
+import it.bz.noi.community.ui.NewsTickerFlow
 import it.bz.noi.community.ui.newsDetails.NewsDetailViewModel
 import kotlin.random.Random
 
@@ -36,6 +37,7 @@ class MessagingService : FirebaseMessagingService() {
 			}
 
 			showNotificationBanner(message, title, icon, args)
+			NewsTickerFlow.tick()
 		}
 	}
 
