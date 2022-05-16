@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,6 +70,7 @@ class NewsDetailsFragment: Fragment() {
 						binding.title.text = detail.title
 						binding.shortText.text = detail.abstract
 						binding.longText.text = Html.fromHtml(detail.text, Html.FROM_HTML_MODE_COMPACT)
+						binding.longText.movementMethod = LinkMovementMethod.getInstance()
 					}
 
 					var isExternalLink = false
