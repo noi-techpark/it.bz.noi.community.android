@@ -69,7 +69,7 @@ class NewsDetailsFragment: Fragment() {
 
 						binding.title.text = detail.title
 						binding.shortText.text = detail.abstract
-						binding.longText.text = Html.fromHtml(detail.text, Html.FROM_HTML_MODE_COMPACT)
+						binding.longText.text = Html.fromHtml(detail.text, Html.FROM_HTML_MODE_LEGACY)
 						binding.longText.movementMethod = LinkMovementMethod.getInstance()
 					}
 
