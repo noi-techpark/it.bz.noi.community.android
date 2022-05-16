@@ -158,7 +158,6 @@ class NewsImagesAdapter(private val images: List<NewsImage>) : RecyclerView.Adap
 			Glide
 				.with(binding.root.context)
 				.load(image.url)
-				.centerCrop()
 				.into(binding.restImage)
 		}
 	}
