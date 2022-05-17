@@ -99,14 +99,11 @@ class MainActivity : AppCompatActivity() {
 
 		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
 			when (status) {
-//				is AuthStateStatus.Authorized ->
 				is AuthStateStatus.Error,
-				AuthStateStatus.Unauthorized.UserAuthRequired -> {
+				AuthStateStatus.Unauthorized.UserAuthRequired,
+				AuthStateStatus.Unauthorized.NotValidRole -> {
 					goToOnboardingActivity()
 				}
-//				AuthStateStatus.Unauthorized.NotValidRole -> TODO()
-//				AuthStateStatus.Unauthorized.PendingToken -> TODO()
-
 			}
 		}
 
