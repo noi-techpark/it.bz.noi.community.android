@@ -40,7 +40,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 
 	private val viewModel: MainViewModel by activityViewModels(factoryProducer = {
 		ViewModelFactory(
-			ApiHelper(RetrofitBuilder.apiService),
+			ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
 			JsonFilterRepository(requireActivity().application)
 		)
 	})

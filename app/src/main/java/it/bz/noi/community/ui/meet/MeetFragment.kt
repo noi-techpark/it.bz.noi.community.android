@@ -1,17 +1,30 @@
 package it.bz.noi.community.ui.meet
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
+import it.bz.noi.community.data.api.ApiHelper
+import it.bz.noi.community.data.api.RetrofitBuilder
+import it.bz.noi.community.data.repository.JsonFilterRepository
+import it.bz.noi.community.oauth.AuthManager.application
+import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.SimpleListAdapter
+import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragmentDirections
 
 class MeetFragment : Fragment() {
+
+	private val mainViewModel: MainViewModel by activityViewModels(factoryProducer = {
+		ViewModelFactory(ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService), JsonFilterRepository(application))
+	})
 
     private val openLinkClickListener = View.OnClickListener {
         it?.let {
@@ -56,6 +69,17 @@ class MeetFragment : Fragment() {
         return root
     }
 
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
+
+		// FIXME
+		mainViewModel.availableContacts.observe(viewLifecycleOwner) {
+			if (it.isNotEmpty()) {
+				Log.d(TAG, "Elenco contatti caricato")
+			}
+		}
+	}
+
     private fun getUrlByItemPosition(pos: Int): String {
         return when (pos) {
             0 -> resources.getString(R.string.url_companies)
@@ -68,5 +92,9 @@ class MeetFragment : Fragment() {
             else -> throw Exception("Link not found")
         }
     }
+
+	companion object {
+		private const val TAG = "MeetFragment"
+	}
 
 }

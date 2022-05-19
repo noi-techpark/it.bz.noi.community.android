@@ -6,7 +6,7 @@ import retrofit2.http.*
 /**
  * Interface for calling the different endpoints
  */
-interface ApiService {
+interface OpendatahubApiService {
     @GET("v1/EventShort")
     suspend fun getEvents(
         @Query("onlyactive") onlyActive: Boolean = true,

@@ -10,6 +10,7 @@ import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.models.*
 import it.bz.noi.community.data.repository.FilterRepository
 import it.bz.noi.community.data.repository.MainRepository
+import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.ui.today.NewsPagingSource
 import it.bz.noi.community.utils.DateUtils.endOfDay
 import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentMonth
@@ -114,6 +115,34 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	 * mediator live data that emits the events to the observers
 	 */
 	val mediatorEvents = MediatorLiveData<Resource<List<EventsResponse.Event>>>()
+
+	val availableCompanies: LiveData<List<Account>> = getAcccounts().map {
+		when (it.status) {
+			Status.SUCCESS -> {it.data!!}
+			Status.ERROR -> {
+				Log.d(TAG, "Caricamento accounts KO")
+				emptyList()
+			}
+			Status.LOADING -> {
+				Log.d(TAG, "Accounts in caricamento...")
+				emptyList()
+			}
+		}
+	}
+
+	val availableContacts: LiveData<List<Contact>> = getContacts().map {
+		when (it.status) {
+			Status.SUCCESS -> {it.data!!}
+			Status.ERROR -> {
+				Log.d(TAG, "Caricamento contatti KO")
+				emptyList()
+			}
+			Status.LOADING -> {
+				Log.d(TAG, "Contatti in caricamento...")
+				emptyList()
+			}
+		}
+	}
 
 	init {
 		mediatorEvents.addSource(events) {
@@ -252,6 +281,30 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 
 	fun refreshNews() {
 		reloadNewsTickerFlow.tryEmit(Unit)
+	}
+
+	private fun getAcccounts() = liveData(Dispatchers.IO) {
+		emit(Resource.loading(null))
+		try {
+			val accessToken = AuthManager.obtainFreshToken()
+			val accounts = mainRepository.getAccounts("Bearer $accessToken")
+			Log.d(TAG, "Caricate ${accounts.size} aziende")
+			emit(Resource.success(data = accounts))
+		} catch (exception: Exception) {
+			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
+		}
+	}
+
+	private fun getContacts() = liveData(Dispatchers.IO) {
+		emit(Resource.loading(null))
+		try {
+			val accessToken = AuthManager.obtainFreshToken()
+			val contacts = mainRepository.getContacts("Bearer $accessToken")
+			Log.d(TAG, "Caricati ${contacts.size} contatti")
+			emit(Resource.success(data = contacts))
+		} catch (exception: Exception) {
+			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
+		}
 	}
 
 }

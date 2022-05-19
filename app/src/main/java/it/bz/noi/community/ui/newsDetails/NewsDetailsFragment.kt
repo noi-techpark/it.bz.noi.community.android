@@ -33,7 +33,8 @@ class NewsDetailsFragment: Fragment() {
 	private val binding get() = _binding!!
 
 	private val viewModel: NewsDetailViewModel by viewModels(factoryProducer = {
-		NewsDetailViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.apiService), this@NewsDetailsFragment)
+		NewsDetailViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
+			this@NewsDetailsFragment)
 	})
 
 	private val df = DateFormat.getDateInstance(DateFormat.SHORT)

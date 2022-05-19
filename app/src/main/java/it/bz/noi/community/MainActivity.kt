@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val mainViewModel: MainViewModel by viewModels(factoryProducer = {
-        ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(application))
+        ViewModelFactory(ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService), JsonFilterRepository(application))
     })
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,6 +107,12 @@ class MainActivity : AppCompatActivity() {
 //				AuthStateStatus.Unauthorized.PendingToken -> TODO()
 
 			}
+		}
+
+		// FIXME
+		mainViewModel.availableCompanies.observe(this) {
+			if (it.isNotEmpty())
+				Log.d(TAG, "Elenco aziende caricato")
 		}
     }
 

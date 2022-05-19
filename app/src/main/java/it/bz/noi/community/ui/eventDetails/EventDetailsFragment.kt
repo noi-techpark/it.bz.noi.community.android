@@ -61,7 +61,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
 	private val mainViewModel: MainViewModel by activityViewModels(factoryProducer = {
 		ViewModelFactory(
-			ApiHelper(RetrofitBuilder.apiService),
+			ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
 			JsonFilterRepository(requireActivity().application)
 		)
 	})
