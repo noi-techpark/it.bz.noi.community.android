@@ -111,6 +111,6 @@
 			app:argType="string" />
 		<deepLink
 			android:id="@+id/newsDetailsDeepLink"
-			app:uri="app://it.bz.community.noi/newsDetails/{newsId}" />
+			app:uri="noi-community://it.bz.noi.community/newsDetails/{newsId}" />
 	</fragment>
 </navigation>

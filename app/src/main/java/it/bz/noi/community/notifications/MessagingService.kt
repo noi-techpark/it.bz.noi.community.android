@@ -4,22 +4,20 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.navigation.NavDeepLinkBuilder
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.firebase.messaging.ktx.messaging
-import it.bz.noi.community.MainActivity
 import it.bz.noi.community.R
 import it.bz.noi.community.ui.NewsTickerFlow
-import it.bz.noi.community.ui.newsDetails.NewsDetailViewModel
 import kotlin.random.Random
 
 class MessagingService : FirebaseMessagingService() {
@@ -29,42 +27,34 @@ class MessagingService : FirebaseMessagingService() {
 			val title = it.title ?: ""
 			val message = it.body ?: ""
 			val icon = it.icon ?: ""
+			val link = it.link ?: Uri.parse("")
 
-			val args = Bundle().apply {
-				remoteMessage.data[NewsDetailViewModel.NEWS_ID_ARG]?.let { newsId ->
-					this.putString(NewsDetailViewModel.NEWS_ID_ARG, newsId)
-				}
-			}
-
-			showNotificationBanner(message, title, icon, args)
+			showNotificationBanner(message, title, icon, link)
 			NewsTickerFlow.tick()
 		}
 	}
 
-	private fun showNotificationBanner(message: CharSequence, title: CharSequence, iconUri: String, args: Bundle) {
+	private fun showNotificationBanner(message: CharSequence, title: CharSequence, iconUri: String, link: Uri) {
 		with (NotificationManagerCompat.from(this)) {
 			val id = Random.nextInt()
+
+			val newsDetailsPendingIntent = PendingIntent.getActivity(
+				applicationContext,
+				0,
+				Intent(Intent.ACTION_VIEW).apply { data = link },
+				PendingIntent.FLAG_IMMUTABLE
+			)
 
 			val notification = NotificationCompat.Builder(this@MessagingService, CHANNEL_ID)
 				.setSmallIcon(R.drawable.ic_noi_app_icon) //FIXME to change
 				.setContentTitle(title)
 				.setContentText(message)
 				.setAutoCancel(true)
-				.setContentIntent(createPendingIntent(args))
+				.setContentIntent(newsDetailsPendingIntent)
 				.build()
 
 			notify(id, notification)
 		}
-	}
-
-	private fun createPendingIntent(args: Bundle): PendingIntent {
-		return NavDeepLinkBuilder(this)
-			.setComponentName(MainActivity::class.java)
-			.setGraph(R.navigation.mobile_navigation)
-			.setDestination(R.id.newsDetails)
-			.setArguments(
-				args
-			).createPendingIntent()
 	}
 
 	companion object {
