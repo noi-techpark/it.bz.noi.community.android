@@ -26,15 +26,14 @@ class MessagingService : FirebaseMessagingService() {
 		remoteMessage.notification?.let {
 			val title = it.title ?: ""
 			val message = it.body ?: ""
-			val icon = it.icon ?: ""
 			val link = it.link ?: Uri.parse("")
 
-			showNotificationBanner(message, title, icon, link)
+			showNotificationBanner(message, title, link)
 			NewsTickerFlow.tick()
 		}
 	}
 
-	private fun showNotificationBanner(message: CharSequence, title: CharSequence, iconUri: String, link: Uri) {
+	private fun showNotificationBanner(message: CharSequence, title: CharSequence, link: Uri) {
 		with (NotificationManagerCompat.from(this)) {
 			val id = Random.nextInt()
 
