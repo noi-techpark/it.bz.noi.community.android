@@ -103,29 +103,27 @@ class MainActivity : AppCompatActivity() {
 
 		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
 			when (status) {
-//				is AuthStateStatus.Authorized ->
+				is AuthStateStatus.Authorized -> {
+					lifecycleScope.launch {
+						repeatOnLifecycle(Lifecycle.State.STARTED) {
+							AccountsManager.availableCompanies.collect {
+								if (it.isNotEmpty())
+									Log.d(TAG, "Mappa aziende disponibile")
+							}
+						}
+					}
+				}
 				is AuthStateStatus.Error,
 				AuthStateStatus.Unauthorized.UserAuthRequired -> {
 					goToOnboardingActivity()
 				}
-//				AuthStateStatus.Unauthorized.NotValidRole -> TODO()
-//				AuthStateStatus.Unauthorized.PendingToken -> TODO()
-
-			}
-		}
-
-		AccountsManager.availableCompanies.observe(this) {
-			if (it.isNotEmpty())
-				Log.d(TAG, "Mappa aziende disponibile")
-		}
-
-		/*lifecycleScope.launch {
-			repeatOnLifecycle(Lifecycle.State.STARTED) {
-				AccountsManager.availableCompanies.collect {
-					Log.d(TAG, "Fetch user info")
+				else -> {
+					// Nothing to do
 				}
 			}
-		}*/
+		}
+
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

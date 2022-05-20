@@ -10,7 +10,6 @@ import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.models.*
 import it.bz.noi.community.data.repository.FilterRepository
 import it.bz.noi.community.data.repository.MainRepository
-import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.ui.today.NewsPagingSource
 import it.bz.noi.community.utils.DateUtils.endOfDay
 import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentMonth
@@ -115,48 +114,6 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	 * mediator live data that emits the events to the observers
 	 */
 	val mediatorEvents = MediatorLiveData<Resource<List<EventsResponse.Event>>>()
-
-	val availableCompanies: LiveData<Map<String, Account>> = getAcccounts().map { res ->
-		when (res.status) {
-			Status.SUCCESS -> {
-				val accounts = res.data!!
-				Log.d(TAG, "Caricati ${accounts.size} accounts")
-				accounts.associateBy { it.id }
-			}
-			Status.ERROR -> {
-				Log.d(TAG, "Caricamento accounts KO")
-				emptyMap<String, Account>()
-			}
-			Status.LOADING -> {
-				Log.d(TAG, "Accounts in caricamento...")
-				emptyMap<String, Account>()
-			}
-		}
-	}
-
-	val availableContacts: LiveData<List<Contact>> = getContacts().asLiveData(Dispatchers.IO).map { res ->
-		when (res.status) {
-			Status.SUCCESS -> {
-				val contacts = res.data!!
-				Log.d(TAG, "Caricati ${contacts.size} contatti")
-				contacts.map {
-					if (it.accountId != null) {
-						it.copy(companyName = availableCompanies.value?.get(it.accountId)?.name)
-					} else {
-						it
-					}
-				}
-			}
-			Status.ERROR -> {
-				Log.d(TAG, "Caricamento contatti KO")
-				emptyList()
-			}
-			Status.LOADING -> {
-				Log.d(TAG, "Contatti in caricamento...")
-				emptyList()
-			}
-		}
-	}
 
 	init {
 		mediatorEvents.addSource(events) {
@@ -295,29 +252,6 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 
 	fun refreshNews() {
 		reloadNewsTickerFlow.tryEmit(Unit)
-	}
-
-	private fun getAcccounts() = liveData(Dispatchers.IO) {
-		emit(Resource.loading(null))
-		try {
-			val accessToken = AuthManager.obtainFreshToken()
-			val accounts = mainRepository.getAccounts("Bearer $accessToken")
-			emit(Resource.success(data = accounts))
-		} catch (exception: Exception) {
-			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
-		}
-	}
-
-	private fun getContacts() = flow {
-		emit(Resource.loading(null))
-		try {
-			val accessToken = AuthManager.obtainFreshToken()
-			val contacts = mainRepository.getContacts("Bearer $accessToken")
-			Log.d(TAG, "Caricati ${contacts.size} contatti")
-			emit(Resource.success(data = contacts))
-		} catch (exception: Exception) {
-			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
-		}
 	}
 
 }

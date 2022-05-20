@@ -1,24 +1,25 @@
 package it.bz.noi.community.oauth
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.Account
 import it.bz.noi.community.data.repository.MainRepository
 import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.*
 
 object AccountsManager {
 
 	private const val TAG = "AccountsManager"
 
 	private val mainRepository = MainRepository(ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService))
+	private val mainCoroutineScope = CoroutineScope(Dispatchers.Main + Job())
 
-	val availableCompanies: LiveData<Map<String, Account>> = getAcccounts().map { res ->
+	val availableCompanies: StateFlow<Map<String, Account>> = getAcccounts().map { res ->
 		when (res.status) {
 			Status.SUCCESS -> {
 				val accounts = res.data!!
@@ -27,16 +28,16 @@ object AccountsManager {
 			}
 			Status.ERROR -> {
 				Log.d(TAG, "Caricamento accounts KO")
-				emptyMap<String, Account>()
+				emptyMap()
 			}
 			Status.LOADING -> {
 				Log.d(TAG, "Accounts in caricamento...")
-				emptyMap<String, Account>()
+				emptyMap()
 			}
 		}
-	}
+	}.stateIn(mainCoroutineScope, SharingStarted.Lazily, emptyMap())
 
-	private fun getAcccounts() = liveData(Dispatchers.IO) {
+	private fun getAcccounts() = flow {
 		emit(Resource.loading(null))
 		try {
 			val accessToken = AuthManager.obtainFreshToken()

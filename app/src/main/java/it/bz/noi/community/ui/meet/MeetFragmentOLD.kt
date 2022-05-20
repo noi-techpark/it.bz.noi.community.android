@@ -68,17 +68,6 @@ class MeetFragmentOLD : Fragment() {
         return root
     }
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
-
-		// FIXME
-		mainViewModel.availableContacts.observe(viewLifecycleOwner) {
-			if (it.isNotEmpty()) {
-				Log.d(TAG, "Elenco contatti caricato")
-			}
-		}
-	}
-
     private fun getUrlByItemPosition(pos: Int): String {
         return when (pos) {
             0 -> resources.getString(R.string.url_companies)

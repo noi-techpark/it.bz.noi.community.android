@@ -80,13 +80,6 @@ class MeetFragment : Fragment() {
 		binding.swipeRefreshContacts.setOnRefreshListener {
 			viewModel.refreshContacts()
 		}
-
-/*		// FIXME
-		mainViewModel.availableContacts.observe(viewLifecycleOwner) {
-			if (it.isNotEmpty()) {
-				Log.d(TAG, "Elenco contatti caricato")
-			}
-		}*/
 	}
 
 	companion object {
