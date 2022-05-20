@@ -12,20 +12,17 @@ import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 
 class MeetViewModel(
-	private val mainRepository: MainRepository,
-	private val savedStateHandle: SavedStateHandle
+	private val mainRepository: MainRepository
 ) : ViewModel() {
 
 	companion object {
 		private const val TAG = "MeetViewModel"
 	}
-
-	private val reloadContactsTickerFlow = MutableSharedFlow<Unit>(replay = 1).apply {
-		tryEmit(Unit)
-	}
-
+/*
 	private val availableContacts: LiveData<List<Contact>> = getContacts().map { res ->
 		when (res.status) {
 			Status.SUCCESS -> {
@@ -69,6 +66,26 @@ class MeetViewModel(
 			}
 		}
 
+	}*/
+
+	private val reloadContactsTickerFlow = MutableSharedFlow<Unit>(replay = 1).apply {
+		tryEmit(Unit)
+	}
+
+	val contactsFlow = reloadContactsTickerFlow.flatMapLatest{
+		reloadableContactsFlow()
+	}
+
+	private fun reloadableContactsFlow() = flow {
+		emit(Resource.loading(null))
+		try {
+			val accessToken = AuthManager.obtainFreshToken()
+			val contacts = mainRepository.getContacts("Bearer $accessToken")
+			Log.d(TAG, "Caricati ${contacts.size} contatti")
+			emit(Resource.success(data = contacts))
+		} catch (exception: Exception) {
+			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
+		}
 	}
 
 	fun refreshContacts() = reloadContactsTickerFlow.tryEmit(Unit) // TODO
@@ -76,18 +93,13 @@ class MeetViewModel(
 }
 
 class MeetViewModelFactory(
-	private val apiHelper: ApiHelper,
-	owner: Fragment
-) : AbstractSavedStateViewModelFactory(owner, owner.arguments) {
+	private val apiHelper: ApiHelper
+) : ViewModelProvider.Factory {
 
-	override fun <T : ViewModel?> create(
-		key: String,
-		modelClass: Class<T>,
-		handle: SavedStateHandle): T {
+	override fun <T : ViewModel?>create(modelClass: Class<T>): T {
 		if (modelClass.isAssignableFrom(MeetViewModel::class.java)) {
-			return MeetViewModel(MainRepository(apiHelper), handle) as T
+			return MeetViewModel(MainRepository(apiHelper)) as T
 		}
 		throw IllegalArgumentException("Unknown class name")
 	}
 }
-

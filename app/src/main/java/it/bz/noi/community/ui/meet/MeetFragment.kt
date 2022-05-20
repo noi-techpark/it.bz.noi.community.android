@@ -9,6 +9,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
@@ -26,19 +29,16 @@ import it.bz.noi.community.ui.SimpleListAdapter
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.newsDetails.NewsDetailViewModelFactory
 import it.bz.noi.community.ui.today.NewsVH
+import it.bz.noi.community.utils.Status
+import kotlinx.coroutines.Dispatchers
 
 class MeetFragment : Fragment() {
 
 	private var _binding: FragmentMeetBinding? = null
 	private val binding get() = _binding!!
 
-/*	private val mainViewModel: MainViewModel by activityViewModels(factoryProducer = {
-		ViewModelFactory(ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService), JsonFilterRepository(application))
-	})*/
-
 	private val viewModel: MeetViewModel by viewModels(factoryProducer = {
-		MeetViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
-			this@MeetFragment)
+		MeetViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService))
 	})
 
 	private lateinit var contactsAdapter: ContactsAdapter
@@ -72,13 +72,38 @@ class MeetFragment : Fragment() {
 
 		binding.contacts.adapter = contactsAdapter
 
-		viewModel.getContacts(AccountsManager.availableCompanies.value!!).observe(viewLifecycleOwner) {
-			contactsAdapter.items = it
-			binding.swipeRefreshContacts.isRefreshing = false
-		}
-
 		binding.swipeRefreshContacts.setOnRefreshListener {
 			viewModel.refreshContacts()
+		}
+
+
+		viewModel.contactsFlow.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) { res ->
+			when (res.status) {
+				Status.SUCCESS -> {
+					val contacts = res.data!!
+					Log.d(TAG, "Caricati ${contacts.size} contatti")
+					val availableCompanies = AccountsManager.availableCompanies.value
+					contactsAdapter.items = contacts.map { c ->
+						if (c.accountId != null) {
+							c.copy(companyName = availableCompanies.get(c.accountId)?.name)
+						} else {
+							c
+						}
+					}
+					binding.swipeRefreshContacts.isRefreshing = false
+				}
+				Status.ERROR -> {
+					contactsAdapter.items = emptyList()
+					Log.d(TAG, "Caricamento contatti KO")
+					binding.swipeRefreshContacts.isRefreshing = false
+					Toast.makeText(requireContext(), res.message, Toast.LENGTH_LONG).show()
+				}
+				Status.LOADING -> {
+					contactsAdapter.items = emptyList()
+					Log.d(TAG, "Contatti in caricamento...")
+					binding.swipeRefreshContacts.isRefreshing = true
+				}
+			}
 		}
 	}
 
