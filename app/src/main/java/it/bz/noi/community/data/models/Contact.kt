@@ -14,7 +14,9 @@ data class Contact(
 	@SerializedName("emailaddress1")
 	val email: String?,
 	@SerializedName("_parentcustomerid_value")
-	val accountId: String,
+	val accountId: String?,
+
+	val companyName: String?
 )
 
 data class ContactResponse(

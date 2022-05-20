@@ -116,23 +116,37 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	 */
 	val mediatorEvents = MediatorLiveData<Resource<List<EventsResponse.Event>>>()
 
-	val availableCompanies: LiveData<List<Account>> = getAcccounts().map {
-		when (it.status) {
-			Status.SUCCESS -> {it.data!!}
+	val availableCompanies: LiveData<Map<String, Account>> = getAcccounts().map { res ->
+		when (res.status) {
+			Status.SUCCESS -> {
+				val accounts = res.data!!
+				Log.d(TAG, "Caricati ${accounts.size} accounts")
+				accounts.associateBy { it.id }
+			}
 			Status.ERROR -> {
 				Log.d(TAG, "Caricamento accounts KO")
-				emptyList()
+				emptyMap<String, Account>()
 			}
 			Status.LOADING -> {
 				Log.d(TAG, "Accounts in caricamento...")
-				emptyList()
+				emptyMap<String, Account>()
 			}
 		}
 	}
 
-	val availableContacts: LiveData<List<Contact>> = getContacts().map {
-		when (it.status) {
-			Status.SUCCESS -> {it.data!!}
+	val availableContacts: LiveData<List<Contact>> = getContacts().asLiveData(Dispatchers.IO).map { res ->
+		when (res.status) {
+			Status.SUCCESS -> {
+				val contacts = res.data!!
+				Log.d(TAG, "Caricati ${contacts.size} contatti")
+				contacts.map {
+					if (it.accountId != null) {
+						it.copy(companyName = availableCompanies.value?.get(it.accountId)?.name)
+					} else {
+						it
+					}
+				}
+			}
 			Status.ERROR -> {
 				Log.d(TAG, "Caricamento contatti KO")
 				emptyList()
@@ -288,14 +302,13 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 		try {
 			val accessToken = AuthManager.obtainFreshToken()
 			val accounts = mainRepository.getAccounts("Bearer $accessToken")
-			Log.d(TAG, "Caricate ${accounts.size} aziende")
 			emit(Resource.success(data = accounts))
 		} catch (exception: Exception) {
 			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
 		}
 	}
 
-	private fun getContacts() = liveData(Dispatchers.IO) {
+	private fun getContacts() = flow {
 		emit(Resource.loading(null))
 		try {
 			val accessToken = AuthManager.obtainFreshToken()

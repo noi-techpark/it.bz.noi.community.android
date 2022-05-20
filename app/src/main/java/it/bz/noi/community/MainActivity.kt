@@ -109,10 +109,9 @@ class MainActivity : AppCompatActivity() {
 			}
 		}
 
-		// FIXME
 		mainViewModel.availableCompanies.observe(this) {
 			if (it.isNotEmpty())
-				Log.d(TAG, "Elenco aziende caricato")
+				Log.d(TAG, "Mappa aziende disponibile")
 		}
     }
 
