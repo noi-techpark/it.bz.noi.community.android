@@ -7,7 +7,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -19,12 +22,14 @@ import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.ActivityMainBinding
+import it.bz.noi.community.oauth.AccountsManager
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.openid.appauth.AuthorizationException
 
 class MainActivity : AppCompatActivity() {
@@ -109,10 +114,18 @@ class MainActivity : AppCompatActivity() {
 			}
 		}
 
-		mainViewModel.availableCompanies.observe(this) {
+		AccountsManager.availableCompanies.observe(this) {
 			if (it.isNotEmpty())
 				Log.d(TAG, "Mappa aziende disponibile")
 		}
+
+		/*lifecycleScope.launch {
+			repeatOnLifecycle(Lifecycle.State.STARTED) {
+				AccountsManager.availableCompanies.collect {
+					Log.d(TAG, "Fetch user info")
+				}
+			}
+		}*/
     }
 
     override fun onSupportNavigateUp(): Boolean {

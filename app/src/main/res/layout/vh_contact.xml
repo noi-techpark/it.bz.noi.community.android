@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="1dp"
+    android:layout_marginBottom="1dp"
+	android:paddingTop="17dp"
+	android:paddingStart="17dp"
+	android:paddingBottom="19dp"
+	android:paddingEnd="17dp"
+    android:background="@color/tertiary_background_color">
+
+	<ImageView
+		android:id="@+id/contactIconBackground"
+		android:layout_width="50dp"
+		android:layout_height="50dp"
+		android:src="@drawable/black_circle"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+	<TextView
+		android:id="@+id/contactIcon"
+		android:layout_width="50dp"
+		android:layout_height="50dp"
+		android:textColor="@color/primary_color"
+		android:textSize="19sp"
+		android:textStyle="bold"
+		android:gravity="center"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:text="MR"/>
+
+    <TextView
+        android:id="@+id/contactName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/secondary_color"
+        android:textSize="17sp"
+        android:textStyle="bold"
+		android:layout_marginStart="10dp"
+        app:layout_constraintStart_toEndOf="@id/contactIcon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Mario Rossi" />
+
+	<TextView
+		android:id="@+id/companyName"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:textColor="@color/secondary_color"
+		android:textSize="17sp"
+		android:layout_marginStart="10dp"
+		app:layout_constraintStart_toEndOf="@id/contactIcon"
+		app:layout_constraintTop_toBottomOf="@id/contactName"
+		tools:text="NOI AG" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
