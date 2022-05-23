@@ -37,11 +37,11 @@
 
 					<ImageView
 						android:id="@+id/contactImage"
-						android:layout_width="0dp"
-						android:layout_height="0dp"
+						android:layout_width="match_parent"
+						android:layout_height="180dp"
 						android:importantForAccessibility="no"
 						android:scaleType="centerCrop"
-						app:layout_constraintDimensionRatio="3:2"
+						android:background="@color/secondary_background_color"
 						app:layout_constraintEnd_toEndOf="parent"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toTopOf="parent"
