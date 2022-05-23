@@ -22,7 +22,7 @@ import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.ActivityMainBinding
-import it.bz.noi.community.oauth.AccountsManager
+import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
 import it.bz.noi.community.ui.MainViewModel

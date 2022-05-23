@@ -7,28 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
-import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.Contact
-import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentMeetBinding
-import it.bz.noi.community.databinding.FragmentNewsDetailsBinding
 import it.bz.noi.community.databinding.VhContactBinding
-import it.bz.noi.community.databinding.ViewHolderNewsBinding
-import it.bz.noi.community.oauth.AccountsManager
-import it.bz.noi.community.oauth.AuthManager.application
-import it.bz.noi.community.ui.MainViewModel
-import it.bz.noi.community.ui.SimpleListAdapter
-import it.bz.noi.community.ui.ViewModelFactory
-import it.bz.noi.community.ui.newsDetails.NewsDetailViewModelFactory
-import it.bz.noi.community.ui.today.NewsVH
+import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.Dispatchers
 
@@ -99,7 +86,6 @@ class MeetFragment : Fragment() {
 					Toast.makeText(requireContext(), res.message, Toast.LENGTH_LONG).show()
 				}
 				Status.LOADING -> {
-					contactsAdapter.items = emptyList()
 					Log.d(TAG, "Contatti in caricamento...")
 					binding.swipeRefreshContacts.isRefreshing = true
 				}

@@ -1,10 +1,10 @@
-package it.bz.noi.community.oauth
+package it.bz.noi.community.data.repository
 
 import android.util.Log
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.Account
-import it.bz.noi.community.data.repository.MainRepository
+import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.CoroutineScope
