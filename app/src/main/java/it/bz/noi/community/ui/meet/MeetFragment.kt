@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -139,7 +140,8 @@ class ContactVH(private val binding: VhContactBinding, detailListener: ContactDe
 
 		binding.contactName.text = c.fullName
 		binding.companyName.text = c.companyName
-		binding.contactIcon.text = "" + c.firstName[0] + c.lastName[0]
+		binding.companyName.isVisible = c.companyName != null
+		binding.contactIcon.text = "${c.firstName[0]}${c.lastName[0]}"
 	}
 
 }
