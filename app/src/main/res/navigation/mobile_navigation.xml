@@ -35,7 +35,11 @@
         android:id="@+id/navigation_meet"
         android:name="it.bz.noi.community.ui.meet.MeetFragment"
         android:label="@string/title_meet"
-        tools:layout="@layout/fragment_meet" />
+        tools:layout="@layout/fragment_meet" >
+		<action
+			android:id="@+id/action_to_contactDetails"
+			app:destination="@id/contactDetails" />
+	</fragment>
 
     <fragment
         android:id="@+id/navigation_eat"
@@ -109,5 +113,14 @@
 		<argument
 			android:name="newsId"
 			app:argType="string" />
+	</fragment>
+	<fragment
+		android:id="@+id/contactDetails"
+		android:name="it.bz.noi.community.ui.meet.ContactDetailsFragment"
+		android:label=" "
+		tools:layout="@layout/fragment_contact_details">
+		<argument
+			android:name="contact"
+			app:argType="it.bz.noi.community.data.models.Contact" />
 	</fragment>
 </navigation>

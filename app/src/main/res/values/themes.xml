@@ -79,6 +79,7 @@
 
 	<style name="ThemeOverlay.NOI.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
 		<item name="android:textSize">19sp</item>
+		<item name="fontFamily">sans-serif-medium</item>
 		<item name="cornerRadius">2dp</item>
 		<item name="elevation">0dp</item>
 		<item name="strokeColor">?attr/colorPrimary</item>

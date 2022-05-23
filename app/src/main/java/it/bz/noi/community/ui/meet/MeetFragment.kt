@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
@@ -34,8 +35,7 @@ class MeetFragment : Fragment() {
 		super.onCreate(savedInstanceState)
 		contactsAdapter = ContactsAdapter(object : ContactDetailListener {
 			override fun openContactDetail(contact: Contact) {
-				// TODO
-				Toast.makeText(requireContext(), "Dettaglio contatto ${contact.id}", Toast.LENGTH_SHORT).show()
+				findNavController().navigate(MeetFragmentDirections.actionToContactDetails(contact))
 			}
 		})
 	}

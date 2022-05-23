@@ -1,7 +1,10 @@
 package it.bz.noi.community.data.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Contact(
 	@SerializedName("contactid")
 	val id: String,
@@ -17,7 +20,7 @@ data class Contact(
 	val accountId: String?,
 
 	val companyName: String?
-)
+) : Parcelable
 
 data class ContactResponse(
 	@SerializedName("value")
