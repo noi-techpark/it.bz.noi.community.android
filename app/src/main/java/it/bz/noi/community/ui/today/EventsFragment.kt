@@ -126,7 +126,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 	}
 
 	private fun setupObservers() {
-		viewModel.mediatorEvents.observe(viewLifecycleOwner, Observer {
+		viewModel.mediatorEvents.observe(viewLifecycleOwner) {
 			it?.let { resource ->
 				when (resource.status) {
 					Status.SUCCESS -> {
@@ -151,7 +151,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 					}
 				}
 			}
-		})
+		}
 
 		viewModel.selectedFiltersCount.observe(viewLifecycleOwner) { count ->
 			if (count > 0) {

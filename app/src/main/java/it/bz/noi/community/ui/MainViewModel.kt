@@ -242,9 +242,9 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 		tryEmit(Unit)
 	}
 
-	val newsFlow: Flow<PagingData<News>> = reloadNewsTickerFlow.flatMapLatest {
+	val newsFlow: StateFlow<PagingData<News>> = reloadNewsTickerFlow.flatMapLatest {
 		loadNews()
-	}
+	}.stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
 	private fun loadNews(): Flow<PagingData<News>> = Pager(PagingConfig(pageSize = NewsPagingSource.PAGE_ITEMS)) {
 		NewsPagingSource(mainRepository)
