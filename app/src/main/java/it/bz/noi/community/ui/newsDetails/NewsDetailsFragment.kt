@@ -8,7 +8,6 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -18,16 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import it.bz.noi.community.R
-import it.bz.noi.community.data.api.ApiHelper
-import it.bz.noi.community.data.api.RetrofitBuilder
+import it.bz.noi.community.data.models.News
 import it.bz.noi.community.data.models.NewsImage
 import it.bz.noi.community.data.models.getContactInfo
 import it.bz.noi.community.data.models.getDetail
 import it.bz.noi.community.databinding.FragmentNewsDetailsBinding
-import it.bz.noi.community.databinding.VhHorizontalImageBinding
 import it.bz.noi.community.databinding.VhVerticalImageNewsBinding
-import it.bz.noi.community.utils.Status
-import kotlinx.coroutines.Dispatchers
 import java.text.DateFormat
 
 class NewsDetailsFragment: Fragment() {
@@ -35,9 +30,7 @@ class NewsDetailsFragment: Fragment() {
 	private var _binding: FragmentNewsDetailsBinding? = null
 	private val binding get() = _binding!!
 
-	private val viewModel: NewsDetailViewModel by viewModels(factoryProducer = {
-		NewsDetailViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.apiService), this@NewsDetailsFragment)
-	})
+	private val viewModel: NewsDetailViewModel by viewModels()
 
 	private val df = DateFormat.getDateInstance(DateFormat.SHORT)
 
@@ -58,71 +51,55 @@ class NewsDetailsFragment: Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		viewModel.news.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) {
-			when (it.status) {
-				Status.SUCCESS -> {
-					binding.newsLoader.isVisible = false
+		val news = viewModel.news
+		binding.date.text = df.format(news.date)
 
-					val news = it.data!!
-					binding.date.text = df.format(news.date)
+		news.getDetail()?.let { detail ->
+			(requireActivity() as AppCompatActivity).supportActionBar?.title = detail.title
 
-					news.getDetail()?.let { detail ->
-						(requireActivity() as AppCompatActivity).supportActionBar?.title = detail.title
+			binding.title.text = detail.title
+			binding.shortText.text = detail.abstract
+			binding.longText.text = Html.fromHtml(detail.text, Html.FROM_HTML_MODE_LEGACY)
+			binding.longText.movementMethod = LinkMovementMethod.getInstance()
+		}
 
-						binding.title.text = detail.title
-						binding.shortText.text = detail.abstract
-						binding.longText.text = Html.fromHtml(detail.text, Html.FROM_HTML_MODE_LEGACY)
-						binding.longText.movementMethod = LinkMovementMethod.getInstance()
-					}
+		var isExternalLink = false
+		var isEmail = false
+		news.getContactInfo()?.let { contactInfo ->
+			binding.publisher.text = contactInfo.publisher
 
-					var isExternalLink = false
-					var isEmail = false
-					news.getContactInfo()?.let { contactInfo ->
-						binding.publisher.text = contactInfo.publisher
+			binding.logo.isVisible = true
+			Glide
+				.with(binding.root.context)
+				.load(contactInfo.logo)
+				.centerCrop()
+				.into(binding.logo)
 
-						binding.logo.isVisible = true
-						Glide
-							.with(binding.root.context)
-							.load(contactInfo.logo)
-							.centerCrop()
-							.into(binding.logo)
-
-						isExternalLink = !contactInfo.externalLink.isNullOrEmpty()
-						if (isExternalLink) {
-							binding.externalLink.setOnClickListener {
-								openExternalLink(contactInfo.externalLink!!)
-							}
-						}
-
-						isEmail = !contactInfo.email.isNullOrEmpty()
-						if (isEmail) {
-							binding.askQuestion.setOnClickListener {
-								writeEmail(contactInfo.email!!)
-							}
-						}
-					}
-					binding.externalLink.isVisible = isExternalLink
-					binding.askQuestion.isVisible = isEmail
-					binding.footer.isVisible = isExternalLink || isEmail
-
-					if (news.images != null && news.images.isNotEmpty()) {
-						binding.images.isVisible = true
-						binding.images.layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
-						binding.images.adapter = NewsImagesAdapter(news.images)
-					} else {
-						binding.images.isVisible = false
-					}
+			isExternalLink = !contactInfo.externalLink.isNullOrEmpty()
+			if (isExternalLink) {
+				binding.externalLink.setOnClickListener {
+					openExternalLink(contactInfo.externalLink!!)
 				}
-				Status.ERROR -> {
-					binding.newsLoader.isVisible = false
-					Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
-				}
-				Status.LOADING -> {
-					binding.newsLoader.isVisible = true
+			}
+
+			isEmail = !contactInfo.email.isNullOrEmpty()
+			if (isEmail) {
+				binding.askQuestion.setOnClickListener {
+					writeEmail(contactInfo.email!!)
 				}
 			}
 		}
+		binding.externalLink.isVisible = isExternalLink
+		binding.askQuestion.isVisible = isEmail
+		binding.footer.isVisible = isExternalLink || isEmail
 
+		if (news.images != null && news.images.isNotEmpty()) {
+			binding.images.isVisible = true
+			binding.images.layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+			binding.images.adapter = NewsImagesAdapter(news.images)
+		} else {
+			binding.images.isVisible = false
+		}
 	}
 
 	private fun writeEmail(receiverAddress: String) {
@@ -176,6 +153,18 @@ class NewsImagesAdapter(private val images: List<NewsImage>) : RecyclerView.Adap
 	override fun getItemCount(): Int {
 		return images.size
 	}
+}
+
+class NewsDetailViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
+
+	companion object {
+		private const val NEWS_ARG = "news"
+	}
+
+	val news: News =
+		savedStateHandle.get(NEWS_ARG)
+			?: throw IllegalStateException("Missing required argument $NEWS_ARG")
+
 }
 
 

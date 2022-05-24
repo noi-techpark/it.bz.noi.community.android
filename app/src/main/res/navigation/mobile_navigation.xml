@@ -107,7 +107,7 @@
 		android:name="it.bz.noi.community.ui.newsDetails.NewsDetailsFragment"
 		android:label=" " >
 		<argument
-			android:name="newsId"
-			app:argType="string" />
+			android:name="news"
+			app:argType="it.bz.noi.community.data.models.News" />
 	</fragment>
 </navigation>
