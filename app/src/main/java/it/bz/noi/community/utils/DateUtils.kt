@@ -45,7 +45,11 @@ object DateUtils {
 		return time
 	}
 
-	fun parameterDateFormatter() = SimpleDateFormat("yyyy-MM-dd HH:mm", LOCALE_EN_US_POSIX).apply {
+	fun parameterDateTimeFormatter() = SimpleDateFormat("yyyy-MM-dd HH:mm", LOCALE_EN_US_POSIX).apply {
+		timeZone = TimeZone.getTimeZone("Europe/Rome")
+	}
+
+	fun parameterDateFormatter() = SimpleDateFormat("yyyy-MM-dd", LOCALE_EN_US_POSIX).apply {
 		timeZone = TimeZone.getTimeZone("Europe/Rome")
 	}
 
