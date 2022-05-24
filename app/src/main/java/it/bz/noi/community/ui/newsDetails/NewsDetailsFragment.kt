@@ -17,6 +17,7 @@ import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.NewsImage
@@ -24,6 +25,7 @@ import it.bz.noi.community.data.models.getContactInfo
 import it.bz.noi.community.data.models.getDetail
 import it.bz.noi.community.databinding.FragmentNewsDetailsBinding
 import it.bz.noi.community.databinding.VhHorizontalImageBinding
+import it.bz.noi.community.databinding.VhVerticalImageNewsBinding
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.Dispatchers
 import java.text.DateFormat
@@ -152,18 +154,19 @@ class NewsImagesAdapter(private val images: List<NewsImage>) : RecyclerView.Adap
 	/**
 	 * View holder of a single picture
 	 */
-	inner class NewsImageViewHolder(private val binding: VhHorizontalImageBinding) : RecyclerView.ViewHolder(binding.root) {
+	inner class NewsImageViewHolder(private val binding: VhVerticalImageNewsBinding) : RecyclerView.ViewHolder(binding.root) {
 
 		fun bind(image: NewsImage) {
 			Glide
 				.with(binding.root.context)
 				.load(image.url)
+				.placeholder(R.drawable.news_placeholder)
 				.into(binding.restImage)
 		}
 	}
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsImageViewHolder {
-		return NewsImageViewHolder(VhHorizontalImageBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+		return NewsImageViewHolder(VhVerticalImageNewsBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 	}
 
 	override fun onBindViewHolder(holder: NewsImageViewHolder, position: Int) {
