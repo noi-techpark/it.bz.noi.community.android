@@ -1,9 +1,12 @@
 package it.bz.noi.community.data.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import it.bz.noi.community.utils.Utils
+import kotlinx.parcelize.Parcelize
 import java.util.*
 
+@Parcelize
 data class News(
 	@SerializedName("Id")
 	val id: String,
@@ -17,13 +20,15 @@ data class News(
 	val images: List<NewsImage>?,
 	@SerializedName("ODHTags")
 	val tags: List<Tag>?
-)
+) : Parcelable
 
+@Parcelize
 data class Tag(
 	@SerializedName("Id")
 	val id: String?
-)
+) : Parcelable
 
+@Parcelize
 data class Detail(
 	@SerializedName("Title")
 	val title: String?,
@@ -31,8 +36,9 @@ data class Detail(
 	val abstract: String?,
 	@SerializedName("BaseText")
 	val text: String?,
-)
+) : Parcelable
 
+@Parcelize
 data class ContactInfo(
 	@SerializedName("CompanyName")
 	val publisher: String?,
@@ -42,12 +48,13 @@ data class ContactInfo(
 	val externalLink: String?,
 	@SerializedName("Email")
 	val email: String?,
-)
+) : Parcelable
 
+@Parcelize
 data class NewsImage(
 	@SerializedName("ImageUrl")
 	val url: String?
-)
+) : Parcelable
 
 fun News.getDetail(): Detail? {
 	return detail[Utils.getAppLanguage()]

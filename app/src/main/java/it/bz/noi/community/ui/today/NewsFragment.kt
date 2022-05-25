@@ -8,7 +8,9 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -44,8 +46,8 @@ class NewsFragment  : Fragment() {
 	})
 
 	private val newsAdapter = PagingNewsAdapter(NewsComparator, object : NewsDetailListener {
-		override fun openNewsDetail(newsId: String) {
-			findNavController().navigate(TodayFragmentDirections.actionNavigationTodayToNewsDetails(newsId))
+		override fun openNewsDetail(news: News) {
+			findNavController().navigate(TodayFragmentDirections.actionNavigationTodayToNewsDetails(news))
 		}
 
 	})
@@ -72,8 +74,10 @@ class NewsFragment  : Fragment() {
 		}
 
 		viewLifecycleOwner.lifecycleScope.launch {
-			viewModel.newsFlow.collectLatest { pagingData ->
-				newsAdapter.submitData(pagingData)
+			repeatOnLifecycle(Lifecycle.State.STARTED) {
+				viewModel.newsFlow.collectLatest { pagingData ->
+					newsAdapter.submitData(pagingData)
+				}
 			}
 		}
 
@@ -115,22 +119,22 @@ class NewsFragment  : Fragment() {
 }
 
 interface NewsDetailListener {
-	fun openNewsDetail(newsId: String)
+	fun openNewsDetail(news: News)
 }
 
 class NewsVH(private val binding: ViewHolderNewsBinding, detailListener: NewsDetailListener) : RecyclerView.ViewHolder(binding.root) {
 
 	private val df = DateFormat.getDateInstance(DateFormat.SHORT)
-	private lateinit var newsId: String
+	private lateinit var news: News
 
 	init {
 	    binding.root.setOnClickListener {
-			detailListener.openNewsDetail(newsId)
+			detailListener.openNewsDetail(news)
 		}
 	}
 
 	fun bind(news: News) {
-		newsId = news.id
+		this.news = news
 		binding.date.text = df.format(news.date)
 		binding.importantTag.isVisible = news.hasImportantFlag()
 		news.getDetail()?.let { detail ->

@@ -4,22 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
-import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
-import androidx.transition.TransitionInflater
-import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
@@ -50,7 +41,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 	private lateinit var timeFilterAdapter: TimeFilterAdapter
 
 	private val eventsAdapter by lazy {
-		EventsAdapter(todayViewModel.events, this, this)
+		EventsAdapter(todayViewModel.events, this)
 	}
 
 	private lateinit var layoutManagerFilters: LinearLayoutManager
@@ -100,14 +91,9 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		binding.rvEvents.apply {
 			layoutManager = LinearLayoutManager(requireContext())
 			adapter = eventsAdapter
-			doOnPreDraw {
-				startPostponedEnterTransition()
-			}
 		}
 
 		binding.cdFilterEvents.setOnClickListener {
-			// i remove any default exit transition to have a better effect
-			exitTransition = null
 			findNavController().navigate(
 				TodayFragmentDirections.actionNavigationTodayToFiltersFragment()
 			)
@@ -118,15 +104,10 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		}
 
 		setupObservers()
-
-		// Avoid a postponeEnterTransition on orientation change, and postpone only of first creation.
-		if (savedInstanceState == null) {
-			postponeEnterTransition()
-		}
 	}
 
 	private fun setupObservers() {
-		viewModel.mediatorEvents.observe(viewLifecycleOwner, Observer {
+		viewModel.mediatorEvents.observe(viewLifecycleOwner) {
 			it?.let { resource ->
 				when (resource.status) {
 					Status.SUCCESS -> {
@@ -151,7 +132,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 					}
 				}
 			}
-		})
+		}
 
 		viewModel.selectedFiltersCount.observe(viewLifecycleOwner) { count ->
 			if (count > 0) {
@@ -172,36 +153,12 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 	}
 
 	override fun onEventClick(
-		cardEvent: MaterialCardView,
-		cardDate: CardView,
-		eventName: TextView,
-		eventLocation: TextView,
-		eventTime: TextView,
-		eventImage: ImageView,
-		constraintLayout: ConstraintLayout,
-		locationIcon: ImageView,
-		timeIcon: ImageView,
 		event: EventsResponse.Event
 	) {
-		// fade out transition to have a better effect on shared animation
-		exitTransition = TransitionInflater.from(context)
-			.inflateTransition(R.transition.events_exit_transition)
-
-		val extras = FragmentNavigatorExtras(
-			constraintLayout to "constraintLayout_${event.eventId}",
-			eventName to "eventName_${event.eventId}",
-			cardDate to "cardDate_${event.eventId}",
-			eventLocation to "eventLocation_${event.eventId}",
-			eventTime to "eventTime_${event.eventId}",
-			eventImage to "eventImage_${event.eventId}",
-			locationIcon to "locationIcon_${event.eventId}",
-			timeIcon to "timeIcon_${event.eventId}"
-		)
-
 		findNavController().navigate(
 			TodayFragmentDirections.actionNavigationTodayToEventDetailsFragment(
 				todayViewModel.events.indexOf(event)
-			), extras
+			)
 		)
 	}
 

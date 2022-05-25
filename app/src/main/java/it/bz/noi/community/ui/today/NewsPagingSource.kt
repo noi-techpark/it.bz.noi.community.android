@@ -8,7 +8,6 @@ import it.bz.noi.community.data.models.News
 import it.bz.noi.community.data.models.NewsParams
 import it.bz.noi.community.data.repository.MainRepository
 import it.bz.noi.community.utils.DateUtils
-import it.bz.noi.community.utils.DateUtils.startOfDay
 import it.bz.noi.community.utils.Utils
 import java.util.*
 
@@ -20,7 +19,7 @@ class NewsPagingSource(private val mainRepository: MainRepository) :
 		const val PAGE_ITEMS = 10
     }
 
-	private val startDate = Calendar.getInstance().startOfDay()
+	private val startDate = Date()
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, News> {
         // Start refresh at page 1 if undefined.
