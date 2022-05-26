@@ -38,7 +38,7 @@ jobs:
       - name: Mock google-services.json
         run: mv app/google-services-mock.json app/google-services.json
       - name: Instrumentation Tests
-        uses: reactivecircus/android-emulator-runner@v3
+        uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
           # If you want to test only a specific variant, use one of the following:
