@@ -14,7 +14,7 @@ import it.bz.noi.community.ui.today.NewsPagingSource
 import it.bz.noi.community.utils.DateUtils.endOfDay
 import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentMonth
 import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentWeek
-import it.bz.noi.community.utils.DateUtils.parameterDateFormatter
+import it.bz.noi.community.utils.DateUtils.parameterDateTimeFormatter
 import it.bz.noi.community.utils.DateUtils.startOfDay
 import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
@@ -54,7 +54,7 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	/**
 	 * represents the parameters of the URL for filtering the events
 	 */
-	var eventsParams = EventsParams(startDate = parameterDateFormatter().format(startDate))
+	var eventsParams = EventsParams(startDate = parameterDateTimeFormatter().format(startDate))
 
 	/**
 	 * parameter used for caching the initial filter situation in the Filters fragment
@@ -142,23 +142,23 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 		selectedTimeFilter = timeRange
 		when (timeRange) {
 			TimeRange.ALL -> {
-				eventsParams.startDate = parameterDateFormatter().format(startDate)
+				eventsParams.startDate = parameterDateTimeFormatter().format(startDate)
 				eventsParams.endDate = null
 				Log.d(TAG, "ALL filter: from ${eventsParams.startDate} to ${eventsParams.endDate}")
 			}
 			TimeRange.TODAY -> {
-				eventsParams.startDate = parameterDateFormatter().format(startDate)
-				eventsParams.endDate = parameterDateFormatter().format(Calendar.getInstance().endOfDay())
+				eventsParams.startDate = parameterDateTimeFormatter().format(startDate)
+				eventsParams.endDate = parameterDateTimeFormatter().format(Calendar.getInstance().endOfDay())
 				Log.d(TAG, "TODAY filter: from ${eventsParams.startDate} to ${eventsParams.endDate}")
 			}
 			TimeRange.THIS_WEEK -> {
-				eventsParams.startDate = parameterDateFormatter().format(startDate)
-				eventsParams.endDate = parameterDateFormatter().format(lastDayOfCurrentWeek().endOfDay())
+				eventsParams.startDate = parameterDateTimeFormatter().format(startDate)
+				eventsParams.endDate = parameterDateTimeFormatter().format(lastDayOfCurrentWeek().endOfDay())
 				Log.d(TAG, "THIS WEEK filter: from ${eventsParams.startDate} to ${eventsParams.endDate}")
 			}
 			TimeRange.THIS_MONTH -> {
-				eventsParams.startDate = parameterDateFormatter().format(startDate)
-				eventsParams.endDate = parameterDateFormatter().format(lastDayOfCurrentMonth().endOfDay())
+				eventsParams.startDate = parameterDateTimeFormatter().format(startDate)
+				eventsParams.endDate = parameterDateTimeFormatter().format(lastDayOfCurrentMonth().endOfDay())
 				Log.d(TAG, "THIS MONTH filter: from ${eventsParams.startDate} to ${eventsParams.endDate}")
 			}
 		}
@@ -242,9 +242,9 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 		tryEmit(Unit)
 	}
 
-	val newsFlow: Flow<PagingData<News>> = reloadNewsTickerFlow.combine(NewsTickerFlow.ticker) { _, _ -> }.flatMapLatest {
+	val newsFlow: StateFlow<PagingData<News>> = reloadNewsTickerFlow.flatMapLatest {
 		loadNews()
-	}
+	}.stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
 	private fun loadNews(): Flow<PagingData<News>> = Pager(PagingConfig(pageSize = NewsPagingSource.PAGE_ITEMS)) {
 		NewsPagingSource(mainRepository)

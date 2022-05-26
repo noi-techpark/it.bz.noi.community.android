@@ -6,14 +6,13 @@
 
 	<ImageView
 		android:id="@+id/restImage"
-		android:layout_width="315dp"
+		android:layout_width="wrap_content"
 		android:layout_height="210dp"
 		android:layout_marginEnd="17dp"
 		android:importantForAccessibility="no"
-		android:scaleType="centerCrop"
-		android:src="@drawable/news_img_placeholder"
+		android:src="@drawable/news_placeholder"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
+		app:layout_constraintTop_toTopOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,13 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.utils.DateUtils.getDateIntervalString
@@ -25,15 +21,6 @@ import it.bz.noi.community.utils.Utils.getEventName
  */
 interface EventClickListener {
 	fun onEventClick(
-		cardEvent: MaterialCardView,
-		cardDate: CardView,
-		eventName: TextView,
-		eventLocation: TextView,
-		eventTime: TextView,
-		eventImage: ImageView,
-		constraintLayout: ConstraintLayout,
-		locationIcon: ImageView,
-		timeIcon: ImageView,
 		event: EventsResponse.Event
 	)
 }
@@ -46,7 +33,6 @@ interface EventClickListener {
 class EventsAdapter(
 	private val events: List<EventsResponse.Event>,
 	private val listener: EventClickListener,
-	private val fragment: Fragment,
 	private val isSuggestedEvents: Boolean = false
 ) :
 	RecyclerView.Adapter<EventsAdapter.EventViewHolder>() {
@@ -69,34 +55,17 @@ class EventsAdapter(
 
 	inner class EventViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-		private val cardEvent = view.findViewById<MaterialCardView>(R.id.cardViewEvent)
-		private val cardDate = view.findViewById<CardView>(R.id.cardViewDate)
-		private val constraintLayout = view.findViewById<ConstraintLayout>(R.id.constraintLayout)
 		private val eventName = view.findViewById<TextView>(R.id.tvEventName)
 		private val eventLocation = view.findViewById<TextView>(R.id.tvEventLocation)
 		private val eventDate = view.findViewById<TextView>(R.id.tvEventDate)
 		private val eventTime = view.findViewById<TextView>(R.id.tvEventTime)
 		private val eventImage = view.findViewById<ImageView>(R.id.ivEventImage)
-		private val locationIcon = view.findViewById<ImageView>(R.id.ivLocation)
-		private val timeIcon = view.findViewById<ImageView>(R.id.ivTime)
 
 		private lateinit var event: EventsResponse.Event
 
 		init {
 			view.rootView.setOnClickListener {
-				// it should be used for avoiding clicked view to fade out. But for letting other
-				// transactions to work in fragment I cannot use this
-				//(fragment.exitTransition as TransitionSet).excludeTarget(view, true)
 				listener.onEventClick(
-					cardEvent,
-					cardDate,
-					eventName,
-					eventLocation,
-					eventTime,
-					eventImage,
-					constraintLayout,
-					locationIcon,
-					timeIcon,
 					event
 				)
 			}
@@ -107,15 +76,6 @@ class EventsAdapter(
 
 			eventName.text = getEventName(event)
 			eventLocation.text = event.location
-
-			constraintLayout.transitionName = "constraintLayout_${event.eventId}"
-			eventName.transitionName = "eventName_${event.eventId}"
-			cardDate.transitionName = "cardDate_${event.eventId}"
-			eventLocation.transitionName = "eventLocation_${event.eventId}"
-			eventTime.transitionName = "eventTime_${event.eventId}"
-			eventImage.transitionName = "eventImage_${event.eventId}"
-			locationIcon.transitionName = "locationIcon_${event.eventId}"
-			timeIcon.transitionName = "timeIcon_${event.eventId}"
 
 			eventDate.text = getDateIntervalString(event.startDate, event.endDate)
 			eventTime.text = getHoursIntervalString(event.startDate, event.endDate)
