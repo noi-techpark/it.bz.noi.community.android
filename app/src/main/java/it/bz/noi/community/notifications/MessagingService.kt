@@ -45,7 +45,7 @@ class MessagingService : FirebaseMessagingService() {
 			)
 
 			val notification = NotificationCompat.Builder(this@MessagingService, CHANNEL_ID)
-				.setSmallIcon(R.drawable.ic_noi_app_icon) //FIXME to change
+				.setSmallIcon(R.drawable.ic_notification)
 				.setContentTitle(title)
 				.setContentText(message)
 				.setAutoCancel(true)
