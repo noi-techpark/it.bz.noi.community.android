@@ -19,11 +19,13 @@ import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.ActivityMainBinding
-import it.bz.noi.community.oauth.AuthManager
-import it.bz.noi.community.oauth.AuthStateStatus
+import it.bz.noi.community.notifications.MessagingService
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
+import it.bz.noi.community.utils.Utils
+import it.bz.noi.community.oauth.AuthManager
+import it.bz.noi.community.oauth.AuthStateStatus
 import kotlinx.coroutines.Dispatchers
 import net.openid.appauth.AuthorizationException
 
@@ -95,20 +97,32 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
 		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
 			when (status) {
-//				is AuthStateStatus.Authorized ->
 				is AuthStateStatus.Error,
-				AuthStateStatus.Unauthorized.UserAuthRequired -> {
+				AuthStateStatus.Unauthorized.UserAuthRequired,
+				AuthStateStatus.Unauthorized.NotValidRole -> {
 					goToOnboardingActivity()
 				}
-//				AuthStateStatus.Unauthorized.NotValidRole -> TODO()
-//				AuthStateStatus.Unauthorized.PendingToken -> TODO()
-
 			}
 		}
+
+		MessagingService.createChannelIfNeeded(this)
+		if (BuildConfig.DEBUG) {
+			MessagingService.registrationToken()
+		}
+		subscribeToNewsTopic(Utils.getPreferredNoiNewsTopic())
     }
+
+	private fun subscribeToNewsTopic(preferredNewsTopic: String) {
+		// Per gestire eventuale cambio lingua del dispositivo, faccio prima l'unsubscribe dai topics delle altre lingue
+		Utils.allNoiNewsTopics
+			.filter { it != preferredNewsTopic }
+			.forEach { newsTopic ->
+				MessagingService.unsubscribeFromTopic(newsTopic)
+			}
+		MessagingService.subscribeToTopic(preferredNewsTopic)
+	}
 
     override fun onSupportNavigateUp(): Boolean {
         if (navController.currentBackStackEntry?.destination?.id == R.id.filtersFragment) {

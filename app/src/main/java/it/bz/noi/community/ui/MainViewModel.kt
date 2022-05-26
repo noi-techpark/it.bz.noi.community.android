@@ -255,3 +255,11 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	}
 
 }
+
+object NewsTickerFlow {
+	val ticker = MutableSharedFlow<Unit>(replay = 1).apply {
+		tryEmit(Unit)
+	}
+	fun tick() = ticker.tryEmit(Unit)
+}
+

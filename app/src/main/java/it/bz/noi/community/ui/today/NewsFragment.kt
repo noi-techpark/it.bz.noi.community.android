@@ -46,10 +46,9 @@ class NewsFragment  : Fragment() {
 	})
 
 	private val newsAdapter = PagingNewsAdapter(NewsComparator, object : NewsDetailListener {
-		override fun openNewsDetail(news: News) {
-			findNavController().navigate(TodayFragmentDirections.actionNavigationTodayToNewsDetails(news))
+		override fun openNewsDetail(newsId: String?, news: News?) {
+			findNavController().navigate(TodayFragmentDirections.actionNavigationTodayToNewsDetails(newsId, news))
 		}
-
 	})
 
 	override fun onCreateView(
@@ -119,7 +118,7 @@ class NewsFragment  : Fragment() {
 }
 
 interface NewsDetailListener {
-	fun openNewsDetail(news: News)
+	fun openNewsDetail(newsId: String? = null, news: News? = null)
 }
 
 class NewsVH(private val binding: ViewHolderNewsBinding, detailListener: NewsDetailListener) : RecyclerView.ViewHolder(binding.root) {
@@ -129,7 +128,7 @@ class NewsVH(private val binding: ViewHolderNewsBinding, detailListener: NewsDet
 
 	init {
 	    binding.root.setOnClickListener {
-			detailListener.openNewsDetail(news)
+			detailListener.openNewsDetail(news = news)
 		}
 	}
 
