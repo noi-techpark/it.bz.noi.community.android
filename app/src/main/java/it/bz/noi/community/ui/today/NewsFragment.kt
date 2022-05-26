@@ -1,16 +1,22 @@
 package it.bz.noi.community.ui.today
 
+import android.R
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -33,6 +39,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 
+
 class NewsFragment  : Fragment() {
 
 	private var _binding: FragmentNewsBinding? = null
@@ -46,7 +53,14 @@ class NewsFragment  : Fragment() {
 	})
 
 	private val newsAdapter = PagingNewsAdapter(NewsComparator, object : NewsDetailListener {
-		override fun openNewsDetail(newsId: String?, news: News?) {
+		override fun openNewsDetail(newsId: String?, news: News?, logo: ImageView) {
+
+			if (news != null) {
+				val extras = FragmentNavigatorExtras(
+					logo to "logo_${news.id}"
+				)
+				findNavController().navigate(TodayFragmentDirections.actionNavigationTodayToNewsDetails(newsId, news), extras)
+			} else
 			findNavController().navigate(TodayFragmentDirections.actionNavigationTodayToNewsDetails(newsId, news))
 		}
 	})
@@ -70,6 +84,10 @@ class NewsFragment  : Fragment() {
 
 		binding.news.apply {
 			adapter = newsAdapter
+			doOnPreDraw {
+				startPostponedEnterTransition()
+			}
+
 		}
 
 		viewLifecycleOwner.lifecycleScope.launch {
@@ -118,7 +136,7 @@ class NewsFragment  : Fragment() {
 }
 
 interface NewsDetailListener {
-	fun openNewsDetail(newsId: String? = null, news: News? = null)
+	fun openNewsDetail(newsId: String? = null, news: News? = null, logo: ImageView)
 }
 
 class NewsVH(private val binding: ViewHolderNewsBinding, detailListener: NewsDetailListener) : RecyclerView.ViewHolder(binding.root) {
@@ -128,7 +146,7 @@ class NewsVH(private val binding: ViewHolderNewsBinding, detailListener: NewsDet
 
 	init {
 	    binding.root.setOnClickListener {
-			detailListener.openNewsDetail(news = news)
+			detailListener.openNewsDetail(news = news, logo = binding.logo)
 		}
 	}
 
@@ -149,6 +167,7 @@ class NewsVH(private val binding: ViewHolderNewsBinding, detailListener: NewsDet
 				.into(binding.logo)
 
 		}
+		ViewCompat.setTransitionName(binding.logo, "logo_${news.id}")
 	}
 
 }

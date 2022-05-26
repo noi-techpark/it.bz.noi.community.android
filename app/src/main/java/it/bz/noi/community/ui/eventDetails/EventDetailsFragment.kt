@@ -1,6 +1,7 @@
 package it.bz.noi.community.ui.eventDetails
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.CalendarContract
@@ -8,9 +9,11 @@ import android.provider.CalendarContract.Events
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -20,6 +23,10 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
@@ -66,6 +73,11 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		)
 	}
 
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		postponeEnterTransition()
+	}
+
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
@@ -93,6 +105,8 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
 						(requireActivity() as AppCompatActivity).supportActionBar?.title =
 							getEventName(selectedEvent)
+
+						ViewCompat.setTransitionName(binding.ivEventImage, "eventImage_${selectedEvent.eventId}")
 
 						loadEventImage(getImageUrl(selectedEvent))
 
@@ -227,6 +241,28 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		Glide
 			.with(requireContext())
 			.load(eventImageUrl)
+			.listener(object : RequestListener<Drawable> {
+				override fun onLoadFailed(
+					e: GlideException?,
+					model: Any?,
+					target: Target<Drawable>?,
+					isFirstResource: Boolean
+				): Boolean {
+					startPostponedEnterTransition()
+					return false
+				}
+
+				override fun onResourceReady(
+					resource: Drawable?,
+					model: Any?,
+					target: Target<Drawable>?,
+					dataSource: DataSource?,
+					isFirstResource: Boolean
+				): Boolean {
+					startPostponedEnterTransition()
+					return false
+				}
+			})
 			.placeholder(R.drawable.placeholder_noi_events)
 			.centerCrop()
 			.into(binding.ivEventImage)
@@ -244,7 +280,8 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 	 * Clicking on suggested event will result in open another EventDetailsFragment instance
 	 */
 	override fun onEventClick(
-		event: EventsResponse.Event
+		event: EventsResponse.Event,
+		image: ImageView
 	) {
 		findNavController().navigate(
 			EventDetailsFragmentDirections.actionEventDetailsFragmentSelf(

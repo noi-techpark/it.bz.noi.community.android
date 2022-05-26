@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
@@ -91,6 +94,11 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		binding.rvEvents.apply {
 			layoutManager = LinearLayoutManager(requireContext())
 			adapter = eventsAdapter
+
+			doOnPreDraw {
+				startPostponedEnterTransition()
+			}
+
 		}
 
 		binding.cdFilterEvents.setOnClickListener {
@@ -153,12 +161,17 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 	}
 
 	override fun onEventClick(
-		event: EventsResponse.Event
+		event: EventsResponse.Event,
+		image: ImageView
 	) {
+		val extras = FragmentNavigatorExtras(
+			image to "eventImage_${event.eventId}"
+		)
 		findNavController().navigate(
 			TodayFragmentDirections.actionNavigationTodayToEventDetailsFragment(
 				todayViewModel.events.indexOf(event)
-			)
+			),
+			extras
 		)
 	}
 

@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -21,7 +22,8 @@ import it.bz.noi.community.utils.Utils.getEventName
  */
 interface EventClickListener {
 	fun onEventClick(
-		event: EventsResponse.Event
+		event: EventsResponse.Event,
+		image: ImageView
 	)
 }
 
@@ -66,7 +68,8 @@ class EventsAdapter(
 		init {
 			view.rootView.setOnClickListener {
 				listener.onEventClick(
-					event
+					event,
+					eventImage
 				)
 			}
 		}
@@ -88,6 +91,8 @@ class EventsAdapter(
 				.apply(options)
 				.centerCrop()
 				.into(eventImage)
+			ViewCompat.setTransitionName(eventImage, "eventImage_${event.eventId}")
+
 		}
 
 	}
