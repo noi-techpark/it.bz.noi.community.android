@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -14,6 +17,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
+import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
@@ -70,6 +74,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 			)
 		)
 		timeFilterAdapter = TimeFilterAdapter(timeFilters, this)
+
 	}
 
 	override fun onCreateView(
@@ -98,10 +103,10 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 			doOnPreDraw {
 				startPostponedEnterTransition()
 			}
-
 		}
 
 		binding.cdFilterEvents.setOnClickListener {
+			exitTransition = null
 			findNavController().navigate(
 				TodayFragmentDirections.actionNavigationTodayToFiltersFragment()
 			)
@@ -162,10 +167,25 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 
 	override fun onEventClick(
 		event: EventsResponse.Event,
-		image: ImageView
+		cardEvent: MaterialCardView,
+		cardDate: CardView,
+		eventName: TextView,
+		eventLocation: TextView,
+		eventTime: TextView,
+		eventImage: ImageView,
+		constraintLayout: ConstraintLayout,
+		locationIcon: ImageView,
+		timeIcon: ImageView,
 	) {
 		val extras = FragmentNavigatorExtras(
-			image to "eventImage_${event.eventId}"
+			constraintLayout to "constraintLayout_${event.eventId}",
+			eventName to "eventName_${event.eventId}",
+			cardDate to "cardDate_${event.eventId}",
+			eventLocation to "eventLocation_${event.eventId}",
+			eventTime to "eventTime_${event.eventId}",
+			eventImage to "eventImage_${event.eventId}",
+			locationIcon to "locationIcon_${event.eventId}",
+			timeIcon to "timeIcon_${event.eventId}"
 		)
 		findNavController().navigate(
 			TodayFragmentDirections.actionNavigationTodayToEventDetailsFragment(

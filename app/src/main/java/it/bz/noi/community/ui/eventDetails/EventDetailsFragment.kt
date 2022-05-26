@@ -10,23 +10,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
-import androidx.core.view.ViewCompat
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
+import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
@@ -75,7 +81,12 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		postponeEnterTransition()
+		sharedElementEnterTransition =
+			TransitionInflater.from(context).inflateTransition(R.transition.change_bounds)
+		sharedElementReturnTransition = null
+
+		if (savedInstanceState == null)
+			postponeEnterTransition()
 	}
 
 	override fun onCreateView(
@@ -93,6 +104,10 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		binding.rvSuggestedEvents.apply {
 			layoutManager = LinearLayoutManager(requireContext(), HORIZONTAL, false)
 			adapter = suggestedEventsAdapter
+
+			doOnPreDraw {
+				startPostponedEnterTransition()
+			}
 		}
 
 		mainViewModel.mediatorEvents.observe(viewLifecycleOwner, Observer {
@@ -106,8 +121,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 						(requireActivity() as AppCompatActivity).supportActionBar?.title =
 							getEventName(selectedEvent)
 
-						ViewCompat.setTransitionName(binding.ivEventImage, "eventImage_${selectedEvent.eventId}")
-
+						setTransitionNames(selectedEvent.eventId!!)
 						loadEventImage(getImageUrl(selectedEvent))
 
 						setDate(selectedEvent.startDate, selectedEvent.endDate)
@@ -237,6 +251,17 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 	/**
 	 * Setup the transition for having the shared animation effect
 	 */
+	private fun setTransitionNames(eventId: String) {
+		binding.cardViewDate.transitionName = "cardDate_${eventId}"
+		binding.constraintLayout.transitionName = "constraintLayout_${eventId}"
+		binding.tvEventName.transitionName = "eventName_${eventId}"
+		binding.tvEventLocation.transitionName = "eventLocation_${eventId}"
+		binding.tvEventTime.transitionName = "eventTime_${eventId}"
+		binding.ivEventImage.transitionName = "eventImage_${eventId}"
+		binding.ivLocation.transitionName = "locationIcon_${eventId}"
+		binding.ivTime.transitionName = "timeIcon_${eventId}"
+	}
+
 	private fun loadEventImage(eventImageUrl: String?) {
 		Glide
 			.with(requireContext())
@@ -281,12 +306,32 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 	 */
 	override fun onEventClick(
 		event: EventsResponse.Event,
-		image: ImageView
+		cardEvent: MaterialCardView,
+		cardDate: CardView,
+		eventName: TextView,
+		eventLocation: TextView,
+		eventTime: TextView,
+		eventImage: ImageView,
+		constraintLayout: ConstraintLayout,
+		locationIcon: ImageView,
+		timeIcon: ImageView,
 	) {
+		val extras = FragmentNavigatorExtras(
+			constraintLayout to "constraintLayout_${event.eventId}",
+			eventName to "eventName_${event.eventId}",
+			cardDate to "cardDate_${event.eventId}",
+			eventLocation to "eventLocation_${event.eventId}",
+			eventTime to "eventTime_${event.eventId}",
+			eventImage to "eventImage_${event.eventId}",
+			locationIcon to "locationIcon_${event.eventId}",
+			timeIcon to "timeIcon_${event.eventId}"
+		)
+
 		findNavController().navigate(
 			EventDetailsFragmentDirections.actionEventDetailsFragmentSelf(
 				allEvents.indexOf(event)
-			)
+			),
+			extras
 		)
 	}
 }
