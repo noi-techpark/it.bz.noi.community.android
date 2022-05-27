@@ -18,6 +18,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.ChangeBounds
+import androidx.transition.ChangeClipBounds
+import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -48,6 +51,15 @@ class NewsDetailsFragment: Fragment() {
 
 	private val df = DateFormat.getDateInstance(DateFormat.SHORT)
 
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		sharedElementEnterTransition = ChangeClipBounds()
+		sharedElementReturnTransition = null
+
+		if (savedInstanceState == null)
+			postponeEnterTransition()
+	}
+
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
@@ -60,11 +72,6 @@ class NewsDetailsFragment: Fragment() {
 	override fun onDestroyView() {
 		super.onDestroyView()
 		_binding = null
-	}
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		postponeEnterTransition()
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,7 +97,7 @@ class NewsDetailsFragment: Fragment() {
 	}
 
 	private fun loadNewsData(news: News) {
-		ViewCompat.setTransitionName(binding.logo, "logo_${news.id}")
+		setTransitionNames(news.id)
 
 		binding.date.text = df.format(news.date)
 
@@ -163,6 +170,15 @@ class NewsDetailsFragment: Fragment() {
 		} else {
 			binding.images.isVisible = false
 		}
+	}
+
+	private fun setTransitionNames(newsId: String) {
+		binding.header.transitionName = "header_${newsId}"
+		binding.logo.transitionName = "logo_${newsId}"
+		binding.publisher.transitionName = "publisher_${newsId}"
+		binding.date.transitionName = "date_${newsId}"
+		binding.title.transitionName = "title_${newsId}"
+		binding.shortText.transitionName = "shortText_${newsId}"
 	}
 
 	private fun writeEmail(receiverAddress: String) {

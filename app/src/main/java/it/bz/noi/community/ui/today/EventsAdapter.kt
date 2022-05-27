@@ -115,14 +115,18 @@ class EventsAdapter(
 				.centerCrop()
 				.into(eventImage)
 
-			constraintLayout.transitionName = "constraintLayout_${event.eventId}"
-			eventName.transitionName = "eventName_${event.eventId}"
-			cardDate.transitionName = "cardDate_${event.eventId}"
-			eventLocation.transitionName = "eventLocation_${event.eventId}"
-			eventTime.transitionName = "eventTime_${event.eventId}"
-			eventImage.transitionName = "eventImage_${event.eventId}"
-			locationIcon.transitionName = "locationIcon_${event.eventId}"
-			timeIcon.transitionName = "timeIcon_${event.eventId}"
+			setTransitionNames(event.eventId!!)
+		}
+
+		private fun setTransitionNames(eventId: String) {
+			constraintLayout.transitionName = "constraintLayout_$eventId"
+			eventName.transitionName = "eventName_$eventId"
+			cardDate.transitionName = "cardDate_$eventId"
+			eventLocation.transitionName = "eventLocation_$eventId"
+			eventTime.transitionName = "eventTime_$eventId"
+			eventImage.transitionName = "eventImage_$eventId"
+			locationIcon.transitionName = "locationIcon_$eventId"
+			timeIcon.transitionName = "timeIcon_$eventId"
 		}
 
 	}
