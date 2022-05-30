@@ -18,6 +18,8 @@ import it.bz.noi.community.R
 import it.bz.noi.community.data.models.Contact
 import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.databinding.FragmentContactDetailsBinding
+import it.bz.noi.community.utils.Utils.showDial
+import it.bz.noi.community.utils.Utils.writeEmail
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
 
@@ -63,8 +65,13 @@ class ContactDetailsFragment : Fragment() {
 						showCheckmark(email.copyValueIcon)
 					}
 				}
+
+				binding.sendEmail.setOnClickListener {
+					requireContext().writeEmail(contact.email ?: "")
+				}
 			} else {
 				email.root.isVisible = false
+				binding.sendEmail.isVisible = false
 			}
 
 			if (company?.phoneNumber != null) {
@@ -76,8 +83,13 @@ class ContactDetailsFragment : Fragment() {
 						showCheckmark(phone.copyValueIcon)
 					}
 				}
+
+				binding.call.setOnClickListener {
+					requireContext().showDial(company.phoneNumber)
+				}
 			} else {
 				phone.root.isVisible = false
+				binding.call.isVisible = false
 			}
 
 			if (company?.address != null) {
@@ -90,8 +102,13 @@ class ContactDetailsFragment : Fragment() {
 						showCheckmark(address.copyValueIcon)
 					}
 				}
+
+				binding.find.setOnClickListener {
+					// TODO
+				}
 			} else {
 				address.root.isVisible = false
+				binding.find.isVisible = false
 			}
 
 		}

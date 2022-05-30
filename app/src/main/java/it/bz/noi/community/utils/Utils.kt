@@ -87,4 +87,19 @@ object Utils {
 		}
 		startActivity(intent)
 	}
+
+	fun Context.writeEmail(receiverAddress: String) {
+		val intent = Intent(Intent.ACTION_SENDTO).apply {
+			data = Uri.parse("mailto:") // only email apps should handle this
+			putExtra(Intent.EXTRA_EMAIL, Array(1) {receiverAddress})
+		}
+		startActivity(intent)
+	}
+
+	fun Context.showDial(phoneNumber: String) {
+		val intent = Intent(Intent.ACTION_DIAL).apply {
+			data = Uri.parse("tel:$phoneNumber")
+		}
+		startActivity(intent)
+	}
 }

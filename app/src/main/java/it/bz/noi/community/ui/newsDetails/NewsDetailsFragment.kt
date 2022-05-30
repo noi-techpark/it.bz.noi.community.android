@@ -24,6 +24,8 @@ import it.bz.noi.community.data.models.getDetail
 import it.bz.noi.community.databinding.FragmentNewsDetailsBinding
 import it.bz.noi.community.databinding.VhHorizontalImageBinding
 import it.bz.noi.community.utils.Status
+import it.bz.noi.community.utils.Utils.openLinkInExternalBrowser
+import it.bz.noi.community.utils.Utils.writeEmail
 import kotlinx.coroutines.Dispatchers
 import java.text.DateFormat
 
@@ -87,14 +89,14 @@ class NewsDetailsFragment: Fragment() {
 						isExternalLink = !contactInfo.externalLink.isNullOrEmpty()
 						if (isExternalLink) {
 							binding.externalLink.setOnClickListener {
-								openExternalLink(contactInfo.externalLink!!)
+								requireContext().openLinkInExternalBrowser(contactInfo.externalLink!!)
 							}
 						}
 
 						isEmail = !contactInfo.email.isNullOrEmpty()
 						if (isEmail) {
 							binding.askQuestion.setOnClickListener {
-								writeEmail(contactInfo.email!!)
+								requireContext().writeEmail(contactInfo.email!!)
 							}
 						}
 					}
@@ -120,25 +122,6 @@ class NewsDetailsFragment: Fragment() {
 			}
 		}
 
-	}
-
-	private fun writeEmail(receiverAddress: String) {
-		val intent = Intent(Intent.ACTION_SENDTO).apply {
-			data = Uri.parse("mailto:") // only email apps should handle this
-			putExtra(Intent.EXTRA_EMAIL, Array(1) {receiverAddress})
-		}
-		if (intent.resolveActivity(requireContext().packageManager) != null) {
-			startActivity(intent)
-		}
-	}
-
-	private fun openExternalLink(url: String) {
-		val intent = Intent(Intent.ACTION_VIEW).apply {
-			data = Uri.parse(url)
-		}
-		if (intent.resolveActivity(requireContext().packageManager) != null) {
-			startActivity(intent)
-		}
 	}
 
 }
