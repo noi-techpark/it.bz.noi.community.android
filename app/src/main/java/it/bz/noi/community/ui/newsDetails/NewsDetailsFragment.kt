@@ -1,6 +1,7 @@
 package it.bz.noi.community.ui.newsDetails
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
@@ -10,13 +11,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.ChangeBounds
+import androidx.transition.ChangeClipBounds
+import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
@@ -30,6 +39,7 @@ import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.Dispatchers
 import java.text.DateFormat
 
+
 class NewsDetailsFragment: Fragment() {
 
 	private var _binding: FragmentNewsDetailsBinding? = null
@@ -40,6 +50,17 @@ class NewsDetailsFragment: Fragment() {
 	})
 
 	private val df = DateFormat.getDateInstance(DateFormat.SHORT)
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		sharedElementEnterTransition = ChangeClipBounds().apply {
+			duration = 375
+		}
+		sharedElementReturnTransition = null
+
+		if (savedInstanceState == null)
+			postponeEnterTransition()
+	}
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -78,6 +99,8 @@ class NewsDetailsFragment: Fragment() {
 	}
 
 	private fun loadNewsData(news: News) {
+		setTransitionNames(news.id)
+
 		binding.date.text = df.format(news.date)
 
 		news.getDetail()?.let { detail ->
@@ -98,6 +121,29 @@ class NewsDetailsFragment: Fragment() {
 			Glide
 				.with(binding.root.context)
 				.load(contactInfo.logo)
+				.listener(object : RequestListener<Drawable> {
+					override fun onLoadFailed(
+						e: GlideException?,
+						model: Any?,
+						target: Target<Drawable>?,
+						isFirstResource: Boolean
+					): Boolean {
+						startPostponedEnterTransition()
+						return false
+					}
+
+					override fun onResourceReady(
+						resource: Drawable?,
+						model: Any?,
+						target: Target<Drawable>?,
+						dataSource: DataSource?,
+						isFirstResource: Boolean
+					): Boolean {
+						startPostponedEnterTransition()
+						return false
+					}
+				})
+
 				.centerCrop()
 				.into(binding.logo)
 
@@ -126,6 +172,15 @@ class NewsDetailsFragment: Fragment() {
 		} else {
 			binding.images.isVisible = false
 		}
+	}
+
+	private fun setTransitionNames(newsId: String) {
+		binding.header.transitionName = "header_${newsId}"
+		binding.logo.transitionName = "logo_${newsId}"
+		binding.publisher.transitionName = "publisher_${newsId}"
+		binding.date.transitionName = "date_${newsId}"
+		binding.title.transitionName = "title_${newsId}"
+		binding.shortText.transitionName = "shortText_${newsId}"
 	}
 
 	private fun writeEmail(receiverAddress: String) {
