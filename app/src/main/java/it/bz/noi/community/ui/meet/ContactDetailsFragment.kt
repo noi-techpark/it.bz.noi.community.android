@@ -1,11 +1,14 @@
 package it.bz.noi.community.ui.meet
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,6 +18,8 @@ import it.bz.noi.community.R
 import it.bz.noi.community.data.models.Contact
 import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.databinding.FragmentContactDetailsBinding
+import kotlinx.coroutines.*
+import java.util.concurrent.TimeUnit
 
 class ContactDetailsFragment : Fragment() {
 
@@ -54,8 +59,8 @@ class ContactDetailsFragment : Fragment() {
 					fieldLbl.text = getString(R.string.label_email)
 					fieldValue.text = contact.email
 					root.setOnClickListener {
-						Toast.makeText(requireContext(), "Copy email", Toast.LENGTH_SHORT).show()
-						// TODO
+						copyToClipboard("email_copied", contact.email)
+						showCheckmark(email.copyValueIcon)
 					}
 				}
 			} else {
@@ -67,9 +72,8 @@ class ContactDetailsFragment : Fragment() {
 					fieldLbl.text = getString(R.string.label_phone)
 					fieldValue.text = company.phoneNumber
 					root.setOnClickListener {
-						Toast.makeText(requireContext(), "Copy telephone", Toast.LENGTH_SHORT)
-							.show()
-						// TODO
+						copyToClipboard("phone_copied", company.phoneNumber)
+						showCheckmark(phone.copyValueIcon)
 					}
 				}
 			} else {
@@ -79,10 +83,11 @@ class ContactDetailsFragment : Fragment() {
 			if (company?.address != null) {
 				address.apply {
 					fieldLbl.text = getString(R.string.label_address)
-					fieldValue.text = company.address.replace("\r\n", " ")
+					val formattedAddress = company.address.replace("\r\n", " ")
+					fieldValue.text = formattedAddress
 					root.setOnClickListener {
-						Toast.makeText(requireContext(), "Copy address", Toast.LENGTH_SHORT).show()
-						// TODO
+						copyToClipboard("address_copied", formattedAddress)
+						showCheckmark(address.copyValueIcon)
 					}
 				}
 			} else {
@@ -95,6 +100,20 @@ class ContactDetailsFragment : Fragment() {
 
 	}
 
+	private fun copyToClipboard(label: String, value: String) {
+		val clipboard = getSystemService(requireContext(), ClipboardManager::class.java) as ClipboardManager
+		val clip: ClipData = ClipData.newPlainText(label, value)
+		clipboard.setPrimaryClip(clip)
+	}
+
+	private fun showCheckmark(icon: ImageView) {
+		icon.isSelected = true
+		CoroutineScope(Dispatchers.IO).launch {
+			delay(TimeUnit.SECONDS.toMillis(1))
+			icon.isSelected = false
+		}
+	}
+
 }
 
 class ContactDetailsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
@@ -104,6 +123,6 @@ class ContactDetailsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
 	}
 
 	val contact: Contact = savedStateHandle.get(CONTACT_STATE)
-		?: throw IllegalStateException("Missing ${CONTACT_STATE} argument")
+		?: throw IllegalStateException("Missing $CONTACT_STATE argument")
 
 }

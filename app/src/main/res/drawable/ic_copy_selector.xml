@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-selector xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/copy" android:drawable="@drawable/ic_copy" android:state_selected="false"/>
+	<item android:id="@+id/copied" android:drawable="@drawable/ic_copy_with_check" android:state_selected="true"/>
+	<transition
+		android:fromId="@+id/copied"
+		android:toId="@+id/copy"
+		android:drawable="@drawable/ic_copy_transition">
+	</transition>
+</animated-selector>
