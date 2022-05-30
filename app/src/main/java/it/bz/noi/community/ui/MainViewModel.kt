@@ -57,14 +57,6 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	var eventsParams = EventsParams(startDate = parameterDateTimeFormatter().format(startDate))
 
 	/**
-	 * parameter used for caching the initial filter situation in the Filters fragment
-	 */
-	private lateinit var cachedParams: EventsParams
-	fun cacheFilters() {
-		cachedParams = eventsParams.copy()
-	}
-
-	/**
 	 * live data of the events
 	 */
 	private var events = liveData(Dispatchers.IO) {
@@ -222,20 +214,6 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 			emit(Resource.success(data = filters))
 		else
 			emit(Resource.error(data = null, message = "Filter loading: error occurred!"))
-	}
-
-	/**
-	 * restore the initial situation of filters
-	 */
-	fun restoreCachedFilters() {
-		updateSelectedFilters(cachedParams.selectedFilters)
-	}
-
-	/**
-	 * Used for check if cached filters are identical to current filters
-	 */
-	fun isFiltersSameAsCached(): Boolean {
-		return eventsParams.selectedFilters == cachedParams.selectedFilters
 	}
 
 	private val reloadNewsTickerFlow = MutableSharedFlow<Unit>(replay = 1).apply {
