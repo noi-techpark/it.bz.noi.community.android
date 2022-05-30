@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import it.bz.noi.community.R
 import it.bz.noi.community.data.models.Contact
 import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.databinding.FragmentContactDetailsBinding
@@ -48,30 +50,43 @@ class ContactDetailsFragment : Fragment() {
 			companyName.text = contact.companyName
 
 			if (contact.email != null) {
-				email.text = contact.email
+				email.apply {
+					fieldLbl.text = getString(R.string.label_email)
+					fieldValue.text = contact.email
+					root.setOnClickListener {
+						Toast.makeText(requireContext(), "Copy email", Toast.LENGTH_SHORT).show()
+						// TODO
+					}
+				}
 			} else {
-				emailLbl.isVisible = false
-				email.isVisible = false
-				emailBtn.isVisible = false
-				sendEmail.isVisible = false
+				email.root.isVisible = false
 			}
 
 			if (company?.phoneNumber != null) {
-				phone.text = company.phoneNumber
+				phone.apply {
+					fieldLbl.text = getString(R.string.label_phone)
+					fieldValue.text = company.phoneNumber
+					root.setOnClickListener {
+						Toast.makeText(requireContext(), "Copy telephone", Toast.LENGTH_SHORT)
+							.show()
+						// TODO
+					}
+				}
 			} else {
-				phoneLbl.isVisible = false
-				phone.isVisible = false
-				phoneBtn.isVisible = false
-				call.isVisible = false
+				phone.root.isVisible = false
 			}
 
 			if (company?.address != null) {
-				address.text = company.address.replace("\r\n", " ")
+				address.apply {
+					fieldLbl.text = getString(R.string.label_address)
+					fieldValue.text = company.address.replace("\r\n", " ")
+					root.setOnClickListener {
+						Toast.makeText(requireContext(), "Copy address", Toast.LENGTH_SHORT).show()
+						// TODO
+					}
+				}
 			} else {
-				addressLbl.isVisible = false
-				address.isVisible = false
-				addressBtn.isVisible = false
-				find.isVisible = false
+				address.root.isVisible = false
 			}
 
 		}
@@ -88,6 +103,7 @@ class ContactDetailsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
 		private const val CONTACT_STATE = "contact"
 	}
 
-	val contact: Contact = savedStateHandle.get(CONTACT_STATE) ?: throw IllegalStateException("Missing ${CONTACT_STATE} argument")
+	val contact: Contact = savedStateHandle.get(CONTACT_STATE)
+		?: throw IllegalStateException("Missing ${CONTACT_STATE} argument")
 
 }

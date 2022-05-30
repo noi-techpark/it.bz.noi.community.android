@@ -39,9 +39,9 @@
 						android:id="@+id/contactImage"
 						android:layout_width="match_parent"
 						android:layout_height="180dp"
+						android:background="@color/secondary_background_color"
 						android:importantForAccessibility="no"
 						android:scaleType="centerCrop"
-						android:background="@color/secondary_background_color"
 						app:layout_constraintEnd_toEndOf="parent"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toTopOf="parent"
@@ -109,126 +109,32 @@
 
 			</com.google.android.material.card.MaterialCardView>
 
-			<TextView
-				android:id="@+id/emailLbl"
+			<include
+				android:id="@+id/email"
+				layout="@layout/contact_detail_field"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginStart="@dimen/default_margin"
-				android:layout_marginTop="20dp"
-				android:layout_marginEnd="@dimen/default_margin"
-				android:fontFamily="sans-serif-medium"
-				android:lineHeight="18sp"
-				android:text="@string/label_email"
-				android:textColor="@color/secondary_color"
-				android:textSize="14sp"
+				android:layout_marginTop="@dimen/default_margin"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/contactCardView" />
 
-			<TextView
-				android:id="@+id/email"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="@dimen/default_margin"
-				android:layout_marginEnd="@dimen/default_margin"
-				android:lineHeight="24dp"
-				android:textColor="@color/secondary_color"
-				android:textSize="19sp"
-				app:layout_constraintEnd_toStartOf="@id/emailBtn"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/emailLbl"
-				tools:text="mario.rossi@noi.it" />
-
-			<ImageButton
-				android:id="@+id/emailBtn"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginEnd="@dimen/default_margin"
-				android:background="@android:color/transparent"
-				android:padding="0dp"
-				android:src="@drawable/ic_copy"
-				app:layout_constraintBottom_toBottomOf="@id/email"
-				app:layout_constraintEnd_toEndOf="parent" />
-
-			<TextView
-				android:id="@+id/phoneLbl"
+			<include
+				android:id="@+id/phone"
+				layout="@layout/contact_detail_field"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginStart="@dimen/default_margin"
-				android:layout_marginTop="17dp"
-				android:layout_marginEnd="@dimen/default_margin"
-				android:fontFamily="sans-serif-medium"
-				android:lineHeight="18sp"
-				android:text="@string/label_phone"
-				android:textColor="@color/secondary_color"
-				android:textSize="14sp"
+				android:layout_marginTop="@dimen/default_margin"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/email" />
 
-			<TextView
-				android:id="@+id/phone"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="@dimen/default_margin"
-				android:layout_marginEnd="@dimen/default_margin"
-				android:lineHeight="24dp"
-				android:textColor="@color/secondary_color"
-				android:textSize="19sp"
-				app:layout_constraintEnd_toStartOf="@id/phoneBtn"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/phoneLbl"
-				tools:text="+39 0471 066 670" />
-
-			<ImageButton
-				android:id="@+id/phoneBtn"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginEnd="@dimen/default_margin"
-				android:background="@android:color/transparent"
-				android:padding="0dp"
-				android:src="@drawable/ic_copy"
-				app:layout_constraintBottom_toBottomOf="@id/phone"
-				app:layout_constraintEnd_toEndOf="parent" />
-
-			<TextView
-				android:id="@+id/addressLbl"
+			<include
+				android:id="@+id/address"
+				layout="@layout/contact_detail_field"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginStart="@dimen/default_margin"
-				android:layout_marginTop="17dp"
-				android:layout_marginEnd="@dimen/default_margin"
-				android:fontFamily="sans-serif-medium"
-				android:lineHeight="18sp"
-				android:text="@string/label_address"
-				android:textColor="@color/secondary_color"
-				android:textSize="14sp"
+				android:layout_marginTop="@dimen/default_margin"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/phone" />
-
-			<TextView
-				android:id="@+id/address"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="@dimen/default_margin"
-				android:layout_marginEnd="@dimen/default_margin"
-				android:lineHeight="24dp"
-				android:textColor="@color/secondary_color"
-				android:textSize="19sp"
-				app:layout_constraintEnd_toStartOf="@id/addressBtn"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/addressLbl"
-				tools:text="Via A. Volta 13/A, I-39100 Bolzano" />
-
-			<ImageButton
-				android:id="@+id/addressBtn"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginEnd="@dimen/default_margin"
-				android:background="@android:color/transparent"
-				android:padding="0dp"
-				android:src="@drawable/ic_copy"
-				app:layout_constraintBottom_toBottomOf="@id/address"
-				app:layout_constraintEnd_toEndOf="parent" />
-
 
 		</androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -250,10 +156,10 @@
 			style="@style/ThemeOverlay.NOI.OutlinedButton"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
+			android:ellipsize="end"
+			android:maxLines="1"
 			android:text="@string/btn_mail"
 			android:textAllCaps="false"
-			android:maxLines="1"
-			android:ellipsize="end"
 			app:icon="@drawable/ic_mail"
 			app:iconGravity="textStart"
 			app:iconPadding="10dp"
@@ -269,9 +175,9 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="7dp"
-			android:text="@string/btn_call"
-			android:maxLines="1"
 			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="@string/btn_call"
 			app:icon="@drawable/ic_phone"
 			app:iconGravity="textStart"
 			app:iconPadding="10dp"
@@ -287,9 +193,9 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="7dp"
-			android:text="@string/btn_find"
-			android:maxLines="1"
 			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="@string/btn_find"
 			app:icon="@drawable/ic_find_on_maps"
 			app:iconGravity="textStart"
 			app:iconPadding="10dp"
