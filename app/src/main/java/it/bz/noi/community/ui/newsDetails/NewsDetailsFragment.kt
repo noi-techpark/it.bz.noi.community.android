@@ -53,7 +53,9 @@ class NewsDetailsFragment: Fragment() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		sharedElementEnterTransition = ChangeClipBounds()
+		sharedElementEnterTransition = ChangeClipBounds().apply {
+			duration = 375
+		}
 		sharedElementReturnTransition = null
 
 		if (savedInstanceState == null)
