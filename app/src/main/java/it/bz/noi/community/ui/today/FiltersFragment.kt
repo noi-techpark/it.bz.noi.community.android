@@ -41,8 +41,6 @@ class FiltersFragment : Fragment() {
 			technlogySectorHeader = resources.getString(R.string.filter_by_sector),
 			updateResultsListener = updateResultsListener
 		)
-
-        mainViewModel.cacheFilters()
     }
 
     override fun onCreateView(

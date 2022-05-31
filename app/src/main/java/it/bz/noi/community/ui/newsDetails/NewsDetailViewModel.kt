@@ -9,40 +9,46 @@ import it.bz.noi.community.data.models.News
 import it.bz.noi.community.data.repository.MainRepository
 import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Utils
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 
-class NewsDetailViewModel(private val mainRepository: MainRepository, savedStateHandle: SavedStateHandle) : ViewModel() {
+class NewsDetailViewModel(
+	private val mainRepository: MainRepository,
+	savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
 	companion object {
-		private const val NEWS_ID_ARG = "newsId"
+		const val NEWS_ID_ARG = "newsId"
+		private const val NEWS_ARG = "news"
 	}
 
-	private val _newsId = MutableStateFlow<String>(
-        savedStateHandle.get(NEWS_ID_ARG)
-            ?: throw IllegalStateException("Missing required argument $NEWS_ID_ARG")
-    )
-	val news: Flow<Resource<News>> = _newsId.flatMapLatest { newsId ->
-		loadNewsById(newsId)
-	}
+	private val news = MutableStateFlow<News?>(savedStateHandle.get(NEWS_ARG))
+	private val newsId = MutableStateFlow<String?>(savedStateHandle.get(NEWS_ID_ARG))
 
-	private fun loadNewsById(newsId: String) = flow {
-        emit(Resource.loading(null))
-        try {
-            emit(
-                Resource.success(
-                    data = mainRepository.getNewsDetails(
-                        newsId,
-                        Utils.getAppLanguage()
-                    )
-                )
-            )
-        } catch (exception: Exception) {
-            emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
-        }
-    }
+	val newsFlow: Flow<Resource<News>> = news.combine(newsId) { _news, _newsId ->
+		Resource.loading(null)
+		when {
+			_news != null -> {
+				Resource.success(
+					data = _news
+				)
+			}
+			_newsId != null -> {
+				try {
+					Resource.success(
+						data = mainRepository.getNewsDetails(
+							_newsId!!,
+							Utils.getAppLanguage()
+						)
+					)
+				} catch (exception: Exception) {
+					Resource.error(data = null, message = exception.message ?: "Error Occurred!")
+				}
+			}
+			else -> {
+				Resource.error(data = null, message = "Missing arguments $NEWS_ID_ARG and $NEWS_ARG")
+			}
+		}
+	}
 }
 
 class NewsDetailViewModelFactory(
@@ -53,7 +59,8 @@ class NewsDetailViewModelFactory(
 	override fun <T : ViewModel?> create(
 		key: String,
 		modelClass: Class<T>,
-		handle: SavedStateHandle): T {
+		handle: SavedStateHandle
+	): T {
 		if (modelClass.isAssignableFrom(NewsDetailViewModel::class.java)) {
 			return NewsDetailViewModel(MainRepository(apiHelper), handle) as T
 		}

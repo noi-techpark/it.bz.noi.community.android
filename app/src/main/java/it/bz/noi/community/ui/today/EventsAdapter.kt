@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -25,6 +24,7 @@ import it.bz.noi.community.utils.Utils.getEventName
  */
 interface EventClickListener {
 	fun onEventClick(
+		event: EventsResponse.Event,
 		cardEvent: MaterialCardView,
 		cardDate: CardView,
 		eventName: TextView,
@@ -34,7 +34,6 @@ interface EventClickListener {
 		constraintLayout: ConstraintLayout,
 		locationIcon: ImageView,
 		timeIcon: ImageView,
-		event: EventsResponse.Event
 	)
 }
 
@@ -46,7 +45,6 @@ interface EventClickListener {
 class EventsAdapter(
 	private val events: List<EventsResponse.Event>,
 	private val listener: EventClickListener,
-	private val fragment: Fragment,
 	private val isSuggestedEvents: Boolean = false
 ) :
 	RecyclerView.Adapter<EventsAdapter.EventViewHolder>() {
@@ -69,14 +67,14 @@ class EventsAdapter(
 
 	inner class EventViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-		private val cardEvent = view.findViewById<MaterialCardView>(R.id.cardViewEvent)
-		private val cardDate = view.findViewById<CardView>(R.id.cardViewDate)
-		private val constraintLayout = view.findViewById<ConstraintLayout>(R.id.constraintLayout)
 		private val eventName = view.findViewById<TextView>(R.id.tvEventName)
 		private val eventLocation = view.findViewById<TextView>(R.id.tvEventLocation)
 		private val eventDate = view.findViewById<TextView>(R.id.tvEventDate)
 		private val eventTime = view.findViewById<TextView>(R.id.tvEventTime)
 		private val eventImage = view.findViewById<ImageView>(R.id.ivEventImage)
+		private val cardEvent = view.findViewById<MaterialCardView>(R.id.cardViewEvent)
+		private val cardDate = view.findViewById<CardView>(R.id.cardViewDate)
+		private val constraintLayout = view.findViewById<ConstraintLayout>(R.id.constraintLayout)
 		private val locationIcon = view.findViewById<ImageView>(R.id.ivLocation)
 		private val timeIcon = view.findViewById<ImageView>(R.id.ivTime)
 
@@ -84,10 +82,8 @@ class EventsAdapter(
 
 		init {
 			view.rootView.setOnClickListener {
-				// it should be used for avoiding clicked view to fade out. But for letting other
-				// transactions to work in fragment I cannot use this
-				//(fragment.exitTransition as TransitionSet).excludeTarget(view, true)
 				listener.onEventClick(
+					event,
 					cardEvent,
 					cardDate,
 					eventName,
@@ -97,7 +93,6 @@ class EventsAdapter(
 					constraintLayout,
 					locationIcon,
 					timeIcon,
-					event
 				)
 			}
 		}
@@ -107,15 +102,6 @@ class EventsAdapter(
 
 			eventName.text = getEventName(event)
 			eventLocation.text = event.location
-
-			constraintLayout.transitionName = "constraintLayout_${event.eventId}"
-			eventName.transitionName = "eventName_${event.eventId}"
-			cardDate.transitionName = "cardDate_${event.eventId}"
-			eventLocation.transitionName = "eventLocation_${event.eventId}"
-			eventTime.transitionName = "eventTime_${event.eventId}"
-			eventImage.transitionName = "eventImage_${event.eventId}"
-			locationIcon.transitionName = "locationIcon_${event.eventId}"
-			timeIcon.transitionName = "timeIcon_${event.eventId}"
 
 			eventDate.text = getDateIntervalString(event.startDate, event.endDate)
 			eventTime.text = getHoursIntervalString(event.startDate, event.endDate)
@@ -128,6 +114,19 @@ class EventsAdapter(
 				.apply(options)
 				.centerCrop()
 				.into(eventImage)
+
+			setTransitionNames(event.eventId!!)
+		}
+
+		private fun setTransitionNames(eventId: String) {
+			constraintLayout.transitionName = "constraintLayout_$eventId"
+			eventName.transitionName = "eventName_$eventId"
+			cardDate.transitionName = "cardDate_$eventId"
+			eventLocation.transitionName = "eventLocation_$eventId"
+			eventTime.transitionName = "eventTime_$eventId"
+			eventImage.transitionName = "eventImage_$eventId"
+			locationIcon.transitionName = "locationIcon_$eventId"
+			timeIcon.transitionName = "timeIcon_$eventId"
 		}
 
 	}

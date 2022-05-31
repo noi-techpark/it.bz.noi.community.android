@@ -109,10 +109,18 @@
 	<fragment
 		android:id="@+id/newsDetails"
 		android:name="it.bz.noi.community.ui.newsDetails.NewsDetailsFragment"
-		android:label=" " >
+		android:label=" ">
+		<deepLink
+			android:id="@+id/newsDetailsDeepLink"
+			app:uri="noi-community://it.bz.noi.community/newsDetails/{newsId}" />
 		<argument
 			android:name="newsId"
-			app:argType="string" />
+			app:argType="string"
+			app:nullable="true" />
+		<argument
+			android:name="news"
+			app:argType="it.bz.noi.community.data.models.News"
+			app:nullable="true" />
 	</fragment>
 	<fragment
 		android:id="@+id/contactDetails"

@@ -60,7 +60,6 @@ class SplashScreenActivity : AppCompatActivity() {
 		binding = ActivitySplashBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 		try {
-
 			val video =
 				Uri.parse("android.resource://" + packageName + "/" + R.raw.noi_splash_screen_video)
 			binding.vwSplash.apply {

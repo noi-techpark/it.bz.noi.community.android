@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
-import androidx.core.view.ViewCompat
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -31,7 +31,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
@@ -76,17 +75,18 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		EventsAdapter(
 			suggestedEvents,
 			this@EventDetailsFragment,
-			this@EventDetailsFragment,
 			true
 		)
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-
 		sharedElementEnterTransition =
-			TransitionInflater.from(context).inflateTransition(R.transition.change_bounds)
-		postponeEnterTransition()
+			TransitionInflater.from(context).inflateTransition(R.transition.events_details_enter_transition)
+		sharedElementReturnTransition = null
+
+		if (savedInstanceState == null)
+			postponeEnterTransition()
 	}
 
 	override fun onCreateView(
@@ -104,6 +104,10 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		binding.rvSuggestedEvents.apply {
 			layoutManager = LinearLayoutManager(requireContext(), HORIZONTAL, false)
 			adapter = suggestedEventsAdapter
+
+			doOnPreDraw {
+				startPostponedEnterTransition()
+			}
 		}
 
 		mainViewModel.mediatorEvents.observe(viewLifecycleOwner, Observer {
@@ -117,7 +121,8 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 						(requireActivity() as AppCompatActivity).supportActionBar?.title =
 							getEventName(selectedEvent)
 
-						setupTransitions(selectedEvent.eventId!!, getImageUrl(selectedEvent))
+						setTransitionNames(selectedEvent.eventId!!)
+						loadEventImage(getImageUrl(selectedEvent))
 
 						setDate(selectedEvent.startDate, selectedEvent.endDate)
 
@@ -246,23 +251,21 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 	/**
 	 * Setup the transition for having the shared animation effect
 	 */
-	private fun setupTransitions(eventID: String, eventImageUrl: String?) {
-		ViewCompat.setTransitionName(binding.cardViewDate, "cardDate_${eventID}")
-		ViewCompat.setTransitionName(binding.constraintLayout, "constraintLayout_${eventID}")
-		ViewCompat.setTransitionName(binding.tvEventName, "eventName_${eventID}")
-		ViewCompat.setTransitionName(binding.tvEventLocation, "eventLocation_${eventID}")
-		ViewCompat.setTransitionName(binding.tvEventTime, "eventTime_${eventID}")
-		ViewCompat.setTransitionName(binding.ivEventImage, "eventImage_${eventID}")
-		ViewCompat.setTransitionName(binding.ivLocation, "locationIcon_${eventID}")
-		ViewCompat.setTransitionName(binding.ivTime, "timeIcon_${eventID}")
+	private fun setTransitionNames(eventId: String) {
+		binding.cardViewDate.transitionName = "cardDate_${eventId}"
+		binding.constraintLayout.transitionName = "constraintLayout_${eventId}"
+		binding.tvEventName.transitionName = "eventName_${eventId}"
+		binding.tvEventLocation.transitionName = "eventLocation_${eventId}"
+		binding.tvEventTime.transitionName = "eventTime_${eventId}"
+		binding.ivEventImage.transitionName = "eventImage_${eventId}"
+		binding.ivLocation.transitionName = "locationIcon_${eventId}"
+		binding.ivTime.transitionName = "timeIcon_${eventId}"
+	}
 
-		val options: RequestOptions = RequestOptions()
-			.placeholder(R.drawable.placeholder_noi_events)
-
+	private fun loadEventImage(eventImageUrl: String?) {
 		Glide
 			.with(requireContext())
 			.load(eventImageUrl)
-			.apply(options)
 			.listener(object : RequestListener<Drawable> {
 				override fun onLoadFailed(
 					e: GlideException?,
@@ -285,6 +288,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 					return false
 				}
 			})
+			.placeholder(R.drawable.placeholder_noi_events)
 			.centerCrop()
 			.into(binding.ivEventImage)
 	}
@@ -301,6 +305,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 	 * Clicking on suggested event will result in open another EventDetailsFragment instance
 	 */
 	override fun onEventClick(
+		event: EventsResponse.Event,
 		cardEvent: MaterialCardView,
 		cardDate: CardView,
 		eventName: TextView,
@@ -310,7 +315,6 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		constraintLayout: ConstraintLayout,
 		locationIcon: ImageView,
 		timeIcon: ImageView,
-		event: EventsResponse.Event
 	) {
 		val extras = FragmentNavigatorExtras(
 			constraintLayout to "constraintLayout_${event.eventId}",
@@ -322,6 +326,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 			locationIcon to "locationIcon_${event.eventId}",
 			timeIcon to "timeIcon_${event.eventId}"
 		)
+
 		findNavController().navigate(
 			EventDetailsFragmentDirections.actionEventDetailsFragmentSelf(
 				allEvents.indexOf(event)

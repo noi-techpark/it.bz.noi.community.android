@@ -22,6 +22,11 @@ object Utils {
 	const val GERMAN = "de"
 	const val FALLBACK_LANGUAGE = "en"
 
+	private const val NEWS_TOPIC_IT = "newsfeednoi_it"
+	private const val NEWS_TOPIC_DE = "newsfeednoi_de"
+	private const val NEWS_TOPIC_EN = "newsfeednoi_en"
+	val allNoiNewsTopics: List<String> = listOf(NEWS_TOPIC_EN, NEWS_TOPIC_IT, NEWS_TOPIC_DE)
+
 	fun getAppLanguage(): String? {
 		val language = Locale.getDefault().language
 		if (language in listOf(ENGLISH, ITALIAN, GERMAN))
@@ -83,6 +88,14 @@ object Utils {
 			newUriBuilder.appendQueryParameter(HIDEZOOM_PARAM, "1")
 
 		return newUriBuilder.build().toString()
+	}
+
+	fun getPreferredNoiNewsTopic(): String {
+		return when (Locale.getDefault().language) {
+			ITALIAN -> NEWS_TOPIC_IT
+			GERMAN -> NEWS_TOPIC_DE
+			else -> NEWS_TOPIC_EN
+		}
 	}
 
 	fun Context.openLinkInExternalBrowser(url: String) {

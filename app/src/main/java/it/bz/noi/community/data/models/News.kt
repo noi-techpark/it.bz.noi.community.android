@@ -1,9 +1,14 @@
 package it.bz.noi.community.data.models
 
+import android.os.Parcelable
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import it.bz.noi.community.utils.Utils
+import kotlinx.parcelize.Parcelize
 import java.util.*
 
+@Keep
+@Parcelize
 data class News(
 	@SerializedName("Id")
 	val id: String,
@@ -14,40 +19,48 @@ data class News(
 	@SerializedName("ContactInfos")
 	val contactInfo: Map<String, ContactInfo>,
 	@SerializedName("ImageGallery")
-	val images: List<NewsImage>?,
+	val images: List<NewsImage>? = null,
 	@SerializedName("ODHTags")
-	val tags: List<Tag>?
-)
+	val tags: List<Tag>? = null
+) : Parcelable
 
+@Keep
+@Parcelize
 data class Tag(
 	@SerializedName("Id")
-	val id: String?
-)
+	val id: String? = null,
+) : Parcelable
 
+@Keep
+@Parcelize
 data class Detail(
 	@SerializedName("Title")
-	val title: String?,
+	val title: String? = null,
 	@SerializedName("AdditionalText")
-	val abstract: String?,
+	val abstract: String? = null,
 	@SerializedName("BaseText")
-	val text: String?,
-)
+	val text: String? = null,
+) : Parcelable
 
+@Keep
+@Parcelize
 data class ContactInfo(
 	@SerializedName("CompanyName")
-	val publisher: String?,
+	val publisher: String? = null,
 	@SerializedName("LogoUrl")
-	val logo: String?,
+	val logo: String? = null,
 	@SerializedName("Url")
-	val externalLink: String?,
+	val externalLink: String? = null,
 	@SerializedName("Email")
-	val email: String?,
-)
+	val email: String? = null,
+) : Parcelable
 
+@Keep
+@Parcelize
 data class NewsImage(
 	@SerializedName("ImageUrl")
-	val url: String?
-)
+	val url: String? = null
+) : Parcelable
 
 fun News.getDetail(): Detail? {
 	return detail[Utils.getAppLanguage()]

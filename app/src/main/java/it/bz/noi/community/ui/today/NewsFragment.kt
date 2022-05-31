@@ -4,11 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -31,7 +38,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 
-class NewsFragment  : Fragment() {
+class NewsFragment : Fragment() {
 
 	private var _binding: FragmentNewsBinding? = null
 	private val binding get() = _binding!!
@@ -44,10 +51,30 @@ class NewsFragment  : Fragment() {
 	})
 
 	private val newsAdapter = PagingNewsAdapter(NewsComparator, object : NewsDetailListener {
-		override fun openNewsDetail(newsId: String) {
-			findNavController().navigate(TodayFragmentDirections.actionNavigationTodayToNewsDetails(newsId))
+		override fun openNewsDetail(
+			news: News,
+			header: ConstraintLayout,
+			logo: ImageView,
+			publisher: TextView,
+			date: TextView,
+			title: TextView,
+			shortText: TextView
+		) {
+			val extras = FragmentNavigatorExtras(
+				header to "header_${news.id}",
+				logo to "logo_${news.id}",
+				publisher to "publisher_${news.id}",
+				date to "date_${news.id}",
+				title to "title_${news.id}",
+				shortText to "shortText_${news.id}"
+			)
+			findNavController().navigate(
+				TodayFragmentDirections.actionNavigationTodayToNewsDetails(
+					null,
+					news
+				), extras
+			)
 		}
-
 	})
 
 	override fun onCreateView(
@@ -69,11 +96,17 @@ class NewsFragment  : Fragment() {
 
 		binding.news.apply {
 			adapter = newsAdapter
+
+			doOnPreDraw {
+				startPostponedEnterTransition()
+			}
 		}
 
 		viewLifecycleOwner.lifecycleScope.launch {
-			viewModel.newsFlow.collectLatest { pagingData ->
-				newsAdapter.submitData(pagingData)
+			repeatOnLifecycle(Lifecycle.State.STARTED) {
+				viewModel.newsFlow.collectLatest { pagingData ->
+					newsAdapter.submitData(pagingData)
+				}
 			}
 		}
 
@@ -85,7 +118,11 @@ class NewsFragment  : Fragment() {
 					}
 					is LoadState.Error -> {
 						binding.swipeRefreshNews.isRefreshing = false
-						Toast.makeText(requireContext(), (loadStates.refresh as LoadState.Error).error.message, Toast.LENGTH_LONG).show()
+						Toast.makeText(
+							requireContext(),
+							(loadStates.refresh as LoadState.Error).error.message,
+							Toast.LENGTH_LONG
+						).show()
 					}
 					is LoadState.NotLoading -> {
 						binding.swipeRefreshNews.isRefreshing = false
@@ -98,7 +135,11 @@ class NewsFragment  : Fragment() {
 					}
 					is LoadState.Error -> {
 						binding.swipeRefreshNews.isRefreshing = false
-						Toast.makeText(requireContext(), (loadStates.append as LoadState.Error).error.message, Toast.LENGTH_LONG).show()
+						Toast.makeText(
+							requireContext(),
+							(loadStates.append as LoadState.Error).error.message,
+							Toast.LENGTH_LONG
+						).show()
 					}
 					is LoadState.NotLoading -> {
 						binding.swipeRefreshNews.isRefreshing = false
@@ -115,22 +156,39 @@ class NewsFragment  : Fragment() {
 }
 
 interface NewsDetailListener {
-	fun openNewsDetail(newsId: String)
+	fun openNewsDetail(
+		news: News,
+		header: ConstraintLayout,
+		logo: ImageView,
+		publisher: TextView,
+		date: TextView,
+		title: TextView,
+		shortText: TextView
+	)
 }
 
-class NewsVH(private val binding: ViewHolderNewsBinding, detailListener: NewsDetailListener) : RecyclerView.ViewHolder(binding.root) {
+class NewsVH(private val binding: ViewHolderNewsBinding, detailListener: NewsDetailListener) :
+	RecyclerView.ViewHolder(binding.root) {
 
 	private val df = DateFormat.getDateInstance(DateFormat.SHORT)
-	private lateinit var newsId: String
+	private lateinit var news: News
 
 	init {
-	    binding.root.setOnClickListener {
-			detailListener.openNewsDetail(newsId)
+		binding.root.setOnClickListener {
+			detailListener.openNewsDetail(
+				news,
+				binding.header,
+				binding.logo,
+				binding.publisher,
+				binding.date,
+				binding.title,
+				binding.shortText
+			)
 		}
 	}
 
 	fun bind(news: News) {
-		newsId = news.id
+		this.news = news
 		binding.date.text = df.format(news.date)
 		binding.importantTag.isVisible = news.hasImportantFlag()
 		news.getDetail()?.let { detail ->
@@ -146,11 +204,25 @@ class NewsVH(private val binding: ViewHolderNewsBinding, detailListener: NewsDet
 				.into(binding.logo)
 
 		}
+
+		setTransitionNames(news.id)
+	}
+
+	private fun setTransitionNames(newsId: String) {
+		binding.header.transitionName = "header_${newsId}"
+		binding.logo.transitionName = "logo_${newsId}"
+		binding.publisher.transitionName = "publisher_${newsId}"
+		binding.date.transitionName = "date_${newsId}"
+		binding.title.transitionName = "title_${newsId}"
+		binding.shortText.transitionName = "shortText_${newsId}"
 	}
 
 }
 
-class PagingNewsAdapter(diffCallback: DiffUtil.ItemCallback<News>, private val detailListener: NewsDetailListener) : PagingDataAdapter<News, NewsVH>(diffCallback) {
+class PagingNewsAdapter(
+	diffCallback: DiffUtil.ItemCallback<News>,
+	private val detailListener: NewsDetailListener
+) : PagingDataAdapter<News, NewsVH>(diffCallback) {
 	override fun onBindViewHolder(holder: NewsVH, position: Int) {
 		getItem(position)?.let {
 			holder.bind(it)
@@ -158,7 +230,13 @@ class PagingNewsAdapter(diffCallback: DiffUtil.ItemCallback<News>, private val d
 	}
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsVH {
-		return NewsVH(ViewHolderNewsBinding.inflate(LayoutInflater.from(parent.context), parent, false), detailListener)
+		return NewsVH(
+			ViewHolderNewsBinding.inflate(
+				LayoutInflater.from(parent.context),
+				parent,
+				false
+			), detailListener
+		)
 	}
 
 }

@@ -32,10 +32,6 @@ android {
 
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-		manifestPlaceholders += [
-			'appAuthRedirectScheme': 'noi-community'
-		]
-
 		buildConfigField("String", "ISSUER_URL", "\"https://auth.opendatahub.bz.it/auth/realms/noi/\"")
 		buildConfigField("String", "SIGNUP_URL", "\"https://auth.opendatahub.bz.it/auth/realms/noi/protocol/openid-connect/registrations?client_id=it.bz.noi.community&redirect_uri=https://noi.bz.it&response_type=code&scope=openid\"")
 		buildConfigField("String", "COMMUNITY_API_URL", "\"https://api.community.noi.opendatahub.bz.it/\"")
@@ -141,6 +137,7 @@ dependencies {
 	implementation platform('com.google.firebase:firebase-bom:28.4.2')
 	// When using the BoM, you don't specify versions in Firebase library dependencies
 	implementation 'com.google.firebase:firebase-crashlytics-ktx'
+	implementation 'com.google.firebase:firebase-messaging-ktx'
 
 	// OAuth
 	implementation 'net.openid:appauth:0.11.1'

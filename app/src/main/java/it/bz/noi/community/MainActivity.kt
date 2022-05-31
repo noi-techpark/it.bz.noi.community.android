@@ -25,9 +25,11 @@ import it.bz.noi.community.databinding.ActivityMainBinding
 import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
+import it.bz.noi.community.notifications.MessagingService
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
+import it.bz.noi.community.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.openid.appauth.AuthorizationException
@@ -100,7 +102,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
 		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
 			when (status) {
 				is AuthStateStatus.Authorized -> {
@@ -114,7 +115,8 @@ class MainActivity : AppCompatActivity() {
 					}
 				}
 				is AuthStateStatus.Error,
-				AuthStateStatus.Unauthorized.UserAuthRequired -> {
+				AuthStateStatus.Unauthorized.UserAuthRequired,
+				AuthStateStatus.Unauthorized.NotValidRole -> {
 					goToOnboardingActivity()
 				}
 				else -> {
@@ -123,16 +125,25 @@ class MainActivity : AppCompatActivity() {
 			}
 		}
 
+		MessagingService.createChannelIfNeeded(this)
+		if (BuildConfig.DEBUG) {
+			MessagingService.registrationToken()
+		}
+		subscribeToNewsTopic(Utils.getPreferredNoiNewsTopic())
 
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        if (navController.currentBackStackEntry?.destination?.id == R.id.filtersFragment) {
-        	if (!mainViewModel.isFiltersSameAsCached()) {
-				mainViewModel.restoreCachedFilters()
-				mainViewModel.refreshEvents()
+	private fun subscribeToNewsTopic(preferredNewsTopic: String) {
+		// Per gestire eventuale cambio lingua del dispositivo, faccio prima l'unsubscribe dai topics delle altre lingue
+		Utils.allNoiNewsTopics
+			.filter { it != preferredNewsTopic }
+			.forEach { newsTopic ->
+				MessagingService.unsubscribeFromTopic(newsTopic)
 			}
-        }
+		MessagingService.subscribeToTopic(preferredNewsTopic)
+	}
+
+    override fun onSupportNavigateUp(): Boolean {
         navController.popBackStack()
         return super.onSupportNavigateUp()
     }
