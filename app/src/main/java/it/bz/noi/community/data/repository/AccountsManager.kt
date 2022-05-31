@@ -19,20 +19,20 @@ object AccountsManager {
 	private val mainRepository = MainRepository(ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService))
 	private val mainCoroutineScope = CoroutineScope(Dispatchers.Main + Job())
 
-	val availableCompanies: StateFlow<Map<String, Account>> = getAcccounts().map { res ->
+	val availableCompanies: StateFlow<Map<String, Account>> = getAcccounts().flatMapLatest { res ->
 		when (res.status) {
 			Status.SUCCESS -> {
 				val accounts = res.data!!
 				Log.d(TAG, "Caricati ${accounts.size} accounts")
-				accounts.associateBy { it.id }
+				flowOf(accounts.associateBy { it.id })
 			}
 			Status.ERROR -> {
 				Log.d(TAG, "Caricamento accounts KO")
-				emptyMap()
+				flowOf(emptyMap())
 			}
 			Status.LOADING -> {
 				Log.d(TAG, "Accounts in caricamento...")
-				emptyMap()
+				flowOf(emptyMap())
 			}
 		}
 	}.stateIn(mainCoroutineScope, SharingStarted.Lazily, emptyMap())
