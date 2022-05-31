@@ -3,8 +3,12 @@ package it.bz.noi.community.utils
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import it.bz.noi.community.R
 import it.bz.noi.community.data.models.EventsResponse
+import java.net.URLEncoder
 import java.util.*
+
 
 object Utils {
 
@@ -101,5 +105,30 @@ object Utils {
 			data = Uri.parse("tel:$phoneNumber")
 		}
 		startActivity(intent)
+	}
+
+	fun Context.findOnMaps(address: String) {
+		val encodedAddress = URLEncoder.encode(address, "utf-8")
+		val gmmIntentUri: Uri = Uri.parse("geo:0,0?q=$encodedAddress")
+		val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+
+		val mapAppsList = packageManager.queryIntentActivities(mapIntent, 0)
+
+		var isIntentSafe = false
+		for (application in mapAppsList) {
+			val packageName = application.activityInfo.packageName
+			if (packageName == "com.waze" || packageName == "com.google.android.apps.maps") {
+				isIntentSafe = true
+			}
+		}
+
+		if (isIntentSafe)
+			startActivity(mapIntent)
+		else
+			MaterialAlertDialogBuilder(this).apply {
+				setMessage(getString(R.string.maps_error_msg))
+				setPositiveButton(context.getString(R.string.ok_button)) { _, _ -> }
+				show()
+			}
 	}
 }

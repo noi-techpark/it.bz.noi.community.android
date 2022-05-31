@@ -18,6 +18,7 @@ import it.bz.noi.community.R
 import it.bz.noi.community.data.models.Contact
 import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.databinding.FragmentContactDetailsBinding
+import it.bz.noi.community.utils.Utils.findOnMaps
 import it.bz.noi.community.utils.Utils.showDial
 import it.bz.noi.community.utils.Utils.writeEmail
 import kotlinx.coroutines.*
@@ -67,7 +68,7 @@ class ContactDetailsFragment : Fragment() {
 				}
 
 				binding.sendEmail.setOnClickListener {
-					requireContext().writeEmail(contact.email ?: "")
+					requireContext().writeEmail(contact.email)
 				}
 			} else {
 				email.root.isVisible = false
@@ -93,9 +94,10 @@ class ContactDetailsFragment : Fragment() {
 			}
 
 			if (company?.address != null) {
+				val formattedAddress = company.address.replace("\r\n", ", ")
+
 				address.apply {
 					fieldLbl.text = getString(R.string.label_address)
-					val formattedAddress = company.address.replace("\r\n", " ")
 					fieldValue.text = formattedAddress
 					root.setOnClickListener {
 						copyToClipboard("address_copied", formattedAddress)
@@ -104,7 +106,7 @@ class ContactDetailsFragment : Fragment() {
 				}
 
 				binding.find.setOnClickListener {
-					// TODO
+					requireContext().findOnMaps(formattedAddress)
 				}
 			} else {
 				address.root.isVisible = false

@@ -3,9 +3,24 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../private/var/folders/n9/t4ktbxr55qv6hwf208p8723c0000gs/T/drawable-temp/fake_of_ic_copy_selector.xml" value="0.3015" />
+        <entry key="../../../../private/var/folders/n9/t4ktbxr55qv6hwf208p8723c0000gs/T/drawable-temp/fake_of_ic_copy_selector1.xml" value="0.2375" />
+        <entry key="../../../../private/var/folders/n9/t4ktbxr55qv6hwf208p8723c0000gs/T/drawable-temp/fake_of_ic_test.xml" value="0.2305" />
+        <entry key="../../../../private/var/folders/n9/t4ktbxr55qv6hwf208p8723c0000gs/T/drawable-temp/fake_of_ic_test1.xml" value="0.4555" />
+        <entry key="app/src/main/res/drawable-anydpi/ic_notification.xml" value="0.212" />
+        <entry key="app/src/main/res/drawable-xxxhdpi/ic_notification_test.xml" value="0.212" />
+        <entry key="app/src/main/res/drawable-xxxhdpi/ic_test_disabled.xml" value="0.2305" />
+        <entry key="app/src/main/res/drawable/contact_field_background.xml" value="0.3525" />
         <entry key="app/src/main/res/drawable/default_dot.xml" value="0.3475" />
+        <entry key="app/src/main/res/drawable/ic_copy.xml" value="0.2305" />
+        <entry key="app/src/main/res/drawable/ic_copy_selector.xml" value="0.2305" />
+        <entry key="app/src/main/res/drawable/ic_copy_transition.xml" value="0.2305" />
+        <entry key="app/src/main/res/drawable/ic_copy_with_check.xml" value="0.2305" />
         <entry key="app/src/main/res/drawable/ic_filter.xml" value="0.3712962962962963" />
         <entry key="app/src/main/res/drawable/ic_meet.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.212" />
+        <entry key="app/src/main/res/drawable/ic_test_enabled.xml" value="0.2305" />
+        <entry key="app/src/main/res/drawable/ic_test_enabled_to_disabled.xml" value="0.2305" />
         <entry key="app/src/main/res/drawable/onboarding_gradient.xml" value="0.312" />
         <entry key="app/src/main/res/drawable/selected_dot.xml" value="0.3475" />
         <entry key="app/src/main/res/drawable/splash_theme.xml" value="0.38333333333333336" />
@@ -13,7 +28,9 @@
         <entry key="app/src/main/res/layout/activity_auth.xml" value="0.6354051054384018" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.44128553770086526" />
         <entry key="app/src/main/res/layout/activity_onboarding.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/contact_detail_field.xml" value="0.3317657118426678" />
         <entry key="app/src/main/res/layout/fragment_authorization_error.xml" value="0.33689610944848225" />
+        <entry key="app/src/main/res/layout/fragment_contact_details.xml" value="0.3715262932877298" />
         <entry key="app/src/main/res/layout/fragment_eat.xml" value="0.15577507598784193" />
         <entry key="app/src/main/res/layout/fragment_event_details.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_meet.xml" value="0.1104400634765625" />
@@ -30,11 +47,14 @@
         <entry key="app/src/main/res/layout/vh_contact.xml" value="0.24326635314236852" />
         <entry key="app/src/main/res/layout/vh_eat.xml" value="0.3203125" />
         <entry key="app/src/main/res/layout/vh_header.xml" value="0.24326635314236852" />
+        <entry key="app/src/main/res/layout/vh_horizontal_image.xml" value="0.31881371640407785" />
         <entry key="app/src/main/res/layout/vh_image.xml" value="0.3203125" />
         <entry key="app/src/main/res/layout/vh_link_item.xml" value="0.15577507598784193" />
+        <entry key="app/src/main/res/layout/vh_vertical_image_news.xml" value="0.11329628046173579" />
         <entry key="app/src/main/res/layout/view_holder_app_version.xml" value="0.2006079027355623" />
         <entry key="app/src/main/res/layout/view_holder_event.xml" value="0.4931150027376217" />
         <entry key="app/src/main/res/layout/view_holder_filter_events.xml" value="0.3203125" />
+        <entry key="app/src/main/res/layout/view_holder_news.xml" value="0.2205746061167748" />
         <entry key="app/src/main/res/layout/view_holder_suggested_event.xml" value="0.19047619047619047" />
         <entry key="app/src/main/res/layout/view_holder_time_filter.xml" value="0.15577507598784193" />
       </map>
