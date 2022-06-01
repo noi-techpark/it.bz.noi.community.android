@@ -105,7 +105,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 			}
 		}
 
-		binding.cdFilterEvents.setOnClickListener {
+		binding.cdFilterEvents.root.setOnClickListener {
 			exitTransition = null
 			findNavController().navigate(
 				TodayFragmentDirections.actionNavigationTodayToFiltersFragment()
@@ -148,11 +148,13 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		}
 
 		viewModel.selectedFiltersCount.observe(viewLifecycleOwner) { count ->
-			if (count > 0) {
-				binding.appliedFiltersCount.visibility = View.VISIBLE
-				binding.appliedFiltersCount.text = "($count)"
-			} else {
-				binding.appliedFiltersCount.visibility = View.GONE
+			binding.cdFilterEvents.appliedFiltersCount.apply {
+				if (count > 0) {
+					isVisible = true
+					text = "($count)"
+				} else {
+					isVisible = false
+				}
 			}
 		}
 	}

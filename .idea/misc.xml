@@ -29,11 +29,13 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.44128553770086526" />
         <entry key="app/src/main/res/layout/activity_onboarding.xml" value="0.1" />
         <entry key="app/src/main/res/layout/contact_detail_field.xml" value="0.3317657118426678" />
+        <entry key="app/src/main/res/layout/filter_button.xml" value="0.41000427533133815" />
         <entry key="app/src/main/res/layout/fragment_authorization_error.xml" value="0.33689610944848225" />
         <entry key="app/src/main/res/layout/fragment_contact_details.xml" value="0.3715262932877298" />
         <entry key="app/src/main/res/layout/fragment_eat.xml" value="0.15577507598784193" />
         <entry key="app/src/main/res/layout/fragment_event_details.xml" value="0.375" />
-        <entry key="app/src/main/res/layout/fragment_meet.xml" value="0.1104400634765625" />
+        <entry key="app/src/main/res/layout/fragment_events.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_meet.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_meetOLD.xml" value="0.24326635314236852" />
         <entry key="app/src/main/res/layout/fragment_more.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_my_account.xml" value="0.26849080803762293" />

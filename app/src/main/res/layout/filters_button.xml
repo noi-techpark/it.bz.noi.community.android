@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/filtersBtn"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:backgroundTint="@color/background_color"
+	app:cardCornerRadius="@dimen/cornerRadius"
+	app:cardElevation="0dp">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+
+		<ImageView
+			android:id="@+id/filtersIcon"
+			android:layout_width="@dimen/filters_bar_height"
+			android:layout_height="@dimen/filters_bar_height"
+			android:importantForAccessibility="no"
+			android:padding="8dp"
+			android:src="@drawable/ic_filter"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"/>
+
+		<TextView
+			android:id="@+id/appliedFiltersCount"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:textColor="@color/primary_color"
+			android:visibility="gone"
+			android:paddingEnd="7dp"
+			app:layout_constraintStart_toEndOf="@id/filtersIcon"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			tools:visibility="visible"
+			tools:text="(2)"/>
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
