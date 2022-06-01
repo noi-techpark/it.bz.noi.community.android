@@ -16,26 +16,37 @@ object AccountsManager {
 
 	private const val TAG = "AccountsManager"
 
-	private val mainRepository = MainRepository(ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService))
+	private val mainRepository = MainRepository(
+		ApiHelper(
+			RetrofitBuilder.opendatahubApiService,
+			RetrofitBuilder.communityApiService
+		)
+	)
 	private val mainCoroutineScope = CoroutineScope(Dispatchers.Main + Job())
 
-	val availableCompanies: StateFlow<Map<String, Account>> = getAcccounts().flatMapLatest { res ->
-		when (res.status) {
-			Status.SUCCESS -> {
-				val accounts = res.data!!
-				Log.d(TAG, "Caricati ${accounts.size} accounts")
-				flowOf(accounts.associateBy { it.id })
-			}
-			Status.ERROR -> {
-				Log.d(TAG, "Caricamento accounts KO")
-				flowOf(emptyMap())
-			}
-			Status.LOADING -> {
-				Log.d(TAG, "Accounts in caricamento...")
-				flowOf(emptyMap())
+	private val reloadTickerFlow = MutableSharedFlow<Unit>(replay = 1)
+
+	private val reloadableAccountsFlow: Flow<Map<String, Account>> = reloadTickerFlow.flatMapLatest {
+		getAcccounts().flatMapLatest { res ->
+			when (res.status) {
+				Status.SUCCESS -> {
+					val accounts = res.data!!
+					Log.d(TAG, "Caricati ${accounts.size} accounts")
+					flowOf(accounts.associateBy { it.id })
+				}
+				Status.ERROR -> {
+					Log.d(TAG, "Caricamento accounts KO")
+					flowOf(emptyMap())
+				}
+				Status.LOADING -> {
+					Log.d(TAG, "Accounts in caricamento...")
+					flowOf(emptyMap())
+				}
 			}
 		}
-	}.stateIn(mainCoroutineScope, SharingStarted.Lazily, emptyMap())
+	}
+
+	val availableCompanies: StateFlow<Map<String, Account>> = reloadableAccountsFlow.stateIn(mainCoroutineScope, SharingStarted.Lazily, emptyMap())
 
 	private fun getAcccounts() = flow {
 		emit(Resource.loading(null))
@@ -47,5 +58,7 @@ object AccountsManager {
 			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
 		}
 	}
+
+	fun relaod() = reloadTickerFlow.tryEmit(Unit)
 
 }

@@ -105,14 +105,7 @@ class MainActivity : AppCompatActivity() {
 		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
 			when (status) {
 				is AuthStateStatus.Authorized -> {
-					lifecycleScope.launch {
-						repeatOnLifecycle(Lifecycle.State.STARTED) {
-							AccountsManager.availableCompanies.collect {
-								if (it.isNotEmpty())
-									Log.d(TAG, "Mappa aziende disponibile")
-							}
-						}
-					}
+					AccountsManager.relaod()
 				}
 				is AuthStateStatus.Error,
 				AuthStateStatus.Unauthorized.UserAuthRequired,
@@ -122,6 +115,12 @@ class MainActivity : AppCompatActivity() {
 				else -> {
 					// Nothing to do
 				}
+			}
+		}
+
+		lifecycleScope.launch {
+			repeatOnLifecycle(Lifecycle.State.STARTED) {
+				AccountsManager.availableCompanies.collect {}
 			}
 		}
 
