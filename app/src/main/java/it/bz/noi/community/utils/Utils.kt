@@ -7,6 +7,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.bz.noi.community.R
 import it.bz.noi.community.data.models.EventsResponse
 import java.net.URLEncoder
+import java.text.Normalizer
 import java.util.*
 
 
@@ -143,5 +144,11 @@ object Utils {
 				setPositiveButton(context.getString(R.string.ok_button)) { _, _ -> }
 				show()
 			}
+	}
+
+	fun String.removeAccents(): String {
+		var string = Normalizer.normalize(this, Normalizer.Form.NFD)
+		string = Regex("\\p{InCombiningDiacriticalMarks}+").replace(string, "")
+		return string
 	}
 }

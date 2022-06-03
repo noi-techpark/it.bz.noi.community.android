@@ -31,6 +31,7 @@
 		style="@style/ThemeOverlay.NOI.SearchField">
 
 		<com.google.android.material.textfield.TextInputEditText
+			android:id="@+id/searchFieldEditText"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:lines="1"

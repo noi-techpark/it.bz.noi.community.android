@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -19,6 +20,7 @@ import it.bz.noi.community.databinding.FragmentMeetBinding
 import it.bz.noi.community.databinding.VhContactBinding
 import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.utils.Status
+import it.bz.noi.community.utils.Utils.removeAccents
 import kotlinx.coroutines.Dispatchers
 
 class MeetFragment : Fragment() {
@@ -31,6 +33,8 @@ class MeetFragment : Fragment() {
 	})
 
 	private lateinit var contactsAdapter: ContactsAdapter
+
+	private var allContacts: List<Contact> = emptyList()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -64,20 +68,20 @@ class MeetFragment : Fragment() {
 			viewModel.refreshContacts()
 		}
 
-
 		viewModel.contactsFlow.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) { res ->
 			when (res.status) {
 				Status.SUCCESS -> {
 					val contacts = res.data!!
 					Log.d(TAG, "Caricati ${contacts.size} contatti")
 					val availableCompanies = AccountsManager.availableCompanies.value
-					contactsAdapter.items = contacts.map { c ->
+					allContacts = contacts.map { c ->
 						if (c.accountId != null) {
 							c.copy(companyName = availableCompanies.get(c.accountId)?.name)
 						} else {
 							c
 						}
 					}
+					contactsAdapter.items = allContacts
 					binding.swipeRefreshContacts.isRefreshing = false
 				}
 				Status.ERROR -> {
@@ -89,6 +93,17 @@ class MeetFragment : Fragment() {
 				Status.LOADING -> {
 					Log.d(TAG, "Contatti in caricamento...")
 					binding.swipeRefreshContacts.isRefreshing = true
+				}
+			}
+		}
+
+		binding.searchFieldEditText.doOnTextChanged { text, _, _, _ ->
+			if (text.isNullOrEmpty()) {
+				contactsAdapter.items = allContacts
+			} else {
+				val matchingText = text.toString().removeAccents()
+				contactsAdapter.items = allContacts.filter { c ->
+					c.fullName.removeAccents().contains(matchingText, ignoreCase = true)
 				}
 			}
 		}
