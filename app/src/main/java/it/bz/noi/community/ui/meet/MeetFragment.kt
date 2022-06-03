@@ -7,12 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.RecyclerView
+import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.Contact
@@ -20,15 +26,21 @@ import it.bz.noi.community.databinding.FragmentMeetBinding
 import it.bz.noi.community.databinding.VhContactBinding
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MeetFragment : Fragment() {
 
 	private var _binding: FragmentMeetBinding? = null
 	private val binding get() = _binding!!
 
-	private val viewModel: MeetViewModel by viewModels(factoryProducer = {
+	private val viewModel: MeetViewModel by navGraphViewModels(R.id.mobile_navigation, factoryProducer = {
 		MeetViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService), this)
 	})
+
+/*	private val viewModel: MeetViewModel by viewModels(factoryProducer = {
+		MeetViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService), this)
+	})*/
 
 	private lateinit var contactsAdapter: ContactsAdapter
 
@@ -85,9 +97,23 @@ class MeetFragment : Fragment() {
 			}
 		}
 
-		binding.searchFieldEditText.doOnTextChanged { text, _, _, _ ->
+		binding.searchFieldEditText.addTextChangedListener { text ->
+			Log.d(TAG, "searchFieldEditText value: $text")
 			viewModel.updateSearchParam(text)
 		}
+
+		// FIXME il testo dovrebbe venir ripristinato in automatico al cambio di tab
+		viewLifecycleOwner.lifecycleScope.launch {
+			repeatOnLifecycle(Lifecycle.State.STARTED) {
+				viewModel.searchParamFlow.collectLatest {
+					it?.let { searchParam ->
+						if (!binding.searchFieldEditText.text.contentEquals(searchParam))
+							binding.searchFieldEditText.setText(searchParam)
+					}
+				}
+			}
+		}
+
 	}
 
 	companion object {

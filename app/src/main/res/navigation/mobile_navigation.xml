@@ -39,6 +39,10 @@
 		<action
 			android:id="@+id/action_to_contactDetails"
 			app:destination="@id/contactDetails" />
+		<argument
+			android:name="search_param_state"
+			app:argType="string"
+			app:nullable="true" />
 	</fragment>
 
     <fragment

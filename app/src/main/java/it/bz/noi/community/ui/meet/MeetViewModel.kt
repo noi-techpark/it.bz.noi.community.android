@@ -31,7 +31,7 @@ class MeetViewModel(
 		reloadableContactsFlow()
 	}
 
-	private val searchParamFlow = MutableSharedFlow<CharSequence?>(replay = 1).apply {
+	val searchParamFlow = MutableSharedFlow<CharSequence?>(replay = 1).apply {
 		tryEmit(savedStateHandle.get(SEARCH_PARAM_STATE))
 	}
 
