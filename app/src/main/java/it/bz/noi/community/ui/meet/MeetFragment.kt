@@ -10,11 +10,10 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.RecyclerView
-import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.Contact
@@ -29,13 +28,9 @@ class MeetFragment : Fragment() {
 	private var _binding: FragmentMeetBinding? = null
 	private val binding get() = _binding!!
 
-	private val viewModel: MeetViewModel by navGraphViewModels(R.id.mobile_navigation, factoryProducer = {
+	private val viewModel: MeetViewModel by viewModels(factoryProducer = {
 		MeetViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService), this)
 	})
-
-/*	private val viewModel: MeetViewModel by viewModels(factoryProducer = {
-		MeetViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService), this)
-	})*/
 
 	private lateinit var contactsAdapter: ContactsAdapter
 
