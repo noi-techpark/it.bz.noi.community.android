@@ -14,7 +14,30 @@
 		android:layout_marginStart="@dimen/default_margin"
 		android:layout_marginEnd="10dp"
 		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/searchField"
 		app:layout_constraintTop_toTopOf="parent"/>
+
+	<com.google.android.material.textfield.TextInputLayout
+		android:id="@+id/searchField"
+		android:layout_width="0dp"
+		android:layout_height="40dp"
+		android:layout_marginEnd="@dimen/default_margin"
+		android:theme="@style/ThemeOverlay.NOI.EditText"
+		app:layout_constraintStart_toEndOf="@id/contactsFilter"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="@id/contactsFilter"
+		app:startIconDrawable="@drawable/ic_search"
+		app:endIconMode="clear_text"
+		style="@style/ThemeOverlay.NOI.SearchField">
+
+		<com.google.android.material.textfield.TextInputEditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:lines="1"
+			android:maxLines="1"
+			android:hint="@string/search_label"
+			/>
+	</com.google.android.material.textfield.TextInputLayout>
 
 	<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 		android:id="@+id/swipeRefreshContacts"
@@ -23,7 +46,8 @@
 		android:paddingTop="@dimen/default_margin"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/contactsFilter"
-		app:layout_constraintStart_toStartOf="parent">
+		app:layout_constraintStart_toStartOf="parent"
+		tools:visibility="gone">
 
 	<androidx.recyclerview.widget.RecyclerView
 			android:id="@+id/contacts"
@@ -37,7 +61,6 @@
 			tools:itemCount="10"/>
 
 	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
