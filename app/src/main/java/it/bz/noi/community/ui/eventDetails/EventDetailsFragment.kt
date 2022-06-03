@@ -82,7 +82,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		sharedElementEnterTransition =
-			TransitionInflater.from(context).inflateTransition(R.transition.events_details_enter_transition)
+			TransitionInflater.from(requireContext()).inflateTransition(R.transition.events_details_enter_transition)
 		sharedElementReturnTransition = null
 
 		if (savedInstanceState == null)

@@ -10,10 +10,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.RecyclerView
@@ -26,8 +23,6 @@ import it.bz.noi.community.databinding.VhContactBinding
 import it.bz.noi.community.databinding.VhEmptyBinding
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 class MeetFragment : Fragment() {
 
@@ -99,18 +94,6 @@ class MeetFragment : Fragment() {
 
 		binding.searchFieldEditText.addTextChangedListener { text ->
 			viewModel.updateSearchParam(text)
-		}
-
-		// FIXME provare con multiple back stacks
-		viewLifecycleOwner.lifecycleScope.launch {
-			repeatOnLifecycle(Lifecycle.State.STARTED) {
-				viewModel.searchParamFlow.collectLatest {
-					it?.let { searchParam ->
-						if (!binding.searchFieldEditText.text.contentEquals(searchParam))
-							binding.searchFieldEditText.setText(searchParam)
-					}
-				}
-			}
 		}
 
 	}
