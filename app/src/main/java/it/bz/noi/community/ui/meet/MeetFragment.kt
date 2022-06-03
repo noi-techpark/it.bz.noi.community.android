@@ -18,9 +18,7 @@ import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.Contact
 import it.bz.noi.community.databinding.FragmentMeetBinding
 import it.bz.noi.community.databinding.VhContactBinding
-import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.utils.Status
-import it.bz.noi.community.utils.Utils.removeAccents
 import kotlinx.coroutines.Dispatchers
 
 class MeetFragment : Fragment() {
@@ -29,12 +27,10 @@ class MeetFragment : Fragment() {
 	private val binding get() = _binding!!
 
 	private val viewModel: MeetViewModel by viewModels(factoryProducer = {
-		MeetViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService))
+		MeetViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService), this)
 	})
 
 	private lateinit var contactsAdapter: ContactsAdapter
-
-	private var allContacts: List<Contact> = emptyList()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -68,20 +64,12 @@ class MeetFragment : Fragment() {
 			viewModel.refreshContacts()
 		}
 
-		viewModel.contactsFlow.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) { res ->
+		viewModel.filteredContactsFlow.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) { res ->
 			when (res.status) {
 				Status.SUCCESS -> {
 					val contacts = res.data!!
 					Log.d(TAG, "Caricati ${contacts.size} contatti")
-					val availableCompanies = AccountsManager.availableCompanies.value
-					allContacts = contacts.map { c ->
-						if (c.accountId != null) {
-							c.copy(companyName = availableCompanies.get(c.accountId)?.name)
-						} else {
-							c
-						}
-					}
-					contactsAdapter.items = allContacts
+					contactsAdapter.items = contacts
 					binding.swipeRefreshContacts.isRefreshing = false
 				}
 				Status.ERROR -> {
@@ -98,14 +86,7 @@ class MeetFragment : Fragment() {
 		}
 
 		binding.searchFieldEditText.doOnTextChanged { text, _, _, _ ->
-			if (text.isNullOrEmpty()) {
-				contactsAdapter.items = allContacts
-			} else {
-				val matchingText = text.toString().removeAccents()
-				contactsAdapter.items = allContacts.filter { c ->
-					c.fullName.removeAccents().contains(matchingText, ignoreCase = true)
-				}
-			}
+			viewModel.updateSearchParam(text)
 		}
 	}
 
