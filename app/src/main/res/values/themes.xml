@@ -111,7 +111,8 @@
 		<item name="android:textIsSelectable">true</item>
 
 		<item name="endIconTint">@color/secondary_color</item>
-		<item name="startIconTint">@color/textinputlayout_start_icon_color</item> <!-- FIXME -->
+		<item name="startIconTint">@color/text_input_layout_start_icon_color</item>
+
 	</style>
 
 	<style name="ShapeAppearance.NOI.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
