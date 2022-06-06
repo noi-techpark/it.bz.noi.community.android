@@ -1,4 +1,4 @@
-package it.bz.noi.community.ui.today
+package it.bz.noi.community.ui.today.events
 
 import android.os.Bundle
 import android.util.Log
@@ -17,7 +17,7 @@ import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.utils.Status
 
-class FiltersFragment : Fragment() {
+class EventsFiltersFragment : Fragment() {
 
     private lateinit var filterAdapter: FiltersAdapter
     private lateinit var binding: FragmentFiltersBinding

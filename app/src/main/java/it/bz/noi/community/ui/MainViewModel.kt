@@ -10,7 +10,7 @@ import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.models.*
 import it.bz.noi.community.data.repository.FilterRepository
 import it.bz.noi.community.data.repository.MainRepository
-import it.bz.noi.community.ui.today.NewsPagingSource
+import it.bz.noi.community.ui.today.news.NewsPagingSource
 import it.bz.noi.community.utils.DateUtils.endOfDay
 import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentMonth
 import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentWeek

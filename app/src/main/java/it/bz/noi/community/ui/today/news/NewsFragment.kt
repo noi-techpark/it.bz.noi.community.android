@@ -1,4 +1,4 @@
-package it.bz.noi.community.ui.today
+package it.bz.noi.community.ui.today.news
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -34,6 +34,7 @@ import it.bz.noi.community.databinding.FragmentNewsBinding
 import it.bz.noi.community.databinding.ViewHolderNewsBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
+import it.bz.noi.community.ui.today.TodayFragmentDirections
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.DateFormat

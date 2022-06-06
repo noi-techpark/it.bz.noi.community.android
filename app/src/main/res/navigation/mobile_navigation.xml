@@ -100,7 +100,7 @@
     </fragment>
     <fragment
         android:id="@+id/filtersFragment"
-        android:name="it.bz.noi.community.ui.today.FiltersFragment"
+        android:name="it.bz.noi.community.ui.today.events.EventsFiltersFragment"
         android:label="@string/title_filters"
         tools:layout="@layout/fragment_filters" />
     <action

@@ -1,4 +1,4 @@
-package it.bz.noi.community.ui.today
+package it.bz.noi.community.ui.today.events
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -28,6 +28,8 @@ import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentEventsBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
+import it.bz.noi.community.ui.today.TodayFragmentDirections
+import it.bz.noi.community.ui.today.TodayViewModel
 import it.bz.noi.community.utils.Status
 
 class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {

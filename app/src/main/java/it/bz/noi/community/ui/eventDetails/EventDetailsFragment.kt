@@ -42,8 +42,8 @@ import it.bz.noi.community.databinding.FragmentEventDetailsBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
-import it.bz.noi.community.ui.today.EventClickListener
-import it.bz.noi.community.ui.today.EventsAdapter
+import it.bz.noi.community.ui.today.events.EventClickListener
+import it.bz.noi.community.ui.today.events.EventsAdapter
 import it.bz.noi.community.utils.DateUtils
 import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils
