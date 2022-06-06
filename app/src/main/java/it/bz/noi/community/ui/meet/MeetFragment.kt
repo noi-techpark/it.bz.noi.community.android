@@ -68,6 +68,18 @@ class MeetFragment : Fragment() {
 			viewModel.refreshContacts()
 		}
 
+		binding.searchFieldEditText.addTextChangedListener { text ->
+			viewModel.updateSearchParam(text)
+		}
+
+		binding.contactsFilter.root.setOnClickListener {
+			findNavController().navigate(MeetFragmentDirections.actionMeetToFilters())
+		}
+
+		setupObservers()
+	}
+
+	private fun setupObservers() {
 		viewModel.filteredContactsFlow.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) { res ->
 			when (res.status) {
 				Status.SUCCESS -> {
@@ -89,14 +101,16 @@ class MeetFragment : Fragment() {
 			}
 		}
 
-		binding.searchFieldEditText.addTextChangedListener { text ->
-			viewModel.updateSearchParam(text)
+		viewModel.selectedFiltersCount.observe(viewLifecycleOwner) { count ->
+			binding.contactsFilter.appliedFiltersCount.apply {
+				if (count > 0) {
+					isVisible = true
+					text = "($count)"
+				} else {
+					isVisible = false
+				}
+			}
 		}
-
-		binding.contactsFilter.root.setOnClickListener {
-			findNavController().navigate(MeetFragmentDirections.actionMeetToFilters())
-		}
-
 	}
 
 	companion object {
