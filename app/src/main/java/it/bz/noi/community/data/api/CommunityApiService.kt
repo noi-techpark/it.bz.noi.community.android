@@ -4,7 +4,7 @@ import it.bz.noi.community.data.models.*
 import retrofit2.http.*
 
 interface CommunityApiService {
-    @GET("/accounts?@p1='crb14_accountcat_placepresscommunity'&@p2=['952210000']&\$select=name,noi_nameit,telephone1,address1_composite&\$filter=Microsoft.Dynamics.CRM.ContainValues(PropertyName%3D%40p1,PropertyValues%3D%40p2)%20and%20statuscode%20eq%201&\$count=true")
+    @GET("/accounts?@p1='crb14_accountcat_placepresscommunity'&@p2=['952210000']&\$select=name,noi_nameit,telephone1,address1_composite,crb14_accountcat_placepresscommunity&\$filter=Microsoft.Dynamics.CRM.ContainValues(PropertyName%3D%40p1,PropertyValues%3D%40p2)%20and%20statuscode%20eq%201&\$count=true")
     suspend fun getAccounts(
 		@Header("Authorization") accessToken: String
 	): AccountsResponse

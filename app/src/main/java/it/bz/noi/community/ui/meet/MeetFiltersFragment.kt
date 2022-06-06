@@ -1,7 +1,6 @@
 package it.bz.noi.community.ui.meet
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +10,13 @@ import androidx.navigation.navGraphViewModels
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
+import it.bz.noi.community.data.models.*
+import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.UpdateResultsListener
 import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.COMPANY_FILTER
 import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.RESEARCH_INSTITUTION_FILTER
 import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.STARTUP_FILTER
-import it.bz.noi.community.utils.Status
 
 class MeetFiltersFragment : Fragment() {
 
@@ -33,6 +33,23 @@ class MeetFiltersFragment : Fragment() {
 		override fun updateResults() {
 			// TODO
 		//	viewModel.updateSelectedFilters(filterAdapter.filters.filter { it.checked })
+		}
+	}
+
+	private val filters: Map<Int, List<FilterValue>> by lazy {
+		val allAccounts = AccountsManager.availableCompanies.value.values
+		val accountGroups: Map<AccountType, List<Account>> = allAccounts.groupBy {
+			it.getAccountType()
+		}
+
+		accountGroups.filterKeys {
+			it != AccountType.DEFAULT
+		}.mapKeys {
+			it.key.filterCode!!
+		}.mapValues {
+			it.value.map { a ->
+				a.toFilterValue()
+			}
 		}
 	}
 
@@ -56,6 +73,19 @@ class MeetFiltersFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFiltersBinding.inflate(inflater)
+		return binding.root
+    }
+
+	override fun onDestroyView() {
+		super.onDestroyView()
+		_binding = null
+	}
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+		filterAdapter.filters = filters
+
 
 		// TODO
 /*		viewModel.appliedFilters.observe(requireActivity()) {
@@ -78,16 +108,6 @@ class MeetFiltersFragment : Fragment() {
 				}
 			}
 		}*/
-		return binding.root
-    }
-
-	override fun onDestroyView() {
-		super.onDestroyView()
-		_binding = null
-	}
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
             filterstRV.adapter = filterAdapter

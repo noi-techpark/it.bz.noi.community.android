@@ -27,7 +27,7 @@ object AccountsManager {
 	private val reloadTickerFlow = MutableSharedFlow<Unit>(replay = 1)
 
 	private val reloadableAccountsFlow: Flow<Map<String, Account>> = reloadTickerFlow.flatMapLatest {
-		getAcccounts().flatMapLatest { res ->
+		getAccounts().flatMapLatest { res ->
 			when (res.status) {
 				Status.SUCCESS -> {
 					val accounts = res.data!!
@@ -48,7 +48,7 @@ object AccountsManager {
 
 	val availableCompanies: StateFlow<Map<String, Account>> = reloadableAccountsFlow.stateIn(mainCoroutineScope, SharingStarted.Lazily, emptyMap())
 
-	private fun getAcccounts() = flow {
+	private fun getAccounts() = flow {
 		emit(Resource.loading(null))
 		try {
 			val accessToken = AuthManager.obtainFreshToken()
