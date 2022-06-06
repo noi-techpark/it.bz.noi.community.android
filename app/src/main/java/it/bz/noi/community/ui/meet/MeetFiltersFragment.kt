@@ -1,4 +1,4 @@
-package it.bz.noi.community.ui.today.events
+package it.bz.noi.community.ui.meet
 
 import android.os.Bundle
 import android.util.Log
@@ -6,40 +6,46 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
-import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentFiltersBinding
-import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.UpdateResultsListener
-import it.bz.noi.community.ui.ViewModelFactory
+import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.COMPANY_FILTER
+import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.RESEARCH_INSTITUTION_FILTER
+import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.STARTUP_FILTER
 import it.bz.noi.community.utils.Status
 
-class EventsFiltersFragment : Fragment() {
+class MeetFiltersFragment : Fragment() {
 
-    private lateinit var filterAdapter: EventsFiltersAdapter
-    private lateinit var binding: FragmentFiltersBinding
+    private lateinit var filterAdapter: MeetFiltersAdapter
 
-    private val mainViewModel: MainViewModel by activityViewModels(factoryProducer = {
-		ViewModelFactory(ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
-			JsonFilterRepository(requireActivity().application))
-    })
+    private var _binding: FragmentFiltersBinding? = null
+	private val binding get() = _binding!!
+
+	private val viewModel: MeetViewModel by navGraphViewModels(R.id.navigation_meet, factoryProducer = {
+		MeetViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService), this)
+	})
 
 	private val updateResultsListener = object : UpdateResultsListener {
 		override fun updateResults() {
-			mainViewModel.updateSelectedFilters(filterAdapter.filters.filter { it.checked })
+			// TODO
+		//	viewModel.updateSelectedFilters(filterAdapter.filters.filter { it.checked })
 		}
 	}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-		filterAdapter = EventsFiltersAdapter(
-			eventTypeHeader = resources.getString(R.string.filter_by_type),
-			technlogySectorHeader = resources.getString(R.string.filter_by_sector),
+		val headers = mapOf(
+			COMPANY_FILTER to getString(R.string.filter_by_company),
+			STARTUP_FILTER to getString(R.string.filter_by_startup),
+			RESEARCH_INSTITUTION_FILTER to getString(R.string.filter_by_research_institution)
+		)
+		filterAdapter = MeetFiltersAdapter(
+			headers = headers,
 			updateResultsListener = updateResultsListener
 		)
     }
@@ -49,14 +55,15 @@ class EventsFiltersFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentFiltersBinding.inflate(inflater)
+        _binding = FragmentFiltersBinding.inflate(inflater)
 
-		mainViewModel.appliedFilters.observe(requireActivity()) {
+		// TODO
+/*		viewModel.appliedFilters.observe(requireActivity()) {
 			filterAdapter.filters = it
 			mainViewModel.refreshEvents()
 		}
 
-        mainViewModel.mediatorEvents.observe(viewLifecycleOwner) {
+        viewModel.mediatorEvents.observe(viewLifecycleOwner) {
 			when (it.status) {
 				Status.LOADING -> {
 					// Continuiamo a mostrare il valore precedente, per evitare side effects grafici introducendo un loader sul pulsante
@@ -70,9 +77,14 @@ class EventsFiltersFragment : Fragment() {
 					Log.e(TAG, "Error loading results with new filters selection")
 				}
 			}
-		}
+		}*/
 		return binding.root
     }
+
+	override fun onDestroyView() {
+		super.onDestroyView()
+		_binding = null
+	}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -96,7 +108,8 @@ class EventsFiltersFragment : Fragment() {
     }
 
     private fun resetFilters() {
-		mainViewModel.updateSelectedFilters(emptyList())
+    	// TODO
+		//viewModel.updateSelectedFilters(emptyList())
     }
 
 	companion object {

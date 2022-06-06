@@ -13,7 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.RecyclerView
+import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.Contact
@@ -28,7 +30,7 @@ class MeetFragment : Fragment() {
 	private var _binding: FragmentMeetBinding? = null
 	private val binding get() = _binding!!
 
-	private val viewModel: MeetViewModel by viewModels(factoryProducer = {
+	private val viewModel: MeetViewModel by navGraphViewModels(R.id.navigation_meet, factoryProducer = {
 		MeetViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService), this)
 	})
 
@@ -89,6 +91,10 @@ class MeetFragment : Fragment() {
 
 		binding.searchFieldEditText.addTextChangedListener { text ->
 			viewModel.updateSearchParam(text)
+		}
+
+		binding.contactsFilter.root.setOnClickListener {
+			findNavController().navigate(MeetFragmentDirections.actionMeetToFilters())
 		}
 
 	}

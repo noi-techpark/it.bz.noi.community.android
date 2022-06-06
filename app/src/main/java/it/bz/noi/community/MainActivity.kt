@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.navigation_today,
                 R.id.navigation_orientate,
-                R.id.navigation_meet,
+                R.id.meet,
                 R.id.navigation_eat,
                 R.id.navigation_more
             )
@@ -89,7 +89,8 @@ class MainActivity : AppCompatActivity() {
 						}
 					}
 				}
-                R.id.eventDetailsFragment, R.id.newsDetails, R.id.filtersFragment, R.id.myAccount, R.id.contactDetails -> {
+                R.id.eventDetailsFragment, R.id.newsDetails, R.id.eventsFiltersFragment, R.id.myAccount,
+				R.id.contactDetails, R.id.meetFiltersFragment -> {
 					supportActionBar?.show()
                     (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
                         18f

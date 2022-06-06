@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_today" >
         <action
             android:id="@+id/action_navigation_today_to_filtersFragment"
-            app:destination="@id/filtersFragment"
+            app:destination="@id/eventsFiltersFragment"
             app:enterAnim="@anim/left_to_right"
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/fade_in"
@@ -31,21 +31,7 @@
         android:label="@string/title_orientate"
         tools:layout="@layout/fragment_orientate"/>
 
-    <fragment
-        android:id="@+id/navigation_meet"
-        android:name="it.bz.noi.community.ui.meet.MeetFragment"
-        android:label="@string/title_meet"
-        tools:layout="@layout/fragment_meet" >
-		<action
-			android:id="@+id/action_to_contactDetails"
-			app:destination="@id/contactDetails" />
-		<argument
-			android:name="search_param_state"
-			app:argType="string"
-			app:nullable="true" />
-	</fragment>
-
-    <fragment
+	<fragment
         android:id="@+id/navigation_eat"
         android:name="it.bz.noi.community.ui.eat.EatFragment"
         android:label="@string/title_eat"
@@ -99,7 +85,7 @@
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/filtersFragment"
+        android:id="@+id/eventsFiltersFragment"
         android:name="it.bz.noi.community.ui.today.events.EventsFiltersFragment"
         android:label="@string/title_filters"
         tools:layout="@layout/fragment_filters" />
@@ -126,13 +112,42 @@
 			app:argType="it.bz.noi.community.data.models.News"
 			app:nullable="true" />
 	</fragment>
-	<fragment
-		android:id="@+id/contactDetails"
-		android:name="it.bz.noi.community.ui.meet.ContactDetailsFragment"
-		android:label=" "
-		tools:layout="@layout/fragment_contact_details">
-		<argument
-			android:name="contact"
-			app:argType="it.bz.noi.community.data.models.Contact" />
-	</fragment>
+
+	<navigation android:id="@+id/navigation_meet"
+		app:startDestination="@id/meet">
+		<fragment
+			android:id="@+id/meet"
+			android:name="it.bz.noi.community.ui.meet.MeetFragment"
+			android:label="@string/title_meet"
+			tools:layout="@layout/fragment_meet">
+			<action
+				android:id="@+id/action_to_contactDetails"
+				app:destination="@id/contactDetails" />
+			<argument
+				android:name="search_param_state"
+				app:argType="string"
+				app:nullable="true" />
+			<action
+				android:id="@+id/action_meet_to_filters"
+				app:destination="@id/meetFiltersFragment"
+				app:enterAnim="@anim/left_to_right"
+				app:exitAnim="@anim/fade_out"
+				app:popEnterAnim="@anim/fade_in"
+				app:popExitAnim="@anim/right_to_left" />
+		</fragment>
+		<fragment
+			android:id="@+id/meetFiltersFragment"
+			android:name="it.bz.noi.community.ui.meet.MeetFiltersFragment"
+			android:label="@string/title_filters"
+			tools:layout="@layout/fragment_filters" />
+		<fragment
+			android:id="@+id/contactDetails"
+			android:name="it.bz.noi.community.ui.meet.ContactDetailsFragment"
+			android:label=" "
+			tools:layout="@layout/fragment_contact_details">
+			<argument
+				android:name="contact"
+				app:argType="it.bz.noi.community.data.models.Contact" />
+		</fragment>
+	</navigation>
 </navigation>

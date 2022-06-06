@@ -199,7 +199,7 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	 */
 	private fun getEventFilterValues() = liveData(Dispatchers.IO) {
 		emit(Resource.loading(null))
-		var filters: List<MultiLangFilterValue>
+		var filters: List<MultiLangEventsFilterValue>
 		try {
 			filters = mainRepository.getEventFilterValues()
 			if (filters.isEmpty())

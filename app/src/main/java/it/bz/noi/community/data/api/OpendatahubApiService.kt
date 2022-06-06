@@ -32,7 +32,7 @@ interface OpendatahubApiService {
 	): Map<String, String>
 
 	@GET("https://tourism.opendatahub.bz.it/v1/EventShortTypes?rawfilter=or(eq(Type,\"TechnologyFields\"),and(eq(Type,\"CustomTagging\"),eq(Parent,\"EventType\")))")
-	suspend fun getEventFilterValues(): List<MultiLangFilterValue>
+	suspend fun getEventFilterValues(): List<MultiLangEventsFilterValue>
 
 	@GET("v1/Article")
 	suspend fun getNews(
