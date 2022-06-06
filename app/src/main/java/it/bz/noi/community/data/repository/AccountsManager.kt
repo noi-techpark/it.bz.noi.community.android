@@ -3,7 +3,7 @@ package it.bz.noi.community.data.repository
 import android.util.Log
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
-import it.bz.noi.community.data.models.Account
+import it.bz.noi.community.data.models.*
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
@@ -60,5 +60,25 @@ object AccountsManager {
 	}
 
 	fun relaod() = reloadTickerFlow.tryEmit(Unit)
+
+	val availableAccountsFilters: StateFlow<Map<Int, List<FilterValue>>> = availableCompanies.flatMapLatest {
+		val accountGroups: Map<AccountType, List<Account>> = it.values.groupBy { a ->
+			a.getAccountType()
+		}
+
+		flowOf(mapAccountsToFilters(accountGroups))
+	}.stateIn(mainCoroutineScope, SharingStarted.Lazily, emptyMap())
+
+	private fun mapAccountsToFilters(accountGroups: Map<AccountType, List<Account>>): Map<Int, List<FilterValue>> {
+		return accountGroups.filterKeys { type ->
+			type != AccountType.DEFAULT
+		}.mapKeys {
+			it.key.filterCode!!
+		}.mapValues {
+			it.value.map { account ->
+				account.toFilterValue()
+			}
+		}
+	}
 
 }

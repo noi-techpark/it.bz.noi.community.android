@@ -5,6 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import it.bz.noi.community.R
@@ -17,6 +20,7 @@ import it.bz.noi.community.ui.UpdateResultsListener
 import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.COMPANY_FILTER
 import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.RESEARCH_INSTITUTION_FILTER
 import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.STARTUP_FILTER
+import kotlinx.coroutines.launch
 
 class MeetFiltersFragment : Fragment() {
 
@@ -33,23 +37,6 @@ class MeetFiltersFragment : Fragment() {
 		override fun updateResults() {
 			// TODO
 		//	viewModel.updateSelectedFilters(filterAdapter.filters.filter { it.checked })
-		}
-	}
-
-	private val filters: Map<Int, List<FilterValue>> by lazy {
-		val allAccounts = AccountsManager.availableCompanies.value.values
-		val accountGroups: Map<AccountType, List<Account>> = allAccounts.groupBy {
-			it.getAccountType()
-		}
-
-		accountGroups.filterKeys {
-			it != AccountType.DEFAULT
-		}.mapKeys {
-			it.key.filterCode!!
-		}.mapValues {
-			it.value.map { a ->
-				a.toFilterValue()
-			}
 		}
 	}
 
@@ -84,7 +71,15 @@ class MeetFiltersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-		filterAdapter.filters = filters
+		viewLifecycleOwner.lifecycleScope.launch {
+			viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+				AccountsManager.availableAccountsFilters.collect { filters ->
+					filterAdapter.filters = filters
+				}
+			}
+		}
+
+
 
 
 		// TODO
