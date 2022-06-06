@@ -20,6 +20,7 @@ import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import java.util.*
 
@@ -38,6 +39,7 @@ class ViewModelFactory(private val apiHelper: ApiHelper, private val filterRepo:
 /**
  * The ViewModel shared between all the components of the app
  */
+@ExperimentalCoroutinesApi
 class MainViewModel(private val mainRepository: MainRepository, private val filterRepo: FilterRepository) : ViewModel() {
 
 	companion object {

@@ -1,26 +1,25 @@
 package it.bz.noi.community.ui.meet
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.*
-import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.UpdateResultsListener
 import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.COMPANY_FILTER
 import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.RESEARCH_INSTITUTION_FILTER
 import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.STARTUP_FILTER
-import kotlinx.coroutines.launch
+import it.bz.noi.community.utils.Status
+import kotlinx.coroutines.Dispatchers
 
 class MeetFiltersFragment : Fragment() {
 
@@ -35,8 +34,11 @@ class MeetFiltersFragment : Fragment() {
 
 	private val updateResultsListener = object : UpdateResultsListener {
 		override fun updateResults() {
-			// TODO
-		//	viewModel.updateSelectedFilters(filterAdapter.filters.filter { it.checked })
+			// FIXME
+			val selectedFilters: Map<Int, List<FilterValue>> = filterAdapter.filters.mapValues { entry ->
+				entry.value.filter { it.checked }
+			}
+			viewModel.updateSelectedFilters(selectedFilters)
 		}
 	}
 
@@ -71,38 +73,28 @@ class MeetFiltersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-		viewLifecycleOwner.lifecycleScope.launch {
-			viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-				AccountsManager.availableAccountsFilters.collect { filters ->
-					filterAdapter.filters = filters
-				}
-			}
-		}
-
-
-
-
-		// TODO
-/*		viewModel.appliedFilters.observe(requireActivity()) {
+		viewModel.appliedFiltersFlow.asLiveData(Dispatchers.Main).observe(requireActivity()) {
+			// FIXME
 			filterAdapter.filters = it
-			mainViewModel.refreshEvents()
+			viewModel.refreshContacts()
 		}
 
-        viewModel.mediatorEvents.observe(viewLifecycleOwner) {
-			when (it.status) {
-				Status.LOADING -> {
-					// Continuiamo a mostrare il valore precedente, per evitare side effects grafici introducendo un loader sul pulsante
-					Log.d(TAG, "Loading results with new filters selection in progress...")
-				}
+		// FIXME
+		viewModel.filteredContactsFlow.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) { res ->
+			when (res.status) {
 				Status.SUCCESS -> {
-					updateNumberOfResults(it.data?.size ?: 0)
+					updateNumberOfResults(res.data?.size ?: 0)
 				}
 				Status.ERROR -> {
 					// Continuiamo a mostrare il valore precedente
 					Log.e(TAG, "Error loading results with new filters selection")
 				}
+				Status.LOADING -> {
+					// Continuiamo a mostrare il valore precedente, per evitare side effects grafici introducendo un loader sul pulsante
+					Log.d(TAG, "Loading results with new filters selection in progress...")
+				}
 			}
-		}*/
+		}
 
         binding.apply {
             filterstRV.adapter = filterAdapter
@@ -123,12 +115,11 @@ class MeetFiltersFragment : Fragment() {
     }
 
     private fun resetFilters() {
-    	// TODO
-		//viewModel.updateSelectedFilters(emptyList())
+		viewModel.updateSelectedFilters(emptyMap())
     }
 
 	companion object {
-		private const val TAG = "FiltersFragment"
+		private const val TAG = "MeetFiltersFragment"
 	}
 
 }

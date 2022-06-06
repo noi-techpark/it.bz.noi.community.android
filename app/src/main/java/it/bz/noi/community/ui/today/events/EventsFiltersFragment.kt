@@ -100,7 +100,7 @@ class EventsFiltersFragment : Fragment() {
     }
 
 	companion object {
-		private const val TAG = "FiltersFragment"
+		private const val TAG = "EventsFiltersFragment"
 	}
 
 }

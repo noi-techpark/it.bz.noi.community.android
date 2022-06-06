@@ -5,12 +5,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.models.Contact
+import it.bz.noi.community.data.models.FilterValue
 import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.data.repository.MainRepository
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils.removeAccents
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 
 class MeetViewModel(
@@ -34,6 +36,32 @@ class MeetViewModel(
 	val searchParamFlow = MutableSharedFlow<CharSequence?>(replay = 1).apply {
 		tryEmit(savedStateHandle.get(SEARCH_PARAM_STATE))
 	}
+
+	private val availableFiltersFlow: StateFlow<Map<Int,List<FilterValue>>> = AccountsManager.availableAccountsFilters
+	private val selectedFiltersFlow = MutableStateFlow(emptyMap<Int,List<FilterValue>>())
+
+	fun updateSelectedFilters(filters: Map<Int,List<FilterValue>>) {
+		selectedFiltersFlow.tryEmit(filters)
+		//contactsParams.selectedFilters = filters // TODO
+	}
+
+	val appliedFiltersFlow: Flow<Map<Int, List<FilterValue>>> = availableFiltersFlow.combine(selectedFiltersFlow) { availableFilters, selectedFilters ->
+		val appliedFilters = mutableMapOf<Int, List<FilterValue>>()
+		availableFilters.entries.forEach { availableEntry ->
+			appliedFilters[availableEntry.key] = availableEntry.value.map { f ->
+				f.copy(checked = selectedFilters[availableEntry.key]?.find { it.key == f.key } != null)
+			}
+		}
+		appliedFilters
+	}
+
+	// FIXME
+	val selectedFiltersCount = selectedFiltersFlow.flatMapLatest { selectedFilters ->
+		val count = selectedFilters.values.sumOf {
+			it.size
+		}
+		flowOf(count)
+	}.asLiveData(Dispatchers.IO)
 
 	private fun reloadableContactsFlow(): Flow<Resource<List<Contact>>> = flow {
 		emit(Resource.loading(data = null))
