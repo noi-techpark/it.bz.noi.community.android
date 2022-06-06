@@ -84,13 +84,28 @@ class MeetViewModel(
 	}
 
 	val filteredContactsFlow: Flow<Resource<List<Contact>>> =
-		searchParamFlow.combine(contactsFlow) { searchParam: CharSequence?, allContacts: Resource<List<Contact>> ->
-			if (searchParam.isNullOrEmpty())
+		combine(searchParamFlow, selectedFiltersFlow, contactsFlow) { searchParam: CharSequence?, selectedFilters: Map<Int,List<FilterValue>>, allContacts: Resource<List<Contact>> ->
+			if (searchParam.isNullOrEmpty() && selectedFilters.isNullOrEmpty())
 				allContacts
 			else {
 				when (allContacts.status) {
 					Status.SUCCESS -> {
-						val filteredContacts = allContacts.data!!.filterContacts(searchParam)
+						var filteredContacts = allContacts.data!!
+						if (!selectedFilters.isNullOrEmpty()) {
+
+							// FIXME
+							val accountIdsFilters = selectedFilters.values.reduce {acc, list ->
+								val newList = acc.toMutableList()
+								newList.addAll(list)
+								newList
+							}.map {
+								it.key
+							}
+							filteredContacts = filteredContacts.filterContactsByAccount(accountIdsFilters)
+						}
+						if (!searchParam.isNullOrEmpty()) {
+							filteredContacts = filteredContacts.filterContactsByName(searchParam)
+						}
 						Resource.success(data = filteredContacts)
 					}
 					else -> {
@@ -107,10 +122,16 @@ class MeetViewModel(
 		savedStateHandle.set(SEARCH_PARAM_STATE, searchParam)
 	}
 
-	private fun List<Contact>.filterContacts(text: CharSequence): List<Contact> {
+	private fun List<Contact>.filterContactsByName(text: CharSequence): List<Contact> {
 		val matchingText = text.toString().removeAccents()
 		return filter { c ->
 			c.fullName.removeAccents().contains(matchingText, ignoreCase = true)
+		}
+	}
+
+	private fun List<Contact>.filterContactsByAccount(accountIds: List<String>): List<Contact> {
+		return filter { c ->
+			accountIds.contains(c.accountId)
 		}
 	}
 
