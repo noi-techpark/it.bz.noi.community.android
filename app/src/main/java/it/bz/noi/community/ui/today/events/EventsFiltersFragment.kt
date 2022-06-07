@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -17,7 +18,9 @@ import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.UpdateResultsListener
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.utils.Status
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 class EventsFiltersFragment : Fragment() {
 
     private lateinit var filterAdapter: EventsFiltersAdapter
@@ -78,7 +81,9 @@ class EventsFiltersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            filterstRV.adapter = filterAdapter
+			searchField.isVisible = false
+
+			filterstRV.adapter = filterAdapter
 
             resetBtn.setOnClickListener {
                 resetFilters()
