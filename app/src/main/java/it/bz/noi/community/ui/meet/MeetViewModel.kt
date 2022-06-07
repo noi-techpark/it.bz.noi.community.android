@@ -34,29 +34,25 @@ class MeetViewModel(
 		reloadableContactsFlow()
 	}
 
-	val searchParamFlow = MutableSharedFlow<CharSequence?>(replay = 1).apply {
+	private val searchParamFlow = MutableSharedFlow<CharSequence?>(replay = 1).apply {
 		tryEmit(savedStateHandle.get(SEARCH_PARAM_STATE))
 	}
 
-	private val availableFiltersFlow: StateFlow<Map<AccountType,List<FilterValue>>> = AccountsManager.availableAccountsFilters
-	private val selectedFiltersFlow = MutableStateFlow(emptyMap<AccountType,List<FilterValue>>())
+	private val availableFiltersFlow: StateFlow<Map<AccountType, List<FilterValue>>> =
+		AccountsManager.availableAccountsFilters
+	private val selectedFiltersFlow = MutableStateFlow(emptyMap<AccountType, List<FilterValue>>())
 
-	fun updateSelectedFilters(filters: Map<AccountType,List<FilterValue>>) {
-		selectedFiltersFlow.tryEmit(filters)
-		//contactsParams.selectedFilters = filters // TODO
-	}
-
-	val appliedFiltersFlow: Flow<Map<AccountType, List<FilterValue>>> = availableFiltersFlow.combine(selectedFiltersFlow) { availableFilters, selectedFilters ->
-		val appliedFilters = mutableMapOf<AccountType, List<FilterValue>>()
-		availableFilters.entries.forEach { availableEntry ->
-			appliedFilters[availableEntry.key] = availableEntry.value.map { f ->
-				f.copy(checked = selectedFilters[availableEntry.key]?.find { it.key == f.key } != null)
+	val appliedFiltersFlow: Flow<Map<AccountType, List<FilterValue>>> =
+		availableFiltersFlow.combine(selectedFiltersFlow) { availableFilters, selectedFilters ->
+			val appliedFilters = mutableMapOf<AccountType, List<FilterValue>>()
+			availableFilters.entries.forEach { availableEntry ->
+				appliedFilters[availableEntry.key] = availableEntry.value.map { f ->
+					f.copy(checked = selectedFilters[availableEntry.key]?.find { it.key == f.key } != null)
+				}
 			}
+			appliedFilters
 		}
-		appliedFilters
-	}
 
-	// FIXME
 	val selectedFiltersCount = selectedFiltersFlow.flatMapLatest { selectedFilters ->
 		val count = selectedFilters.values.sumOf {
 			it.size
@@ -85,33 +81,36 @@ class MeetViewModel(
 	}
 
 	val filteredContactsFlow: Flow<Resource<List<Contact>>> =
-		combine(searchParamFlow, selectedFiltersFlow, contactsFlow) { searchParam: CharSequence?, selectedFilters: Map<AccountType,List<FilterValue>>, allContacts: Resource<List<Contact>> ->
-			if (searchParam.isNullOrEmpty() && selectedFilters.isNullOrEmpty())
-				allContacts
-			else {
-				when (allContacts.status) {
-					Status.SUCCESS -> {
+		combine(searchParamFlow, selectedFiltersFlow, contactsFlow) { searchParam: CharSequence?,
+																	  selectedFilters: Map<AccountType, List<FilterValue>>,
+																	  allContacts: Resource<List<Contact>> ->
+
+			when (allContacts.status) {
+				Status.SUCCESS -> {
+					if (searchParam.isNullOrEmpty() && selectedFilters.isNullOrEmpty())
+						allContacts
+					else {
 						var filteredContacts = allContacts.data!!
 						if (!selectedFilters.isNullOrEmpty()) {
-
-							// FIXME
-							val accountIdsFilters = selectedFilters.values.reduce {acc, list ->
+							val accountIdsFilters = selectedFilters.values.reduce { acc, list ->
 								val newList = acc.toMutableList()
 								newList.addAll(list)
 								newList
 							}.map {
 								it.key
 							}
-							filteredContacts = filteredContacts.filterContactsByAccount(accountIdsFilters)
+							filteredContacts =
+								filteredContacts.filterContactsByAccount(accountIdsFilters)
 						}
 						if (!searchParam.isNullOrEmpty()) {
-							filteredContacts = filteredContacts.filterContactsByName(searchParam)
+							filteredContacts =
+								filteredContacts.filterContactsByName(searchParam)
 						}
 						Resource.success(data = filteredContacts)
 					}
-					else -> {
-						allContacts
-					}
+				}
+				else -> {
+					allContacts
 				}
 			}
 		}
@@ -121,6 +120,10 @@ class MeetViewModel(
 	fun updateSearchParam(searchParam: CharSequence?) {
 		searchParamFlow.tryEmit(searchParam)
 		savedStateHandle.set(SEARCH_PARAM_STATE, searchParam)
+	}
+
+	fun updateSelectedFilters(filters: Map<AccountType, List<FilterValue>>) {
+		selectedFiltersFlow.tryEmit(filters)
 	}
 
 	private fun List<Contact>.filterContactsByName(text: CharSequence): List<Contact> {

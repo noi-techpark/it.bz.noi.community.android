@@ -71,12 +71,10 @@ class MeetFiltersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 		viewModel.appliedFiltersFlow.asLiveData(Dispatchers.Main).observe(requireActivity()) {
-			// FIXME
 			filterAdapter.filters = it
 			viewModel.refreshContacts()
 		}
 
-		// FIXME
 		viewModel.filteredContactsFlow.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) { res ->
 			when (res.status) {
 				Status.SUCCESS -> {
