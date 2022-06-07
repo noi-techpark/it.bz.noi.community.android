@@ -72,7 +72,6 @@ class MeetFiltersFragment : Fragment() {
 
 		viewModel.appliedFiltersFlow.asLiveData(Dispatchers.Main).observe(requireActivity()) {
 			filterAdapter.filters = it
-			viewModel.refreshContacts()
 		}
 
 		viewModel.filteredContactsFlow.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) { res ->
