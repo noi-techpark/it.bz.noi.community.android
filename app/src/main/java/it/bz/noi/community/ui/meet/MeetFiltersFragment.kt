@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
@@ -16,13 +17,16 @@ import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.*
+import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.UpdateResultsListener
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+@ExperimentalCoroutinesApi
 class MeetFiltersFragment : Fragment() {
 
     private lateinit var filterAdapter: MeetFiltersAdapter
@@ -70,6 +74,7 @@ class MeetFiltersFragment : Fragment() {
 	override fun onDestroyView() {
 		super.onDestroyView()
 		_binding = null
+		AccountsManager.updateSearchParam("")
 	}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -109,6 +114,10 @@ class MeetFiltersFragment : Fragment() {
             showBtn.setOnClickListener {
                 findNavController().popBackStack()
             }
+
+			searchFieldEditText.addTextChangedListener { text ->
+				AccountsManager.updateSearchParam(text?.toString() ?: "")
+			}
         }
 
     }

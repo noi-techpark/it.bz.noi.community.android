@@ -24,9 +24,11 @@ import it.bz.noi.community.databinding.FragmentMeetBinding
 import it.bz.noi.community.databinding.VhContactBinding
 import it.bz.noi.community.databinding.VhEmptyBinding
 import it.bz.noi.community.utils.Status
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+@ExperimentalCoroutinesApi
 class MeetFragment : Fragment() {
 
 	private var _binding: FragmentMeetBinding? = null

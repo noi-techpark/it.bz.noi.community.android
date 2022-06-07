@@ -7,11 +7,14 @@ import it.bz.noi.community.data.models.*
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
+import it.bz.noi.community.utils.Utils.removeAccents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 
+@ExperimentalCoroutinesApi
 object AccountsManager {
 
 	private const val TAG = "AccountsManager"
@@ -61,8 +64,15 @@ object AccountsManager {
 
 	fun relaod() = reloadTickerFlow.tryEmit(Unit)
 
-	val availableAccountsFilters: StateFlow<Map<AccountType, List<FilterValue>>> = availableCompanies.flatMapLatest {
-		flowOf(mapAccountsToFilterValues(it.values))
+	private val searchParamFlow = MutableStateFlow("")
+
+	val availableAccountsFilters: StateFlow<Map<AccountType, List<FilterValue>>> = availableCompanies.combine(searchParamFlow) { accountsMap: Map<String, Account>, searchParam: String ->
+		if (searchParam.isEmpty())
+			mapAccountsToFilterValues(accountsMap.values)
+		else {
+			val filteredAccounts = accountsMap.values.filterAccountsByName(searchParam)
+			mapAccountsToFilterValues(filteredAccounts)
+		}
 	}.stateIn(mainCoroutineScope, SharingStarted.Lazily, emptyMap())
 
 	private fun mapAccountsToFilterValues(accounts: Collection<Account>): Map<AccountType, List<FilterValue>> {
@@ -74,6 +84,17 @@ object AccountsManager {
 			it.value.map { account ->
 				account.toFilterValue()
 			}
+		}
+	}
+
+	fun updateSearchParam(searchParam: String) {
+		searchParamFlow.tryEmit(searchParam)
+	}
+
+	private fun Collection<Account>.filterAccountsByName(text: String): Collection<Account> {
+		val matchingText = text.removeAccents()
+		return filter { a ->
+			a.name.removeAccents().contains(matchingText, ignoreCase = true)
 		}
 	}
 
