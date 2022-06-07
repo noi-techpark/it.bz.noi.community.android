@@ -54,10 +54,7 @@ class MeetViewModel(
 		}
 
 	val selectedFiltersCount = selectedFiltersFlow.flatMapLatest { selectedFilters ->
-		val count = selectedFilters.values.sumOf {
-			it.size
-		}
-		flowOf(count)
+		flowOf(cumulativeCount(selectedFilters.values))
 	}.asLiveData(Dispatchers.IO)
 
 	private fun reloadableContactsFlow(): Flow<Resource<List<Contact>>> = flow {
@@ -84,14 +81,15 @@ class MeetViewModel(
 		combine(searchParamFlow, selectedFiltersFlow, contactsFlow) { searchParam: CharSequence?,
 																	  selectedFilters: Map<AccountType, List<FilterValue>>,
 																	  allContacts: Resource<List<Contact>> ->
+			val selectedFilterCount = cumulativeCount(selectedFilters.values)
 
 			when (allContacts.status) {
 				Status.SUCCESS -> {
-					if (searchParam.isNullOrEmpty() && selectedFilters.isNullOrEmpty())
+					if (searchParam.isNullOrEmpty() && selectedFilterCount == 0)
 						allContacts
 					else {
 						var filteredContacts = allContacts.data!!
-						if (!selectedFilters.isNullOrEmpty()) {
+						if (selectedFilterCount > 0) {
 							val accountIdsFilters = selectedFilters.values.reduce { acc, list ->
 								val newList = acc.toMutableList()
 								newList.addAll(list)
@@ -137,6 +135,10 @@ class MeetViewModel(
 		return filter { c ->
 			accountIds.contains(c.accountId)
 		}
+	}
+
+	private fun <T> cumulativeCount(values: Collection<List<T>>): Int = values.sumOf {
+		it.size
 	}
 
 }
