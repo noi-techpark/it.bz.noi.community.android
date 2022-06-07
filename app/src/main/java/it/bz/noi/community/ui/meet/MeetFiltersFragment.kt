@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import it.bz.noi.community.R
@@ -17,6 +20,9 @@ import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.UpdateResultsListener
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 class MeetFiltersFragment : Fragment() {
 
@@ -74,18 +80,22 @@ class MeetFiltersFragment : Fragment() {
 			filterAdapter.filters = it
 		}
 
-		viewModel.filteredContactsFlow.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) { res ->
-			when (res.status) {
-				Status.SUCCESS -> {
-					updateNumberOfResults(res.data?.size ?: 0)
-				}
-				Status.ERROR -> {
-					// Continuiamo a mostrare il valore precedente
-					Log.e(TAG, "Error loading results with new filters selection")
-				}
-				Status.LOADING -> {
-					// Continuiamo a mostrare il valore precedente, per evitare side effects grafici introducendo un loader sul pulsante
-					Log.d(TAG, "Loading results with new filters selection in progress...")
+		viewLifecycleOwner.lifecycleScope.launch {
+			viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+				viewModel.filteredContactsFlow.collectLatest { res ->
+					when (res.status) {
+						Status.SUCCESS -> {
+							updateNumberOfResults(res.data?.size ?: 0)
+						}
+						Status.ERROR -> {
+							// Continuiamo a mostrare il valore precedente
+							Log.e(TAG, "Error loading results with new filters selection")
+						}
+						Status.LOADING -> {
+							// Continuiamo a mostrare il valore precedente, per evitare side effects grafici introducendo un loader sul pulsante
+							Log.d(TAG, "Loading results with new filters selection in progress...")
+						}
+					}
 				}
 			}
 		}

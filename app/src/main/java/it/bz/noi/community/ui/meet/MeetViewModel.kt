@@ -34,9 +34,11 @@ class MeetViewModel(
 		reloadableContactsFlow()
 	}
 
-	private val searchParamFlow = MutableSharedFlow<CharSequence?>(replay = 1).apply {
-		tryEmit(savedStateHandle.get(SEARCH_PARAM_STATE))
+	private val searchParamFlow = MutableSharedFlow<CharSequence>(replay = 1).apply {
+		tryEmit(savedStateHandle.get(SEARCH_PARAM_STATE) ?: "")
 	}
+
+	private val test = searchParamFlow.distinctUntilChanged()
 
 	private val availableFiltersFlow: StateFlow<Map<AccountType, List<FilterValue>>> =
 		AccountsManager.availableAccountsFilters
@@ -78,7 +80,7 @@ class MeetViewModel(
 	}
 
 	val filteredContactsFlow: Flow<Resource<List<Contact>>> =
-		combine(searchParamFlow, selectedFiltersFlow, contactsFlow) { searchParam: CharSequence?,
+		combine(test, selectedFiltersFlow, contactsFlow) { searchParam: CharSequence?,
 																	  selectedFilters: Map<AccountType, List<FilterValue>>,
 																	  allContacts: Resource<List<Contact>> ->
 			val selectedFilterCount = cumulativeCount(selectedFilters.values)
@@ -111,11 +113,11 @@ class MeetViewModel(
 					allContacts
 				}
 			}
-		}
+		}.stateIn(viewModelScope, SharingStarted.Lazily, Resource.loading(data = null))
 
 	fun refreshContacts() = reloadContactsTickerFlow.tryEmit(Unit)
 
-	fun updateSearchParam(searchParam: CharSequence?) {
+	fun updateSearchParam(searchParam: CharSequence) {
 		searchParamFlow.tryEmit(searchParam)
 		savedStateHandle.set(SEARCH_PARAM_STATE, searchParam)
 	}

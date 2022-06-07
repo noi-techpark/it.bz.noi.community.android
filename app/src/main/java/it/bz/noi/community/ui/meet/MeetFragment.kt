@@ -11,7 +11,10 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +27,8 @@ import it.bz.noi.community.databinding.VhContactBinding
 import it.bz.noi.community.databinding.VhEmptyBinding
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MeetFragment : Fragment() {
 
@@ -69,7 +74,7 @@ class MeetFragment : Fragment() {
 		}
 
 		binding.searchFieldEditText.addTextChangedListener { text ->
-			viewModel.updateSearchParam(text)
+			viewModel.updateSearchParam(text ?: "")
 		}
 
 		binding.contactsFilter.root.setOnClickListener {
@@ -80,23 +85,27 @@ class MeetFragment : Fragment() {
 	}
 
 	private fun setupObservers() {
-		viewModel.filteredContactsFlow.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) { res ->
-			when (res.status) {
-				Status.SUCCESS -> {
-					val contacts = res.data!!
-					Log.d(TAG, "Caricati ${contacts.size} contatti")
-					contactsAdapter.state = ContactsAdapter.AdapterState.Ok(contacts)
-					binding.swipeRefreshContacts.isRefreshing = false
-				}
-				Status.ERROR -> {
-					Log.d(TAG, "Caricamento contatti KO")
-					binding.swipeRefreshContacts.isRefreshing = false
-					// FIXME gestire uno state nell'adapter??
-					Toast.makeText(requireContext(), res.message, Toast.LENGTH_LONG).show()
-				}
-				Status.LOADING -> {
-					Log.d(TAG, "Contatti in caricamento...")
-					binding.swipeRefreshContacts.isRefreshing = true
+		viewLifecycleOwner.lifecycleScope.launch {
+			viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+				viewModel.filteredContactsFlow.collectLatest { res ->
+					when (res.status) {
+						Status.SUCCESS -> {
+							val contacts = res.data!!
+							Log.d(TAG, "Caricati ${contacts.size} contatti")
+							contactsAdapter.state = ContactsAdapter.AdapterState.Ok(contacts)
+							binding.swipeRefreshContacts.isRefreshing = false
+						}
+						Status.ERROR -> {
+							Log.d(TAG, "Caricamento contatti KO")
+							binding.swipeRefreshContacts.isRefreshing = false
+							// FIXME gestire uno state nell'adapter??
+							Toast.makeText(requireContext(), res.message, Toast.LENGTH_LONG).show()
+						}
+						Status.LOADING -> {
+							Log.d(TAG, "Contatti in caricamento...")
+							binding.swipeRefreshContacts.isRefreshing = true
+						}
+					}
 				}
 			}
 		}
