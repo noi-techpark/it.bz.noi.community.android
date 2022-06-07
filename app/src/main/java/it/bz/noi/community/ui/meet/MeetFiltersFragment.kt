@@ -21,7 +21,6 @@ import it.bz.noi.community.ui.UpdateResultsListener
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class MeetFiltersFragment : Fragment() {

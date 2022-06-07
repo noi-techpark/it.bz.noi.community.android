@@ -14,8 +14,10 @@ import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils.removeAccents
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
+@ExperimentalCoroutinesApi
 class MeetViewModel(
 	private val mainRepository: MainRepository,
 	private val savedStateHandle: SavedStateHandle
@@ -34,11 +36,7 @@ class MeetViewModel(
 		reloadableContactsFlow()
 	}
 
-	private val searchParamFlow = MutableSharedFlow<CharSequence>(replay = 1).apply {
-		tryEmit(savedStateHandle.get(SEARCH_PARAM_STATE) ?: "")
-	}
-
-	private val test = searchParamFlow.distinctUntilChanged()
+	private val searchParamFlow = MutableStateFlow(savedStateHandle.get(SEARCH_PARAM_STATE) ?: "")
 
 	private val availableFiltersFlow: StateFlow<Map<AccountType, List<FilterValue>>> =
 		AccountsManager.availableAccountsFilters
@@ -80,14 +78,14 @@ class MeetViewModel(
 	}
 
 	val filteredContactsFlow: Flow<Resource<List<Contact>>> =
-		combine(test, selectedFiltersFlow, contactsFlow) { searchParam: CharSequence?,
+		combine(searchParamFlow, selectedFiltersFlow, contactsFlow) { searchParam: String,
 																	  selectedFilters: Map<AccountType, List<FilterValue>>,
 																	  allContacts: Resource<List<Contact>> ->
 			val selectedFilterCount = cumulativeCount(selectedFilters.values)
 
 			when (allContacts.status) {
 				Status.SUCCESS -> {
-					if (searchParam.isNullOrEmpty() && selectedFilterCount == 0)
+					if (searchParam.isEmpty() && selectedFilterCount == 0)
 						allContacts
 					else {
 						var filteredContacts = allContacts.data!!
@@ -102,7 +100,7 @@ class MeetViewModel(
 							filteredContacts =
 								filteredContacts.filterContactsByAccount(accountIdsFilters)
 						}
-						if (!searchParam.isNullOrEmpty()) {
+						if (searchParam.isNotEmpty()) {
 							filteredContacts =
 								filteredContacts.filterContactsByName(searchParam)
 						}
@@ -117,7 +115,7 @@ class MeetViewModel(
 
 	fun refreshContacts() = reloadContactsTickerFlow.tryEmit(Unit)
 
-	fun updateSearchParam(searchParam: CharSequence) {
+	fun updateSearchParam(searchParam: String) {
 		searchParamFlow.tryEmit(searchParam)
 		savedStateHandle.set(SEARCH_PARAM_STATE, searchParam)
 	}
@@ -126,8 +124,8 @@ class MeetViewModel(
 		selectedFiltersFlow.tryEmit(filters)
 	}
 
-	private fun List<Contact>.filterContactsByName(text: CharSequence): List<Contact> {
-		val matchingText = text.toString().removeAccents()
+	private fun List<Contact>.filterContactsByName(text: String): List<Contact> {
+		val matchingText = text.removeAccents()
 		return filter { c ->
 			c.fullName.removeAccents().contains(matchingText, ignoreCase = true)
 		}
@@ -145,6 +143,7 @@ class MeetViewModel(
 
 }
 
+@ExperimentalCoroutinesApi
 class MeetViewModelFactory(
 	private val apiHelper: ApiHelper,
 	owner: Fragment
