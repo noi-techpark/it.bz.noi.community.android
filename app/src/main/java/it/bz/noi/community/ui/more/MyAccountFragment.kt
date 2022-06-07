@@ -10,14 +10,14 @@ import androidx.lifecycle.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.bz.noi.community.OnboardingActivity.Companion.LOGOUT_REQUEST
 import it.bz.noi.community.R
-import it.bz.noi.community.databinding.FragmentMyAccountBinding
+import it.bz.noi.community.databinding.FragmentProfileBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.launch
 
 class MyAccountFragment : Fragment() {
 
-	private var _binding: FragmentMyAccountBinding? = null
+	private var _binding: FragmentProfileBinding? = null
 	private val binding get() = _binding!!
 
 	private var reloadUserInfo = true
@@ -27,7 +27,7 @@ class MyAccountFragment : Fragment() {
 		container: ViewGroup?,
 		savedInstanceState: Bundle?
 	): View {
-		_binding = FragmentMyAccountBinding.inflate(inflater, container, false)
+		_binding = FragmentProfileBinding.inflate(inflater, container, false)
 		return binding.root
 	}
 
@@ -41,7 +41,8 @@ class MyAccountFragment : Fragment() {
 						when (userInfoRes.status) {
 							Status.SUCCESS -> {
 								val userInfo = userInfoRes.data!!
-								binding.name.text = userInfo.fullname
+								binding.name.text = "${userInfo.firstName}\n${userInfo.lastName}"
+								binding.icon.text = "${userInfo.firstName[0]}${userInfo.lastName[0]}"
 								binding.email.text = userInfo.email
 							}
 							Status.ERROR -> {

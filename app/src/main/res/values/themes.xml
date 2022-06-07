@@ -98,6 +98,12 @@
 		<item name="android:padding">0dp</item>
 	</style>
 
+	<style name="ThemeOverlay.NOI.SmallTextButton" parent="ThemeOverlay.NOI.TextButton">
+		<item name="android:textSize">14sp</item>
+		<item name="fontFamily">sans-serif-medium</item>
+		<item name="iconPadding">8dp</item>
+	</style>
+
 	<style name="ThemeOverlay.NOI.SearchField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 		<item name="shapeAppearance">@style/ShapeAppearance.NOI.SmallComponent</item>
 		<item name="boxBackgroundColor">@color/tertiary_background_color</item>
