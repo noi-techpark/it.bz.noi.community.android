@@ -61,19 +61,15 @@ object AccountsManager {
 
 	fun relaod() = reloadTickerFlow.tryEmit(Unit)
 
-	val availableAccountsFilters: StateFlow<Map<Int, List<FilterValue>>> = availableCompanies.flatMapLatest {
-		val accountGroups: Map<AccountType, List<Account>> = it.values.groupBy { a ->
-			a.getAccountType()
-		}
-
-		flowOf(mapAccountsToFilters(accountGroups))
+	val availableAccountsFilters: StateFlow<Map<AccountType, List<FilterValue>>> = availableCompanies.flatMapLatest {
+		flowOf(mapAccountsToFilterValues(it.values))
 	}.stateIn(mainCoroutineScope, SharingStarted.Lazily, emptyMap())
 
-	private fun mapAccountsToFilters(accountGroups: Map<AccountType, List<Account>>): Map<Int, List<FilterValue>> {
-		return accountGroups.filterKeys { type ->
+	private fun mapAccountsToFilterValues(accounts: Collection<Account>): Map<AccountType, List<FilterValue>> {
+		return accounts.groupBy { a ->
+			a.getAccountType()
+		}.filterKeys { type ->
 			type != AccountType.DEFAULT
-		}.mapKeys {
-			it.key.filterCode!!
 		}.mapValues {
 			it.value.map { account ->
 				account.toFilterValue()

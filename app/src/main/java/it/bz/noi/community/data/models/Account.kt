@@ -1,9 +1,6 @@
 package it.bz.noi.community.data.models
 
 import com.google.gson.annotations.SerializedName
-import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.COMPANY_FILTER
-import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.RESEARCH_INSTITUTION_FILTER
-import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.STARTUP_FILTER
 
 data class Account(
 	@SerializedName("accountid")
@@ -25,10 +22,10 @@ data class AccountsResponse(
 	val count: Int?
 )
 
-enum class AccountType(val code: String? = null, val filterCode: Int? = null) {
-	COMPANY("952210003", COMPANY_FILTER),
-	STARTUP("952210001", STARTUP_FILTER),
-	RESEARCH_INSTITUTION("95221003", RESEARCH_INSTITUTION_FILTER),
+enum class AccountType(val code: String? = null) {
+	COMPANY("952210003"),
+	STARTUP("952210001"),
+	RESEARCH_INSTITUTION("95221003"),
 	DEFAULT
 }
 

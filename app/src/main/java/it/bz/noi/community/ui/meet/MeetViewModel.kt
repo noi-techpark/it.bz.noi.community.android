@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import it.bz.noi.community.data.api.ApiHelper
+import it.bz.noi.community.data.models.AccountType
 import it.bz.noi.community.data.models.Contact
 import it.bz.noi.community.data.models.FilterValue
 import it.bz.noi.community.data.repository.AccountsManager
@@ -37,16 +38,16 @@ class MeetViewModel(
 		tryEmit(savedStateHandle.get(SEARCH_PARAM_STATE))
 	}
 
-	private val availableFiltersFlow: StateFlow<Map<Int,List<FilterValue>>> = AccountsManager.availableAccountsFilters
-	private val selectedFiltersFlow = MutableStateFlow(emptyMap<Int,List<FilterValue>>())
+	private val availableFiltersFlow: StateFlow<Map<AccountType,List<FilterValue>>> = AccountsManager.availableAccountsFilters
+	private val selectedFiltersFlow = MutableStateFlow(emptyMap<AccountType,List<FilterValue>>())
 
-	fun updateSelectedFilters(filters: Map<Int,List<FilterValue>>) {
+	fun updateSelectedFilters(filters: Map<AccountType,List<FilterValue>>) {
 		selectedFiltersFlow.tryEmit(filters)
 		//contactsParams.selectedFilters = filters // TODO
 	}
 
-	val appliedFiltersFlow: Flow<Map<Int, List<FilterValue>>> = availableFiltersFlow.combine(selectedFiltersFlow) { availableFilters, selectedFilters ->
-		val appliedFilters = mutableMapOf<Int, List<FilterValue>>()
+	val appliedFiltersFlow: Flow<Map<AccountType, List<FilterValue>>> = availableFiltersFlow.combine(selectedFiltersFlow) { availableFilters, selectedFilters ->
+		val appliedFilters = mutableMapOf<AccountType, List<FilterValue>>()
 		availableFilters.entries.forEach { availableEntry ->
 			appliedFilters[availableEntry.key] = availableEntry.value.map { f ->
 				f.copy(checked = selectedFilters[availableEntry.key]?.find { it.key == f.key } != null)
@@ -84,7 +85,7 @@ class MeetViewModel(
 	}
 
 	val filteredContactsFlow: Flow<Resource<List<Contact>>> =
-		combine(searchParamFlow, selectedFiltersFlow, contactsFlow) { searchParam: CharSequence?, selectedFilters: Map<Int,List<FilterValue>>, allContacts: Resource<List<Contact>> ->
+		combine(searchParamFlow, selectedFiltersFlow, contactsFlow) { searchParam: CharSequence?, selectedFilters: Map<AccountType,List<FilterValue>>, allContacts: Resource<List<Contact>> ->
 			if (searchParam.isNullOrEmpty() && selectedFilters.isNullOrEmpty())
 				allContacts
 			else {

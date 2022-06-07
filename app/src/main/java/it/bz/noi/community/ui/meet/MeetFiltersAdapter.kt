@@ -3,6 +3,7 @@ package it.bz.noi.community.ui.meet
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import it.bz.noi.community.data.models.AccountType
 import it.bz.noi.community.data.models.FilterValue
 import it.bz.noi.community.databinding.VhHeaderBinding
 import it.bz.noi.community.databinding.VhSwitchBinding
@@ -10,16 +11,16 @@ import it.bz.noi.community.ui.FilterViewHolder
 import it.bz.noi.community.ui.HeaderViewHolder
 import it.bz.noi.community.ui.UpdateResultsListener
 
-class MeetFiltersAdapter(private val headers: Map<Int, String>,
+class MeetFiltersAdapter(private val headers: Map<AccountType, String>,
 						 private val updateResultsListener: UpdateResultsListener
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val HEADER = 0
-        const val COMPANY_FILTER = 1
-		const val STARTUP_FILTER = 2
-		const val RESEARCH_INSTITUTION_FILTER = 3
+		private const val COMPANY_FILTER = 1
+		private const val STARTUP_FILTER = 2
+		private const val RESEARCH_INSTITUTION_FILTER = 3
     }
 
     sealed class Item {
@@ -32,7 +33,7 @@ class MeetFiltersAdapter(private val headers: Map<Int, String>,
 		}
     }
 
-	var filters: Map<Int, List<FilterValue>> = emptyMap()
+	var filters: Map<AccountType, List<FilterValue>> = emptyMap()
 		set(value) {
 			if (value != field) {
 				field = value
@@ -46,26 +47,26 @@ class MeetFiltersAdapter(private val headers: Map<Int, String>,
 
 		val filterItems = arrayListOf<Item>()
 
-		val companyFilters = filters[COMPANY_FILTER]
-		val startupFilters = filters[STARTUP_FILTER]
-		val researchInstitutionsFilters = filters[RESEARCH_INSTITUTION_FILTER]
+		val companyFilters = filters[AccountType.COMPANY]
+		val startupFilters = filters[AccountType.STARTUP]
+		val researchInstitutionsFilters = filters[AccountType.RESEARCH_INSTITUTION]
 
 		if (companyFilters?.isNotEmpty() == true) {
-			filterItems.add(Item.Header(headers.getOrDefault(COMPANY_FILTER, "")))
+			filterItems.add(Item.Header(headers.getOrDefault(AccountType.COMPANY, "")))
 			filterItems.addAll(companyFilters.map {
 				Item.Filter.Company(it)
 			})
 		}
 
 		if (startupFilters?.isNotEmpty() == true) {
-			filterItems.add(Item.Header(headers.getOrDefault(STARTUP_FILTER, "")))
+			filterItems.add(Item.Header(headers.getOrDefault(AccountType.STARTUP, "")))
 			filterItems.addAll(startupFilters.map {
 				Item.Filter.StartUp(it)
 			})
 		}
 
 		if (researchInstitutionsFilters?.isNotEmpty() == true) {
-			filterItems.add(Item.Header(headers.getOrDefault(STARTUP_FILTER, "")))
+			filterItems.add(Item.Header(headers.getOrDefault(AccountType.RESEARCH_INSTITUTION, "")))
 			filterItems.addAll(researchInstitutionsFilters.map {
 				Item.Filter.ResearchInstitutions(it)
 			})

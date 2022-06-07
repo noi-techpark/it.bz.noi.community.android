@@ -15,9 +15,6 @@ import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.*
 import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.UpdateResultsListener
-import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.COMPANY_FILTER
-import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.RESEARCH_INSTITUTION_FILTER
-import it.bz.noi.community.ui.meet.MeetFiltersAdapter.Companion.STARTUP_FILTER
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.Dispatchers
 
@@ -35,7 +32,7 @@ class MeetFiltersFragment : Fragment() {
 	private val updateResultsListener = object : UpdateResultsListener {
 		override fun updateResults() {
 			// FIXME
-			val selectedFilters: Map<Int, List<FilterValue>> = filterAdapter.filters.mapValues { entry ->
+			val selectedFilters: Map<AccountType, List<FilterValue>> = filterAdapter.filters.mapValues { entry ->
 				entry.value.filter { it.checked }
 			}
 			viewModel.updateSelectedFilters(selectedFilters)
@@ -46,9 +43,9 @@ class MeetFiltersFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
 		val headers = mapOf(
-			COMPANY_FILTER to getString(R.string.filter_by_company),
-			STARTUP_FILTER to getString(R.string.filter_by_startup),
-			RESEARCH_INSTITUTION_FILTER to getString(R.string.filter_by_research_institution)
+			AccountType.COMPANY to getString(R.string.filter_by_company),
+			AccountType.STARTUP to getString(R.string.filter_by_startup),
+			AccountType.RESEARCH_INSTITUTION to getString(R.string.filter_by_research_institution)
 		)
 		filterAdapter = MeetFiltersAdapter(
 			headers = headers,
