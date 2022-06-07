@@ -191,7 +191,9 @@ class ContactsAdapter(private val detailListener: ContactDetailListener) : Recyc
 				}
 			)
 			EMPTY -> EmptyViewHolder(
-				VhEmptyBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+				VhEmptyBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
+					subtitle.text = parent.resources.getString(R.string.label_contacts_empty_state_subtitle)
+				}
 			)
 			else -> throw UnkownViewTypeException(viewType)
 		}

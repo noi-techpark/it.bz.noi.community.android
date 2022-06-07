@@ -3,8 +3,10 @@ package it.bz.noi.community.ui.meet
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import it.bz.noi.community.R
 import it.bz.noi.community.data.models.AccountType
 import it.bz.noi.community.data.models.FilterValue
+import it.bz.noi.community.databinding.VhEmptyBinding
 import it.bz.noi.community.databinding.VhHeaderBinding
 import it.bz.noi.community.databinding.VhSwitchBinding
 import it.bz.noi.community.ui.FilterViewHolder
@@ -21,6 +23,7 @@ class MeetFiltersAdapter(private val headers: Map<AccountType, String>,
 		private const val COMPANY_FILTER = 1
 		private const val STARTUP_FILTER = 2
 		private const val RESEARCH_INSTITUTION_FILTER = 3
+		private const val EMPTY = 4
     }
 
     sealed class Item {
@@ -31,6 +34,8 @@ class MeetFiltersAdapter(private val headers: Map<AccountType, String>,
 			data class StartUp(val f: FilterValue) : Filter(f)
 			data class ResearchInstitutions(val f: FilterValue) : Filter(f)
 		}
+
+		object Empty: Item()
     }
 
 	var filters: Map<AccountType, List<FilterValue>> = emptyMap()
@@ -41,7 +46,7 @@ class MeetFiltersAdapter(private val headers: Map<AccountType, String>,
 				notifyDataSetChanged()
 			}
 		}
-	private var items: List<Item> = toItems()
+	private var items: List<Item> = emptyList()
 
 	private fun toItems(): List<Item> {
 
@@ -72,6 +77,10 @@ class MeetFiltersAdapter(private val headers: Map<AccountType, String>,
 			})
 		}
 
+		if (filterItems.isEmpty()) {
+			filterItems.add(Item.Empty)
+		}
+
 		return filterItems
 	}
 
@@ -81,6 +90,11 @@ class MeetFiltersAdapter(private val headers: Map<AccountType, String>,
             COMPANY_FILTER -> FilterViewHolder(VhSwitchBinding.inflate(LayoutInflater.from(parent.context), parent, false), updateResultsListener, exclusive = false)
 			STARTUP_FILTER -> FilterViewHolder(VhSwitchBinding.inflate(LayoutInflater.from(parent.context), parent, false), updateResultsListener, exclusive = false)
 			RESEARCH_INSTITUTION_FILTER -> FilterViewHolder(VhSwitchBinding.inflate(LayoutInflater.from(parent.context), parent, false), updateResultsListener, exclusive = false)
+            EMPTY -> EmptyViewHolder(
+				VhEmptyBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
+					subtitle.text = parent.resources.getString(R.string.label_filters_empty_state_subtitle)
+				}
+			)
             else -> throw RuntimeException("Unsupported viewType $viewType")
         }
     }
@@ -97,7 +111,6 @@ class MeetFiltersAdapter(private val headers: Map<AccountType, String>,
 					holder.bind(it.filter)
 				}
             }
-            else -> throw RuntimeException("Unsupported holder $holder")
         }
     }
 
@@ -111,6 +124,7 @@ class MeetFiltersAdapter(private val headers: Map<AccountType, String>,
             is Item.Filter.Company -> COMPANY_FILTER
 			is Item.Filter.StartUp -> STARTUP_FILTER
 			is Item.Filter.ResearchInstitutions -> RESEARCH_INSTITUTION_FILTER
+			Item.Empty -> EMPTY
         }
     }
 
