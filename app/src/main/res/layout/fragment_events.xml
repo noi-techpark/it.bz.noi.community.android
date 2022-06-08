@@ -28,42 +28,17 @@
 		app:layout_constraintTop_toTopOf="parent"
 		tools:itemCount="4" />
 
-	<androidx.constraintlayout.widget.ConstraintLayout
-		android:id="@+id/clEmptyState"
+	<include layout="@layout/vh_empty"
+		android:id="@+id/emptyState"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="32dp"
-		android:paddingHorizontal="32dp"
-		android:visibility="gone"
+		android:layout_marginStart="@dimen/default_margin"
+		android:layout_marginTop="50dp"
+		android:layout_marginEnd="@dimen/default_margin"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/rvTimeFilters">
-
-		<TextView
-			android:id="@+id/tvEmptyStateTitle"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:text="@string/label_events_empty_state_title"
-			android:textAlignment="center"
-			android:textColor="@color/secondary_color"
-			android:textSize="20sp"
-			android:textStyle="bold"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
-
-		<TextView
-			android:id="@+id/tvEmptyStateSubtitle"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:text="@string/label_events_empty_state_subtitle"
-			android:textAlignment="center"
-			android:textColor="@color/secondary_color"
-			android:textSize="18sp"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/tvEmptyStateTitle" />
-	</androidx.constraintlayout.widget.ConstraintLayout>
+		app:layout_constraintTop_toBottomOf="@id/rvTimeFilters"
+		android:visibility="gone" />
 
 	<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 		android:id="@+id/swipeRefreshEvents"

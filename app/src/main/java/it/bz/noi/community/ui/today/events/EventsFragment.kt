@@ -130,11 +130,14 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 						val events = resource.data
 						if (events != null && events.isNotEmpty()) {
 							binding.rvEvents.isVisible = true
-							binding.clEmptyState.isVisible = false
+							binding.emptyState.root.isVisible = false
 							retrieveList(events)
 						} else {
-							binding.clEmptyState.isVisible = true
 							binding.rvEvents.isVisible = false
+							binding.emptyState.apply {
+								root.isVisible = true
+								subtitle.text = getString(R.string.label_events_empty_state_subtitle)
+							}
 						}
 					}
 					Status.ERROR -> {
