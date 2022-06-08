@@ -13,6 +13,7 @@ import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentProfileBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.utils.Status
+import it.bz.noi.community.utils.Utils.writeEmail
 import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
@@ -42,7 +43,8 @@ class ProfileFragment : Fragment() {
 							Status.SUCCESS -> {
 								val userInfo = userInfoRes.data!!
 								binding.name.text = "${userInfo.firstName}\n${userInfo.lastName}"
-								binding.icon.text = "${userInfo.firstName[0]}${userInfo.lastName[0]}"
+								binding.icon.text =
+									"${userInfo.firstName[0]}${userInfo.lastName[0]}"
 								binding.email.text = userInfo.email
 							}
 							Status.ERROR -> {
@@ -69,6 +71,14 @@ class ProfileFragment : Fragment() {
 		binding.logout.setOnClickListener {
 			AuthManager.logout(requireActivity(), LOGOUT_REQUEST)
 		}
+
+		binding.deleteAccount.setOnClickListener {
+			requireContext().writeEmail(
+				receiverAddress = DELETE_ACCOUNT_EMAIL,
+				subject = getString(R.string.delete_profile_compose_subject),
+				text = getString(R.string.delete_profile_compose_body)
+			)
+		}
 	}
 
 	override fun onDestroyView() {
@@ -77,7 +87,8 @@ class ProfileFragment : Fragment() {
 	}
 
 	companion object {
-		private const val TAG = "MyAccountFragment"
+		private const val TAG = "ProfileFragment"
+		private const val DELETE_ACCOUNT_EMAIL = "community@noi.bz.it"
 	}
 
 }

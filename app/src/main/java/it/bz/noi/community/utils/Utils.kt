@@ -106,10 +106,20 @@ object Utils {
 		startActivity(intent)
 	}
 
-	fun Context.writeEmail(receiverAddress: String) {
+	fun Context.writeEmail(receiverAddress: String? = null, subject: String? = null, text: String? = null) {
 		val intent = Intent(Intent.ACTION_SENDTO).apply {
 			data = Uri.parse("mailto:") // only email apps should handle this
-			putExtra(Intent.EXTRA_EMAIL, Array(1) {receiverAddress})
+
+			receiverAddress?.apply {
+				putExtra(Intent.EXTRA_EMAIL, Array(1) {receiverAddress})
+			}
+			subject?.apply {
+				putExtra(Intent.EXTRA_SUBJECT, subject)
+			}
+			text?.apply {
+				putExtra(Intent.EXTRA_TEXT, text)
+			}
+
 		}
 		startActivity(intent)
 	}

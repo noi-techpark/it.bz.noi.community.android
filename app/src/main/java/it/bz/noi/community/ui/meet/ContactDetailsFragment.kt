@@ -68,7 +68,7 @@ class ContactDetailsFragment : Fragment() {
 				}
 
 				binding.sendEmail.setOnClickListener {
-					requireContext().writeEmail(contact.email)
+					requireContext().writeEmail(receiverAddress = contact.email)
 				}
 			} else {
 				email.root.isVisible = false
