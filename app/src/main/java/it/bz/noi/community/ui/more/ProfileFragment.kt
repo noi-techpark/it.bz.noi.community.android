@@ -15,7 +15,7 @@ import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.launch
 
-class MyAccountFragment : Fragment() {
+class ProfileFragment : Fragment() {
 
 	private var _binding: FragmentProfileBinding? = null
 	private val binding get() = _binding!!

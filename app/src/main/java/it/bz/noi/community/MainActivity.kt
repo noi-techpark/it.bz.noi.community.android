@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
 						}
 					}
 				}
-                R.id.eventDetailsFragment, R.id.newsDetails, R.id.eventsFiltersFragment, R.id.myAccount,
+                R.id.eventDetailsFragment, R.id.newsDetails, R.id.eventsFiltersFragment, R.id.profile,
 				R.id.contactDetails, R.id.meetFiltersFragment -> {
 					supportActionBar?.show()
                     (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =

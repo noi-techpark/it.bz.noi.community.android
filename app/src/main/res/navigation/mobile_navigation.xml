@@ -43,15 +43,15 @@
         android:label="@string/title_more"
         tools:layout="@layout/fragment_more" >
 		<action
-			android:id="@+id/action_more_to_myAccount"
-			app:destination="@id/myAccount" />
+			android:id="@+id/action_more_to_profile"
+			app:destination="@id/profile" />
 	</fragment>
 
 	<fragment
-		android:id="@+id/myAccount"
-		android:name="it.bz.noi.community.ui.more.MyAccountFragment"
+		android:id="@+id/profile"
+		android:name="it.bz.noi.community.ui.more.ProfileFragment"
 		android:label="@string/more_item_account"
-		tools:layout="@layout/fragment_my_account" />
+		tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/eventDetailsFragment"
