@@ -23,9 +23,9 @@ data class AccountsResponse(
 )
 
 enum class AccountType(val code: String? = null) {
-	COMPANY("952210003"),
+	COMPANY("952210002"),
 	STARTUP("952210001"),
-	RESEARCH_INSTITUTION("95221003"),
+	RESEARCH_INSTITUTION("952210003"),
 	DEFAULT
 }
 
