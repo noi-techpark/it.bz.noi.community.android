@@ -39,7 +39,7 @@
 						android:id="@+id/contactImage"
 						android:layout_width="match_parent"
 						android:layout_height="180dp"
-						android:background="@color/secondary_background_color"
+						android:background="@color/background_color"
 						android:importantForAccessibility="no"
 						android:scaleType="centerCrop"
 						app:layout_constraintEnd_toEndOf="parent"

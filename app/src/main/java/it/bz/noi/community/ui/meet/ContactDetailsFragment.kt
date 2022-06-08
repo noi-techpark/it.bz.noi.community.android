@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -15,7 +16,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import it.bz.noi.community.R
+import it.bz.noi.community.data.models.AccountType
 import it.bz.noi.community.data.models.Contact
+import it.bz.noi.community.data.models.getAccountType
 import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.databinding.FragmentContactDetailsBinding
 import it.bz.noi.community.utils.Utils.findOnMaps
@@ -51,6 +54,13 @@ class ContactDetailsFragment : Fragment() {
 		val contact = viewModel.contact
 		val company = AccountsManager.availableCompanies.value[contact.accountId]
 		binding.apply {
+
+			company?.let { account ->
+				getImageId(account.getAccountType())?.let { imageId ->
+					contactImage.setImageDrawable(getDrawable(requireContext(), imageId))
+				}
+			}
+
 			contactName.text = "${contact.firstName}\n${contact.lastName}"
 			contactIcon.text = "${contact.firstName[0]}${contact.lastName[0]}"
 
@@ -130,6 +140,15 @@ class ContactDetailsFragment : Fragment() {
 		CoroutineScope(Dispatchers.IO).launch {
 			delay(TimeUnit.SECONDS.toMillis(1))
 			icon.isSelected = false
+		}
+	}
+
+	private fun getImageId(accountType: AccountType): Int? {
+		return when (accountType) {
+			AccountType.COMPANY -> R.drawable.contact_detail_company
+			AccountType.STARTUP -> R.drawable.contact_detail_startup
+			AccountType.RESEARCH_INSTITUTION -> R.drawable.contact_detail_institution
+			AccountType.DEFAULT -> null
 		}
 	}
 
