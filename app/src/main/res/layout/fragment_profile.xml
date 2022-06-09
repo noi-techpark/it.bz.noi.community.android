@@ -42,10 +42,10 @@
 						android:background="@color/background_color"
 						android:importantForAccessibility="no"
 						android:scaleType="centerCrop"
+						android:src="@drawable/profile"
 						app:layout_constraintEnd_toEndOf="parent"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toTopOf="parent"
-						tools:src="@drawable/placeholder_noi_events" />
+						app:layout_constraintTop_toTopOf="parent" />
 
 					<TextView
 						android:id="@+id/name"
@@ -101,23 +101,23 @@
 				android:layout_marginTop="@dimen/default_margin"
 				android:fontFamily="sans-serif-medium"
 				android:lineHeight="18sp"
-				android:textColor="@color/secondary_color"
-				android:textSize="14sp"
 				android:paddingStart="@dimen/default_margin"
 				android:paddingEnd="@dimen/default_margin"
+				android:text="@string/label_email"
+				android:textColor="@color/secondary_color"
+				android:textSize="14sp"
 				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/headerCardView"
-				android:text="@string/label_email" />
+				app:layout_constraintTop_toBottomOf="@id/headerCardView" />
 
 			<TextView
 				android:id="@+id/email"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:lineHeight="24dp"
-				android:textColor="@color/secondary_color"
-				android:textSize="19sp"
 				android:paddingStart="@dimen/default_margin"
 				android:paddingEnd="@dimen/default_margin"
+				android:textColor="@color/secondary_color"
+				android:textSize="19sp"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/emailLbl"
 				tools:text="mario.rossi@noi.bz.it" />
