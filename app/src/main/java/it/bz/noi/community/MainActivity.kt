@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
@@ -18,16 +17,11 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
 import it.bz.noi.community.OnboardingActivity.Companion.LOGOUT_REQUEST
-import it.bz.noi.community.data.api.ApiHelper
-import it.bz.noi.community.data.api.RetrofitBuilder
-import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.ActivityMainBinding
 import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
 import it.bz.noi.community.notifications.MessagingService
-import it.bz.noi.community.ui.MainViewModel
-import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
 import it.bz.noi.community.utils.Utils
 import kotlinx.coroutines.Dispatchers
@@ -41,10 +35,6 @@ class MainActivity : AppCompatActivity() {
     private val navController: NavController by lazy {
         findNavController(R.id.nav_host_fragment)
     }
-
-    private val mainViewModel: MainViewModel by viewModels(factoryProducer = {
-        ViewModelFactory(ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService), JsonFilterRepository(application))
-    })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

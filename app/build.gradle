@@ -78,16 +78,6 @@ android {
 			dimension = 'environment'
 		}
 	}
-
-	applicationVariants.all { variant ->
-		// We must set the name here because the "client" flavor overrides "environment".
-		def name = variant.flavorName
-		if (name.toLowerCase().contains("development")) {
-			variant.mergedFlavor.manifestPlaceholders.appName = "NOI-DEV"
-		} else if (name.toLowerCase().contains("production")) {
-			variant.mergedFlavor.manifestPlaceholders.appName = "Community"
-		}
-	}
 }
 
 dependencies {
