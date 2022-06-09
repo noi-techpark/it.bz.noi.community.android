@@ -7,7 +7,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -19,14 +22,16 @@ import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.ActivityMainBinding
+import it.bz.noi.community.data.repository.AccountsManager
+import it.bz.noi.community.oauth.AuthManager
+import it.bz.noi.community.oauth.AuthStateStatus
 import it.bz.noi.community.notifications.MessagingService
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
 import it.bz.noi.community.utils.Utils
-import it.bz.noi.community.oauth.AuthManager
-import it.bz.noi.community.oauth.AuthStateStatus
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.openid.appauth.AuthorizationException
 
 class MainActivity : AppCompatActivity() {
@@ -38,7 +43,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val mainViewModel: MainViewModel by viewModels(factoryProducer = {
-        ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(application))
+        ViewModelFactory(ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService), JsonFilterRepository(application))
     })
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +66,7 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.navigation_today,
                 R.id.navigation_orientate,
-                R.id.navigation_meet,
+                R.id.meet,
                 R.id.navigation_eat,
                 R.id.navigation_more
             )
@@ -84,7 +89,8 @@ class MainActivity : AppCompatActivity() {
 						}
 					}
 				}
-                R.id.eventDetailsFragment, R.id.newsDetails, R.id.filtersFragment, R.id.myAccount -> {
+                R.id.eventDetailsFragment, R.id.newsDetails, R.id.eventsFiltersFragment, R.id.profile,
+				R.id.contactDetails, R.id.meetFiltersFragment -> {
 					supportActionBar?.show()
                     (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
                         18f
@@ -99,11 +105,23 @@ class MainActivity : AppCompatActivity() {
 
 		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
 			when (status) {
+				is AuthStateStatus.Authorized -> {
+					AccountsManager.relaod()
+				}
 				is AuthStateStatus.Error,
 				AuthStateStatus.Unauthorized.UserAuthRequired,
 				AuthStateStatus.Unauthorized.NotValidRole -> {
 					goToOnboardingActivity()
 				}
+				else -> {
+					// Nothing to do
+				}
+			}
+		}
+
+		lifecycleScope.launch {
+			repeatOnLifecycle(Lifecycle.State.STARTED) {
+				AccountsManager.availableCompanies.collect {}
 			}
 		}
 
@@ -112,6 +130,7 @@ class MainActivity : AppCompatActivity() {
 			MessagingService.registrationToken()
 		}
 		subscribeToNewsTopic(Utils.getPreferredNoiNewsTopic())
+
     }
 
 	private fun subscribeToNewsTopic(preferredNewsTopic: String) {

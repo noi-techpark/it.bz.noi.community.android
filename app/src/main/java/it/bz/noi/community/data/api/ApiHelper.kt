@@ -2,23 +2,26 @@ package it.bz.noi.community.data.api
 
 import it.bz.noi.community.data.models.*
 
-class ApiHelper(private val apiService: ApiService) {
+class ApiHelper(
+	private val opendatahubApiService: OpendatahubApiService,
+	private val communityApiService: CommunityApiService) {
+
 	// EVENTS
-	suspend fun getEvents(eventsParams: EventsParams): EventsResponse = apiService.getEvents(
+	suspend fun getEvents(eventsParams: EventsParams): EventsResponse = opendatahubApiService.getEvents(
 		startDate = eventsParams.startDate,
 		endDate = eventsParams.endDate,
 		rawFilter = eventsParams.getRawFilter()
 	)
 
-	suspend fun getEventDetails(eventID: String) = apiService.getEventDetails(eventID)
-	suspend fun getEventFilterValues() = apiService.getEventFilterValues()
+	suspend fun getEventDetails(eventID: String) = opendatahubApiService.getEventDetails(eventID)
+	suspend fun getEventFilterValues() = opendatahubApiService.getEventFilterValues()
 
 	// ROOMS
-	suspend fun getRoomMapping(language: String?) = apiService.getRoomMapping(language)
+	suspend fun getRoomMapping(language: String?) = opendatahubApiService.getRoomMapping(language)
 
 	// NEWS
 	suspend fun getNews(newsParams: NewsParams): NewsResponse =
-		apiService.getNews(
+		opendatahubApiService.getNews(
 			startDate = newsParams.startDate,
 			pageNumber = newsParams.pageNumber,
 			pageSize = newsParams.pageSize,
@@ -26,5 +29,9 @@ class ApiHelper(private val apiService: ApiService) {
 		)
 
 	suspend fun getNewsDetails(newsId: String, language: String?) =
-		apiService.getNewsDetails(newsId = newsId, language = language)
+		opendatahubApiService.getNewsDetails(newsId = newsId, language = language)
+
+	// CONTACTS
+	suspend fun getAccounts(accessToken: String): AccountsResponse = communityApiService.getAccounts(accessToken)
+	suspend fun getContacts(accessToken: String): ContactResponse = communityApiService.getContacts(accessToken)
 }

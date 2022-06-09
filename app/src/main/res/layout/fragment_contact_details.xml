@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:animateLayoutChanges="true">
+
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:clipToPadding="false"
+		android:paddingBottom="16dp"
+		app:layout_constraintBottom_toTopOf="@id/footer"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+			<com.google.android.material.card.MaterialCardView
+				android:id="@+id/contactCardView"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:elevation="0dp"
+				app:cardCornerRadius="0dp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent">
+
+				<androidx.constraintlayout.widget.ConstraintLayout
+					android:id="@+id/constraintLayout"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:background="@color/background_color"
+					android:paddingBottom="26dp">
+
+					<ImageView
+						android:id="@+id/contactImage"
+						android:layout_width="match_parent"
+						android:layout_height="180dp"
+						android:background="@color/background_color"
+						android:importantForAccessibility="no"
+						android:scaleType="centerCrop"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toTopOf="parent"
+						tools:src="@drawable/placeholder_noi_events" />
+
+					<TextView
+						android:id="@+id/contactName"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginStart="@dimen/default_margin"
+						android:layout_marginTop="5dp"
+						android:layout_marginEnd="@dimen/default_margin"
+						android:fontFamily="sans-serif-medium"
+						android:lineHeight="45dp"
+						android:lines="2"
+						android:textColor="@color/primary_color"
+						android:textSize="40sp"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/contactIconCardView"
+						tools:text="Mario\nRossi" />
+
+					<TextView
+						android:id="@+id/companyName"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginStart="@dimen/default_margin"
+						android:layout_marginTop="5dp"
+						android:layout_marginEnd="@dimen/default_margin"
+						android:lineHeight="24dp"
+						android:textColor="@color/primary_color"
+						android:textSize="19sp"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/contactName"
+						tools:text="NOI AG" />
+
+
+					<com.google.android.material.card.MaterialCardView
+						android:id="@+id/contactIconCardView"
+						android:layout_width="70dp"
+						android:layout_height="70dp"
+						android:layout_marginStart="@dimen/default_margin"
+						android:layout_marginTop="-35dp"
+						android:backgroundTint="@color/background_color"
+						app:cardCornerRadius="35dp"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/contactImage"
+						app:strokeColor="@color/primary_color"
+						app:strokeWidth="1dp">
+
+						<TextView
+							android:id="@+id/contactIcon"
+							android:layout_width="match_parent"
+							android:layout_height="match_parent"
+							android:fontFamily="sans-serif-medium"
+							android:gravity="center"
+							android:lineHeight="30dp"
+							android:padding="4dp"
+							android:textAlignment="center"
+							android:textColor="@color/primary_color"
+							android:textSize="25sp"
+							tools:text="MR" />
+					</com.google.android.material.card.MaterialCardView>
+
+				</androidx.constraintlayout.widget.ConstraintLayout>
+
+			</com.google.android.material.card.MaterialCardView>
+
+			<include
+				android:id="@+id/email"
+				layout="@layout/contact_detail_field"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/default_margin"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/contactCardView" />
+
+			<include
+				android:id="@+id/phone"
+				layout="@layout/contact_detail_field"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/default_margin"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/email" />
+
+			<include
+				android:id="@+id/address"
+				layout="@layout/contact_detail_field"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/default_margin"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/phone" />
+
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+	</androidx.core.widget.NestedScrollView>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/footer"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@color/tertiary_background_color"
+		android:elevation="20dp"
+		android:padding="@dimen/default_margin"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/sendEmail"
+			style="@style/ThemeOverlay.NOI.OutlinedButton"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="@string/btn_mail"
+			android:textAllCaps="false"
+			app:icon="@drawable/ic_mail"
+			app:iconGravity="textStart"
+			app:iconPadding="10dp"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toStartOf="@+id/call"
+			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/call"
+			style="@style/ThemeOverlay.NOI.OutlinedButton"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="7dp"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="@string/btn_call"
+			app:icon="@drawable/ic_phone"
+			app:iconGravity="textStart"
+			app:iconPadding="10dp"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toStartOf="@+id/find"
+			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintStart_toEndOf="@+id/sendEmail"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/find"
+			style="@style/ThemeOverlay.NOI.OutlinedButton"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="7dp"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="@string/btn_find"
+			app:icon="@drawable/ic_find_on_maps"
+			app:iconGravity="textStart"
+			app:iconPadding="10dp"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintStart_toEndOf="@+id/call"
+			app:layout_constraintTop_toTopOf="parent" />
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+	<ProgressBar
+		android:id="@+id/loader"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:indeterminateTint="@color/accent_color"
+		android:visibility="gone"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:visibility="visible" />
+</androidx.constraintlayout.widget.ConstraintLayout>

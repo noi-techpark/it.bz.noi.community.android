@@ -6,7 +6,7 @@ import retrofit2.http.*
 /**
  * Interface for calling the different endpoints
  */
-interface ApiService {
+interface OpendatahubApiService {
     @GET("v1/EventShort")
     suspend fun getEvents(
         @Query("onlyactive") onlyActive: Boolean = true,
@@ -32,7 +32,7 @@ interface ApiService {
 	): Map<String, String>
 
 	@GET("https://tourism.opendatahub.bz.it/v1/EventShortTypes?rawfilter=or(eq(Type,\"TechnologyFields\"),and(eq(Type,\"CustomTagging\"),eq(Parent,\"EventType\")))")
-	suspend fun getEventFilterValues(): List<MultiLangFilterValue>
+	suspend fun getEventFilterValues(): List<MultiLangEventsFilterValue>
 
 	@GET("v1/Article")
 	suspend fun getNews(

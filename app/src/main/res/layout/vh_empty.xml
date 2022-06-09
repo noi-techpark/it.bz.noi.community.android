@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/emptyState"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_marginStart="@dimen/default_margin"
+	android:layout_marginTop="33dp"
+	android:layout_marginEnd="@dimen/default_margin">
+
+	<TextView
+		android:id="@+id/title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:fontFamily="sans-serif-medium"
+		android:lineHeight="24dp"
+		android:text="@string/label_events_empty_state_title"
+		android:textAlignment="center"
+		android:textColor="@color/secondary_color"
+		android:textSize="19sp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+	<TextView
+		android:id="@+id/subtitle"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:lineHeight="24dp"
+		android:textAlignment="center"
+		android:textColor="@color/secondary_color"
+		android:textSize="19sp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/title"
+		tools:text="@string/label_contacts_empty_state_subtitle" />
+</androidx.constraintlayout.widget.ConstraintLayout>

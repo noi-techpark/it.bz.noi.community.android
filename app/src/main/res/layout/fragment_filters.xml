@@ -6,6 +6,30 @@
 	android:layout_height="match_parent"
 	android:background="@color/secondary_background_color">
 
+	<com.google.android.material.textfield.TextInputLayout
+		android:id="@+id/searchField"
+		android:layout_width="match_parent"
+		android:layout_height="40dp"
+		android:layout_margin="@dimen/default_margin"
+		android:theme="@style/ThemeOverlay.NOI.EditText"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toTopOf="@id/filterstRV"
+		app:startIconDrawable="@drawable/ic_search"
+		app:endIconMode="clear_text"
+		style="@style/ThemeOverlay.NOI.SearchField">
+
+		<com.google.android.material.textfield.TextInputEditText
+			android:id="@+id/searchFieldEditText"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:lines="1"
+			android:maxLines="1"
+			android:hint="@string/search_label"
+			/>
+	</com.google.android.material.textfield.TextInputLayout>
+
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/filterstRV"
 		android:layout_width="match_parent"
@@ -13,7 +37,7 @@
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/searchField"
 		app:layout_constraintBottom_toTopOf="@id/footer"
 		tools:listitem="@layout/vh_switch" />
 

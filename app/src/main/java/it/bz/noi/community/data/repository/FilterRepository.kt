@@ -5,24 +5,24 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import it.bz.noi.community.R
-import it.bz.noi.community.data.models.MultiLangFilterValue
+import it.bz.noi.community.data.models.MultiLangEventsFilterValue
 import java.io.BufferedReader
 import java.io.File
 import java.lang.reflect.Type
 
 interface FilterRepository {
 
-	fun saveFilters(filters: List<MultiLangFilterValue>)
-	fun loadFilters(): List<MultiLangFilterValue>
+	fun saveFilters(filters: List<MultiLangEventsFilterValue>)
+	fun loadFilters(): List<MultiLangEventsFilterValue>
 
 }
 
 class JsonFilterRepository(val app: Application) : FilterRepository {
 
-	override fun saveFilters(filters: List<MultiLangFilterValue>) {
+	override fun saveFilters(filters: List<MultiLangEventsFilterValue>) {
 		File(app.filesDir, filtersFileName).bufferedWriter().use {
 			try {
-				val typeOfT: Type = object : TypeToken<List<MultiLangFilterValue?>?>() {}.type
+				val typeOfT: Type = object : TypeToken<List<MultiLangEventsFilterValue?>?>() {}.type
 				it.write(Gson().toJson(filters, typeOfT).toString())
 			} catch (e: Exception) {
 				Log.e(TAG, e.stackTraceToString())
@@ -31,8 +31,8 @@ class JsonFilterRepository(val app: Application) : FilterRepository {
 		}
 	}
 
-	override fun loadFilters(): List<MultiLangFilterValue> {
-		var filters: List<MultiLangFilterValue>? = null
+	override fun loadFilters(): List<MultiLangEventsFilterValue> {
+		var filters: List<MultiLangEventsFilterValue>? = null
 		val filtersFile: Array<File> = File(app.filesDir.path).listFiles { _, name -> name == filtersFileName  }
 		if (filtersFile.size == 1) {
 			filters = parseFilters(filtersFile[0])
@@ -44,15 +44,15 @@ class JsonFilterRepository(val app: Application) : FilterRepository {
 		return parseDefaultFilters()
 	}
 
-	private fun parseFilters(filtersFile: File): List<MultiLangFilterValue> =
+	private fun parseFilters(filtersFile: File): List<MultiLangEventsFilterValue> =
 		filtersFile.bufferedReader().parseFilters()
 
-	private fun parseDefaultFilters(): List<MultiLangFilterValue> =
+	private fun parseDefaultFilters(): List<MultiLangEventsFilterValue> =
 		app.resources.openRawResource(R.raw.filters).bufferedReader().parseFilters()
 
-	private fun BufferedReader.parseFilters(): List<MultiLangFilterValue> = use {
+	private fun BufferedReader.parseFilters(): List<MultiLangEventsFilterValue> = use {
 		return try {
-			val typeOfT: Type = object : TypeToken<List<MultiLangFilterValue?>?>() {}.type
+			val typeOfT: Type = object : TypeToken<List<MultiLangEventsFilterValue?>?>() {}.type
 			Gson().fromJson(this, typeOfT)
 		} catch (e: Exception) {
 			Log.e(TAG, e.stackTraceToString())

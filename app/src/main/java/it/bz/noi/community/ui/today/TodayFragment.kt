@@ -13,6 +13,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentTodayBinding
+import it.bz.noi.community.ui.today.events.EventsFragment
+import it.bz.noi.community.ui.today.news.NewsFragment
 
 class TodayFragment : Fragment() {
 

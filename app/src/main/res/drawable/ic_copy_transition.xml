@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:aapt="http://schemas.android.com/aapt"
+	android:drawable="@drawable/ic_copy_with_check">
+	<target android:name="checkmark_path">
+		<aapt:attr name="android:animation">
+			<objectAnimator
+				android:duration="300"
+				android:interpolator="@android:interpolator/decelerate_quint"
+				android:propertyName="trimPathEnd"
+				android:valueFrom="1"
+				android:valueTo="0"
+				android:valueType="floatType" />
+		</aapt:attr>
+	</target>
+</animated-vector>
+

@@ -1,4 +1,4 @@
-package it.bz.noi.community.ui.today
+package it.bz.noi.community.ui.today.events
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -28,6 +28,8 @@ import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentEventsBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
+import it.bz.noi.community.ui.today.TodayFragmentDirections
+import it.bz.noi.community.ui.today.TodayViewModel
 import it.bz.noi.community.utils.Status
 
 class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
@@ -38,7 +40,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 
 	private val viewModel: MainViewModel by activityViewModels(factoryProducer = {
 		ViewModelFactory(
-			ApiHelper(RetrofitBuilder.apiService),
+			ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
 			JsonFilterRepository(requireActivity().application)
 		)
 	})
@@ -105,7 +107,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 			}
 		}
 
-		binding.cdFilterEvents.setOnClickListener {
+		binding.cdFilterEvents.root.setOnClickListener {
 			exitTransition = null
 			findNavController().navigate(
 				TodayFragmentDirections.actionNavigationTodayToFiltersFragment()
@@ -128,11 +130,14 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 						val events = resource.data
 						if (events != null && events.isNotEmpty()) {
 							binding.rvEvents.isVisible = true
-							binding.clEmptyState.isVisible = false
+							binding.emptyState.root.isVisible = false
 							retrieveList(events)
 						} else {
-							binding.clEmptyState.isVisible = true
 							binding.rvEvents.isVisible = false
+							binding.emptyState.apply {
+								root.isVisible = true
+								subtitle.text = getString(R.string.label_events_empty_state_subtitle)
+							}
 						}
 					}
 					Status.ERROR -> {
@@ -148,11 +153,13 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		}
 
 		viewModel.selectedFiltersCount.observe(viewLifecycleOwner) { count ->
-			if (count > 0) {
-				binding.appliedFiltersCount.visibility = View.VISIBLE
-				binding.appliedFiltersCount.text = "($count)"
-			} else {
-				binding.appliedFiltersCount.visibility = View.GONE
+			binding.cdFilterEvents.appliedFiltersCount.apply {
+				if (count > 0) {
+					isVisible = true
+					text = "($count)"
+				} else {
+					isVisible = false
+				}
 			}
 		}
 	}

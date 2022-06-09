@@ -1,8 +1,7 @@
 package it.bz.noi.community.data.repository
 
 import it.bz.noi.community.data.api.ApiHelper
-import it.bz.noi.community.data.models.EventsParams
-import it.bz.noi.community.data.models.NewsParams
+import it.bz.noi.community.data.models.*
 
 class MainRepository(private val apiHelper: ApiHelper) {
 	// EVENTS
@@ -17,4 +16,9 @@ class MainRepository(private val apiHelper: ApiHelper) {
 	suspend fun getNews(newsParams: NewsParams) = apiHelper.getNews(newsParams)
 	suspend fun getNewsDetails(newsId: String, language: String?) =
 		apiHelper.getNewsDetails(newsId = newsId, language = language)
+
+	// CONTACTS
+	suspend fun getAccounts(accessToken: String): List<Account> = apiHelper.getAccounts(accessToken).accounts
+	suspend fun getContacts(accessToken: String): List<Contact> = apiHelper.getContacts(accessToken).contacts
+
 }

@@ -10,14 +10,15 @@ import androidx.lifecycle.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.bz.noi.community.OnboardingActivity.Companion.LOGOUT_REQUEST
 import it.bz.noi.community.R
-import it.bz.noi.community.databinding.FragmentMyAccountBinding
+import it.bz.noi.community.databinding.FragmentProfileBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.utils.Status
+import it.bz.noi.community.utils.Utils.writeEmail
 import kotlinx.coroutines.launch
 
-class MyAccountFragment : Fragment() {
+class ProfileFragment : Fragment() {
 
-	private var _binding: FragmentMyAccountBinding? = null
+	private var _binding: FragmentProfileBinding? = null
 	private val binding get() = _binding!!
 
 	private var reloadUserInfo = true
@@ -27,7 +28,7 @@ class MyAccountFragment : Fragment() {
 		container: ViewGroup?,
 		savedInstanceState: Bundle?
 	): View {
-		_binding = FragmentMyAccountBinding.inflate(inflater, container, false)
+		_binding = FragmentProfileBinding.inflate(inflater, container, false)
 		return binding.root
 	}
 
@@ -41,7 +42,9 @@ class MyAccountFragment : Fragment() {
 						when (userInfoRes.status) {
 							Status.SUCCESS -> {
 								val userInfo = userInfoRes.data!!
-								binding.name.text = userInfo.fullname
+								binding.name.text = "${userInfo.firstName}\n${userInfo.lastName}"
+								binding.icon.text =
+									"${userInfo.firstName[0]}${userInfo.lastName[0]}"
 								binding.email.text = userInfo.email
 							}
 							Status.ERROR -> {
@@ -68,6 +71,14 @@ class MyAccountFragment : Fragment() {
 		binding.logout.setOnClickListener {
 			AuthManager.logout(requireActivity(), LOGOUT_REQUEST)
 		}
+
+		binding.deleteAccount.setOnClickListener {
+			requireContext().writeEmail(
+				receiverAddress = DELETE_ACCOUNT_EMAIL,
+				subject = getString(R.string.delete_profile_compose_subject),
+				text = getString(R.string.delete_profile_compose_body)
+			)
+		}
 	}
 
 	override fun onDestroyView() {
@@ -76,7 +87,8 @@ class MyAccountFragment : Fragment() {
 	}
 
 	companion object {
-		private const val TAG = "MyAccountFragment"
+		private const val TAG = "ProfileFragment"
+		private const val DELETE_ACCOUNT_EMAIL = "community@noi.bz.it"
 	}
 
 }

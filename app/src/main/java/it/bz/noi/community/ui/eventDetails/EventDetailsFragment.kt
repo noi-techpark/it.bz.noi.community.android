@@ -42,8 +42,8 @@ import it.bz.noi.community.databinding.FragmentEventDetailsBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
-import it.bz.noi.community.ui.today.EventClickListener
-import it.bz.noi.community.ui.today.EventsAdapter
+import it.bz.noi.community.ui.today.events.EventClickListener
+import it.bz.noi.community.ui.today.events.EventsAdapter
 import it.bz.noi.community.utils.DateUtils
 import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils
@@ -60,7 +60,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
 	private val mainViewModel: MainViewModel by activityViewModels(factoryProducer = {
 		ViewModelFactory(
-			ApiHelper(RetrofitBuilder.apiService),
+			ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
 			JsonFilterRepository(requireActivity().application)
 		)
 	})
@@ -82,7 +82,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		sharedElementEnterTransition =
-			TransitionInflater.from(context).inflateTransition(R.transition.events_details_enter_transition)
+			TransitionInflater.from(requireContext()).inflateTransition(R.transition.events_details_enter_transition)
 		sharedElementReturnTransition = null
 
 		if (savedInstanceState == null)

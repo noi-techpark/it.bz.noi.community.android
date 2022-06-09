@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="1dp"
+    android:layout_marginBottom="1dp"
+	android:paddingTop="17dp"
+	android:paddingStart="17dp"
+	android:paddingBottom="19dp"
+	android:paddingEnd="17dp"
+    android:background="@color/tertiary_background_color">
+
+	<com.google.android.material.card.MaterialCardView
+		android:id="@+id/contactIconCardView"
+		android:layout_width="50dp"
+		android:layout_height="50dp"
+		android:backgroundTint="@color/background_color"
+		app:cardCornerRadius="25dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:strokeWidth="0dp">
+
+		<TextView
+			android:id="@+id/contactIcon"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:fontFamily="sans-serif-medium"
+			android:gravity="center"
+			android:lineHeight="30dp"
+			android:padding="4dp"
+			android:textAlignment="center"
+			android:textColor="@color/primary_color"
+			android:textSize="19sp"
+			tools:text="MR" />
+	</com.google.android.material.card.MaterialCardView>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="10dp"
+		app:layout_constraintStart_toEndOf="@id/contactIconCardView"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toBottomOf="parent">
+
+		<TextView
+			android:id="@+id/contactName"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:textColor="@color/secondary_color"
+			android:fontFamily="sans-serif-medium"
+			android:textSize="17sp"
+			android:lineHeight="22dp"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:text="Mario Rossi" />
+
+		<TextView
+			android:id="@+id/companyName"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:textColor="@color/secondary_color"
+			android:textSize="17sp"
+			android:lineHeight="22dp"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/contactName"
+			tools:text="NOI AG" />
+
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

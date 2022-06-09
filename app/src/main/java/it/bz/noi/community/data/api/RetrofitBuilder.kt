@@ -1,6 +1,7 @@
 package it.bz.noi.community.data.api
 
 import com.google.gson.*
+import it.bz.noi.community.BuildConfig
 import it.bz.noi.community.utils.NOIDateParser
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -12,9 +13,9 @@ import java.util.*
 
 object RetrofitBuilder {
 
-	private const val BASE_URL = "https://tourism.opendatahub.bz.it/"
+	private const val OPENDATAHUB_API_BASE_URL = "https://tourism.opendatahub.bz.it/"
 
-	private fun getRetrofit(): Retrofit {
+	private fun getRetrofit(baseUrl: String): Retrofit {
 		val interceptor = HttpLoggingInterceptor()
 		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
 		val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
@@ -23,13 +24,14 @@ object RetrofitBuilder {
 		gsonBuilder.registerTypeAdapter(Date::class.java, NOIDateDeserializer)
 
 		return Retrofit.Builder()
-			.baseUrl(BASE_URL)
+			.baseUrl(baseUrl)
 			.client(client)
 			.addConverterFactory(GsonConverterFactory.create(gsonBuilder.create()))
 			.build() //Doesn't require the adapter
 	}
 
-	val apiService: ApiService = getRetrofit().create(ApiService::class.java)
+	val opendatahubApiService: OpendatahubApiService = getRetrofit(OPENDATAHUB_API_BASE_URL).create(OpendatahubApiService::class.java)
+	val communityApiService: CommunityApiService = getRetrofit(BuildConfig.COMMUNITY_API_URL).create(CommunityApiService::class.java)
 }
 
 object NOIDateDeserializer : JsonDeserializer<Date> {

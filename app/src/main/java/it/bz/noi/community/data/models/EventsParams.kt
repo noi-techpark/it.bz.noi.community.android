@@ -16,8 +16,8 @@ data class EventsParams(
 private fun EventsParams.getEventTypeRawFilter(): String? {
     var rawFilter: String?
 
-	val rawFiltersList = selectedFilters.filter { it.type == FilterType.EVENT_TYPE.typeDesc }.map {
-		"in(${FilterType.EVENT_TYPE.typeDesc}.[],\"${it.key}\")"
+	val rawFiltersList = selectedFilters.filter { it.type == EventsFilterType.EVENT_TYPE.typeDesc }.map {
+		"in(${EventsFilterType.EVENT_TYPE.typeDesc}.[],\"${it.key}\")"
 	}
 
 	if (rawFiltersList.isEmpty())
@@ -43,8 +43,8 @@ private fun EventsParams.getEventTypeRawFilter(): String? {
 private fun EventsParams.getTechSectorRawFilter(): String? {
 	var rawFilter: String?
 
-	val rawFiltersList = selectedFilters.filter { it.type == FilterType.TECHNOLOGY_SECTOR.typeDesc }.map {
-		"in(${FilterType.TECHNOLOGY_SECTOR.typeDesc}.[],\"${it.key}\")"
+	val rawFiltersList = selectedFilters.filter { it.type == EventsFilterType.TECHNOLOGY_SECTOR.typeDesc }.map {
+		"in(${EventsFilterType.TECHNOLOGY_SECTOR.typeDesc}.[],\"${it.key}\")"
 	}
 
 	if (rawFiltersList.isEmpty())

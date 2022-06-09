@@ -1,10 +1,11 @@
-package it.bz.noi.community.ui.today
+package it.bz.noi.community.ui.today.events
 
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -14,16 +15,20 @@ import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.MainViewModel
+import it.bz.noi.community.ui.UpdateResultsListener
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.utils.Status
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-class FiltersFragment : Fragment() {
+@ExperimentalCoroutinesApi
+class EventsFiltersFragment : Fragment() {
 
-    private lateinit var filterAdapter: FiltersAdapter
+    private lateinit var filterAdapter: EventsFiltersAdapter
     private lateinit var binding: FragmentFiltersBinding
 
     private val mainViewModel: MainViewModel by activityViewModels(factoryProducer = {
-		ViewModelFactory(ApiHelper(RetrofitBuilder.apiService), JsonFilterRepository(requireActivity().application))
+		ViewModelFactory(ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
+			JsonFilterRepository(requireActivity().application))
     })
 
 	private val updateResultsListener = object : UpdateResultsListener {
@@ -35,7 +40,7 @@ class FiltersFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-		filterAdapter = FiltersAdapter(
+		filterAdapter = EventsFiltersAdapter(
 			eventTypeHeader = resources.getString(R.string.filter_by_type),
 			technlogySectorHeader = resources.getString(R.string.filter_by_sector),
 			updateResultsListener = updateResultsListener
@@ -76,7 +81,9 @@ class FiltersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            filterstRV.adapter = filterAdapter
+			searchField.isVisible = false
+
+			filterstRV.adapter = filterAdapter
 
             resetBtn.setOnClickListener {
                 resetFilters()
@@ -98,7 +105,7 @@ class FiltersFragment : Fragment() {
     }
 
 	companion object {
-		private const val TAG = "FiltersFragment"
+		private const val TAG = "EventsFiltersFragment"
 	}
 
 }

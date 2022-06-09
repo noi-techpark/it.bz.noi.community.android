@@ -164,7 +164,7 @@ object AuthManager {
 			}
 		}
 
-	private suspend fun obtainFreshToken(): String {
+	suspend fun obtainFreshToken(): String {
 		val userState = userState.first()
 
 		return suspendCoroutine { cont ->

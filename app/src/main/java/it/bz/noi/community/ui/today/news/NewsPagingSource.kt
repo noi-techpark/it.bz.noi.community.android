@@ -1,4 +1,4 @@
-package it.bz.noi.community.ui.today
+package it.bz.noi.community.ui.today.news
 
 import android.util.Log
 import androidx.paging.PagingSource

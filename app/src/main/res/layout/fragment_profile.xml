@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:animateLayoutChanges="true">
+
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:clipToPadding="false"
+		android:paddingBottom="16dp"
+		app:layout_constraintBottom_toTopOf="@id/footer"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+			<com.google.android.material.card.MaterialCardView
+				android:id="@+id/headerCardView"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:elevation="0dp"
+				app:cardCornerRadius="0dp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent">
+
+				<androidx.constraintlayout.widget.ConstraintLayout
+					android:id="@+id/constraintLayout"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:background="@color/background_color"
+					android:paddingBottom="26dp">
+
+					<ImageView
+						android:id="@+id/profileImage"
+						android:layout_width="match_parent"
+						android:layout_height="180dp"
+						android:background="@color/background_color"
+						android:importantForAccessibility="no"
+						android:scaleType="centerCrop"
+						android:src="@drawable/profile"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toTopOf="parent" />
+
+					<TextView
+						android:id="@+id/name"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginStart="@dimen/default_margin"
+						android:layout_marginTop="5dp"
+						android:layout_marginEnd="@dimen/default_margin"
+						android:fontFamily="sans-serif-medium"
+						android:lineHeight="45dp"
+						android:lines="2"
+						android:textColor="@color/primary_color"
+						android:textSize="40sp"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/iconCardView"
+						tools:text="Mario\nRossi" />
+
+					<com.google.android.material.card.MaterialCardView
+						android:id="@+id/iconCardView"
+						android:layout_width="70dp"
+						android:layout_height="70dp"
+						android:layout_marginStart="@dimen/default_margin"
+						android:layout_marginTop="-35dp"
+						android:backgroundTint="@color/background_color"
+						app:cardCornerRadius="35dp"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/profileImage"
+						app:strokeColor="@color/primary_color"
+						app:strokeWidth="1dp">
+
+						<TextView
+							android:id="@+id/icon"
+							android:layout_width="match_parent"
+							android:layout_height="match_parent"
+							android:fontFamily="sans-serif-medium"
+							android:gravity="center"
+							android:lineHeight="30dp"
+							android:padding="4dp"
+							android:textAlignment="center"
+							android:textColor="@color/primary_color"
+							android:textSize="25sp"
+							tools:text="MR" />
+					</com.google.android.material.card.MaterialCardView>
+
+				</androidx.constraintlayout.widget.ConstraintLayout>
+
+			</com.google.android.material.card.MaterialCardView>
+
+			<TextView
+				android:id="@+id/emailLbl"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/default_margin"
+				android:fontFamily="sans-serif-medium"
+				android:lineHeight="18sp"
+				android:paddingStart="@dimen/default_margin"
+				android:paddingEnd="@dimen/default_margin"
+				android:text="@string/label_email"
+				android:textColor="@color/secondary_color"
+				android:textSize="14sp"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/headerCardView" />
+
+			<TextView
+				android:id="@+id/email"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:lineHeight="24dp"
+				android:paddingStart="@dimen/default_margin"
+				android:paddingEnd="@dimen/default_margin"
+				android:textColor="@color/secondary_color"
+				android:textSize="19sp"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/emailLbl"
+				tools:text="mario.rossi@noi.bz.it" />
+
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+	</androidx.core.widget.NestedScrollView>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/footer"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@color/tertiary_background_color"
+		android:padding="@dimen/default_margin"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/logout"
+			style="@style/ThemeOverlay.NOI.SmallTextButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="@string/btn_logout"
+			app:icon="@drawable/ic_exit_arrow"
+			app:iconGravity="textStart"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/deleteAccount"
+			style="@style/ThemeOverlay.NOI.SmallTextButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="20dp"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="@string/btn_delete_account"
+			app:icon="@drawable/ic_delete"
+			app:iconGravity="textStart"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toEndOf="@+id/logout"
+			app:layout_constraintTop_toTopOf="parent" />
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+	<ProgressBar
+		android:id="@+id/loader"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:indeterminateTint="@color/accent_color"
+		android:visibility="gone"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:visibility="visible" />
+</androidx.constraintlayout.widget.ConstraintLayout>

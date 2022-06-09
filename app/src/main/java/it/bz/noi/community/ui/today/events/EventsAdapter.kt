@@ -1,4 +1,4 @@
-package it.bz.noi.community.ui.today
+package it.bz.noi.community.ui.today.events
 
 import android.view.LayoutInflater
 import android.view.View

@@ -79,6 +79,7 @@
 
 	<style name="ThemeOverlay.NOI.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
 		<item name="android:textSize">19sp</item>
+		<item name="fontFamily">sans-serif-medium</item>
 		<item name="cornerRadius">2dp</item>
 		<item name="elevation">0dp</item>
 		<item name="strokeColor">?attr/colorPrimary</item>
@@ -96,4 +97,40 @@
 		<item name="android:insetBottom">0dp</item>
 		<item name="android:padding">0dp</item>
 	</style>
+
+	<style name="ThemeOverlay.NOI.SmallTextButton" parent="ThemeOverlay.NOI.TextButton">
+		<item name="android:textSize">14sp</item>
+		<item name="fontFamily">sans-serif-medium</item>
+		<item name="iconPadding">8dp</item>
+		<item name="android:minWidth">0dip</item>
+	</style>
+
+	<style name="ThemeOverlay.NOI.SearchField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+		<item name="shapeAppearance">@style/ShapeAppearance.NOI.SmallComponent</item>
+		<item name="boxBackgroundColor">@color/tertiary_background_color</item>
+
+		<item name="boxStrokeColor">@color/secondary_color</item> <!-- For focused state only! The default state is changed overriding mtrl_textinput_default_box_stroke_color in colors.xml -->
+		<item name="boxStrokeWidthFocused">1dp</item>
+
+		<item name="hintEnabled">false</item>
+		<item name="android:textColorHint">@color/disabled1_color</item>
+
+		<item name="android:textIsSelectable">true</item>
+
+		<item name="endIconTint">@color/secondary_color</item>
+		<item name="startIconTint">@color/text_input_layout_start_icon_color</item>
+
+	</style>
+
+	<style name="ShapeAppearance.NOI.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">5dp</item>
+	</style>
+
+	<style name="ThemeOverlay.NOI.EditText" parent="ThemeOverlay.AppCompat">
+		<item name="colorAccent">@color/disabled1_color</item>
+		<item name="android:textSize">19sp</item>
+		<item name="android:padding">0dp</item>
+	</style>
+
 </resources>

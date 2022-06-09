@@ -20,8 +20,8 @@ class MoreFragment : Fragment() {
 		it?.let {
 			val pos = binding.moreRecyclerView.getChildAdapterPosition(it)
 
-			if (pos == MY_ACCOUNT_ITEM) {
-				findNavController().navigate(MoreFragmentDirections.actionMoreToMyAccount())
+			if (pos == PROFILE_ITEM) {
+				findNavController().navigate(MoreFragmentDirections.actionMoreToProfile())
 			} else {
 				val action = WebViewFragmentDirections.actionGlobalWebViewFragment().apply {
 					title = items[pos]
@@ -75,7 +75,7 @@ class MoreFragment : Fragment() {
 	}
 
 	companion object {
-		private const val MY_ACCOUNT_ITEM = 3
+		private const val PROFILE_ITEM = 3
 	}
 
 }

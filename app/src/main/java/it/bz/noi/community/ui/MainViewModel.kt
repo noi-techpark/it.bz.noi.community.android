@@ -10,7 +10,7 @@ import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.models.*
 import it.bz.noi.community.data.repository.FilterRepository
 import it.bz.noi.community.data.repository.MainRepository
-import it.bz.noi.community.ui.today.NewsPagingSource
+import it.bz.noi.community.ui.today.news.NewsPagingSource
 import it.bz.noi.community.utils.DateUtils.endOfDay
 import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentMonth
 import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentWeek
@@ -20,6 +20,7 @@ import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import java.util.*
 
@@ -38,6 +39,7 @@ class ViewModelFactory(private val apiHelper: ApiHelper, private val filterRepo:
 /**
  * The ViewModel shared between all the components of the app
  */
+@ExperimentalCoroutinesApi
 class MainViewModel(private val mainRepository: MainRepository, private val filterRepo: FilterRepository) : ViewModel() {
 
 	companion object {
@@ -199,7 +201,7 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 	 */
 	private fun getEventFilterValues() = liveData(Dispatchers.IO) {
 		emit(Resource.loading(null))
-		var filters: List<MultiLangFilterValue>
+		var filters: List<MultiLangEventsFilterValue>
 		try {
 			filters = mainRepository.getEventFilterValues()
 			if (filters.isEmpty())
