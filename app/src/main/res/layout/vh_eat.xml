@@ -6,8 +6,8 @@
 	android:layout_height="wrap_content"
 	android:layout_marginBottom="7dp"
 	android:background="@color/secondary_background_color"
-	android:paddingStart="17dp"
-	android:paddingEnd="17dp">
+	android:paddingStart="@dimen/default_margin"
+	android:paddingEnd="@dimen/default_margin">
 
 	<TextView
 		android:id="@+id/tvRestName"
@@ -28,7 +28,7 @@
 		android:id="@+id/tvRestOpeningTime"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:layout_marginEnd="@dimen/activity_horizontal_margin"
+		android:layout_marginEnd="@dimen/default_margin"
 		android:textColor="@color/secondary_color"
 		android:textColorHint="@color/secondary_color"
 		android:textSize="17sp"
