@@ -35,7 +35,6 @@
 			android:layout_height="wrap_content"
 			android:layout_marginStart="10dp"
 			android:textColor="@color/secondary_color"
-			android:textSize="17sp"
 			android:textStyle="bold"
 			app:layout_constraintStart_toEndOf="@id/logo"
 			app:layout_constraintTop_toTopOf="parent"
@@ -47,7 +46,6 @@
 			android:layout_height="wrap_content"
 			android:layout_marginStart="10dp"
 			android:textColor="@color/secondary_color"
-			android:textSize="17sp"
 			app:layout_constraintStart_toEndOf="@id/logo"
 			app:layout_constraintTop_toBottomOf="@id/publisher"
 			tools:text="26.2.2022" />
@@ -79,7 +77,6 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:textColor="@color/secondary_color"
-		android:textSize="17sp"
 		android:textStyle="bold"
 		android:layout_marginTop="17dp"
 		app:layout_constraintStart_toStartOf="parent"
@@ -91,7 +88,6 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:textColor="@color/secondary_color"
-		android:textSize="17sp"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/title"
 		tools:text="Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Magnis dis parturient montes." />

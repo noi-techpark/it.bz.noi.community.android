@@ -41,6 +41,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.44128553770086526" />
         <entry key="app/src/main/res/layout/activity_onboarding.xml" value="0.1" />
         <entry key="app/src/main/res/layout/contact_detail_field.xml" value="0.3317657118426678" />
+        <entry key="app/src/main/res/layout/event_date_card_view.xml" value="0.4155622060709705" />
         <entry key="app/src/main/res/layout/filter_button.xml" value="0.41000427533133815" />
         <entry key="app/src/main/res/layout/filters_button.xml" value="0.10194624652455977" />
         <entry key="app/src/main/res/layout/fragment_authorization_error.xml" value="0.33689610944848225" />
@@ -61,14 +62,18 @@
         <entry key="app/src/main/res/layout/fragment_today.xml" value="0.16893115942028986" />
         <entry key="app/src/main/res/layout/fragment_webview.xml" value="0.3804347826086957" />
         <entry key="app/src/main/res/layout/layout_suggested_event.xml" value="0.3804347826086957" />
-        <entry key="app/src/main/res/layout/vh_contact.xml" value="0.24326635314236852" />
+        <entry key="app/src/main/res/layout/vh_contact.xml" value="0.8247040362478374" />
         <entry key="app/src/main/res/layout/vh_eat.xml" value="0.3203125" />
         <entry key="app/src/main/res/layout/vh_empty.xml" value="0.33133817870884996" />
+        <entry key="app/src/main/res/layout/vh_event.xml" value="0.4155622060709705" />
         <entry key="app/src/main/res/layout/vh_header.xml" value="0.24326635314236852" />
         <entry key="app/src/main/res/layout/vh_horizontal_image.xml" value="0.31881371640407785" />
         <entry key="app/src/main/res/layout/vh_image.xml" value="0.3203125" />
         <entry key="app/src/main/res/layout/vh_link_item.xml" value="0.15577507598784193" />
+        <entry key="app/src/main/res/layout/vh_news.xml" value="0.4155622060709705" />
+        <entry key="app/src/main/res/layout/vh_suggested_event.xml" value="0.4155622060709705" />
         <entry key="app/src/main/res/layout/vh_switch.xml" value="0.40963855421686746" />
+        <entry key="app/src/main/res/layout/vh_time_filter.xml" value="0.4155622060709705" />
         <entry key="app/src/main/res/layout/vh_vertical_image_news.xml" value="0.11329628046173579" />
         <entry key="app/src/main/res/layout/view_holder_app_version.xml" value="0.2006079027355623" />
         <entry key="app/src/main/res/layout/view_holder_event.xml" value="0.4931150027376217" />
