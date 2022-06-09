@@ -20,7 +20,7 @@
 	<com.google.android.material.textfield.TextInputLayout
 		android:id="@+id/searchField"
 		android:layout_width="0dp"
-		android:layout_height="40dp"
+		android:layout_height="@dimen/filters_bar_height"
 		android:layout_marginEnd="@dimen/default_margin"
 		android:theme="@style/ThemeOverlay.NOI.EditText"
 		app:layout_constraintStart_toEndOf="@id/contactsFilter"
