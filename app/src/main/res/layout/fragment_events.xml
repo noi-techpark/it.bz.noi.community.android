@@ -55,7 +55,7 @@
 			android:paddingBottom="@dimen/default_margin"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/rvTimeFilters"
-			tools:listitem="@layout/view_holder_event" />
+			tools:listitem="@layout/vh_event" />
 
 	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,7 +14,7 @@
 		android:layout_height="wrap_content"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		tools:listitem="@layout/view_holder_news"
+		tools:listitem="@layout/vh_news"
 		tools:itemCount="3"/>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

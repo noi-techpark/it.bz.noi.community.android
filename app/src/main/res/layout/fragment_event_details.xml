@@ -191,7 +191,7 @@
 				android:clipToPadding="false"
 				app:layout_constraintTop_toBottomOf="@id/tvInterestingForYou"
 				tools:itemCount="1"
-				tools:listitem="@layout/view_holder_event" />
+				tools:listitem="@layout/vh_event" />
 
 		</androidx.constraintlayout.widget.ConstraintLayout>
 
