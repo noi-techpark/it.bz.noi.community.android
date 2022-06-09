@@ -54,11 +54,9 @@
 						android:layout_marginStart="@dimen/default_margin"
 						android:layout_marginTop="5dp"
 						android:layout_marginEnd="@dimen/default_margin"
-						android:fontFamily="sans-serif-medium"
-						android:lineHeight="45dp"
+						style="@style/TextAppearance.NOI.Title"
 						android:lines="2"
 						android:textColor="@color/primary_color"
-						android:textSize="40sp"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/iconCardView"
 						tools:text="Mario\nRossi" />
@@ -80,13 +78,11 @@
 							android:id="@+id/icon"
 							android:layout_width="match_parent"
 							android:layout_height="match_parent"
-							android:fontFamily="sans-serif-medium"
 							android:gravity="center"
-							android:lineHeight="30dp"
 							android:padding="4dp"
 							android:textAlignment="center"
 							android:textColor="@color/primary_color"
-							android:textSize="25sp"
+							style="@style/TextAppearance.NOI.Subtitle"
 							tools:text="MR" />
 					</com.google.android.material.card.MaterialCardView>
 
@@ -99,13 +95,11 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/default_margin"
-				android:fontFamily="sans-serif-medium"
-				android:lineHeight="18sp"
 				android:paddingStart="@dimen/default_margin"
 				android:paddingEnd="@dimen/default_margin"
 				android:text="@string/label_email"
 				android:textColor="@color/secondary_color"
-				android:textSize="14sp"
+				style="@style/TextAppearance.NOI.BodySmall.Semibold"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/headerCardView" />
 
@@ -113,11 +107,10 @@
 				android:id="@+id/email"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:lineHeight="24dp"
 				android:paddingStart="@dimen/default_margin"
 				android:paddingEnd="@dimen/default_margin"
 				android:textColor="@color/secondary_color"
-				android:textSize="19sp"
+				style="@style/TextAppearance.NOI.BodyLarge"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/emailLbl"
 				tools:text="mario.rossi@noi.bz.it" />

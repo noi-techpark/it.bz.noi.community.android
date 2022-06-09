@@ -31,7 +31,6 @@
 		android:layout_marginEnd="@dimen/default_margin"
 		android:textColor="@color/secondary_color"
 		android:textColorHint="@color/secondary_color"
-		android:textSize="17sp"
 		app:layout_constraintEnd_toStartOf="@+id/menuBtn"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/tvRestName"

@@ -29,7 +29,6 @@
 			android:layout_height="match_parent"
 			android:fontFamily="sans-serif-medium"
 			android:gravity="center"
-			android:lineHeight="30dp"
 			android:padding="4dp"
 			android:textAlignment="center"
 			android:textColor="@color/primary_color"
@@ -50,9 +49,7 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:textColor="@color/secondary_color"
-			android:fontFamily="sans-serif-medium"
-			android:textSize="17sp"
-			android:lineHeight="22dp"
+			style="@style/TextAppearance.NOI.BodyRegular.Semibold"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			tools:text="Mario Rossi" />
@@ -62,8 +59,6 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:textColor="@color/secondary_color"
-			android:textSize="17sp"
-			android:lineHeight="22dp"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/contactName"
 			tools:text="NOI AG" />
