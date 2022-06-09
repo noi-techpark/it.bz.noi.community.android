@@ -52,10 +52,10 @@ class EventsAdapter(
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
 		val view = if (isSuggestedEvents)
 			LayoutInflater.from(parent.context)
-				.inflate(R.layout.view_holder_suggested_event, parent, false)
+				.inflate(R.layout.vh_suggested_event, parent, false)
 		else
 			LayoutInflater.from(parent.context)
-				.inflate(R.layout.view_holder_event, parent, false)
+				.inflate(R.layout.vh_event, parent, false)
 		return EventViewHolder(view)
 	}
 
