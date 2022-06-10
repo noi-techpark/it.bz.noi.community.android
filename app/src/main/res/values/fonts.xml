@@ -47,4 +47,11 @@
 		<item name="android:lineSpacingExtra">45dp</item>
 		<item name="android:lineSpacingMultiplier">0</item>
 	</style>
+
+	<style name="TextAppearance.NOI.TitleMedium" parent="TextAppearance.MaterialComponents.Headline3">
+		<item name="fontFamily">sans-serif-medium</item>
+		<item name="android:textSize">33sp</item>
+		<item name="android:lineSpacingExtra">38dp</item>
+		<item name="android:lineSpacingMultiplier">0</item>
+	</style>
 </resources>
