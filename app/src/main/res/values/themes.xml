@@ -94,11 +94,13 @@
 		<item name="android:insetTop">0dp</item>
 		<item name="android:insetBottom">0dp</item>
 		<item name="android:padding">0dp</item>
+		<item name="iconPadding">@dimen/default_button_icon_padding</item>
+		<item name="iconGravity">textStart</item>
 	</style>
 
 	<style name="ThemeOverlay.NOI.SmallTextButton" parent="ThemeOverlay.NOI.TextButton">
 		<item name="android:textAppearance">@style/TextAppearance.NOI.BodySmall.Semibold</item>
-		<item name="iconPadding">8dp</item>
+		<item name="iconPadding">@dimen/small_button_icon_padding</item>
 		<item name="android:minWidth">0dip</item>
 	</style>
 
