@@ -24,10 +24,10 @@
 			android:id="@+id/searchFieldEditText"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:hint="@string/search_label"
 			android:lines="1"
 			android:maxLines="1"
-			android:hint="@string/search_label"
-			/>
+			tools:ignore="TouchTargetSizeCheck" />
 	</com.google.android.material.textfield.TextInputLayout>
 
 	<androidx.recyclerview.widget.RecyclerView
@@ -50,7 +50,10 @@
 		app:layout_constraintTop_toBottomOf="@id/filterstRV"
 		app:layout_constraintBottom_toBottomOf="parent"
 		android:background="@color/tertiary_background_color"
-		android:padding="17dp"
+		android:paddingStart="@dimen/default_margin"
+		android:paddingEnd="@dimen/default_margin"
+		android:paddingTop="@dimen/default_margin"
+		android:paddingBottom="5dp"
 		android:elevation="20dp">
 
 		<com.google.android.material.button.MaterialButton
@@ -63,20 +66,17 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"/>
 
-		<TextView
+		<com.google.android.material.button.MaterialButton
 			android:id="@+id/resetBtn"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="17dp"
+			android:layout_marginTop="10dp"
 			android:text="@string/reset_filters_btn"
-			android:textAlignment="center"
 			android:textColor="@color/secondary_color"
-			android:textSize="19sp"
-			android:textStyle="bold"
+			style="@style/ThemeOverlay.NOI.TextButton"
 			app:layout_constraintTop_toBottomOf="@id/showBtn"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent" />
-
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
