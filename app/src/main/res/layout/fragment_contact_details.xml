@@ -54,13 +54,11 @@
 						android:layout_marginStart="@dimen/default_margin"
 						android:layout_marginTop="5dp"
 						android:layout_marginEnd="@dimen/default_margin"
-						android:fontFamily="sans-serif-medium"
-						android:lineHeight="45dp"
 						android:lines="2"
 						android:textColor="@color/primary_color"
-						android:textSize="40sp"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/contactIconCardView"
+						style="@style/TextAppearance.NOI.Title"
 						tools:text="Mario\nRossi" />
 
 					<TextView
@@ -70,13 +68,11 @@
 						android:layout_marginStart="@dimen/default_margin"
 						android:layout_marginTop="5dp"
 						android:layout_marginEnd="@dimen/default_margin"
-						android:lineHeight="24dp"
 						android:textColor="@color/primary_color"
-						android:textSize="19sp"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/contactName"
+						style="@style/TextAppearance.NOI.BodyLarge"
 						tools:text="NOI AG" />
-
 
 					<com.google.android.material.card.MaterialCardView
 						android:id="@+id/contactIconCardView"
@@ -95,13 +91,11 @@
 							android:id="@+id/contactIcon"
 							android:layout_width="match_parent"
 							android:layout_height="match_parent"
-							android:fontFamily="sans-serif-medium"
 							android:gravity="center"
-							android:lineHeight="30dp"
 							android:padding="4dp"
 							android:textAlignment="center"
 							android:textColor="@color/primary_color"
-							android:textSize="25sp"
+							style="@style/TextAppearance.NOI.Subtitle"
 							tools:text="MR" />
 					</com.google.android.material.card.MaterialCardView>
 
@@ -114,7 +108,7 @@
 				layout="@layout/contact_detail_field"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/default_margin"
+				android:layout_marginTop="20dp"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/contactCardView" />
 
@@ -156,13 +150,8 @@
 			style="@style/ThemeOverlay.NOI.OutlinedButton"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:ellipsize="end"
-			android:maxLines="1"
 			android:text="@string/btn_mail"
-			android:textAllCaps="false"
 			app:icon="@drawable/ic_mail"
-			app:iconGravity="textStart"
-			app:iconPadding="10dp"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toStartOf="@+id/call"
 			app:layout_constraintHorizontal_bias="0.5"
@@ -175,12 +164,8 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="7dp"
-			android:ellipsize="end"
-			android:maxLines="1"
 			android:text="@string/btn_call"
 			app:icon="@drawable/ic_phone"
-			app:iconGravity="textStart"
-			app:iconPadding="10dp"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toStartOf="@+id/find"
 			app:layout_constraintHorizontal_bias="0.5"
@@ -193,12 +178,8 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="7dp"
-			android:ellipsize="end"
-			android:maxLines="1"
 			android:text="@string/btn_find"
 			app:icon="@drawable/ic_find_on_maps"
-			app:iconGravity="textStart"
-			app:iconPadding="10dp"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.5"
