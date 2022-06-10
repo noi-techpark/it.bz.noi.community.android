@@ -42,4 +42,10 @@
 		<item name="android:textSize">40sp</item>
 		<item name="android:lineHeight">45dp</item>
 	</style>
+
+	<style name="TextAppearance.NOI.TitleMedium" parent="TextAppearance.MaterialComponents.Headline3">
+		<item name="fontFamily">sans-serif-medium</item>
+		<item name="android:textSize">33sp</item>
+		<item name="android:lineHeight">38dp</item>
+	</style>
 </resources>
