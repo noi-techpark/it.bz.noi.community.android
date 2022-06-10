@@ -3,4 +3,6 @@
 	<dimen name="filters_bar_height">40dp</dimen>
 	<dimen name="button_corner_radius">2dp</dimen>
 	<dimen name="default_text_size">17sp</dimen>
+	<dimen name="default_button_icon_padding">12dp</dimen>
+	<dimen name="small_button_icon_padding">8dp</dimen>
 </resources>

@@ -138,7 +138,6 @@
 			android:maxLines="1"
 			android:text="@string/btn_logout"
 			app:icon="@drawable/ic_exit_arrow"
-			app:iconGravity="textStart"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent" />
@@ -153,7 +152,6 @@
 			android:maxLines="1"
 			android:text="@string/btn_delete_account"
 			app:icon="@drawable/ic_delete"
-			app:iconGravity="textStart"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintStart_toEndOf="@+id/logout"
 			app:layout_constraintTop_toTopOf="parent" />
