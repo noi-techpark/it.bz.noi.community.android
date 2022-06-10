@@ -29,6 +29,10 @@
 		<item name="android:letterSpacing">0</item>
 	</style>
 
+	<style name="TextAppearance.NOI.BodyLarge.Semibold" parent="TextAppearance.NOI.BodyLarge">
+		<item name="fontFamily">sans-serif-medium</item>
+	</style>
+
 	<style name="TextAppearance.NOI.Subtitle" parent="TextAppearance.MaterialComponents.Headline4">
 		<item name="fontFamily">sans-serif-medium</item>
 		<item name="android:textSize">25sp</item>
