@@ -50,7 +50,7 @@
         <entry key="app/src/main/res/layout/fragment_eat.xml" value="0.15577507598784193" />
         <entry key="app/src/main/res/layout/fragment_event_details.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_events.xml" value="0.4078666096622488" />
-        <entry key="app/src/main/res/layout/fragment_filters.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_filters.xml" value="0.33147735595703126" />
         <entry key="app/src/main/res/layout/fragment_meet.xml" value="0.4078666096622488" />
         <entry key="app/src/main/res/layout/fragment_meetOLD.xml" value="0.24326635314236852" />
         <entry key="app/src/main/res/layout/fragment_more.xml" value="0.25" />
@@ -72,7 +72,7 @@
         <entry key="app/src/main/res/layout/vh_header.xml" value="0.24326635314236852" />
         <entry key="app/src/main/res/layout/vh_horizontal_image.xml" value="0.31881371640407785" />
         <entry key="app/src/main/res/layout/vh_image.xml" value="0.3203125" />
-        <entry key="app/src/main/res/layout/vh_link_item.xml" value="0.15577507598784193" />
+        <entry key="app/src/main/res/layout/vh_link_item.xml" value="0.40129749768303985" />
         <entry key="app/src/main/res/layout/vh_news.xml" value="0.4155622060709705" />
         <entry key="app/src/main/res/layout/vh_suggested_event.xml" value="0.4155622060709705" />
         <entry key="app/src/main/res/layout/vh_switch.xml" value="0.40963855421686746" />
