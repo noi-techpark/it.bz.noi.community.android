@@ -6,10 +6,10 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="1dp"
     android:layout_marginBottom="1dp"
-	android:paddingTop="17dp"
-	android:paddingStart="17dp"
+	android:paddingTop="@dimen/default_margin"
+	android:paddingStart="@dimen/default_margin"
 	android:paddingBottom="19dp"
-	android:paddingEnd="17dp"
+	android:paddingEnd="@dimen/default_margin"
     android:background="@color/tertiary_background_color">
 
 	<com.google.android.material.card.MaterialCardView
@@ -27,12 +27,11 @@
 			android:id="@+id/contactIcon"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:fontFamily="sans-serif-medium"
 			android:gravity="center"
 			android:padding="4dp"
 			android:textAlignment="center"
 			android:textColor="@color/primary_color"
-			android:textSize="19sp"
+			style="@style/TextAppearance.NOI.BodyLarge.Semibold"
 			tools:text="MR" />
 	</com.google.android.material.card.MaterialCardView>
 
