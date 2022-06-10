@@ -31,6 +31,7 @@
 			android:textColor="@color/primary_color"
 			android:visibility="gone"
 			android:paddingEnd="7dp"
+			style="@style/TextAppearance.NOI.BodySmall.Semibold"
 			app:layout_constraintStart_toEndOf="@id/filtersIcon"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintBottom_toBottomOf="parent"

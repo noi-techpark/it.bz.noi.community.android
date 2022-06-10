@@ -40,10 +40,11 @@
         <entry key="app/src/main/res/layout/activity_auth.xml" value="0.6354051054384018" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.44128553770086526" />
         <entry key="app/src/main/res/layout/activity_onboarding.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.4078666096622488" />
         <entry key="app/src/main/res/layout/contact_detail_field.xml" value="0.3317657118426678" />
         <entry key="app/src/main/res/layout/event_date_card_view.xml" value="0.4155622060709705" />
         <entry key="app/src/main/res/layout/filter_button.xml" value="0.41000427533133815" />
-        <entry key="app/src/main/res/layout/filters_button.xml" value="0.10194624652455977" />
+        <entry key="app/src/main/res/layout/filters_button.xml" value="0.4221145629882813" />
         <entry key="app/src/main/res/layout/fragment_authorization_error.xml" value="0.33689610944848225" />
         <entry key="app/src/main/res/layout/fragment_contact_details.xml" value="0.3715262932877298" />
         <entry key="app/src/main/res/layout/fragment_eat.xml" value="0.15577507598784193" />
