@@ -186,6 +186,7 @@
 				android:layout_height="wrap_content"
 				android:clipToPadding="false"
 				android:layout_marginTop="16dp"
+				android:layout_marginStart="@dimen/default_margin"
 				app:layout_constraintTop_toBottomOf="@id/tvInterestingForYou"
 				app:layout_constraintStart_toStartOf="parent"
 				tools:itemCount="1"
