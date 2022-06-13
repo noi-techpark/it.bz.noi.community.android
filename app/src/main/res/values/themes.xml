@@ -57,6 +57,7 @@
 		<item name="textAllCaps">false</item>
 		<item name="cornerRadius">@dimen/button_corner_radius</item>
 		<item name="backgroundTint">?attr/colorSecondary</item>
+		<item name="android:textAppearance">@style/TextAppearance.NOI.BodySmall.Semibold</item>
 	</style>
 
 	<style name="NOI.TabLayout" parent="Widget.MaterialComponents.TabLayout">

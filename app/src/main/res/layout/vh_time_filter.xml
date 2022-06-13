@@ -4,7 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="wrap_content"
 	android:layout_height="@dimen/filters_bar_height"
-	android:paddingHorizontal="5dp">
+	android:paddingEnd="5dp">
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/timeFilter"
@@ -12,8 +12,7 @@
 		android:insetBottom="0dp"
 		style="@style/ThemeOverlay.NOI.TimeFilterButton"
 		android:layout_width="wrap_content"
-		android:layout_height="@dimen/filters_bar_height"
-		android:textSize="18sp"
+		android:layout_height="0dp"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		android:checkable="true"
