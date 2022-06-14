@@ -13,7 +13,7 @@
 		android:id="@+id/title"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="@string/label_events_empty_state_title"
+		android:text="@string/label_empty_state_title"
 		android:textAlignment="center"
 		android:textColor="@color/secondary_color"
 		style="@style/TextAppearance.NOI.BodyLarge.Semibold"
