@@ -31,14 +31,16 @@ import it.bz.noi.community.data.models.getDetail
 import it.bz.noi.community.data.models.hasImportantFlag
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentNewsBinding
-import it.bz.noi.community.databinding.ViewHolderNewsBinding
+import it.bz.noi.community.databinding.VhNewsBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.today.TodayFragmentDirections
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 
+@ExperimentalCoroutinesApi
 class NewsFragment : Fragment() {
 
 	private var _binding: FragmentNewsBinding? = null
@@ -104,7 +106,7 @@ class NewsFragment : Fragment() {
 		}
 
 		viewLifecycleOwner.lifecycleScope.launch {
-			repeatOnLifecycle(Lifecycle.State.STARTED) {
+			viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 				viewModel.newsFlow.collectLatest { pagingData ->
 					newsAdapter.submitData(pagingData)
 				}
@@ -168,7 +170,7 @@ interface NewsDetailListener {
 	)
 }
 
-class NewsVH(private val binding: ViewHolderNewsBinding, detailListener: NewsDetailListener) :
+class NewsVH(private val binding: VhNewsBinding, detailListener: NewsDetailListener) :
 	RecyclerView.ViewHolder(binding.root) {
 
 	private val df = DateFormat.getDateInstance(DateFormat.SHORT)
@@ -232,7 +234,7 @@ class PagingNewsAdapter(
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsVH {
 		return NewsVH(
-			ViewHolderNewsBinding.inflate(
+			VhNewsBinding.inflate(
 				LayoutInflater.from(parent.context),
 				parent,
 				false

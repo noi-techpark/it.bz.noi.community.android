@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
@@ -49,27 +50,29 @@
 		android:layout_marginTop="40dp"
 		android:backgroundTint="@color/tertiary_background_color"
 		android:backgroundTintMode="src_in"
-		android:text="Login"
-		android:textAllCaps="false"
 		android:textColor="@color/secondary_color"
+		android:text="@string/btn_login"
 		android:visibility="gone"
 		app:layout_constraintTop_toBottomOf="@id/tab_layout"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent" />
+		app:layout_constraintStart_toStartOf="parent"
+		tools:visibility="visible"/>
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/signup"
 		style="@style/ThemeOverlay.NOI.TextButton"
 		android:layout_width="wrap_content"
-		android:layout_height="27dp"
+		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/default_margin"
 		android:layout_marginEnd="@dimen/default_margin"
-		android:layout_marginTop="20dp"
-		android:text="Sign up"
+		android:layout_marginTop="10dp"
+		android:text="@string/btn_signup"
 		android:textColor="@color/primary_color"
 		android:visibility="gone"
 		app:layout_constraintTop_toBottomOf="@id/login"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent" />
+		app:layout_constraintStart_toStartOf="parent"
+		tools:visibility="visible"
+		tools:textColor="@color/background_color"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

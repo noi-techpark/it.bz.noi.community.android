@@ -6,60 +6,64 @@
 	android:layout_height="match_parent"
 	android:background="@color/secondary_background_color">
 
-	<include layout="@layout/filters_button"
-		android:id="@+id/contactsFilter"
-		android:layout_width="wrap_content"
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/filtersBar"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="@dimen/default_margin"
-		android:layout_marginStart="@dimen/default_margin"
-		android:layout_marginEnd="10dp"
+		android:padding="@dimen/default_margin"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/searchField"
-		app:layout_constraintTop_toTopOf="parent"/>
+		app:layout_constraintTop_toTopOf="parent">
 
-	<com.google.android.material.textfield.TextInputLayout
-		android:id="@+id/searchField"
-		android:layout_width="0dp"
-		android:layout_height="40dp"
-		android:layout_marginEnd="@dimen/default_margin"
-		android:theme="@style/ThemeOverlay.NOI.EditText"
-		app:layout_constraintStart_toEndOf="@id/contactsFilter"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintTop_toTopOf="@id/contactsFilter"
-		app:startIconDrawable="@drawable/ic_search"
-		app:endIconMode="clear_text"
-		style="@style/ThemeOverlay.NOI.SearchField">
-
-		<com.google.android.material.textfield.TextInputEditText
-			android:id="@+id/searchFieldEditText"
-			android:layout_width="match_parent"
+		<include
+			android:id="@+id/contactsFilter"
+			layout="@layout/filters_button"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:lines="1"
-			android:maxLines="1"
-			android:hint="@string/search_label"
-			/>
-	</com.google.android.material.textfield.TextInputLayout>
+			android:layout_marginEnd="10dp"
+			app:layout_constraintEnd_toStartOf="@id/searchField"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<com.google.android.material.textfield.TextInputLayout
+			android:id="@+id/searchField"
+			style="@style/ThemeOverlay.NOI.SearchField"
+			android:layout_width="0dp"
+			android:layout_height="@dimen/filters_bar_height"
+			android:theme="@style/ThemeOverlay.NOI.EditText"
+			app:endIconMode="clear_text"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/contactsFilter"
+			app:layout_constraintTop_toTopOf="@id/contactsFilter"
+			app:startIconDrawable="@drawable/ic_search">
+
+			<com.google.android.material.textfield.TextInputEditText
+				android:id="@+id/searchFieldEditText"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/search_label"
+				android:lines="1"
+				android:maxLines="1" />
+		</com.google.android.material.textfield.TextInputLayout>
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
 
 	<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 		android:id="@+id/swipeRefreshContacts"
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
-		android:paddingTop="@dimen/default_margin"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/contactsFilter"
 		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/filtersBar"
 		tools:visibility="gone">
 
-	<androidx.recyclerview.widget.RecyclerView
+		<androidx.recyclerview.widget.RecyclerView
 			android:id="@+id/contacts"
-			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:clipToPadding="false"
-			android:paddingBottom="16dp"
+			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 			app:layout_constraintTop_toBottomOf="@id/contactsFilter"
-			tools:listitem="@layout/vh_contact"
-			tools:itemCount="10"/>
+			tools:itemCount="10"
+			tools:listitem="@layout/vh_contact" />
 
 	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

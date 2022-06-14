@@ -10,8 +10,9 @@
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
 		android:clipToPadding="false"
-		android:paddingBottom="16dp"
+		android:paddingBottom="@dimen/default_margin"
 		app:layout_constraintBottom_toTopOf="@id/footer"
+		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent">
 
 		<androidx.constraintlayout.widget.ConstraintLayout
@@ -32,6 +33,7 @@
 					android:id="@+id/constraintLayout"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
+					android:paddingBottom="33dp"
 					android:background="@color/background_color">
 
 					<ImageView
@@ -50,19 +52,18 @@
 						android:id="@+id/tvEventName"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:paddingHorizontal="16dp"
-						android:paddingVertical="8dp"
+						android:paddingHorizontal="@dimen/default_margin"
 						android:textColor="@color/primary_color"
-						android:textColorHint="@color/primary_color"
-						android:textSize="25sp"
+						style="@style/TextAppearance.NOI.Title"
 						app:layout_constraintTop_toBottomOf="@id/cardViewDate"
-						tools:hint="Corso consulente energetico CasaClima" />
+						app:layout_constraintStart_toStartOf="parent"
+						tools:text="Corso consulente energetico CasaClima" />
 
 					<ImageView
 						android:id="@+id/ivLocation"
 						android:layout_width="14dp"
 						android:layout_height="14dp"
-						android:layout_marginStart="16dp"
+						android:layout_marginStart="@dimen/default_margin"
 						android:importantForAccessibility="no"
 						android:src="@drawable/ic_location"
 						app:layout_constraintBottom_toBottomOf="@id/tvEventLocation"
@@ -74,29 +75,27 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginStart="4dp"
+						android:layout_marginTop="13dp"
 						android:textColor="@color/primary_color"
-						android:textColorHint="@color/primary_color"
 						app:layout_constraintStart_toEndOf="@id/ivLocation"
 						app:layout_constraintTop_toBottomOf="@id/tvEventName"
-						tools:hint="NOI Techpark" />
+						tools:text="NOI Techpark" />
 
 					<TextView
 						android:id="@+id/tvEventOrganizer"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="8dp"
-						android:paddingBottom="16dp"
+						android:layout_marginTop="3dp"
 						android:textColor="@color/primary_color"
-						android:textColorHint="@color/primary_color"
 						app:layout_constraintStart_toStartOf="@id/ivLocation"
-						app:layout_constraintTop_toBottomOf="@id/ivLocation"
-						tools:hint="Green Technologies" />
+						app:layout_constraintTop_toBottomOf="@id/tvEventLocation"
+						tools:text="Green Technologies" />
 
 					<ImageView
 						android:id="@+id/ivTime"
 						android:layout_width="14dp"
 						android:layout_height="14dp"
-						android:layout_marginStart="16dp"
+						android:layout_marginStart="@dimen/default_margin"
 						android:layout_marginEnd="4dp"
 						android:importantForAccessibility="no"
 						android:src="@drawable/ic_time"
@@ -108,19 +107,18 @@
 						android:id="@+id/tvEventTime"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginEnd="16dp"
+						android:layout_marginEnd="@dimen/default_margin"
 						android:textColor="@color/primary_color"
-						android:textColorHint="@color/primary_color"
 						app:layout_constraintEnd_toEndOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/tvEventName"
-						tools:hint="19:00 - 20:00" />
+						app:layout_constraintBottom_toBottomOf="@id/tvEventLocation"
+						tools:text="19:00 - 20:00" />
 
 					<androidx.cardview.widget.CardView
 						android:id="@+id/cardViewDate"
 						android:layout_width="60dp"
 						android:layout_height="60dp"
 						android:layout_marginTop="-30dp"
-						android:layout_marginEnd="16dp"
+						android:layout_marginEnd="@dimen/default_margin"
 						android:backgroundTint="@color/accent_color"
 						app:cardCornerRadius="30dp"
 						app:layout_constraintEnd_toEndOf="parent"
@@ -135,10 +133,9 @@
 							android:padding="4dp"
 							android:textAlignment="center"
 							android:textColor="@color/secondary_color"
-							android:textColorHint="@color/secondary_color"
 							android:textSize="12sp"
 							android:textStyle="bold"
-							tools:hint="20.9. - 22.9." />
+							tools:text="20.9. - 22.9." />
 					</androidx.cardview.widget.CardView>
 
 				</androidx.constraintlayout.widget.ConstraintLayout>
@@ -149,49 +146,51 @@
 				android:id="@+id/tvAboutLabel"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:paddingHorizontal="@dimen/activity_horizontal_margin"
-				android:paddingTop="16dp"
-				android:paddingBottom="8dp"
+				android:paddingHorizontal="@dimen/default_margin"
+				android:layout_marginTop="20dp"
 				android:text="@string/label_about"
 				android:textColor="@color/secondary_color"
-				android:textSize="19sp"
-				android:textStyle="bold"
-				app:layout_constraintTop_toBottomOf="@id/cardViewEvent" />
+				style="@style/TextAppearance.NOI.Subtitle"
+				app:layout_constraintTop_toBottomOf="@id/cardViewEvent"
+				app:layout_constraintStart_toStartOf="parent"/>
 
 			<TextView
 				android:id="@+id/tvEventDescription"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
 				android:autoLink="all"
 				android:linksClickable="true"
-				android:paddingHorizontal="16dp"
+				android:paddingHorizontal="@dimen/default_margin"
 				android:textColor="@color/secondary_color"
-				android:textColorHint="@color/secondary_color"
 				android:textColorLink="@color/secondary_color"
 				app:layout_constraintTop_toBottomOf="@id/tvAboutLabel"
-				tools:hint="Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet." />
+				app:layout_constraintStart_toStartOf="parent"
+				tools:text="Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet." />
 
 			<TextView
 				android:id="@+id/tvInterestingForYou"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:paddingHorizontal="@dimen/activity_horizontal_margin"
-				android:paddingTop="16dp"
-				android:paddingBottom="8dp"
+				android:layout_marginTop="28dp"
+				android:paddingHorizontal="@dimen/default_margin"
 				android:text="@string/label_interesting_for_you"
 				android:textColor="@color/secondary_color"
-				android:textSize="19sp"
-				android:textStyle="bold"
-				app:layout_constraintTop_toBottomOf="@id/tvEventDescription" />
+				style="@style/TextAppearance.NOI.Subtitle"
+				app:layout_constraintTop_toBottomOf="@id/tvEventDescription"
+				app:layout_constraintStart_toStartOf="parent"/>
 
 			<androidx.recyclerview.widget.RecyclerView
 				android:id="@+id/rvSuggestedEvents"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:clipToPadding="false"
+				android:layout_marginTop="16dp"
+				android:layout_marginStart="@dimen/default_margin"
 				app:layout_constraintTop_toBottomOf="@id/tvInterestingForYou"
+				app:layout_constraintStart_toStartOf="parent"
 				tools:itemCount="1"
-				tools:listitem="@layout/view_holder_event" />
+				tools:listitem="@layout/vh_event" />
 
 		</androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -205,19 +204,13 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintBottom_toBottomOf="parent"
 		android:background="@color/tertiary_background_color"
-		android:paddingStart="@dimen/default_margin"
-		android:paddingEnd="@dimen/default_margin"
-		android:paddingBottom="@dimen/default_margin"
+		android:padding="@dimen/default_margin"
 		android:elevation="20dp">
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/addToCalendarOrSignup"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="@dimen/default_margin"
-			android:textAllCaps="false"
-			app:iconGravity="textStart"
-			app:iconPadding="12dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
@@ -231,7 +224,6 @@
 			android:layout_marginTop="10dp"
 			android:text="@string/btn_find_on_maps"
 			app:icon="@drawable/ic_find_on_maps"
-			app:iconGravity="textStart"
 			app:iconPadding="12dp"
 			style="@style/ThemeOverlay.NOI.OutlinedButton"
 			app:layout_constraintTop_toBottomOf="@id/addToCalendarOrSignup"

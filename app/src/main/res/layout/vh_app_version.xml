@@ -13,17 +13,19 @@
 		android:importantForAccessibility="no"
 		android:src="@drawable/ic_noi_app_icon"
 		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
 		app:tint="@color/disabled1_color" />
 
 	<TextView
 		android:id="@+id/tvAppVersion"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="16dp"
+		android:layout_marginTop="@dimen/default_margin"
 		android:textAlignment="center"
-		android:textColorHint="@color/disabled1_color"
-		android:textSize="16sp"
+		android:textColor="@color/disabled1_color"
 		app:layout_constraintTop_toBottomOf="@id/ivLogo"
-		app:tint="@color/disabled1_color"
-		tools:hint="1.0 (3)" />
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		tools:text="1.0 (3)" />
 </androidx.constraintlayout.widget.ConstraintLayout>

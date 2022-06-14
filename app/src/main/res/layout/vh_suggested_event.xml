@@ -5,8 +5,7 @@
 	android:id="@+id/cardViewEvent"
 	android:layout_width="300dp"
 	android:layout_height="wrap_content"
-	android:layout_marginHorizontal="16dp"
-	android:layout_marginTop="16dp"
+	android:layout_marginEnd="@dimen/default_margin"
 	android:elevation="0dp"
 	app:cardCornerRadius="0dp">
 
@@ -14,7 +13,8 @@
 		android:id="@+id/constraintLayout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:background="@color/background_color">
+		android:background="@color/background_color"
+		android:paddingBottom="@dimen/default_margin">
 
 		<ImageView
 			android:id="@+id/ivEventImage"
@@ -31,20 +31,19 @@
 			android:id="@+id/tvEventName"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:paddingHorizontal="16dp"
-			android:paddingVertical="8dp"
+			android:layout_marginStart="@dimen/default_margin"
+			android:layout_marginEnd="@dimen/default_margin"
 			android:textColor="@color/primary_color"
-			android:textColorHint="@color/primary_color"
-			android:textSize="25sp"
-			android:transitionName="eventName"
+			style="@style/TextAppearance.NOI.Subtitle"
 			app:layout_constraintTop_toBottomOf="@id/cardViewDate"
-			tools:hint="Corso consulente energetico CasaClima" />
+			app:layout_constraintStart_toStartOf="parent"
+			tools:text="Corso consulente energetico CasaClima" />
 
 		<ImageView
 			android:id="@+id/ivLocation"
 			android:layout_width="14dp"
 			android:layout_height="14dp"
-			android:layout_marginStart="16dp"
+			android:layout_marginStart="@dimen/default_margin"
 			android:importantForAccessibility="no"
 			android:src="@drawable/ic_location"
 			app:layout_constraintBottom_toBottomOf="@id/tvEventLocation"
@@ -56,12 +55,12 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="4dp"
+			android:layout_marginTop="6dp"
 			android:textColor="@color/primary_color"
-			android:textColorHint="@color/primary_color"
-			android:transitionName="eventLocation"
+			style="@style/TextAppearance.NOI.BodySmall"
 			app:layout_constraintStart_toEndOf="@id/ivLocation"
 			app:layout_constraintTop_toBottomOf="@id/tvEventName"
-			tools:hint="NOI Techpark" />
+			tools:text="NOI Techpark" />
 
 		<ImageView
 			android:id="@+id/ivTime"
@@ -78,21 +77,20 @@
 			android:id="@+id/tvEventTime"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginEnd="16dp"
-			android:paddingBottom="16dp"
+			android:layout_marginEnd="@dimen/default_margin"
+			android:layout_marginTop="6dp"
 			android:textColor="@color/primary_color"
-			android:textColorHint="@color/primary_color"
-			android:transitionName="eventTime"
+			style="@style/TextAppearance.NOI.BodySmall"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/tvEventName"
-			tools:hint="19:00 - 20:00" />
+			tools:text="19:00 - 20:00" />
 
 		<androidx.cardview.widget.CardView
 			android:id="@+id/cardViewDate"
 			android:layout_width="60dp"
 			android:layout_height="60dp"
 			android:layout_marginTop="-30dp"
-			android:layout_marginEnd="16dp"
+			android:layout_marginEnd="@dimen/default_margin"
 			android:backgroundTint="@color/accent_color"
 			android:transitionName="eventDate"
 			app:cardCornerRadius="30dp"
@@ -105,9 +103,9 @@
 				android:layout_height="match_parent"
 				android:gravity="center"
 				android:textColor="@color/secondary_color"
-				android:textColorHint="@color/secondary_color"
 				android:textSize="12sp"
-				tools:hint="17.\nSEP" />
+				android:textStyle="bold"
+				tools:text="17.\nSEP" />
 		</androidx.cardview.widget.CardView>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>

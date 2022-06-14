@@ -12,7 +12,7 @@ class AppVersionAdapter : RecyclerView.Adapter<AppVersionViewHolder>() {
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppVersionViewHolder {
 		val view = LayoutInflater.from(parent.context)
-			.inflate(R.layout.view_holder_app_version, parent, false)
+			.inflate(R.layout.vh_app_version, parent, false)
 		return AppVersionViewHolder(view)
 	}
 
