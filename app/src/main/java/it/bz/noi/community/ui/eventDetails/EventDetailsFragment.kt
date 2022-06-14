@@ -170,11 +170,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 									Status.SUCCESS -> {
 										binding.progressBarLoading.isVisible = false
 
-										val mapTitle =
-											if (it.data?.get(selectedEvent.roomName) != null)
-												selectedEvent.roomName!!
-											else
-												getString(R.string.title_generic_noi_techpark_map)
+										val mapTitle = selectedEvent.location
 										val mapUrl = it.data?.get(selectedEvent.roomName)
 											?: resources.getString(R.string.url_map)
 
