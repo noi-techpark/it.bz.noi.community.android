@@ -1,5 +1,6 @@
 package it.bz.noi.community.utils
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -9,7 +10,6 @@ import it.bz.noi.community.data.models.EventsResponse
 import java.net.URLEncoder
 import java.text.Normalizer
 import java.util.*
-
 
 object Utils {
 
@@ -106,12 +106,16 @@ object Utils {
 		startActivity(intent)
 	}
 
-	fun Context.writeEmail(receiverAddress: String? = null, subject: String? = null, text: String? = null) {
+	fun Context.writeEmail(
+		receiverAddress: String? = null,
+		subject: String? = null,
+		text: String? = null
+	) {
 		val intent = Intent(Intent.ACTION_SENDTO).apply {
 			data = Uri.parse("mailto:") // only email apps should handle this
 
 			receiverAddress?.apply {
-				putExtra(Intent.EXTRA_EMAIL, Array(1) {receiverAddress})
+				putExtra(Intent.EXTRA_EMAIL, Array(1) { receiverAddress })
 			}
 			subject?.apply {
 				putExtra(Intent.EXTRA_SUBJECT, subject)
@@ -136,24 +140,15 @@ object Utils {
 		val gmmIntentUri: Uri = Uri.parse("geo:0,0?q=$encodedAddress")
 		val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
 
-		val mapAppsList = packageManager.queryIntentActivities(mapIntent, 0)
-
-		var isIntentSafe = false
-		for (application in mapAppsList) {
-			val packageName = application.activityInfo.packageName
-			if (packageName == "com.waze" || packageName == "com.google.android.apps.maps") {
-				isIntentSafe = true
-			}
-		}
-
-		if (isIntentSafe)
+		try {
 			startActivity(mapIntent)
-		else
+		} catch (ex: ActivityNotFoundException) {
 			MaterialAlertDialogBuilder(this).apply {
 				setMessage(getString(R.string.maps_error_msg))
 				setPositiveButton(context.getString(R.string.ok_button)) { _, _ -> }
 				show()
 			}
+		}
 	}
 
 	fun String.removeAccents(): String {
