@@ -14,10 +14,12 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/Theme.NOICommunity">
-		<activity
-			android:name=".MainActivity"
-			android:windowSoftInputMode="adjustNothing" />
-		<activity android:name=".OnboardingActivity" />
+		<activity android:name=".MainActivity"
+			android:windowSoftInputMode="adjustNothing">
+			<!-- Enable implicit deep linking -->
+			<nav-graph android:value="@navigation/mobile_navigation" />
+		</activity>
+		<activity android:name=".OnboardingActivity"/>
 		<activity android:name=".SplashScreenActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
