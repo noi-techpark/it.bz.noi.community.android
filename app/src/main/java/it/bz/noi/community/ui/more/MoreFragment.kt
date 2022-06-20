@@ -50,6 +50,7 @@ class MoreFragment : Fragment() {
 			resources.getString(R.string.room_booking),
 			resources.getString(R.string.more_item_onboarding),
 			resources.getString(R.string.more_item_feedback),
+			resources.getString(R.string.more_item_bug_report),
 			resources.getString(R.string.more_item_app_update),
 			resources.getString(R.string.more_item_account),
 		)
@@ -75,6 +76,7 @@ class MoreFragment : Fragment() {
 			BOOK_A_ROOM_ITEM -> resources.getString(R.string.url_room_booking)
 			COME_ON_BOARD_ITEM -> resources.getString(R.string.url_onboarding)
 			PROVIDE_FEEDBACK_ITEM -> resources.getString(R.string.url_provide_feedback)
+			BUG_REPORT_ITEM -> resources.getString(R.string.url_bug_report)
 			APP_UPDATE_ITEM -> resources.getString(R.string.url_google_playstore)
 			else -> throw Exception("Link not found")
 		}
@@ -84,8 +86,9 @@ class MoreFragment : Fragment() {
 		private const val BOOK_A_ROOM_ITEM = 0
 		private const val COME_ON_BOARD_ITEM = 1
 		private const val PROVIDE_FEEDBACK_ITEM = 2
-		private const val PROFILE_ITEM = 4
-		private const val APP_UPDATE_ITEM = 3
+		private const val BUG_REPORT_ITEM = 3
+		private const val APP_UPDATE_ITEM = 4
+		private const val PROFILE_ITEM = 5
 	}
 
 }
