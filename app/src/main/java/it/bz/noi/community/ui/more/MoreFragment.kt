@@ -11,6 +11,7 @@ import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentMoreBinding
 import it.bz.noi.community.ui.SimpleListAdapter
 import it.bz.noi.community.ui.WebViewFragmentDirections
+import it.bz.noi.community.utils.Utils.openLinkInExternalBrowser
 
 class MoreFragment : Fragment() {
 
@@ -18,16 +19,19 @@ class MoreFragment : Fragment() {
 
 	private val openLinkClickListener = View.OnClickListener {
 		it?.let {
-			val pos = binding.moreRecyclerView.getChildAdapterPosition(it)
 
-			if (pos == PROFILE_ITEM) {
-				findNavController().navigate(MoreFragmentDirections.actionMoreToProfile())
-			} else {
-				val action = WebViewFragmentDirections.actionGlobalWebViewFragment().apply {
-					title = items[pos]
-					url = getUrlByItemPosition(pos)
+			when (val pos = binding.moreRecyclerView.getChildAdapterPosition(it)) {
+				PROFILE_ITEM -> findNavController().navigate(MoreFragmentDirections.actionMoreToProfile())
+				APP_UPDATE_ITEM -> {
+					requireContext().openLinkInExternalBrowser(getUrlByItemPosition(pos))
 				}
-				findNavController().navigate(action)
+				else -> {
+					val action = WebViewFragmentDirections.actionGlobalWebViewFragment().apply {
+						title = items[pos]
+						url = getUrlByItemPosition(pos)
+					}
+					findNavController().navigate(action)
+				}
 			}
 		}
 	}
@@ -46,7 +50,8 @@ class MoreFragment : Fragment() {
 			resources.getString(R.string.room_booking),
 			resources.getString(R.string.more_item_onboarding),
 			resources.getString(R.string.more_item_feedback),
-			resources.getString(R.string.more_item_account)
+			resources.getString(R.string.more_item_app_update),
+			resources.getString(R.string.more_item_account),
 		)
 	}
 
@@ -67,15 +72,20 @@ class MoreFragment : Fragment() {
 
 	private fun getUrlByItemPosition(pos: Int): String {
 		return when (pos) {
-			0 -> resources.getString(R.string.url_room_booking)
-			1 -> resources.getString(R.string.url_onboarding)
-			2 -> resources.getString(R.string.url_provide_feedback)
+			BOOK_A_ROOM_ITEM -> resources.getString(R.string.url_room_booking)
+			COME_ON_BOARD_ITEM -> resources.getString(R.string.url_onboarding)
+			PROVIDE_FEEDBACK_ITEM -> resources.getString(R.string.url_provide_feedback)
+			APP_UPDATE_ITEM -> resources.getString(R.string.url_google_playstore)
 			else -> throw Exception("Link not found")
 		}
 	}
 
 	companion object {
-		private const val PROFILE_ITEM = 3
+		private const val BOOK_A_ROOM_ITEM = 0
+		private const val COME_ON_BOARD_ITEM = 1
+		private const val PROVIDE_FEEDBACK_ITEM = 2
+		private const val PROFILE_ITEM = 4
+		private const val APP_UPDATE_ITEM = 3
 	}
 
 }
