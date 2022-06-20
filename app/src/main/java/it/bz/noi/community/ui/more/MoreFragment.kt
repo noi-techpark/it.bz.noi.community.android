@@ -50,7 +50,7 @@ class MoreFragment : Fragment() {
 			resources.getString(R.string.room_booking),
 			resources.getString(R.string.more_item_onboarding),
 			resources.getString(R.string.more_item_feedback),
-			"Application update", // FIXME localized string
+			resources.getString(R.string.more_item_app_update),
 			resources.getString(R.string.more_item_account),
 		)
 	}
