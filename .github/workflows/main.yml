@@ -65,15 +65,15 @@ jobs:
           echo "VERSION_CODE=$BUILD_NUMBER" > app/version.properties
           cat app/version.properties
       - name: Generate Release AAB
-        # For PRODUCTION USE --> run: ./gradlew bundleProductionRelease
-        run: ./gradlew bundleDevelopmentRelease
+        run: ./gradlew bundleProductionRelease
+         # For TESTING USE --> run: ./gradlew bundleDevelopmentRelease
       - name: Sign AAB
         uses: r0adkll/sign-android-release@v1
         # ID used to access action output
         id: sign_app
         with:
-          # For PRODUCTION USE --> releaseDirectory: app/build/outputs/bundle/productionRelease
-          releaseDirectory: app/build/outputs/bundle/developmentRelease
+          releaseDirectory: app/build/outputs/bundle/productionRelease
+          # For TESTING USE --> releaseDirectory: app/build/outputs/bundle/developmentRelease
           signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY }}
           alias: ${{ secrets.KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
