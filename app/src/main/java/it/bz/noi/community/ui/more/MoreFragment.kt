@@ -75,7 +75,7 @@ class MoreFragment : Fragment() {
 			BOOK_A_ROOM_ITEM -> resources.getString(R.string.url_room_booking)
 			COME_ON_BOARD_ITEM -> resources.getString(R.string.url_onboarding)
 			PROVIDE_FEEDBACK_ITEM -> resources.getString(R.string.url_provide_feedback)
-			APP_UPDATE_ITEM -> "https://play.google.com/store/apps/details?id=it.bz.noi.community"
+			APP_UPDATE_ITEM -> resources.getString(R.string.url_google_playstore)
 			else -> throw Exception("Link not found")
 		}
 	}
