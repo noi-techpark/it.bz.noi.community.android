@@ -1,50 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<style name="TextAppearance.NOI.BodyRegular" parent="TextAppearance.MaterialComponents.Body1">
+		<item name="android:fontFamily">@font/source_sans_pro</item>
 		<item name="android:textSize">@dimen/default_text_size</item>
 		<item name="android:lineHeight">22dp</item>
 		<item name="android:letterSpacing">0</item>
 	</style>
 
 	<style name="TextAppearance.NOI.BodyRegular.Semibold" parent="TextAppearance.NOI.BodyRegular">
-		<item name="fontFamily">sans-serif-medium</item>
+		<item name="fontFamily">@font/source_sans_pro_semibold</item>
 	</style>
 
 	<style name="TextAppearance.NOI.BodySmall" parent="TextAppearance.MaterialComponents.Body2">
 		<!-- android:textSize=14sp -->
+		<item name="android:fontFamily">@font/source_sans_pro</item>
 		<item name="android:lineHeight">18dp</item>
 		<item name="android:letterSpacing">0</item>
 	</style>
 
 	<style name="TextAppearance.NOI.BodySmall.Semibold" parent="TextAppearance.NOI.BodySmall">
-		<item name="fontFamily">sans-serif-medium</item>
+		<item name="fontFamily">@font/source_sans_pro_semibold</item>
 	</style>
 
 	<style name="TextAppearance.NOI.BodyLarge" parent="TextAppearance.MaterialComponents.Headline5">
+		<item name="android:fontFamily">@font/source_sans_pro</item>
 		<item name="android:textSize">19sp</item>
 		<item name="android:lineHeight">24dp</item>
 		<item name="android:letterSpacing">0</item>
 	</style>
 
 	<style name="TextAppearance.NOI.BodyLarge.Semibold" parent="TextAppearance.NOI.BodyLarge">
-		<item name="fontFamily">sans-serif-medium</item>
+		<item name="fontFamily">@font/source_sans_pro_semibold</item>
 	</style>
 
 	<style name="TextAppearance.NOI.Subtitle" parent="TextAppearance.MaterialComponents.Headline4">
-		<item name="fontFamily">sans-serif-medium</item>
+		<item name="fontFamily">@font/source_sans_pro_semibold</item>
 		<item name="android:textSize">25sp</item>
 		<item name="android:lineHeight">30dp</item>
 		<item name="android:letterSpacing">0</item>
 	</style>
 
 	<style name="TextAppearance.NOI.Title" parent="TextAppearance.MaterialComponents.Headline3">
-		<item name="fontFamily">sans-serif-medium</item>
+		<item name="fontFamily">@font/source_sans_pro_semibold</item>
 		<item name="android:textSize">40sp</item>
 		<item name="android:lineHeight">45dp</item>
 	</style>
 
 	<style name="TextAppearance.NOI.TitleMedium" parent="TextAppearance.MaterialComponents.Headline3">
-		<item name="fontFamily">sans-serif-medium</item>
+		<item name="fontFamily">@font/source_sans_pro_semibold</item>
 		<item name="android:textSize">33sp</item>
 		<item name="android:lineHeight">38dp</item>
 	</style>
