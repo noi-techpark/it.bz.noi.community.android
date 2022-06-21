@@ -1,11 +1,13 @@
 package it.bz.noi.community.ui.meet
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
@@ -27,6 +29,7 @@ import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+
 
 @ExperimentalCoroutinesApi
 class MeetFragment : Fragment() {
@@ -66,18 +69,34 @@ class MeetFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		binding.contacts.adapter = contactsAdapter
+		binding.apply {
+			contacts.adapter = contactsAdapter
+			contacts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-		binding.swipeRefreshContacts.setOnRefreshListener {
-			viewModel.refreshContacts()
-		}
+				// Nasconde la tastiera, quando l'utente inizia a scrollare la lista
+				override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+					super.onScrollStateChanged(recyclerView, newState)
+					if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+						val imm: InputMethodManager =
+							recyclerView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+						imm.hideSoftInputFromWindow(recyclerView.windowToken, 0)
+					}
+				}
 
-		binding.searchFieldEditText.addTextChangedListener { text ->
-			viewModel.updateSearchParam(text?.toString() ?: "")
-		}
+			})
 
-		binding.contactsFilter.root.setOnClickListener {
-			findNavController().navigate(MeetFragmentDirections.actionMeetToFilters())
+			swipeRefreshContacts.setOnRefreshListener {
+				viewModel.refreshContacts()
+			}
+
+			searchFieldEditText.addTextChangedListener { text ->
+				viewModel.updateSearchParam(text?.toString() ?: "")
+			}
+
+			contactsFilter.root.setOnClickListener {
+				findNavController().navigate(MeetFragmentDirections.actionMeetToFilters())
+			}
+
 		}
 
 		setupObservers()
