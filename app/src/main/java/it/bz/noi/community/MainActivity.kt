@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
@@ -30,68 +31,75 @@ import net.openid.appauth.AuthorizationException
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+	private lateinit var binding: ActivityMainBinding
 
-    private val navController: NavController by lazy {
-        findNavController(R.id.nav_host_fragment)
-    }
+	private val navController: NavController by lazy {
+		findNavController(R.id.nav_host_fragment)
+	}
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            window.navigationBarColor =
-                resources.getColor(R.color.background_color, theme)
-        } else {
-            window.navigationBarColor = resources.getColor(R.color.background_color)
-        }
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+			window.navigationBarColor =
+				resources.getColor(R.color.background_color, theme)
+		} else {
+			window.navigationBarColor = resources.getColor(R.color.background_color)
+		}
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+		binding = ActivityMainBinding.inflate(layoutInflater)
+		setContentView(binding.root)
 
-        setSupportActionBar(findViewById(R.id.toolbar))
+		setSupportActionBar(findViewById(R.id.toolbar))
 
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_today,
-                R.id.navigation_orientate,
-                R.id.meet,
-                R.id.navigation_eat,
-                R.id.navigation_more
-            )
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        binding.navView.setupWithNavController(navController)
+		// Passing each menu ID as a set of Ids because each
+		// menu should be considered as top level destinations.
+		val appBarConfiguration = AppBarConfiguration(
+			setOf(
+				R.id.navigation_today,
+				R.id.navigation_orientate,
+				R.id.meet,
+				R.id.navigation_eat,
+				R.id.navigation_more
+			)
+		)
+		setupActionBarWithNavController(navController, appBarConfiguration)
+		binding.navView.setupWithNavController(navController)
 
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            when (destination.id) {
-                R.id.navigation_more -> {
-                    supportActionBar?.hide()
-                }
+		navController.addOnDestinationChangedListener { controller, destination, arguments ->
+			when (destination.id) {
+				R.id.navigation_more -> {
+					supportActionBar?.hide()
+					binding.navView.isVisible = true
+				}
 				R.id.webViewFragment -> {
 					supportActionBar?.show()
+					binding.navView.isVisible = true
 					(findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
 						18f
-					if (destination.id == R.id.webViewFragment) {
-						arguments?.let {
-							supportActionBar?.title = arguments.getString(WebViewFragment.TITLE_ARG)
-						}
+					arguments?.let {
+						supportActionBar?.title = arguments.getString(WebViewFragment.TITLE_ARG)
 					}
 				}
-                R.id.eventDetailsFragment, R.id.newsDetails, R.id.eventsFiltersFragment, R.id.profile,
-				R.id.contactDetails, R.id.meetFiltersFragment -> {
+				R.id.eventsFiltersFragment, R.id.meetFiltersFragment -> {
 					supportActionBar?.show()
-                    (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
-                        18f
-                }
-                else -> {
-                    (findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
-                        26f
-                    supportActionBar?.show()
-                }
-            }
-        }
+					binding.navView.isVisible = false
+					(findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
+						18f
+				}
+				R.id.eventDetailsFragment, R.id.newsDetails, R.id.profile, R.id.contactDetails -> {
+					supportActionBar?.show()
+					binding.navView.isVisible = true
+					(findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
+						18f
+				}
+				else -> {
+					supportActionBar?.show()
+					binding.navView.isVisible = true
+					(findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
+						26f
+				}
+			}
+		}
 
 		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
 			when (status) {
@@ -121,7 +129,7 @@ class MainActivity : AppCompatActivity() {
 		}
 		subscribeToNewsTopic(Utils.getPreferredNoiNewsTopic())
 
-    }
+	}
 
 	private fun subscribeToNewsTopic(preferredNewsTopic: String) {
 		// Per gestire eventuale cambio lingua del dispositivo, faccio prima l'unsubscribe dai topics delle altre lingue
@@ -133,10 +141,10 @@ class MainActivity : AppCompatActivity() {
 		MessagingService.subscribeToTopic(preferredNewsTopic)
 	}
 
-    override fun onSupportNavigateUp(): Boolean {
-        navController.popBackStack()
-        return super.onSupportNavigateUp()
-    }
+	override fun onSupportNavigateUp(): Boolean {
+		navController.popBackStack()
+		return super.onSupportNavigateUp()
+	}
 
 	private fun goToOnboardingActivity() {
 		startActivity(Intent(this, OnboardingActivity::class.java))
