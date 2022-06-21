@@ -14,7 +14,8 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/Theme.NOICommunity">
-		<activity android:name=".MainActivity">
+		<activity android:name=".MainActivity"
+			android:windowSoftInputMode="adjustNothing">
 			<!-- Enable implicit deep linking -->
 			<nav-graph android:value="@navigation/mobile_navigation" />
 		</activity>
@@ -29,16 +30,18 @@
 			android:name="net.openid.appauth.RedirectUriReceiverActivity"
 			tools:node="replace">
 			<intent-filter>
-				<action android:name="android.intent.action.VIEW"/>
-				<category android:name="android.intent.category.DEFAULT"/>
-				<category android:name="android.intent.category.BROWSABLE"/>
-				<data android:scheme="noi-community"
-					android:host="oauth2redirect"/>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:host="oauth2redirect"
+					android:scheme="noi-community" />
 			</intent-filter>
 		</activity>
 
-		<service
-			android:name=".notifications.MessagingService">
+		<service android:name=".notifications.MessagingService">
 			<intent-filter>
 				<action android:name="com.google.firebase.MESSAGING_EVENT" />
 			</intent-filter>
