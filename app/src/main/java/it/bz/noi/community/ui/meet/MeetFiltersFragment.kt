@@ -1,10 +1,12 @@
 package it.bz.noi.community.ui.meet
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -13,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
@@ -106,6 +109,19 @@ class MeetFiltersFragment : Fragment() {
 
         binding.apply {
             filterstRV.adapter = filterAdapter
+			filterstRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+				// Nasconde la tastiera, quando l'utente inizia a scrollare la lista
+				override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+					super.onScrollStateChanged(recyclerView, newState)
+					if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+						val imm: InputMethodManager =
+							recyclerView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+						imm.hideSoftInputFromWindow(recyclerView.windowToken, 0)
+					}
+				}
+
+			})
 
             resetBtn.setOnClickListener {
                 resetFilters()
