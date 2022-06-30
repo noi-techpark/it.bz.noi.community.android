@@ -3,7 +3,6 @@ package it.bz.noi.community
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -16,7 +15,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.appbar.MaterialToolbar
 import it.bz.noi.community.OnboardingActivity.Companion.LOGOUT_REQUEST
 import it.bz.noi.community.databinding.ActivityMainBinding
 import it.bz.noi.community.data.repository.AccountsManager

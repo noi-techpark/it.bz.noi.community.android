@@ -71,4 +71,8 @@
 		<item name="android:textSize">13sp</item>
 		<item name="android:lineHeight">14dp</item>
 	</style>
+
+	<style name="TextAppearance.NOI.AlertDialog.Title" parent="TextAppearance.MaterialComponents.Headline6">
+		<item name="fontFamily">@font/source_sans_pro_semibold</item>
+	</style>
 </resources>
