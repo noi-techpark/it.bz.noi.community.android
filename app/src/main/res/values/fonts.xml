@@ -57,4 +57,12 @@
 		<item name="android:lineSpacingExtra">38dp</item>
 		<item name="android:lineSpacingMultiplier">0</item>
 	</style>
+
+	<style name="TextAppearance.NOI.Toolbar.TitlePrimary" parent="TextAppearance.NOI.Title">
+		<item name="android:textColor">@color/primary_color</item>
+	</style>
+
+	<style name="TextAppearance.NOI.Toolbar.TitleSecondary" parent="TextAppearance.NOI.BodyLarge.Semibold">
+		<item name="android:textColor">@color/primary_color</item>
+	</style>
 </resources>

@@ -51,4 +51,12 @@
 		<item name="android:textSize">33sp</item>
 		<item name="android:lineHeight">38dp</item>
 	</style>
+
+	<style name="TextAppearance.NOI.Toolbar.TitlePrimary" parent="TextAppearance.NOI.Title">
+		<item name="android:textColor">@color/primary_color</item>
+	</style>
+
+	<style name="TextAppearance.NOI.Toolbar.TitleSecondary" parent="TextAppearance.NOI.BodyLarge.Semibold">
+		<item name="android:textColor">@color/primary_color</item>
+	</style>
 </resources>
