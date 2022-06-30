@@ -11,6 +11,7 @@
         <entry key="app/src/main/res/drawable-xxxhdpi/ic_notification_test.xml" value="0.212" />
         <entry key="app/src/main/res/drawable-xxxhdpi/ic_test_disabled.xml" value="0.2305" />
         <entry key="app/src/main/res/drawable/black_circle.xml" value="0.4035" />
+        <entry key="app/src/main/res/drawable/bottom_nav_color_selector.xml" value="0.315" />
         <entry key="app/src/main/res/drawable/contact_field_background.xml" value="0.3525" />
         <entry key="app/src/main/res/drawable/default_dot.xml" value="0.3475" />
         <entry key="app/src/main/res/drawable/ic_add_to_calendar.xml" value="0.3675" />
@@ -41,7 +42,7 @@
         <entry key="app/src/main/res/drawable/splash_theme.xml" value="0.38333333333333336" />
         <entry key="app/src/main/res/drawable/tab_selector.xml" value="0.3475" />
         <entry key="app/src/main/res/layout/activity_auth.xml" value="0.6354051054384018" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.44128553770086526" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_onboarding.xml" value="0.24480133056640627" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.4078666096622488" />
         <entry key="app/src/main/res/layout/contact_detail_field.xml" value="0.3317657118426678" />

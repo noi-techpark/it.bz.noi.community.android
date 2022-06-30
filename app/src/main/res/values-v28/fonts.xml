@@ -59,4 +59,16 @@
 	<style name="TextAppearance.NOI.Toolbar.TitleSecondary" parent="TextAppearance.NOI.BodyLarge.Semibold">
 		<item name="android:textColor">@color/primary_color</item>
 	</style>
+
+	<style name="TextAppearance.NOI.BottomNavBar.Active" parent="TextAppearance.MaterialComponents.Caption">
+		<item name="fontFamily">@font/source_sans_pro_semibold</item>
+		<item name="android:textSize">13sp</item>
+		<item name="android:lineHeight">14dp</item>
+	</style>
+
+	<style name="TextAppearance.NOI.BottomNavBar.Inactive" parent="TextAppearance.MaterialComponents.Caption">
+		<item name="fontFamily">@font/source_sans_pro</item>
+		<item name="android:textSize">13sp</item>
+		<item name="android:lineHeight">14dp</item>
+	</style>
 </resources>

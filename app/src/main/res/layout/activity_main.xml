@@ -30,6 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/background_color"
+		app:itemTextAppearanceActive="@style/TextAppearance.NOI.BottomNavBar.Active"
+		app:itemTextAppearanceInactive="@style/TextAppearance.NOI.BottomNavBar.Inactive"
         app:itemIconTint="@drawable/bottom_nav_color_selector"
         app:itemTextColor="@drawable/bottom_nav_color_selector"
         app:labelVisibilityMode="labeled"
