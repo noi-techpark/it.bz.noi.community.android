@@ -23,16 +23,12 @@
 		<item name="switchStyle">@style/Widget.App.Switch</item>
 		<item name="materialButtonStyle">@style/ThemeOverlay.NOI.MaterialButton</item>
 		<item name="textAppearanceButton">@style/TextAppearance.NOI.BodyLarge.Semibold</item>
-
-	</style>
-
-	<style name="ToolbarTextAppearence">
-		<item name="android:textSize">26sp</item>
 	</style>
 
 	<style name="ToolbarTheme" parent="@style/Widget.MaterialComponents.ActionBar.Primary">
 		<!-- Customize color of navigation drawer icon and back arrow -->
 		<item name="colorControlNormal">@color/primary_color</item>
+		<item name="android:background">@color/background_color</item>
 	</style>
 
 	<style name="Widget.App.Switch" parent="Widget.MaterialComponents.CompoundButton.Switch">

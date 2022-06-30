@@ -9,8 +9,6 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:titleTextColor="@color/primary_color"
-        android:background="@color/background_color"
         app:layout_constraintTop_toTopOf="parent"
         android:theme="@style/ToolbarTheme"
         app:titleTextAppearance="@style/TextAppearance.NOI.Toolbar.TitlePrimary"/>
