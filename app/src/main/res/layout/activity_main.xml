@@ -10,7 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
         android:theme="@style/ToolbarTheme"
+		android:paddingTop="40dp"
+		android:paddingBottom="10dp"
+		app:titleMargin="0dp"
         app:titleTextAppearance="@style/TextAppearance.NOI.Toolbar.TitlePrimary"/>
 
     <fragment
