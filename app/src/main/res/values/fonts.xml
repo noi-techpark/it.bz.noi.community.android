@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<style name="TextAppearance.NOI.BodyRegular" parent="TextAppearance.MaterialComponents.Body1">
+	<style name="TextAppearance.NOI.BodyRegular" parent="">
+		<item name="fontFamily">@font/source_sans_pro</item>
 		<item name="android:fontFamily">@font/source_sans_pro</item>
 		<item name="android:textSize">@dimen/default_text_size</item>
 		<item name="android:lineSpacingExtra">22dp</item>
@@ -10,11 +11,13 @@
 
 	<style name="TextAppearance.NOI.BodyRegular.Semibold" parent="TextAppearance.NOI.BodyRegular">
 		<item name="fontFamily">@font/source_sans_pro_semibold</item>
+		<item name="android:fontFamily">@font/source_sans_pro_semibold</item>
 	</style>
 
-	<style name="TextAppearance.NOI.BodySmall" parent="TextAppearance.MaterialComponents.Body2">
-		<!-- android:textSize=14sp -->
+	<style name="TextAppearance.NOI.BodySmall" parent="">
+		<item name="fontFamily">@font/source_sans_pro</item>
 		<item name="android:fontFamily">@font/source_sans_pro</item>
+		<item name="android:textSize">14sp</item>
 		<item name="android:lineSpacingExtra">18dp</item>
 		<item name="android:lineSpacingMultiplier">0</item>
 		<item name="android:letterSpacing">0</item>
@@ -22,9 +25,11 @@
 
 	<style name="TextAppearance.NOI.BodySmall.Semibold" parent="TextAppearance.NOI.BodySmall">
 		<item name="fontFamily">@font/source_sans_pro_semibold</item>
+		<item name="android:fontFamily">@font/source_sans_pro_semibold</item>
 	</style>
 
-	<style name="TextAppearance.NOI.BodyLarge" parent="TextAppearance.MaterialComponents.Headline5">
+	<style name="TextAppearance.NOI.BodyLarge" parent="">
+		<item name="fontFamily">@font/source_sans_pro</item>
 		<item name="android:fontFamily">@font/source_sans_pro</item>
 		<item name="android:textSize">19sp</item>
 		<item name="android:lineSpacingExtra">24dp</item>
@@ -34,28 +39,34 @@
 
 	<style name="TextAppearance.NOI.BodyLarge.Semibold" parent="TextAppearance.NOI.BodyLarge">
 		<item name="fontFamily">@font/source_sans_pro_semibold</item>
+		<item name="android:fontFamily">@font/source_sans_pro_semibold</item>
 	</style>
 
-	<style name="TextAppearance.NOI.Subtitle" parent="TextAppearance.MaterialComponents.Headline4">
+	<style name="TextAppearance.NOI.Subtitle" parent="">
 		<item name="fontFamily">@font/source_sans_pro_semibold</item>
+		<item name="android:fontFamily">@font/source_sans_pro_semibold</item>
 		<item name="android:textSize">25sp</item>
 		<item name="android:lineSpacingExtra">30dp</item>
 		<item name="android:lineSpacingMultiplier">0</item>
 		<item name="android:letterSpacing">0</item>
 	</style>
 
-	<style name="TextAppearance.NOI.Title" parent="TextAppearance.MaterialComponents.Headline3">
+	<style name="TextAppearance.NOI.Title" parent="">
 		<item name="fontFamily">@font/source_sans_pro_semibold</item>
+		<item name="android:fontFamily">@font/source_sans_pro_semibold</item>
 		<item name="android:textSize">40sp</item>
 		<item name="android:lineSpacingExtra">45dp</item>
 		<item name="android:lineSpacingMultiplier">0</item>
+		<item name="android:letterSpacing">0</item>
 	</style>
 
-	<style name="TextAppearance.NOI.TitleMedium" parent="TextAppearance.MaterialComponents.Headline3">
+	<style name="TextAppearance.NOI.TitleMedium" parent="">
 		<item name="fontFamily">@font/source_sans_pro_semibold</item>
+		<item name="android:fontFamily">@font/source_sans_pro_semibold</item>
 		<item name="android:textSize">33sp</item>
 		<item name="android:lineSpacingExtra">38dp</item>
 		<item name="android:lineSpacingMultiplier">0</item>
+		<item name="android:letterSpacing">0</item>
 	</style>
 
 	<style name="TextAppearance.NOI.Toolbar.TitlePrimary" parent="TextAppearance.NOI.Title">
@@ -66,21 +77,38 @@
 		<item name="android:textColor">@color/primary_color</item>
 	</style>
 
-	<style name="TextAppearance.NOI.BottomNavBar.Active" parent="TextAppearance.MaterialComponents.Caption">
+	<style name="TextAppearance.NOI.BottomNavBar.Active" parent="">
 		<item name="fontFamily">@font/source_sans_pro_semibold</item>
+		<item name="android:fontFamily">@font/source_sans_pro_semibold</item>
 		<item name="android:textSize">13sp</item>
 		<item name="android:lineSpacingExtra">14dp</item>
 		<item name="android:lineSpacingMultiplier">0</item>
+		<item name="android:letterSpacing">0.0333333333</item>
 	</style>
 
-	<style name="TextAppearance.NOI.BottomNavBar.Inactive" parent="TextAppearance.MaterialComponents.Caption">
+	<style name="TextAppearance.NOI.BottomNavBar.Inactive" parent="">
 		<item name="fontFamily">@font/source_sans_pro</item>
+		<item name="android:fontFamily">@font/source_sans_pro</item>
 		<item name="android:textSize">13sp</item>
 		<item name="android:lineSpacingExtra">14dp</item>
 		<item name="android:lineSpacingMultiplier">0</item>
+		<item name="android:letterSpacing">0.0333333333</item>
 	</style>
 
 	<style name="TextAppearance.NOI.AlertDialog.Title" parent="TextAppearance.MaterialComponents.Headline6">
 		<item name="fontFamily">@font/source_sans_pro_semibold</item>
+		<item name="android:fontFamily">@font/source_sans_pro_semibold</item>
+	</style>
+
+	<style name="NOI.TextAppearance.TabLayout.Button" parent="">
+		<item name="tabTextAppearance">@color/secondary_color</item>
+		<item name="tabTextColor">@color/secondary_color</item>
+		<item name="tabSelectedTextColor">@color/secondary_color</item>
+		<item name="fontFamily">@font/source_sans_pro_semibold</item>
+		<item name="android:fontFamily">@font/source_sans_pro_semibold</item>
+		<item name="android:textSize">19sp</item>
+		<item name="android:lineSpacingExtra">24dp</item>
+		<item name="android:lineSpacingMultiplier">0</item>
+		<item name="android:letterSpacing">0</item>
 	</style>
 </resources>
