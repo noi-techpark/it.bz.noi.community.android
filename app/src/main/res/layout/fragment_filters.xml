@@ -24,6 +24,7 @@
 			android:id="@+id/searchFieldEditText"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:textAppearance="@style/TextAppearance.NOI.BodyLarge"
 			android:hint="@string/search_label"
 			android:lines="1"
 			android:maxLines="1"
