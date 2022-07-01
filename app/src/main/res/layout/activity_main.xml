@@ -13,9 +13,8 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
         android:theme="@style/ToolbarTheme"
-		android:paddingTop="40dp"
-		android:paddingBottom="10dp"
-		app:titleMargin="0dp"
+		android:paddingBottom="5dp"
+		android:paddingTop="20dp"
         app:titleTextAppearance="@style/TextAppearance.NOI.Toolbar.TitlePrimary"/>
 
     <fragment
