@@ -28,6 +28,11 @@
 		<item name="android:fontFamily">@font/source_sans_pro_semibold</item>
 	</style>
 
+	<style name="TextAppearance.NOI.BodySmall.Bold" parent="TextAppearance.NOI.BodySmall">
+		<item name="fontFamily">@font/source_sans_pro_bold</item>
+		<item name="android:fontFamily">@font/source_sans_pro_bold</item>
+	</style>
+
 	<style name="TextAppearance.NOI.BodyLarge" parent="">
 		<item name="fontFamily">@font/source_sans_pro</item>
 		<item name="android:fontFamily">@font/source_sans_pro</item>

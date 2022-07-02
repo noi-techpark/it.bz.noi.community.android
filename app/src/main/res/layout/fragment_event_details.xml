@@ -33,8 +33,8 @@
 					android:id="@+id/constraintLayout"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:paddingBottom="33dp"
-					android:background="@color/background_color">
+					android:background="@color/background_color"
+					android:paddingBottom="33dp">
 
 					<ImageView
 						android:id="@+id/ivEventImage"
@@ -50,13 +50,13 @@
 
 					<TextView
 						android:id="@+id/tvEventName"
+						style="@style/TextAppearance.NOI.Title"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:paddingHorizontal="@dimen/default_margin"
 						android:textColor="@color/primary_color"
-						style="@style/TextAppearance.NOI.Title"
-						app:layout_constraintTop_toBottomOf="@id/cardViewDate"
 						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/cardViewDate"
 						tools:text="Corso consulente energetico CasaClima" />
 
 					<ImageView
@@ -109,11 +109,11 @@
 						android:layout_height="wrap_content"
 						android:layout_marginEnd="@dimen/default_margin"
 						android:textColor="@color/primary_color"
-						app:layout_constraintEnd_toEndOf="parent"
 						app:layout_constraintBottom_toBottomOf="@id/tvEventLocation"
+						app:layout_constraintEnd_toEndOf="parent"
 						tools:text="19:00 - 20:00" />
 
-					<androidx.cardview.widget.CardView
+					<com.google.android.material.card.MaterialCardView
 						android:id="@+id/cardViewDate"
 						android:layout_width="60dp"
 						android:layout_height="60dp"
@@ -126,6 +126,7 @@
 
 						<TextView
 							android:id="@+id/tvEventDate"
+							style="@style/TextAppearance.NOI.BodySmall.Bold"
 							android:layout_width="match_parent"
 							android:layout_height="match_parent"
 							android:gravity="center"
@@ -133,10 +134,8 @@
 							android:padding="4dp"
 							android:textAlignment="center"
 							android:textColor="@color/secondary_color"
-							android:textSize="12sp"
-							android:textStyle="bold"
 							tools:text="20.9. - 22.9." />
-					</androidx.cardview.widget.CardView>
+					</com.google.android.material.card.MaterialCardView>
 
 				</androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -144,15 +143,15 @@
 
 			<TextView
 				android:id="@+id/tvAboutLabel"
+				style="@style/TextAppearance.NOI.Subtitle"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:paddingHorizontal="@dimen/default_margin"
 				android:layout_marginTop="20dp"
+				android:paddingHorizontal="@dimen/default_margin"
 				android:text="@string/label_about"
 				android:textColor="@color/secondary_color"
-				style="@style/TextAppearance.NOI.Subtitle"
-				app:layout_constraintTop_toBottomOf="@id/cardViewEvent"
-				app:layout_constraintStart_toStartOf="parent"/>
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/cardViewEvent" />
 
 			<TextView
 				android:id="@+id/tvEventDescription"
@@ -164,31 +163,31 @@
 				android:paddingHorizontal="@dimen/default_margin"
 				android:textColor="@color/secondary_color"
 				android:textColorLink="@color/secondary_color"
-				app:layout_constraintTop_toBottomOf="@id/tvAboutLabel"
 				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/tvAboutLabel"
 				tools:text="Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet." />
 
 			<TextView
 				android:id="@+id/tvInterestingForYou"
+				style="@style/TextAppearance.NOI.Subtitle"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="28dp"
 				android:paddingHorizontal="@dimen/default_margin"
 				android:text="@string/label_interesting_for_you"
 				android:textColor="@color/secondary_color"
-				style="@style/TextAppearance.NOI.Subtitle"
-				app:layout_constraintTop_toBottomOf="@id/tvEventDescription"
-				app:layout_constraintStart_toStartOf="parent"/>
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/tvEventDescription" />
 
 			<androidx.recyclerview.widget.RecyclerView
 				android:id="@+id/rvSuggestedEvents"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:clipToPadding="false"
-				android:layout_marginTop="16dp"
 				android:layout_marginStart="@dimen/default_margin"
-				app:layout_constraintTop_toBottomOf="@id/tvInterestingForYou"
+				android:layout_marginTop="16dp"
+				android:clipToPadding="false"
 				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/tvInterestingForYou"
 				tools:itemCount="1"
 				tools:listitem="@layout/vh_event" />
 
@@ -200,12 +199,12 @@
 		android:id="@+id/footer"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent"
 		android:background="@color/tertiary_background_color"
+		android:elevation="20dp"
 		android:padding="@dimen/default_margin"
-		android:elevation="20dp">
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent">
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/addToCalendarOrSignup"
@@ -214,21 +213,21 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
-			tools:text="@string/btn_add_to_calendar"
-			tools:icon="@drawable/ic_add_to_calendar"/>
+			tools:icon="@drawable/ic_add_to_calendar"
+			tools:text="@string/btn_add_to_calendar" />
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/findOnMaps"
+			style="@style/ThemeOverlay.NOI.OutlinedButton"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="10dp"
 			android:text="@string/btn_find_on_maps"
 			app:icon="@drawable/ic_find_on_maps"
 			app:iconPadding="12dp"
-			style="@style/ThemeOverlay.NOI.OutlinedButton"
-			app:layout_constraintTop_toBottomOf="@id/addToCalendarOrSignup"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"/>
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/addToCalendarOrSignup" />
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
 	<ProgressBar

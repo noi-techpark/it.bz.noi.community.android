@@ -86,7 +86,7 @@
 			style="@style/TextAppearance.NOI.BodySmall"
 			tools:text="19:00 - 20:00" />
 
-		<androidx.cardview.widget.CardView
+		<com.google.android.material.card.MaterialCardView
 			android:id="@+id/cardViewDate"
 			android:layout_width="60dp"
 			android:layout_height="60dp"
@@ -99,16 +99,16 @@
 
 			<TextView
 				android:id="@+id/tvEventDate"
+				style="@style/TextAppearance.NOI.BodySmall.Bold"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:gravity="center"
 				android:lines="2"
+				android:padding="4dp"
 				android:textAlignment="center"
 				android:textColor="@color/secondary_color"
-				android:textSize="12sp"
-				android:textStyle="bold"
 				tools:text="20.9. - 22.9." />
-		</androidx.cardview.widget.CardView>
+		</com.google.android.material.card.MaterialCardView>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
