@@ -22,7 +22,22 @@
 		<item name="android:textViewStyle">@style/TextAppearance.NOI.BodyRegular</item>
 		<item name="switchStyle">@style/Widget.App.Switch</item>
 		<item name="materialButtonStyle">@style/ThemeOverlay.NOI.MaterialButton</item>
+
+		<!-- TextAppearance -->
+		<item name="textAppearanceBody1">@style/TextAppearance.NOI.BodyRegular</item>
+		<item name="textAppearanceBody2">@style/TextAppearance.NOI.BodyRegular.Semibold</item>
+		<item name="textAppearanceHeadline1">@style/TextAppearance.NOI.Title</item>
+		<item name="textAppearanceHeadline2">@style/TextAppearance.NOI.TitleMedium</item>
+<!--		<item name="textAppearanceHeadline3"></item>-->
+		<item name="textAppearanceHeadline4">@style/TextAppearance.NOI.BodyLarge.Semibold</item>
+		<item name="textAppearanceHeadline5">@style/TextAppearance.NOI.BodyLarge</item>
+		<item name="textAppearanceHeadline6">@style/TextAppearance.NOI.BodySmall.Bold</item>
+		<item name="textAppearanceSubtitle1">@style/TextAppearance.NOI.Subtitle</item>
+<!--		<item name="textAppearanceSubtitle2"></item>-->
+		<item name="textAppearanceCaption">TextAppearance.NOI.BodySmall.Semibold</item>
+		<item name="textAppearanceOverline">@style/TextAppearance.NOI.BodySmall</item>
 		<item name="textAppearanceButton">@style/TextAppearance.NOI.BodyLarge.Semibold</item>
+
 	</style>
 
 	<style name="ToolbarTheme" parent="@style/Widget.MaterialComponents.ActionBar.Primary">
