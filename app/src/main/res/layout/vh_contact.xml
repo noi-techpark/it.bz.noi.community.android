@@ -31,7 +31,7 @@
 			android:padding="4dp"
 			android:textAlignment="center"
 			android:textColor="@color/primary_color"
-			style="@style/TextAppearance.NOI.BodyLarge.Semibold"
+			style="?attr/textAppearanceHeadline4"
 			tools:text="MR" />
 	</com.google.android.material.card.MaterialCardView>
 
@@ -48,7 +48,7 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:textColor="@color/secondary_color"
-			style="@style/TextAppearance.NOI.BodyRegular.Semibold"
+			style="?attr/textAppearanceBody2"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			tools:text="Mario Rossi" />

@@ -16,7 +16,7 @@
 		android:text="@string/label_empty_state_title"
 		android:textAlignment="center"
 		android:textColor="@color/secondary_color"
-		style="@style/TextAppearance.NOI.BodyLarge.Semibold"
+		style="?attr/textAppearanceHeadline4"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
@@ -27,7 +27,7 @@
 		android:layout_height="wrap_content"
 		android:textAlignment="center"
 		android:textColor="@color/secondary_color"
-		style="@style/TextAppearance.NOI.BodyLarge"
+		style="?attr/textAppearanceHeadline5"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/title"

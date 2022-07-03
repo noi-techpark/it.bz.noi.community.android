@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         tools:text="Header"
         android:textColor="@color/secondary_color"
-		style="@style/TextAppearance.NOI.BodyLarge.Semibold"
+		style="?attr/textAppearanceHeadline4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

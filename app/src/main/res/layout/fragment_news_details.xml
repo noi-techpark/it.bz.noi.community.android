@@ -37,7 +37,7 @@
 
 				<TextView
 					android:id="@+id/publisher"
-					style="@style/TextAppearance.NOI.BodyRegular.Semibold"
+					style="?attr/textAppearanceBody2"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
 					android:layout_marginStart="10dp"
@@ -65,7 +65,7 @@
 
 				<TextView
 					android:id="@+id/title"
-					style="@style/TextAppearance.NOI.BodyRegular.Semibold"
+					style="?attr/textAppearanceBody2"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
 					android:textColor="@color/secondary_color"

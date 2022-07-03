@@ -54,7 +54,7 @@
 						android:layout_marginStart="@dimen/default_margin"
 						android:layout_marginTop="5dp"
 						android:layout_marginEnd="@dimen/default_margin"
-						style="@style/TextAppearance.NOI.Title"
+						style="?attr/textAppearanceHeadline1"
 						android:lines="2"
 						android:textColor="@color/primary_color"
 						app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +82,7 @@
 							android:padding="4dp"
 							android:textAlignment="center"
 							android:textColor="@color/primary_color"
-							style="@style/TextAppearance.NOI.Subtitle"
+							style="?attr/textAppearanceSubtitle1"
 							tools:text="MR" />
 					</com.google.android.material.card.MaterialCardView>
 
@@ -99,7 +99,7 @@
 				android:layout_marginEnd="@dimen/default_margin"
 				android:text="@string/label_email"
 				android:textColor="@color/secondary_color"
-				style="@style/TextAppearance.NOI.BodySmall.Semibold"
+				style="?attr/textAppearanceCaption"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/headerCardView" />
 
@@ -110,7 +110,7 @@
 				android:layout_marginStart="@dimen/default_margin"
 				android:layout_marginEnd="@dimen/default_margin"
 				android:textColor="@color/secondary_color"
-				style="@style/TextAppearance.NOI.BodyLarge"
+				style="?attr/textAppearanceHeadline5"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/emailLbl"
 				tools:text="mario.rossi@noi.bz.it" />
