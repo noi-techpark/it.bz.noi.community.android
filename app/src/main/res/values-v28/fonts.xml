@@ -31,6 +31,14 @@
 		<item name="android:fontFamily">@font/source_sans_pro_bold</item>
 	</style>
 
+	<style name="TextAppearance.NOI.BodyExtraSmall" parent="">
+		<item name="fontFamily">@font/source_sans_pro</item>
+		<item name="android:fontFamily">@font/source_sans_pro</item>
+		<item name="android:textSize">13sp</item>
+		<item name="android:lineHeight">13dp</item>
+		<item name="android:letterSpacing">0</item>
+	</style>
+
 	<style name="TextAppearance.NOI.BodyLarge" parent="TextAppearance.MaterialComponents.Headline5">
 		<item name="fontFamily">@font/source_sans_pro</item>
 		<item name="android:fontFamily">@font/source_sans_pro</item>
