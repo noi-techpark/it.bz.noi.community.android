@@ -19,36 +19,45 @@
 		android:backgroundTint="@color/background_color"
 		app:cardCornerRadius="25dp"
 		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/contactInfo"
+		app:layout_constraintHorizontal_bias="0.0"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:strokeWidth="0dp">
 
 		<TextView
 			android:id="@+id/contactIcon"
+			style="?attr/textAppearanceHeadline4"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:gravity="center"
 			android:padding="4dp"
 			android:textAlignment="center"
 			android:textColor="@color/primary_color"
-			style="?attr/textAppearanceHeadline4"
 			tools:text="MR" />
 	</com.google.android.material.card.MaterialCardView>
 
 	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/contactInfo"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="10dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="1.0"
 		app:layout_constraintStart_toEndOf="@id/contactIconCardView"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent">
+		app:layout_constraintTop_toTopOf="parent">
 
 		<TextView
 			android:id="@+id/contactName"
+			style="?attr/textAppearanceBody2"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
+			android:ellipsize="end"
+			android:maxLines="1"
 			android:textColor="@color/secondary_color"
-			style="?attr/textAppearanceBody2"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.0"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			tools:text="Mario Rossi" />
@@ -57,7 +66,11 @@
 			android:id="@+id/companyName"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
+			android:ellipsize="end"
+			android:maxLines="1"
 			android:textColor="@color/secondary_color"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/contactName"
 			tools:text="NOI AG" />
