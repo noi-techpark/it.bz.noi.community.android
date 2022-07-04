@@ -143,7 +143,7 @@ object Utils {
 		try {
 			startActivity(mapIntent)
 		} catch (ex: ActivityNotFoundException) {
-			MaterialAlertDialogBuilder(this).apply {
+			MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_NOI_MaterialAlertDialog).apply {
 				setMessage(getString(R.string.maps_error_msg))
 				setPositiveButton(context.getString(R.string.ok_button)) { _, _ -> }
 				show()

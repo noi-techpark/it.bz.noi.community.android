@@ -49,7 +49,7 @@ class AuthorizationErrorFragment : Fragment() {
 								if (reloadUserInfo) {
 									AuthManager.relaodUserInfo()
 								} else {
-									MaterialAlertDialogBuilder(requireContext())
+									MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_NOI_MaterialAlertDialog)
 										.setTitle(R.string.error_title)
 										.setMessage(R.string.user_info_error_msg)
 										.setPositiveButton(R.string.ok_button) { _, _ -> }

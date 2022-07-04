@@ -3,7 +3,6 @@ package it.bz.noi.community
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -16,7 +15,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.appbar.MaterialToolbar
 import it.bz.noi.community.OnboardingActivity.Companion.LOGOUT_REQUEST
 import it.bz.noi.community.databinding.ActivityMainBinding
 import it.bz.noi.community.data.repository.AccountsManager
@@ -49,7 +47,8 @@ class MainActivity : AppCompatActivity() {
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 
-		setSupportActionBar(findViewById(R.id.toolbar))
+		val toolbar = binding.toolbar
+		setSupportActionBar(toolbar)
 
 		// Passing each menu ID as a set of Ids because each
 		// menu should be considered as top level destinations.
@@ -74,8 +73,7 @@ class MainActivity : AppCompatActivity() {
 				R.id.webViewFragment -> {
 					supportActionBar?.show()
 					binding.navView.isVisible = true
-					(findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
-						18f
+					toolbar.setTitleTextAppearance(toolbar.context, R.style.TextAppearance_NOI_Toolbar_TitleSecondary)
 					arguments?.let {
 						supportActionBar?.title = arguments.getString(WebViewFragment.TITLE_ARG)
 					}
@@ -83,20 +81,17 @@ class MainActivity : AppCompatActivity() {
 				R.id.eventsFiltersFragment, R.id.meetFiltersFragment -> {
 					supportActionBar?.show()
 					binding.navView.isVisible = false
-					(findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
-						18f
+					toolbar.setTitleTextAppearance(toolbar.context, R.style.TextAppearance_NOI_Toolbar_TitleSecondary)
 				}
 				R.id.eventDetailsFragment, R.id.newsDetails, R.id.profile, R.id.contactDetails -> {
 					supportActionBar?.show()
 					binding.navView.isVisible = true
-					(findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
-						18f
+					toolbar.setTitleTextAppearance(toolbar.context, R.style.TextAppearance_NOI_Toolbar_TitleSecondary)
 				}
 				else -> {
 					supportActionBar?.show()
 					binding.navView.isVisible = true
-					(findViewById<MaterialToolbar>(R.id.toolbar).getChildAt(0) as TextView).textSize =
-						26f
+					toolbar.setTitleTextAppearance(toolbar.context, R.style.TextAppearance_NOI_Toolbar_TitlePrimary)
 				}
 			}
 		}

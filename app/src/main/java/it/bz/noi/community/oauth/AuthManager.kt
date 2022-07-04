@@ -286,7 +286,7 @@ object AuthManager {
 			val intent = authorizationService.getAuthorizationRequestIntent(authRequest)
 			context.startActivityForResult(intent, requestCode)
 		} catch (e: ActivityNotFoundException) {
-			MaterialAlertDialogBuilder(context).apply {
+			MaterialAlertDialogBuilder(context, R.style.ThemeOverlay_NOI_MaterialAlertDialog).apply {
 				setTitle(context.getString(R.string.error_title))
 				setMessage(context.getString(R.string.login_browser_error_msg))
 				setPositiveButton(context.getString(R.string.ok_button)) { _, _ -> }
@@ -376,7 +376,7 @@ object AuthManager {
 			context.startActivityForResult(endSessionIntent, requestCode)
 		} catch (ex: ActivityNotFoundException) {
 			Log.e(TAG, "End session error: $ex")
-			MaterialAlertDialogBuilder(context).apply {
+			MaterialAlertDialogBuilder(context, R.style.ThemeOverlay_NOI_MaterialAlertDialog).apply {
 				setTitle(context.getString(R.string.error_title))
 				setMessage(context.getString(R.string.logout_error_msg))
 				setPositiveButton(context.getString(R.string.ok_button)) { _, _ -> }

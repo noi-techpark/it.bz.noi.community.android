@@ -22,22 +22,33 @@
 		<item name="android:textViewStyle">@style/TextAppearance.NOI.BodyRegular</item>
 		<item name="switchStyle">@style/Widget.App.Switch</item>
 		<item name="materialButtonStyle">@style/ThemeOverlay.NOI.MaterialButton</item>
+
+		<!-- TextAppearance -->
+		<item name="textAppearanceBody1">@style/TextAppearance.NOI.BodyRegular</item>
+		<item name="textAppearanceBody2">@style/TextAppearance.NOI.BodyRegular.Semibold</item>
+		<item name="textAppearanceHeadline1">@style/TextAppearance.NOI.Title</item>
+		<item name="textAppearanceHeadline2">@style/TextAppearance.NOI.TitleMedium</item>
+<!--		<item name="textAppearanceHeadline3"></item>-->
+		<item name="textAppearanceHeadline4">@style/TextAppearance.NOI.BodyLarge.Semibold</item>
+		<item name="textAppearanceHeadline5">@style/TextAppearance.NOI.BodyLarge</item>
+		<item name="textAppearanceHeadline6">@style/TextAppearance.NOI.BodySmall.Bold</item>
+		<item name="textAppearanceSubtitle1">@style/TextAppearance.NOI.Subtitle</item>
+<!--		<item name="textAppearanceSubtitle2"></item>-->
+		<item name="textAppearanceCaption">@style/TextAppearance.NOI.BodySmall.Semibold</item>
+		<item name="textAppearanceOverline">@style/TextAppearance.NOI.BodySmall</item>
 		<item name="textAppearanceButton">@style/TextAppearance.NOI.BodyLarge.Semibold</item>
 
-	</style>
-
-	<style name="ToolbarTextAppearence">
-		<item name="android:textSize">26sp</item>
 	</style>
 
 	<style name="ToolbarTheme" parent="@style/Widget.MaterialComponents.ActionBar.Primary">
 		<!-- Customize color of navigation drawer icon and back arrow -->
 		<item name="colorControlNormal">@color/primary_color</item>
+		<item name="android:background">@color/background_color</item>
 	</style>
 
 	<style name="Widget.App.Switch" parent="Widget.MaterialComponents.CompoundButton.Switch">
 		<item name="materialThemeOverlay">@style/ThemeOverlay.App.Switch</item>
-		<item name="android:textAppearance">@style/TextAppearance.NOI.BodyRegular</item>
+		<item name="android:textAppearance">?attr/textAppearanceBody1</item>
 	</style>
 
 	<!--
@@ -57,21 +68,13 @@
 		<item name="textAllCaps">false</item>
 		<item name="cornerRadius">@dimen/button_corner_radius</item>
 		<item name="backgroundTint">?attr/colorSecondary</item>
-		<item name="android:textAppearance">@style/TextAppearance.NOI.BodySmall.Semibold</item>
+		<item name="android:textAppearance">?attr/textAppearanceCaption</item>
 	</style>
 
 	<style name="NOI.TabLayout" parent="Widget.MaterialComponents.TabLayout">
 		<item name="tabIndicatorHeight">0dp</item>
 		<item name="tabBackground">@drawable/today_tabs_background_color_selector</item>
 		<item name="tabTextAppearance">@style/NOI.TextAppearance.TabLayout.Button</item>
-	</style>
-
-	<style name="NOI.TextAppearance.TabLayout.Button" parent="TextAppearance.MaterialComponents.Button">
-		<item name="tabTextAppearance">@color/secondary_color</item>
-		<item name="tabSelectedTextColor">@color/secondary_color</item>
-		<item name="android:textAllCaps">false</item>
-		<item name="android:textSize">19sp</item>
-		<item name="android:letterSpacing">0</item>
 	</style>
 
 	<style name="ThemeOverlay.NOI.MaterialButton" parent="Widget.MaterialComponents.Button">
@@ -112,7 +115,7 @@
 	</style>
 
 	<style name="ThemeOverlay.NOI.SmallTextButton" parent="ThemeOverlay.NOI.TextButton">
-		<item name="android:textAppearance">@style/TextAppearance.NOI.BodySmall.Semibold</item>
+		<item name="android:textAppearance">?attr/textAppearanceCaption</item>
 		<item name="iconPadding">@dimen/small_button_icon_padding</item>
 		<item name="android:minWidth">0dip</item>
 	</style>
@@ -146,4 +149,10 @@
 		<item name="android:padding">0dp</item>
 	</style>
 
+	<style name="ThemeOverlay.NOI.MaterialAlertDialog" parent="Base.ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="materialAlertDialogTitleTextStyle">@style/TextAppearance.NOI.AlertDialog.Title</item>
+		<item name="materialAlertDialogBodyTextStyle">?attr/textAppearanceBody1</item>
+	</style>
 </resources>
