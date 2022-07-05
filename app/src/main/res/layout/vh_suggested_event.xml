@@ -52,26 +52,31 @@
 
 		<TextView
 			android:id="@+id/tvEventLocation"
-			android:layout_width="wrap_content"
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="4dp"
 			android:layout_marginTop="6dp"
 			android:textColor="@color/primary_color"
+			android:ellipsize="end"
+			android:lines="1"
 			style="?attr/textAppearanceOverline"
 			app:layout_constraintStart_toEndOf="@id/ivLocation"
 			app:layout_constraintTop_toBottomOf="@id/tvEventName"
+			app:layout_constraintEnd_toStartOf="@id/ivTime"
 			tools:text="NOI Techpark" />
 
 		<ImageView
 			android:id="@+id/ivTime"
 			android:layout_width="14dp"
 			android:layout_height="14dp"
+			android:layout_marginStart="5dp"
 			android:layout_marginEnd="4dp"
 			android:importantForAccessibility="no"
 			android:src="@drawable/ic_time"
 			app:layout_constraintBottom_toBottomOf="@id/tvEventLocation"
 			app:layout_constraintEnd_toStartOf="@id/tvEventTime"
-			app:layout_constraintTop_toTopOf="@id/tvEventLocation" />
+			app:layout_constraintTop_toTopOf="@id/tvEventLocation"
+			app:layout_constraintStart_toEndOf="@id/tvEventLocation"/>
 
 		<TextView
 			android:id="@+id/tvEventTime"
