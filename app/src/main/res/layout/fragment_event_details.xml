@@ -101,7 +101,7 @@
 						android:id="@+id/ivTime"
 						android:layout_width="14dp"
 						android:layout_height="14dp"
-						android:layout_marginStart="@dimen/default_margin"
+						android:layout_marginStart="4dp"
 						android:layout_marginEnd="4dp"
 						android:importantForAccessibility="no"
 						android:src="@drawable/ic_time"
