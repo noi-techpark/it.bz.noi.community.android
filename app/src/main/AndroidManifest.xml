@@ -15,12 +15,14 @@
 		android:supportsRtl="true"
 		android:theme="@style/Theme.NOICommunity">
 		<activity android:name=".MainActivity"
-			android:windowSoftInputMode="adjustNothing">
+			android:windowSoftInputMode="adjustNothing"
+			android:exported="false">
 			<!-- Enable implicit deep linking -->
 			<nav-graph android:value="@navigation/mobile_navigation" />
 		</activity>
 		<activity android:name=".OnboardingActivity"/>
-		<activity android:name=".SplashScreenActivity">
+		<activity android:name=".SplashScreenActivity"
+			android:exported="true">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -28,7 +30,8 @@
 		</activity>
 		<activity
 			android:name="net.openid.appauth.RedirectUriReceiverActivity"
-			tools:node="replace">
+			tools:node="replace"
+			android:exported="true">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 
@@ -41,7 +44,8 @@
 			</intent-filter>
 		</activity>
 
-		<service android:name=".notifications.MessagingService">
+		<service android:name=".notifications.MessagingService"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="com.google.firebase.MESSAGING_EVENT" />
 			</intent-filter>
