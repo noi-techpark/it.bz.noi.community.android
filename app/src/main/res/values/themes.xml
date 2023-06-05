@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+
+SPDX-License-Identifier: CC0-1.0
+-->
+
 <resources xmlns:tools="http://schemas.android.com/tools">
 	<!-- Base application theme. -->
 	<style name="Theme.NOICommunity" parent="Theme.MaterialComponents.DayNight.DarkActionBar">

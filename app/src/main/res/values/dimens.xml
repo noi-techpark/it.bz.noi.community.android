@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+
+SPDX-License-Identifier: CC0-1.0
+-->
+
 <resources>
 	<dimen name="default_margin">17dp</dimen>
 	<dimen name="filters_bar_height">36dp</dimen>

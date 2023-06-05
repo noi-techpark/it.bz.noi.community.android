@@ -1,3 +1,7 @@
+REM SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+REM
+REM SPDX-License-Identifier: CC0-1.0
+
 @if "%DEBUG%" == "" @echo off
 @rem ##########################################################################
 @rem

@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+
+SPDX-License-Identifier: CC0-1.0
+-->
+
 <animated-selector xmlns:android="http://schemas.android.com/apk/res/android">
 	<item android:id="@+id/copy" android:drawable="@drawable/ic_copy" android:state_selected="false"/>
 	<item android:id="@+id/copied" android:drawable="@drawable/ic_copy_with_check" android:state_selected="true"/>

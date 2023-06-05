@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 package it.bz.noi.community.utils
 
 data class Resource<out T>(val status: Status, val data: T?, val message: String?) {

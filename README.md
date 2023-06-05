@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+
+SPDX-License-Identifier: CC0-1.0
+-->
+
 # NOI-Community App for Android
 
 [![CI/CD](https://github.com/noi-techpark/it.bz.noi.community.android/actions/workflows/main.yml/badge.svg)](https://github.com/noi-techpark/it.bz.noi.community.android/actions/workflows/main.yml)
