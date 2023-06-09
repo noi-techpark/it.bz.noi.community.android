@@ -7,6 +7,16 @@ name: CI/CD
 on: [ pull_request, push ]
 jobs:
 
+  ## Run generic tests on source code
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: REUSE Compliance Check
+        uses: fsfe/reuse-action@v1
+
   ## Build the app and run unit tests
   unit_tests:
     runs-on: ubuntu-20.04
@@ -49,7 +59,7 @@ jobs:
 
   ## Build and sign the app, and upload it as Github Artifact
   build_and_deploy_to_play_store:
-    needs: [ unit_tests, android_tests ]
+    needs: [ test, unit_tests, android_tests ]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
