@@ -19,7 +19,7 @@ object Utils {
 
 	private const val HTTP_PREFIX = "http://"
 	private const val GET_IMAGE_URL =
-		"https://images.opendatahub.bz.it/api/Image/GetImageByUrl?imageUrl="
+		"https://images.opendatahub.com/api/Image/GetImageByUrl?imageUrl="
 	private const val FULLVIEW_PARAM = "fullview"
 	private const val HIDEZOOM_PARAM = "hidezoom"
 	const val ENGLISH = "en"

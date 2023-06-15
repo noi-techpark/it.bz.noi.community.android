@@ -17,7 +17,7 @@ import java.util.*
 
 object RetrofitBuilder {
 
-	private const val OPENDATAHUB_API_BASE_URL = "https://tourism.opendatahub.bz.it/"
+	private const val OPENDATAHUB_API_BASE_URL = "https://tourism.opendatahub.com/"
 
 	private fun getRetrofit(baseUrl: String): Retrofit {
 		val interceptor = HttpLoggingInterceptor()
