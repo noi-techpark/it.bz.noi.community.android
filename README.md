@@ -6,7 +6,7 @@ SPDX-License-Identifier: CC0-1.0
 
 # NOI-Community App for Android
 
-![REUSE Compliance](https://github.com/noi-techpark/it.bz.noi.community.android/actions/workflows/reuse.yml/badge.svg)
+[![REUSE Compliance](https://github.com/noi-techpark/it.bz.noi.community.android/actions/workflows/reuse.yml/badge.svg)](https://github.com/noi-techpark/odh-docs/wiki/REUSE#badges)
 [![CI/CD](https://github.com/noi-techpark/it.bz.noi.community.android/actions/workflows/main.yml/badge.svg)](https://github.com/noi-techpark/it.bz.noi.community.android/actions/workflows/main.yml)
 
 The NOI-Community App is your information and communication channel to keep in
