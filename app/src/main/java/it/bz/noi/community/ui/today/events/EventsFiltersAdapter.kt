@@ -90,6 +90,7 @@ class EventsFiltersAdapter(private val eventTypeHeader: String,
 				when (val filterItem = getItem(position)) {
 					is Item.Filter.EventType -> holder.bind(filterItem.filter)
 					is Item.Filter.TechnologySector -> holder.bind(filterItem.filter)
+					else -> throw RuntimeException("Invalid filter item $filterItem")
 				}
             }
             else -> throw RuntimeException("Unsupported holder $holder")

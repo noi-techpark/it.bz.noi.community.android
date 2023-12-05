@@ -32,7 +32,7 @@ import java.util.*
  * Factory for creating the MainViewModel
  */
 class ViewModelFactory(private val apiHelper: ApiHelper, private val filterRepo: FilterRepository) : ViewModelProvider.Factory {
-	override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+	override fun <T : ViewModel> create(modelClass: Class<T>): T {
 		if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
 			return MainViewModel(MainRepository(apiHelper), filterRepo) as T
 		}
