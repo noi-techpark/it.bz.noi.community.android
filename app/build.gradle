@@ -72,14 +72,12 @@ android {
 	flavorDimensions += "environment"
 	productFlavors {
 		development {
-			dimension 'environment'
 			buildConfigField("String", "ISSUER_URL", "\"https://auth.opendatahub.testingmachine.eu/auth/realms/noi/\"")
 			buildConfigField("String", "SIGNUP_URL", "\"https://auth.opendatahub.testingmachine.eu/auth/realms/noi/protocol/openid-connect/registrations?client_id=it.bz.noi.community&redirect_uri=https://noi.bz.it&response_type=code&scope=openid\"")
 			buildConfigField("String", "COMMUNITY_API_URL", "\"https://api.community.noi.testingmachine.eu\"")
 			dimension = 'environment'
 		}
 		production {
-			dimension 'environment'
 			buildConfigField("String", "ISSUER_URL", "\"https://auth.opendatahub.com/auth/realms/noi/\"")
 			buildConfigField("String", "SIGNUP_URL", "\"https://auth.opendatahub.com/auth/realms/noi/protocol/openid-connect/registrations?client_id=it.bz.noi.community&redirect_uri=https://noi.bz.it&response_type=code&scope=openid\"")
 			buildConfigField("String", "COMMUNITY_API_URL", "\"https://api.community.noi.opendatahub.com\"")
