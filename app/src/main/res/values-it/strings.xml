@@ -118,4 +118,5 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="url_onboarding" comment="">https://community.noi.bz.it/onboarding/it.html</string>
 	<string name="url_bug_report" comment="">https://forms.office.com/Pages/ResponsePage.aspx?id=R_WstlLDCEenJewOZixdERIOZ0hE1k5LlWwUM_AXhdlUQUVFR0c1MThYUUw3T1lTMFJZNjkxU05SWi4u&amp;embed=true</string>
 	<string name="url_google_playstore" comment="">https://play.google.com/store/apps/details?id=it.bz.noi.community</string>
+	<string name="url_app_privacy">https://noi.bz.it/it/privacy-app</string>
 </resources>

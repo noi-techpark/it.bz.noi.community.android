@@ -4,36 +4,48 @@
 
 package it.bz.noi.community
 
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.buildSpannedString
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.fragment.app.commit
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import it.bz.noi.community.databinding.ActivityOnboardingBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
+import it.bz.noi.community.storage.privacyAcceptedFlow
+import it.bz.noi.community.storage.updatePrivacyAccepted
 import it.bz.noi.community.ui.onboarding.AuthorizationErrorFragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage1Fragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage2Fragment
 import it.bz.noi.community.ui.onboarding.OnboardingPage3Fragment
 import it.bz.noi.community.utils.Utils.openLinkInExternalBrowser
+import it.bz.noi.community.utils.addLinkSpan
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
 
 class OnboardingActivity : AppCompatActivity() {
+
+	private val viewModel: OnboardingViewModel by viewModels()
 
 	private lateinit var binding: ActivityOnboardingBinding
 	private lateinit var viewPager: ViewPager2
@@ -53,6 +65,7 @@ class OnboardingActivity : AppCompatActivity() {
 			}
 		}
 
+		//TODO: move to viewModel
 		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
 			when (status) {
 				is AuthStateStatus.Authorized -> goToMainActivity()
@@ -79,6 +92,25 @@ class OnboardingActivity : AppCompatActivity() {
 		}
 		binding.signup.setOnClickListener {
 			openLinkInExternalBrowser(BuildConfig.SIGNUP_URL)
+		}
+		binding.checkboxText.apply {
+			movementMethod = LinkMovementMethod.getInstance()
+			text = buildSpannedString {
+				append(getString(R.string.app_privacy_policy_label))
+				addLinkSpan(getString(R.string.app_privacy_policy_label_link_part), getString(R.string.url_app_privacy))
+			}
+		}
+		binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
+			viewModel.setPrivacyAccepted(isChecked)
+		}
+		lifecycleScope.launch {
+			repeatOnLifecycle(Lifecycle.State.STARTED) {
+				viewModel.isPrivacyAccepted.collect { accepted ->
+					binding.checkbox.isChecked = accepted
+					binding.signup.isEnabled = accepted
+					binding.login.isEnabled = accepted
+				}
+			}
 		}
 	}
 
@@ -159,5 +191,17 @@ private class OnboardingStateAdapter(activity: OnboardingActivity) :
 			else -> throw IllegalArgumentException("Onboarding Fragment position not valid: $position")
 		}
 	}
+}
 
+class OnboardingViewModel(
+	app: Application,
+	val savedStateHandle: SavedStateHandle,
+) : AndroidViewModel(app) {
+
+	val isPrivacyAccepted = getApplication<Application>().privacyAcceptedFlow()
+	fun setPrivacyAccepted(accepted: Boolean) {
+		viewModelScope.launch {
+			getApplication<Application>().updatePrivacyAccepted(accepted)
+		}
+	}
 }
