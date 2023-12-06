@@ -11,7 +11,19 @@ SPDX-License-Identifier: CC0-1.0
 	package="it.bz.noi.community">
 
 	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.CALL_PHONE" />
+	<queries>
+		<intent>
+			<action android:name="android.intent.action.DIAL" />
+		</intent>
+		<intent>
+			<action android:name="android.intent.action.SENDTO" />
+			<data android:scheme="mailto" />
+		</intent>
+		<intent>
+			<action android:name="android.intent.action.VIEW" />
+			<data android:scheme="https" />
+		</intent>
+	</queries>
 
 	<application
 		android:name=".NoiApplication"
@@ -27,7 +39,7 @@ SPDX-License-Identifier: CC0-1.0
 			<!-- Enable implicit deep linking -->
 			<nav-graph android:value="@navigation/mobile_navigation" />
 		</activity>
-		<activity android:name=".OnboardingActivity"/>
+		<activity android:name=".ui.onboarding.OnboardingActivity"/>
 		<activity android:name=".SplashScreenActivity"
 			android:exported="true">
 			<intent-filter>

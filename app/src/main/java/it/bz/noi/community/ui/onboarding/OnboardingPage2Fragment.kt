@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.view.View
 import it.bz.noi.community.R
 
-class OnboardingPage2Fragment : BaseOnboardingFragment() {
+class OnboardingPage2Fragment : BaseOnboardingPageFragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)

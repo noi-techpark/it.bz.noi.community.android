@@ -6,7 +6,8 @@ SPDX-License-Identifier: CC0-1.0
 
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-	<style name="Theme.NOICommunity.Inverse">
+	<!-- This overlay actually the "primary" theme, black background with white text and accent -->
+	<style name="Theme.NOICommunity.Primary">
 		<item name="colorPrimary">@color/primary_color</item>
 		<item name="colorOnPrimary">@color/background_color</item>
 		<item name="colorSurface">@color/background_color</item>
@@ -17,7 +18,11 @@ SPDX-License-Identifier: CC0-1.0
 		<item name="android:textColorPrimaryInverse">@color/background_color</item>
 	</style>
 
-	<!-- Base application theme. -->
+	<style name="Theme.NOICommunity.Secondary">
+		<item name="background">@color/secondary_background_color</item>
+	</style>
+
+	<!-- Base application theme, it is actually the "tertiary" variant that is white background and dark text -->
 	<style name="Theme.NOICommunity" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
 
 		<item name="windowActionBar">false</item>
@@ -31,6 +36,7 @@ SPDX-License-Identifier: CC0-1.0
 		<item name="colorSecondary">@color/primary_color</item>
 		<item name="colorSecondaryVariant">@color/primary_color</item>
 		<item name="colorOnSecondary">@color/background_color</item>
+
 		<!-- Status bar color. -->
 		<item name="android:statusBarColor" tools:targetApi="l">@color/background_color</item>
 

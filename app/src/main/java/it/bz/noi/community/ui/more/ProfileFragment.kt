@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import it.bz.noi.community.OnboardingActivity.Companion.LOGOUT_REQUEST
+import it.bz.noi.community.ui.onboarding.OnboardingActivity.Companion.LOGOUT_REQUEST
 import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentProfileBinding
 import it.bz.noi.community.oauth.AuthManager

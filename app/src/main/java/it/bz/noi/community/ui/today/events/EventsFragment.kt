@@ -23,18 +23,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
-import it.bz.noi.community.data.api.ApiHelper
-import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.EventsResponse
 import it.bz.noi.community.data.models.TimeFilter
 import it.bz.noi.community.data.models.TimeRange
-import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentEventsBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.ViewModelFactory
-import it.bz.noi.community.ui.today.TodayFragmentDirections
 import it.bz.noi.community.ui.today.TodayViewModel
 import it.bz.noi.community.utils.Status
+import it.bz.noi.community.ui.today.TodayFragmentDirections
 
 class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 
@@ -43,10 +40,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 	private val todayViewModel: TodayViewModel by activityViewModels()
 
 	private val viewModel: MainViewModel by activityViewModels(factoryProducer = {
-		ViewModelFactory(
-			ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
-			JsonFilterRepository(requireActivity().application)
-		)
+		ViewModelFactory.defaultFactory()
 	})
 
 	private lateinit var timeFilters: List<TimeFilter>

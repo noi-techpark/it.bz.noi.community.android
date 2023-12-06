@@ -8,102 +8,30 @@ SPDX-License-Identifier: CC0-1.0
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:background="?attr/background"
-	android:theme="@style/Theme.NOICommunity.Inverse">
+	android:theme="@style/Theme.NOICommunity.Primary">
 
-	<androidx.fragment.app.FragmentContainerView xmlns:android="http://schemas.android.com/apk/res/android"
+	<com.google.android.material.appbar.MaterialToolbar
+		android:id="@+id/toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingTop="20dp"
+		android:paddingBottom="5dp"
+		android:theme="@style/ToolbarTheme"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:titleTextAppearance="@style/TextAppearance.NOI.Toolbar.TitlePrimary" />
+
+	<androidx.fragment.app.FragmentContainerView
 		android:id="@+id/fragment_container_view"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
-
-	<androidx.viewpager2.widget.ViewPager2
-		android:id="@+id/pager"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
-
-	<androidx.constraintlayout.widget.Guideline
-		android:id="@+id/guideline"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		app:layout_constraintGuide_percent="0.7" />
-
-	<com.google.android.material.tabs.TabLayout
-		android:id="@+id/tab_layout"
-		android:layout_width="match_parent"
-		android:layout_height="6dp"
-		android:background="@android:color/transparent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/guideline"
-		app:tabBackground="@drawable/tab_selector"
-		app:tabGravity="center"
-		app:tabIndicatorHeight="0dp"
-		app:tabPaddingEnd="6dp"
-		app:tabPaddingStart="6dp" />
-
-	<CheckBox
-		android:id="@+id/checkbox"
-		android:layout_marginStart="@dimen/default_margin"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="@id/guideline"
-		app:layout_constraintEnd_toStartOf="@id/checkbox_text"
-		android:layout_width="wrap_content"
-		android:layout_marginTop="32dp"
-		android:layout_height="wrap_content"/>
-
-	<TextView
-		style="?attr/textAppearanceBody1"
-		android:id="@+id/checkbox_text"
 		android:layout_width="0dp"
-		android:layout_marginEnd="@dimen/default_margin"
-		app:layout_constraintStart_toEndOf="@id/checkbox"
-		app:layout_constraintEnd_toEndOf="parent"
-		android:layout_marginTop="32dp"
-		app:layout_constraintTop_toTopOf="@id/guideline"
-		android:layout_height="wrap_content"
-		tools:text="@tools:sample/lorem[20]" />
-
-	<androidx.constraintlayout.widget.Barrier
-		android:id="@+id/checkbox_container"
-		android:layout_width="wrap_content"
-		app:barrierDirection="bottom"
-		app:constraint_referenced_ids="checkbox,checkbox_text"
-		android:layout_height="wrap_content"/>
-
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/login"
-		style="ThemeOverlay.NOI.ContainedButtonV2"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="8dp"
-		android:layout_marginStart="@dimen/default_margin"
-		android:layout_marginEnd="@dimen/default_margin"
-		android:text="@string/btn_login"
+		android:layout_height="0dp"
+		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/checkbox_container"
-		tools:visibility="visible" />
-
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/signup"
-		style="@style/ThemeOverlay.NOI.TextButtonV2"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="@dimen/default_margin"
-		android:layout_marginTop="10dp"
-		android:layout_marginEnd="@dimen/default_margin"
-		android:text="@string/btn_signup"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/login"
-		tools:visibility="visible" />
+		app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

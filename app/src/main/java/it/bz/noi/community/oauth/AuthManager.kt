@@ -18,7 +18,10 @@ import com.google.gson.GsonBuilder
 import it.bz.noi.community.BuildConfig
 import it.bz.noi.community.NoiApplication.Companion.SHARED_PREFS_NAME
 import it.bz.noi.community.R
+import it.bz.noi.community.data.api.CommunityApiService
+import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.utils.Resource
+import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
@@ -52,10 +55,32 @@ data class UserState(val authState: AuthState, val validRole: Boolean)
  */
 class UnauthorizedException(original: AuthorizationException) : Exception(original)
 
-@OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 object AuthManager {
 
-	private fun UserState.toStatus(): AuthStateStatus {
+	val communityApiService: CommunityApiService by lazy {
+		RetrofitBuilder.communityApiService
+	}
+
+	private suspend fun AuthState.isEmailValid(): Boolean {
+		return try {
+			val mail = getUserInfo().let {
+				if (it.status == Status.SUCCESS) {
+					it.data
+				} else {
+					null
+				}
+			}?.email ?: return false
+			val accounts = communityApiService.getAccounts(accessToken!!).accounts
+			accounts.firstOrNull {
+				it.address == mail
+			} != null
+		} catch (ex: Exception) {
+			false
+		}
+	}
+
+	private suspend fun UserState.toStatus(): AuthStateStatus {
 		return when {
 			authState.authorizationException != null -> AuthStateStatus.Error(
 				UnauthorizedException(
@@ -63,7 +88,15 @@ object AuthManager {
 				)
 			)
 			!validRole -> AuthStateStatus.Unauthorized.NotValidRole
-			authState.isAuthorized -> AuthStateStatus.Authorized(authState)
+			authState.isAuthorized -> {
+				authState.isEmailValid().let { isValid ->
+					if (!isValid) {
+						AuthStateStatus.Unauthorized.NotValidRole
+					} else {
+						AuthStateStatus.Authorized(authState)
+					}
+				}
+			}
 			authState.lastAuthorizationResponse != null && authState.needsTokenRefresh -> AuthStateStatus.Unauthorized.PendingToken
 			else -> AuthStateStatus.Unauthorized.UserAuthRequired
 		}
@@ -144,7 +177,7 @@ object AuthManager {
 	}
 
 	private fun reloadableUserInfoFlow() =
-		reloadTickerFlow.flatMapLatest { getUserInfo() }
+		reloadTickerFlow.flatMapLatest { getUserInfoFlow() }
 
 	private suspend fun blockingNetworkRequest(request: Request) = withContext(Dispatchers.IO) {
 		client.newCall(request).execute()
@@ -201,11 +234,16 @@ object AuthManager {
 		}
 	}
 
-	private suspend fun getUserInfo() = flow {
+	private suspend fun getUserInfoFlow() = flow {
 		emit(Resource.loading(null))
 		val authServiceConfig = obtainAuthServiceConfig()
 		val userInfo = getUserInfo(authServiceConfig)
 		emit(userInfo)
+	}
+
+	private suspend fun getUserInfo(): Resource<UserInfo> {
+		val authServiceConfig = obtainAuthServiceConfig()
+		return getUserInfo(authServiceConfig)
 	}
 
 	private suspend fun getUserInfo(authServiceConfig: AuthorizationServiceConfiguration): Resource<UserInfo> {

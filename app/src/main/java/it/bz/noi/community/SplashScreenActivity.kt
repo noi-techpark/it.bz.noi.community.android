@@ -20,6 +20,7 @@ import it.bz.noi.community.NoiApplication.Companion.SHARED_PREFS_NAME
 import it.bz.noi.community.databinding.ActivitySplashBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
+import it.bz.noi.community.ui.onboarding.OnboardingActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

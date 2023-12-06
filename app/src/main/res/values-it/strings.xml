@@ -1,5 +1,4 @@
 <!--
-Copyright © 2021 Dimension S.r.l. All rights reserved.
 SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 
 SPDX-License-Identifier: CC0-1.0
@@ -7,7 +6,7 @@ SPDX-License-Identifier: CC0-1.0
 
 <resources>
 	<string name="access_not_granted_format" comment="Formatted access not granted body">Ciao %1$s (%2$s),\nnon sei autorizzato all\'uso dell\'app.\n\nPer saperne di più contatta il tuo ufficio personale.</string>
-	<string name="access_not_granted_msg" comment="Access not granted body">Ciao, hai un account Open Data Hub o NOI valido e sei loggato, ma non hai i permessi per accedere alla Community App. Scrivi a community@noi.bz.it per saperne di più.</string>
+	<string name="access_not_granted_msg" comment="Access not granted body. Used instead of access_not_granted_format when fullname and email are not available">Ciao, hai un account Open Data Hub o NOI valido e sei loggato, ma non hai i permessi per accedere alla Community App. Scrivi a community@noi.bz.it per saperne di più.</string>
 	<string name="alumix_name" comment="Alumix displayed name">Alumix</string>
 	<string name="alumix_openings" comment="Alumix openings days and hours">lunedì - venerdì: 5:00 - 15:00\n\nsabato e domenica: chiuso</string>
 	<string name="app_name" comment="The app name displayed near the app icon">Community</string>
@@ -100,6 +99,20 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="title_orientate" comment="Tab Orientate: title on action bar">Find your way!</string>
 	<string name="title_today" comment="Tab Today: title on action bar">Hey you!</string>
 	<string name="user_info_error_msg" comment="Message to show when an error occurs loding user info (i.e. connection error, json parsing error...)">Impossibile caricare i dati del profilo.</string>
+	<string name="app_privacy_policy_label" comment="Privacy policy label on welcome page">Selezionando questa casella accetto l\'informativa sulla privacy.</string>
+	<string name="app_privacy_policy_label_link_part" comment="Link part of the privacy policy label on welcome page">informativa sulla privacy</string>
+	<string name="app_privacy_policy_page_title" comment="Title of privacy policy page">Informativa sulla privacy</string>
+	<string name="warning_title" comment="Warning title">Oh no!</string>
+	<string name="outsider_user_title" comment="Title of user outsider of NOI community">Ops, qualcosa è andato storto!</string>
+	<string name="outsider_user_body" comment="Body of user outsider of NOI community">L\'indirizzo e-mail inserito non è presente nel nostro database.
+\n
+\nQuesta app è riservata ai membri della NOI-Community. Se ne fai parte, controlla l\'indirizzo e-mail inserito e riprova oppure invia un\'e-mail a community@noi.bz.it.
+\n</string>
+	<string name="come_on_board_onboarding_page_title" comment="Title of come on board onboarding page">Ciao!</string>
+	<string name="come_on_board_onboarding_title" comment="Title of come on board onboarding">La tua registrazione è andata a buon fine</string>
+	<string name="come_on_board_onboarding_body" comment="Body of come on board onboarding">Ti diamo il benvenuto nell\'app della NOI-\nCommunity!\n\nQui al NOl è tutto nuovo per te? Dai un\'occhiata al nostro Community Manual, dove abbiamo raccolto informazioni utili per te.</string>
+	<string name="dont_show_again_toogle_title" comment="Label of don\'t show again toggle">Grazie, non mostratemelo più</string>
+	<string name="understood_button_title" comment="Title of understood button">Ho capito</string>
 	<string name="url_home" comment="">https://noi.bz.it/it</string>
 	<string name="url_privacy" comment="">https://noi.bz.it/it/privacy-cookie-policy</string>
 	<string name="url_companies" comment="">https://noi.bz.it/it/aziende</string>
@@ -118,5 +131,5 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="url_onboarding" comment="">https://community.noi.bz.it/onboarding/it.html</string>
 	<string name="url_bug_report" comment="">https://forms.office.com/Pages/ResponsePage.aspx?id=R_WstlLDCEenJewOZixdERIOZ0hE1k5LlWwUM_AXhdlUQUVFR0c1MThYUUw3T1lTMFJZNjkxU05SWi4u&amp;embed=true</string>
 	<string name="url_google_playstore" comment="">https://play.google.com/store/apps/details?id=it.bz.noi.community</string>
-	<string name="url_app_privacy">https://noi.bz.it/it/privacy-app</string>
+	<string name="url_app_privacy" comment="">https://noi.bz.it/it/privacy-app</string>
 </resources>
