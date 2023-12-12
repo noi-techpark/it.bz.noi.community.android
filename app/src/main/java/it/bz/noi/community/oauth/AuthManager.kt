@@ -7,20 +7,25 @@ package it.bz.noi.community.oauth
 import android.app.Activity
 import android.app.Application
 import android.content.ActivityNotFoundException
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import androidx.core.content.edit
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.GsonBuilder
 import it.bz.noi.community.BuildConfig
-import it.bz.noi.community.NoiApplication.Companion.SHARED_PREFS_NAME
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.CommunityApiService
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.api.bearer
+import it.bz.noi.community.storage.removeAccessGranted
+import it.bz.noi.community.storage.removeAuthState
+import it.bz.noi.community.storage.getAccessGranted
+import it.bz.noi.community.storage.getAuthState
+import it.bz.noi.community.storage.setAccessGranted
+import it.bz.noi.community.storage.setAuthState
+import it.bz.noi.community.storage.setPrivacyAccepted
+import it.bz.noi.community.storage.setWelcomeUnderstood
 import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.*
@@ -114,8 +119,6 @@ object AuthManager {
 	private const val END_SESSION_URL = "noi-community://oauth2redirect/end_session-callback"
 	private const val CLIENT_ID: String = "it.bz.noi.community"
 
-	private const val PREF_AUTH_STATE = "authState"
-	private const val PREF_ACCESS_GRANTED_STATE = "accessGrantedState"
 	private const val ACCESS_GRANTED_ROLE = "ACCESS_GRANTED"
 
 	private val mainCoroutineScope = CoroutineScope(Dispatchers.Main + Job())
@@ -466,35 +469,29 @@ object AuthManager {
 	}
 
 	fun onEndSession() {
-		deleteUserState()
-		mainCoroutineScope.launch { userState.emit(UserState(AuthState(), true)) }
-	}
-
-	private fun readAuthState(): UserState {
-		application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).apply {
-			val authState = getString(PREF_AUTH_STATE, null)?.let {
-				AuthState.jsonDeserialize(it)
-			} ?: AuthState()
-
-			val isValidRole = getBoolean(PREF_ACCESS_GRANTED_STATE, true)
-
-			return UserState(authState, isValidRole)
-		}
-
-	}
-
-	private fun writeAuthState(userState: UserState) {
-		application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).edit {
-			putString(PREF_AUTH_STATE, userState.authState.jsonSerializeString())
-			putBoolean(PREF_ACCESS_GRANTED_STATE, userState.validRole)
+		mainCoroutineScope.launch {
+			deleteUserState()
+			userState.emit(UserState(AuthState(), true))
 		}
 	}
 
-	private fun deleteUserState() {
-		application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).edit {
-			remove(PREF_AUTH_STATE)
-			remove(PREF_ACCESS_GRANTED_STATE)
-		}
+	private fun readAuthState(): UserState = with(application) {
+		val authState = runBlocking {
+			getAuthState()
+		} ?: AuthState()
+		val isValidRole = runBlocking { getAccessGranted(true) }
+		UserState(authState, isValidRole)
 	}
 
+	private suspend fun writeAuthState(userState: UserState) = with(application) {
+		setAuthState(userState.authState)
+		setAccessGranted(userState.validRole)
+	}
+
+	private suspend fun deleteUserState() = with(application) {
+		setWelcomeUnderstood(false)
+		setPrivacyAccepted(false)
+		removeAuthState()
+		removeAccessGranted()
+	}
 }

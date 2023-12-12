@@ -5,8 +5,6 @@
 package it.bz.noi.community.storage
 
 import android.content.Context
-import android.content.SharedPreferences
-import androidx.datastore.core.DataMigration
 import androidx.datastore.core.DataStore
 import androidx.datastore.migrations.SharedPreferencesMigration
 import androidx.datastore.migrations.SharedPreferencesView
@@ -14,40 +12,50 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import it.bz.noi.community.NoiApplication
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
+import net.openid.appauth.AuthState
 
 private const val VERSION = 1
 private const val NAME = "settings"
 
 // At the top level of your kotlin file:
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = NAME, produceMigrations = { context ->
-	listOf(InitialMigration)
+	listOf(getSharedPreferencesMigration())
 })
 
 val PRIVACY_ACCEPTED_KEY = booleanPreferencesKey("privacy_accepted")
 val WELCOME_UNDERSTOOD_KEY = booleanPreferencesKey("welcome_understood")
 val VERSION_KEY = intPreferencesKey("version")
+private const val OLD_SKIP_PARAM_KEY = "skip_splash_screen"
+val SKIP_PARAM = booleanPreferencesKey("skip_splash_screen")
+private const val OLD_AUTH_STATE_KEY = "authState"
+val AUTH_STATE_KEY = stringPreferencesKey("auth_state")
+private const val OLD_ACCESS_GRANTED_KEY = "accessGrantedState"
+val ACCESS_GRANTED_KEY = booleanPreferencesKey("access_granted_state")
 
-fun Context.privacyAcceptedFlow(): Flow<Boolean> = this.dataStore.data
+//region Privacy accepted
+
+fun Context.getPrivacyAcceptedFlow(): Flow<Boolean> = this.dataStore.data
 	.map { preferences ->
 		preferences[PRIVACY_ACCEPTED_KEY] ?: false
 	}
-suspend fun Context.updatePrivacyAccepted(privacyAccepted: Boolean) {
+
+suspend fun Context.setPrivacyAccepted(privacyAccepted: Boolean) {
 	this.dataStore.edit { preferences ->
 		preferences[PRIVACY_ACCEPTED_KEY] = privacyAccepted
 	}
 }
 
-fun Context.welcomeUnderstoodFlow(): Flow<Boolean> = this.dataStore.data
-	.map { preferences ->
-		preferences[PRIVACY_ACCEPTED_KEY] ?: false
-	}
-suspend fun Context.updateWelcomeUnderstood(privacyAccepted: Boolean) {
+//endregion
+
+//region Welcome understood
+
+suspend fun Context.setWelcomeUnderstood(privacyAccepted: Boolean) {
 	this.dataStore.edit { preferences ->
 		preferences[WELCOME_UNDERSTOOD_KEY] = privacyAccepted
 	}
@@ -59,25 +67,95 @@ suspend fun Context.getWelcomeUnderstood(): Boolean {
 	}.first()
 }
 
-fun Context.getWelcomeUnderstoodSync() = runBlocking {
-	getWelcomeUnderstood()
+//endregion
+
+//region Skip param
+
+suspend fun Context.getSkipParam(): Boolean {
+	return this.dataStore.data.map { preferences ->
+		preferences[SKIP_PARAM] ?: false
+	}.first()
 }
+
+suspend fun Context.setSkipParam(skipParam: Boolean) {
+	this.dataStore.edit { preferences ->
+		preferences[SKIP_PARAM] = skipParam
+	}
+}
+
+//endregion
+
+//region Auth state
+
+suspend fun Context.getAuthState(): AuthState? {
+	return this.dataStore.data.map { preferences ->
+		preferences[AUTH_STATE_KEY]
+	}.first()?.let {
+		AuthState.jsonDeserialize(it)
+	}
+}
+
+suspend fun Context.removeAuthState() {
+	this.dataStore.edit { preferences ->
+		preferences.remove(AUTH_STATE_KEY)
+	}
+}
+
+suspend fun Context.setAuthState(state: AuthState) {
+	this.dataStore.edit { preferences ->
+		preferences[AUTH_STATE_KEY] = state.jsonSerializeString()
+	}
+}
+
+// endregion
+
+// region Access granted
+
+suspend fun Context.getAccessGranted(default: Boolean): Boolean {
+	return this.dataStore.data.map { preferences ->
+		preferences[ACCESS_GRANTED_KEY] ?: default
+	}.first()
+}
+
+suspend fun Context.setAccessGranted(accessGranted: Boolean) {
+	this.dataStore.edit { preferences ->
+		preferences[ACCESS_GRANTED_KEY] = accessGranted
+	}
+}
+
+suspend fun Context.removeAccessGranted() {
+	this.dataStore.edit { preferences ->
+		preferences.remove(ACCESS_GRANTED_KEY)
+	}
+}
+
+//endregion
 
 /**
- * Initial migration from SharedPreferences to DataStore.
+ * This migration is needed to migrate from the old SharedPreferences to the new DataStore.
  */
-object InitialMigration : DataMigration<Preferences> {
-	override suspend fun cleanUp() {
-		//Delete any data that is no longer needed
-	}
+fun getSharedPreferencesMigration() = SharedPreferencesMigration(
+	produceSharedPreferences = {
+		NoiApplication.currentApplication.getSharedPreferences(NAME, Context.MODE_PRIVATE)
+	},
+	migrate = { sharedPrefs: SharedPreferencesView, prefs: Preferences ->
+		prefs.toMutablePreferences().apply {
 
-	override suspend fun migrate(currentData: Preferences): Preferences {
-		return currentData.toMutablePreferences().apply {
+			sharedPrefs.getString(OLD_AUTH_STATE_KEY)?.let { value ->
+				set(AUTH_STATE_KEY, value)
+			}
+
+			if (sharedPrefs.contains(OLD_ACCESS_GRANTED_KEY)) {
+				val oldValue = sharedPrefs.getBoolean(OLD_ACCESS_GRANTED_KEY, false)
+				set(ACCESS_GRANTED_KEY, oldValue)
+			}
+
+			if (sharedPrefs.contains(OLD_SKIP_PARAM_KEY)) {
+				val oldValue = sharedPrefs.getBoolean(OLD_SKIP_PARAM_KEY, false)
+				set(SKIP_PARAM, oldValue)
+			}
+
 			set(VERSION_KEY, VERSION)
-		}
+		}.toPreferences()
 	}
-
-	override suspend fun shouldMigrate(currentData: Preferences): Boolean {
-		return (currentData.get(VERSION_KEY) ?: -1) != VERSION
-	}
-}
+)

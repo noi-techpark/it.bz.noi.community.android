@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import it.bz.noi.community.databinding.FragmentWelcomeBinding
-import it.bz.noi.community.storage.updateWelcomeUnderstood
+import it.bz.noi.community.storage.setWelcomeUnderstood
 import kotlinx.coroutines.launch
 import it.bz.noi.community.ui.welcome.WelcomeFragmentDirections
 import it.bz.noi.community.utils.getAppVersion
@@ -41,7 +41,7 @@ class WelcomeFragment : Fragment() {
 		binding.appVersion.tvAppVersion.text = getAppVersion()
 		binding.understood.setOnClickListener {
 			lifecycleScope.launch {
-				requireContext().updateWelcomeUnderstood(binding.checkbox.isChecked)
+				requireContext().setWelcomeUnderstood(binding.checkbox.isChecked)
 				findNavController().navigate(WelcomeFragmentDirections.actionWelcomeToHome())
 			}
 		}

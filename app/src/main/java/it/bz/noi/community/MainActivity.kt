@@ -25,12 +25,13 @@ import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
 import it.bz.noi.community.notifications.MessagingService
-import it.bz.noi.community.storage.getWelcomeUnderstoodSync
+import it.bz.noi.community.storage.getWelcomeUnderstood
 import it.bz.noi.community.ui.WebViewFragment
 import it.bz.noi.community.ui.onboarding.OnboardingActivity
 import it.bz.noi.community.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthorizationException
 
 class MainActivity : AppCompatActivity() {
@@ -52,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 		setContentView(binding.root)
 
 		if (true || showWelcome) {
-			if (!getWelcomeUnderstoodSync()) {
+			if (!runBlocking { getWelcomeUnderstood() }) {
 				val inflater = navController.navInflater
 				val graph = inflater.inflate(R.navigation.mobile_navigation)
 				graph.setStartDestination(R.id.welcome)
@@ -105,7 +106,7 @@ class MainActivity : AppCompatActivity() {
 				R.id.welcome -> {
 					supportActionBar?.show()
 					binding.navView.isVisible = false
-					toolbar.setTitleTextAppearance(toolbar.context, R.style.TextAppearance_NOI_Toolbar_TitleSecondary)
+					toolbar.setTitleTextAppearance(toolbar.context, R.style.TextAppearance_NOI_Toolbar_TitlePrimary)
 				}
 				else -> {
 					supportActionBar?.show()

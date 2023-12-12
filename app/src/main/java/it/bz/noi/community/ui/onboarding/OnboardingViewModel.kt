@@ -10,9 +10,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
-import it.bz.noi.community.storage.privacyAcceptedFlow
-import it.bz.noi.community.storage.updatePrivacyAccepted
-import it.bz.noi.community.utils.savedStateProperty
+import it.bz.noi.community.storage.getPrivacyAcceptedFlow
+import it.bz.noi.community.storage.setPrivacyAccepted
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -21,11 +20,11 @@ class OnboardingViewModel(
     savedStateHandle: SavedStateHandle,
 ) : AndroidViewModel(app) {
 
-	val isPrivacyAccepted = getApplication<Application>().privacyAcceptedFlow()
+	val isPrivacyAccepted = getApplication<Application>().getPrivacyAcceptedFlow()
 
 	fun setPrivacyAccepted(accepted: Boolean) {
 		viewModelScope.launch {
-			getApplication<Application>().updatePrivacyAccepted(accepted)
+			getApplication<Application>().setPrivacyAccepted(accepted)
 		}
 	}
 
