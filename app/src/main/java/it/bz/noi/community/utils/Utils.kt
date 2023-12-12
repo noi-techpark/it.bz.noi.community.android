@@ -10,6 +10,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import it.bz.noi.community.BuildConfig
 import it.bz.noi.community.R
 import it.bz.noi.community.data.models.EventsResponse
 import java.net.URLEncoder
@@ -196,3 +197,5 @@ class SaveStateProperty<T : Any?>(
 		savedStateHandle[key] = value
 	}
 }
+
+fun getAppVersion() = "${BuildConfig.VERSION_NAME}.${BuildConfig.VERSION_CODE}"

@@ -14,5 +14,16 @@ SPDX-License-Identifier: CC0-1.0
 	<fragment
 		android:id="@+id/login"
 		android:name="it.bz.noi.community.ui.onboarding.OnboardingFragment"
-		android:label="OnboardingFragment" />
+		android:label="OnboardingFragment" >
+		<action
+			android:id="@+id/login_to_error"
+			app:destination="@id/error" />
+	</fragment>
+	<fragment
+		android:id="@+id/error"
+		android:name="it.bz.noi.community.ui.onboarding.AuthorizationErrorFragment"
+		android:label="@string/warning_title" />
+	<action
+		android:id="@+id/action_global_to_login"
+		app:popUpTo="@id/login" />
 </navigation>

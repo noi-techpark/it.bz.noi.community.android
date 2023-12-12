@@ -15,6 +15,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import it.bz.noi.community.BuildConfig
 import it.bz.noi.community.R
@@ -25,6 +26,7 @@ import it.bz.noi.community.utils.Utils.openLinkInExternalBrowser
 import it.bz.noi.community.utils.addLinkSpan
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import it.bz.noi.community.ui.onboarding.OnboardingFragmentDirections
 
 class OnboardingFragment : BaseOnboardingFragment() {
 
@@ -53,11 +55,9 @@ class OnboardingFragment : BaseOnboardingFragment() {
 		TabLayoutMediator(binding.tabLayout, binding.pager) { _, _ -> }.attach()
 
 		binding.login.setOnClickListener {
-			viewModel.invalidUserShown = false
 			AuthManager.login(requireActivity(), OnboardingActivity.AUTH_REQUEST)
 		}
 		binding.signup.setOnClickListener {
-			viewModel.invalidUserShown = false
 			requireActivity().openLinkInExternalBrowser(BuildConfig.SIGNUP_URL)
 		}
 		binding.checkboxText.apply {
@@ -89,7 +89,7 @@ class OnboardingFragment : BaseOnboardingFragment() {
 						}
 						AuthStateStatus.Unauthorized.NotValidRole -> {
 							showLoginInterface(false)
-							onboardingActivity?.openAuthorizationErrorFragment()
+							findNavController().navigate(OnboardingFragmentDirections.loginToError())
 						}
 						else -> {
 							showLoginInterface(true)

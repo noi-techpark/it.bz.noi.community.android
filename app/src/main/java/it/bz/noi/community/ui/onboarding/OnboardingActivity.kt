@@ -10,17 +10,24 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.fragment.app.commit
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import it.bz.noi.community.MainActivity
 import it.bz.noi.community.R
 import it.bz.noi.community.databinding.ActivityOnboardingBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
+import it.bz.noi.community.ui.WebViewFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.openid.appauth.AuthorizationException
@@ -30,6 +37,8 @@ class OnboardingActivity : AppCompatActivity() {
 
 	private val viewModel: OnboardingViewModel by viewModels()
 
+	private val navController: NavController get() = findNavController(R.id.nav_host_fragment)
+
 	private lateinit var binding: ActivityOnboardingBinding
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,19 +47,37 @@ class OnboardingActivity : AppCompatActivity() {
 		binding = ActivityOnboardingBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 
-		setSupportActionBar(binding.toolbar)
+		val toolbar = binding.toolbar
+		setSupportActionBar(toolbar)
+
+		// Passing each menu ID as a set of Ids because each
+		// menu should be considered as top level destinations.
+		val appBarConfiguration = AppBarConfiguration(
+			setOf(
+				R.id.login,
+				R.id.error,
+			)
+		)
+
+		setupActionBarWithNavController(navController, appBarConfiguration)
+
+		navController.addOnDestinationChangedListener { controller, destination, arguments ->
+			when (destination.id) {
+				R.id.login -> {
+					supportActionBar?.hide()
+				}
+				else -> {
+					toolbar.setTitleTextAppearance(toolbar.context, R.style.TextAppearance_NOI_Toolbar_TitlePrimary)
+					supportActionBar?.show()
+				}
+			}
+		}
 
 		lifecycleScope.launch {
 			repeatOnLifecycle(Lifecycle.State.STARTED) {
 				AuthManager.userInfo.collect { info ->
 					Log.d(TAG, "Fetch user info $info")
 				}
-			}
-		}
-
-		if (savedInstanceState == null) {
-			supportFragmentManager.commit {
-				replace(R.id.fragment_container_view, OnboardingFragment())
 			}
 		}
 	}
@@ -76,7 +103,7 @@ class OnboardingActivity : AppCompatActivity() {
 					Toast.makeText(this, "Logout error", Toast.LENGTH_SHORT).show()
 				} else {
 					AuthManager.onEndSession()
-					closeAuthorizationErrorFragment()
+					navController.popBackStack(R.id.login, false)
 				}
 			}
 			else -> {
@@ -89,21 +116,6 @@ class OnboardingActivity : AppCompatActivity() {
 		startActivity(Intent(this, MainActivity::class.java).apply {
 			putExtra(MainActivity.EXTRA_SHOW_WELCOME, true)
 		})
-	}
-
-	internal fun openAuthorizationErrorFragment() {
-		supportFragmentManager.commit {
-			setReorderingAllowed(true)
-			replace(R.id.fragment_container_view, AuthorizationErrorFragment())
-			addToBackStack(AUTH_ERROR_TRANSACTION_NAME)
-		}
-	}
-
-	internal fun closeAuthorizationErrorFragment() {
-		supportFragmentManager.popBackStack(
-			AUTH_ERROR_TRANSACTION_NAME,
-			POP_BACK_STACK_INCLUSIVE
-		)
 	}
 
 	companion object {

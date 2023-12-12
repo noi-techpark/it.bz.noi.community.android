@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
 		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
 			when (status) {
 				is AuthStateStatus.Authorized -> {
-					AccountsManager.relaod()
+					AccountsManager.reload()
 				}
 				is AuthStateStatus.Error,
 				AuthStateStatus.Unauthorized.UserAuthRequired,
@@ -133,7 +133,9 @@ class MainActivity : AppCompatActivity() {
 
 		lifecycleScope.launch {
 			repeatOnLifecycle(Lifecycle.State.STARTED) {
-				AccountsManager.availableCompanies.collect {}
+				AccountsManager.availableCompanies.collect {
+					Log.d("MainActivity", "availableCompanies: $it")
+				}
 			}
 		}
 

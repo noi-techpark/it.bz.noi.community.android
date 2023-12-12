@@ -45,8 +45,8 @@ class SplashScreenActivity : AppCompatActivity() {
 
 			lifecycleScope.launch {
 				repeatOnLifecycle(Lifecycle.State.STARTED) {
-					AuthManager.userInfo.collect {
-						Log.d(TAG, "Fetch user info")
+					AuthManager.userInfo.collect { info ->
+						Log.d(TAG, "Fetched user info $info")
 					}
 				}
 			}

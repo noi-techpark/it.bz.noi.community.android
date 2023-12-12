@@ -49,6 +49,7 @@ SPDX-License-Identifier: CC0-1.0
 	</LinearLayout>
 
 	<include
+		android:id="@+id/app_version"
 		layout="@layout/vh_app_version"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"

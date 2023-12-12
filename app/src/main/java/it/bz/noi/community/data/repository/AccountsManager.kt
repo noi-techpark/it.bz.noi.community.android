@@ -7,6 +7,7 @@ package it.bz.noi.community.data.repository
 import android.util.Log
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
+import it.bz.noi.community.data.api.bearer
 import it.bz.noi.community.data.models.*
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.utils.Resource
@@ -63,14 +64,14 @@ object AccountsManager {
 		emit(Resource.loading(null))
 		try {
 			val accessToken = AuthManager.obtainFreshToken()
-			val accounts = mainRepository.getAccounts("Bearer $accessToken")
+			val accounts = mainRepository.getAccounts(accessToken.bearer())
 			emit(Resource.success(data = accounts))
 		} catch (exception: Exception) {
 			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
 		}
 	}
 
-	fun relaod() = reloadTickerFlow.tryEmit(Unit)
+	fun reload() = reloadTickerFlow.tryEmit(Unit)
 
 	private val searchParamFlow = MutableStateFlow("")
 

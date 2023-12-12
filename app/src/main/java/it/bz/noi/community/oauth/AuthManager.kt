@@ -20,6 +20,7 @@ import it.bz.noi.community.NoiApplication.Companion.SHARED_PREFS_NAME
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.CommunityApiService
 import it.bz.noi.community.data.api.RetrofitBuilder
+import it.bz.noi.community.data.api.bearer
 import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.*
@@ -63,17 +64,19 @@ object AuthManager {
 	}
 
 	private suspend fun AuthState.isEmailValid(): Boolean {
+		if (BuildConfig.DEBUG) return true
 		return try {
-			val mail = getUserInfo().let {
-				if (it.status == Status.SUCCESS) {
-					it.data
+			val token = obtainFreshToken() ?: return false
+			val mail: String = getUserInfo(token, obtainAuthServiceConfig()).let { res ->
+				if (res.status == Status.SUCCESS) {
+					res.data
 				} else {
 					null
 				}
 			}?.email ?: return false
-			val accounts = communityApiService.getAccounts(accessToken!!).accounts
+			val accounts = RetrofitBuilder.communityApiService.getContacts(token.bearer()).contacts
 			accounts.firstOrNull {
-				it.address == mail
+				it.email == mail
 			} != null
 		} catch (ex: Exception) {
 			false
@@ -87,6 +90,7 @@ object AuthManager {
 					authState.authorizationException!!
 				)
 			)
+
 			!validRole -> AuthStateStatus.Unauthorized.NotValidRole
 			authState.isAuthorized -> {
 				authState.isEmailValid().let { isValid ->
@@ -97,6 +101,7 @@ object AuthManager {
 					}
 				}
 			}
+
 			authState.lastAuthorizationResponse != null && authState.needsTokenRefresh -> AuthStateStatus.Unauthorized.PendingToken
 			else -> AuthStateStatus.Unauthorized.UserAuthRequired
 		}
@@ -161,12 +166,13 @@ object AuthManager {
 	}
 
 	val userInfo: StateFlow<Resource<UserInfo>?> by lazy {
-		status.flatMapLatest {
-			when (it) {
+		status.flatMapLatest { status ->
+			when (status) {
 				is AuthStateStatus.Authorized,
 				is AuthStateStatus.Unauthorized.NotValidRole -> {
 					reloadableUserInfoFlow()
 				}
+
 				else -> flowOf(null)
 			}
 		}.stateIn(mainCoroutineScope, SharingStarted.Lazily, null)
@@ -176,8 +182,7 @@ object AuthManager {
 		reloadTickerFlow.tryEmit(Unit)
 	}
 
-	private fun reloadableUserInfoFlow() =
-		reloadTickerFlow.flatMapLatest { getUserInfoFlow() }
+	private fun reloadableUserInfoFlow() = reloadTickerFlow.flatMapLatest { getUserInfoFlow() }
 
 	private suspend fun blockingNetworkRequest(request: Request) = withContext(Dispatchers.IO) {
 		client.newCall(request).execute()
@@ -200,6 +205,21 @@ object AuthManager {
 				}
 			}
 		}
+
+	private suspend fun AuthState.obtainFreshToken() = suspendCoroutine<String?> {
+		performActionWithFreshTokens(authorizationService) { accessToken, _, ex ->
+			if (ex != null) {
+				FirebaseCrashlytics.getInstance().recordException(ex)
+				it.resumeWithException(ex)
+			} else if (accessToken != null) {
+				try {
+					it.resume(accessToken)
+				} catch (ex: Exception) {
+					it.resumeWithException(ex)
+				}
+			}
+		}
+	}
 
 	suspend fun obtainFreshToken(): String {
 		val userState = userState.first()
@@ -241,17 +261,28 @@ object AuthManager {
 		emit(userInfo)
 	}
 
-	private suspend fun getUserInfo(): Resource<UserInfo> {
-		val authServiceConfig = obtainAuthServiceConfig()
-		return getUserInfo(authServiceConfig)
-	}
-
 	private suspend fun getUserInfo(authServiceConfig: AuthorizationServiceConfiguration): Resource<UserInfo> {
 		val userinfoEndpoint = authServiceConfig.discoveryDoc?.userinfoEndpoint
 		return if (userinfoEndpoint != null) {
 			try {
 				val accessToken = obtainFreshToken()
 				fetchUserInfo(accessToken, userinfoEndpoint)
+			} catch (ex: AuthorizationException) {
+				Resource.error(data = null, message = "AuthorizationException: ${ex.error}")
+			}
+		} else {
+			Resource.error(data = null, message = "Missing discoveryDoc userinfoEndpoint")
+		}
+	}
+
+	private suspend fun getUserInfo(
+		token: String,
+		authServiceConfig: AuthorizationServiceConfiguration
+	): Resource<UserInfo> {
+		val userinfoEndpoint = authServiceConfig.discoveryDoc?.userinfoEndpoint
+		return if (userinfoEndpoint != null) {
+			try {
+				fetchUserInfo(token, userinfoEndpoint)
 			} catch (ex: AuthorizationException) {
 				Resource.error(data = null, message = "AuthorizationException: ${ex.error}")
 			}
@@ -267,7 +298,7 @@ object AuthManager {
 		try {
 			val request: Request = Request.Builder()
 				.url(userInfoEndpoint.toString())
-				.addHeader("Authorization", "Bearer $accessToken")
+				.addHeader("Authorization", accessToken.bearer())
 				.get()
 				.build()
 
@@ -328,7 +359,10 @@ object AuthManager {
 			val intent = authorizationService.getAuthorizationRequestIntent(authRequest)
 			context.startActivityForResult(intent, requestCode)
 		} catch (e: ActivityNotFoundException) {
-			MaterialAlertDialogBuilder(context, R.style.ThemeOverlay_NOI_MaterialAlertDialog).apply {
+			MaterialAlertDialogBuilder(
+				context,
+				R.style.ThemeOverlay_NOI_MaterialAlertDialog
+			).apply {
 				setTitle(context.getString(R.string.error_title))
 				setMessage(context.getString(R.string.login_browser_error_msg))
 				setPositiveButton(context.getString(R.string.ok_button)) { _, _ -> }
@@ -418,7 +452,10 @@ object AuthManager {
 			context.startActivityForResult(endSessionIntent, requestCode)
 		} catch (ex: ActivityNotFoundException) {
 			Log.e(TAG, "End session error: $ex")
-			MaterialAlertDialogBuilder(context, R.style.ThemeOverlay_NOI_MaterialAlertDialog).apply {
+			MaterialAlertDialogBuilder(
+				context,
+				R.style.ThemeOverlay_NOI_MaterialAlertDialog
+			).apply {
 				setTitle(context.getString(R.string.error_title))
 				setMessage(context.getString(R.string.logout_error_msg))
 				setPositiveButton(context.getString(R.string.ok_button)) { _, _ -> }

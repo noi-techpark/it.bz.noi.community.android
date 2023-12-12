@@ -149,4 +149,14 @@ SPDX-License-Identifier: CC0-1.0
 				app:argType="it.bz.noi.community.data.models.Contact" />
 		</fragment>
 	</navigation>
+	<fragment
+		android:id="@+id/welcome"
+		android:name="it.bz.noi.community.ui.welcome.WelcomeFragment"
+		android:label="@string/come_on_board_onboarding_page_title">
+		<action
+			android:id="@+id/action_welcome_to_home"
+			app:destination="@id/navigation_today"
+			app:popUpTo="@id/welcome"
+			app:popUpToInclusive="true" />
+	</fragment>
 </navigation>

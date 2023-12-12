@@ -9,18 +9,21 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentAuthorizationErrorBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
 import it.bz.noi.community.utils.Status
+import it.bz.noi.community.utils.getAppVersion
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -51,9 +54,15 @@ class AuthorizationErrorFragment : BaseOnboardingFragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
+		requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+			// Just intercept and do nothing.
+		}
+
 		binding.logout.setOnClickListener {
 			AuthManager.logout(requireActivity(), OnboardingActivity.LOGOUT_REQUEST)
 		}
+
+		binding.appVersion.tvAppVersion.text = getAppVersion()
 
 		viewLifecycleOwner.lifecycleScope.launch {
 			repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -61,7 +70,7 @@ class AuthorizationErrorFragment : BaseOnboardingFragment() {
 					when (status) {
 						is AuthStateStatus.Authorized -> onboardingActivity?.goToMainActivity()
 						!is AuthStateStatus.Unauthorized.NotValidRole -> {
-							onboardingActivity?.closeAuthorizationErrorFragment()
+							findNavController().popBackStack()
 						}
 						else -> Unit
 					}

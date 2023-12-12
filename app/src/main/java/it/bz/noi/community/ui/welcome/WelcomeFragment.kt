@@ -15,6 +15,7 @@ import it.bz.noi.community.databinding.FragmentWelcomeBinding
 import it.bz.noi.community.storage.updateWelcomeUnderstood
 import kotlinx.coroutines.launch
 import it.bz.noi.community.ui.welcome.WelcomeFragmentDirections
+import it.bz.noi.community.utils.getAppVersion
 
 class WelcomeFragment : Fragment() {
 
@@ -37,6 +38,7 @@ class WelcomeFragment : Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		binding.appVersion.tvAppVersion.text = getAppVersion()
 		binding.understood.setOnClickListener {
 			lifecycleScope.launch {
 				requireContext().updateWelcomeUnderstood(binding.checkbox.isChecked)

@@ -9,9 +9,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import it.bz.noi.community.oauth.AuthManager
+import it.bz.noi.community.oauth.AuthStateStatus
 import it.bz.noi.community.storage.privacyAcceptedFlow
 import it.bz.noi.community.storage.updatePrivacyAccepted
 import it.bz.noi.community.utils.savedStateProperty
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class OnboardingViewModel(
@@ -19,14 +21,13 @@ class OnboardingViewModel(
     savedStateHandle: SavedStateHandle,
 ) : AndroidViewModel(app) {
 
-	var invalidUserShown by savedStateProperty(savedStateHandle, "invalid_user_shown", false)
-
 	val isPrivacyAccepted = getApplication<Application>().privacyAcceptedFlow()
+
 	fun setPrivacyAccepted(accepted: Boolean) {
 		viewModelScope.launch {
 			getApplication<Application>().updatePrivacyAccepted(accepted)
 		}
 	}
 
-	val status = AuthManager.status
+	val status: Flow<AuthStateStatus> = AuthManager.status
 }
