@@ -69,7 +69,6 @@ object AuthManager {
 	}
 
 	private suspend fun AuthState.isEmailValid(): Boolean {
-		if (BuildConfig.DEBUG) return true
 		return try {
 			val token = obtainFreshToken() ?: return false
 			val mail: String = getUserInfo(token, obtainAuthServiceConfig()).let { res ->
