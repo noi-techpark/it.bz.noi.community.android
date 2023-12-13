@@ -23,7 +23,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+      - name: Java setup
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '17'
       - name: Mock google-services.json
         run: mv app/google-services-mock.json app/google-services.json
       - name: Test the app
