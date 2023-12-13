@@ -9,7 +9,7 @@ jobs:
 
   ## Run generic tests on source code
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -19,7 +19,7 @@ jobs:
 
   ## Build the app and run unit tests
   unit_tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -45,7 +45,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin' # See 'Supported distributions' for available options
-          java-version: '11'
+          java-version: '17'
       - name: Mock google-services.json
         run: mv app/google-services-mock.json app/google-services.json
       - name: Instrumentation Tests
