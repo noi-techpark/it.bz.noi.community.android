@@ -7,18 +7,27 @@ package it.bz.noi.community.oauth
 import android.app.Activity
 import android.app.Application
 import android.content.ActivityNotFoundException
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import androidx.core.content.edit
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.GsonBuilder
 import it.bz.noi.community.BuildConfig
-import it.bz.noi.community.NoiApplication.Companion.SHARED_PREFS_NAME
 import it.bz.noi.community.R
+import it.bz.noi.community.data.api.CommunityApiService
+import it.bz.noi.community.data.api.RetrofitBuilder
+import it.bz.noi.community.data.api.bearer
+import it.bz.noi.community.storage.removeAccessGranted
+import it.bz.noi.community.storage.removeAuthState
+import it.bz.noi.community.storage.getAccessGranted
+import it.bz.noi.community.storage.getAuthState
+import it.bz.noi.community.storage.setAccessGranted
+import it.bz.noi.community.storage.setAuthState
+import it.bz.noi.community.storage.setPrivacyAccepted
+import it.bz.noi.community.storage.setWelcomeUnderstood
 import it.bz.noi.community.utils.Resource
+import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
@@ -52,18 +61,51 @@ data class UserState(val authState: AuthState, val validRole: Boolean)
  */
 class UnauthorizedException(original: AuthorizationException) : Exception(original)
 
-@OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 object AuthManager {
 
-	private fun UserState.toStatus(): AuthStateStatus {
+	val communityApiService: CommunityApiService by lazy {
+		RetrofitBuilder.communityApiService
+	}
+
+	private suspend fun AuthState.isEmailValid(): Boolean {
+		return try {
+			val token = obtainFreshToken() ?: return false
+			val mail: String = getUserInfo(token, obtainAuthServiceConfig()).let { res ->
+				if (res.status == Status.SUCCESS) {
+					res.data
+				} else {
+					null
+				}
+			}?.email ?: return false
+			val accounts = RetrofitBuilder.communityApiService.getContacts(token.bearer()).contacts
+			accounts.firstOrNull {
+				it.email == mail
+			} != null
+		} catch (ex: Exception) {
+			false
+		}
+	}
+
+	private suspend fun UserState.toStatus(): AuthStateStatus {
 		return when {
 			authState.authorizationException != null -> AuthStateStatus.Error(
 				UnauthorizedException(
 					authState.authorizationException!!
 				)
 			)
+
 			!validRole -> AuthStateStatus.Unauthorized.NotValidRole
-			authState.isAuthorized -> AuthStateStatus.Authorized(authState)
+			authState.isAuthorized -> {
+				authState.isEmailValid().let { isValid ->
+					if (!isValid) {
+						AuthStateStatus.Unauthorized.NotValidRole
+					} else {
+						AuthStateStatus.Authorized(authState)
+					}
+				}
+			}
+
 			authState.lastAuthorizationResponse != null && authState.needsTokenRefresh -> AuthStateStatus.Unauthorized.PendingToken
 			else -> AuthStateStatus.Unauthorized.UserAuthRequired
 		}
@@ -76,8 +118,6 @@ object AuthManager {
 	private const val END_SESSION_URL = "noi-community://oauth2redirect/end_session-callback"
 	private const val CLIENT_ID: String = "it.bz.noi.community"
 
-	private const val PREF_AUTH_STATE = "authState"
-	private const val PREF_ACCESS_GRANTED_STATE = "accessGrantedState"
 	private const val ACCESS_GRANTED_ROLE = "ACCESS_GRANTED"
 
 	private val mainCoroutineScope = CoroutineScope(Dispatchers.Main + Job())
@@ -128,12 +168,13 @@ object AuthManager {
 	}
 
 	val userInfo: StateFlow<Resource<UserInfo>?> by lazy {
-		status.flatMapLatest {
-			when (it) {
+		status.flatMapLatest { status ->
+			when (status) {
 				is AuthStateStatus.Authorized,
 				is AuthStateStatus.Unauthorized.NotValidRole -> {
 					reloadableUserInfoFlow()
 				}
+
 				else -> flowOf(null)
 			}
 		}.stateIn(mainCoroutineScope, SharingStarted.Lazily, null)
@@ -143,8 +184,7 @@ object AuthManager {
 		reloadTickerFlow.tryEmit(Unit)
 	}
 
-	private fun reloadableUserInfoFlow() =
-		reloadTickerFlow.flatMapLatest { getUserInfo() }
+	private fun reloadableUserInfoFlow() = reloadTickerFlow.flatMapLatest { getUserInfoFlow() }
 
 	private suspend fun blockingNetworkRequest(request: Request) = withContext(Dispatchers.IO) {
 		client.newCall(request).execute()
@@ -167,6 +207,21 @@ object AuthManager {
 				}
 			}
 		}
+
+	private suspend fun AuthState.obtainFreshToken() = suspendCoroutine<String?> {
+		performActionWithFreshTokens(authorizationService) { accessToken, _, ex ->
+			if (ex != null) {
+				FirebaseCrashlytics.getInstance().recordException(ex)
+				it.resumeWithException(ex)
+			} else if (accessToken != null) {
+				try {
+					it.resume(accessToken)
+				} catch (ex: Exception) {
+					it.resumeWithException(ex)
+				}
+			}
+		}
+	}
 
 	suspend fun obtainFreshToken(): String {
 		val userState = userState.first()
@@ -201,7 +256,7 @@ object AuthManager {
 		}
 	}
 
-	private suspend fun getUserInfo() = flow {
+	private suspend fun getUserInfoFlow() = flow {
 		emit(Resource.loading(null))
 		val authServiceConfig = obtainAuthServiceConfig()
 		val userInfo = getUserInfo(authServiceConfig)
@@ -222,6 +277,22 @@ object AuthManager {
 		}
 	}
 
+	private suspend fun getUserInfo(
+		token: String,
+		authServiceConfig: AuthorizationServiceConfiguration
+	): Resource<UserInfo> {
+		val userinfoEndpoint = authServiceConfig.discoveryDoc?.userinfoEndpoint
+		return if (userinfoEndpoint != null) {
+			try {
+				fetchUserInfo(token, userinfoEndpoint)
+			} catch (ex: AuthorizationException) {
+				Resource.error(data = null, message = "AuthorizationException: ${ex.error}")
+			}
+		} else {
+			Resource.error(data = null, message = "Missing discoveryDoc userinfoEndpoint")
+		}
+	}
+
 	private suspend fun fetchUserInfo(
 		accessToken: String,
 		userInfoEndpoint: Uri
@@ -229,7 +300,7 @@ object AuthManager {
 		try {
 			val request: Request = Request.Builder()
 				.url(userInfoEndpoint.toString())
-				.addHeader("Authorization", "Bearer $accessToken")
+				.addHeader("Authorization", accessToken.bearer())
 				.get()
 				.build()
 
@@ -290,7 +361,10 @@ object AuthManager {
 			val intent = authorizationService.getAuthorizationRequestIntent(authRequest)
 			context.startActivityForResult(intent, requestCode)
 		} catch (e: ActivityNotFoundException) {
-			MaterialAlertDialogBuilder(context, R.style.ThemeOverlay_NOI_MaterialAlertDialog).apply {
+			MaterialAlertDialogBuilder(
+				context,
+				R.style.ThemeOverlay_NOI_MaterialAlertDialog
+			).apply {
 				setTitle(context.getString(R.string.error_title))
 				setMessage(context.getString(R.string.login_browser_error_msg))
 				setPositiveButton(context.getString(R.string.ok_button)) { _, _ -> }
@@ -380,7 +454,10 @@ object AuthManager {
 			context.startActivityForResult(endSessionIntent, requestCode)
 		} catch (ex: ActivityNotFoundException) {
 			Log.e(TAG, "End session error: $ex")
-			MaterialAlertDialogBuilder(context, R.style.ThemeOverlay_NOI_MaterialAlertDialog).apply {
+			MaterialAlertDialogBuilder(
+				context,
+				R.style.ThemeOverlay_NOI_MaterialAlertDialog
+			).apply {
 				setTitle(context.getString(R.string.error_title))
 				setMessage(context.getString(R.string.logout_error_msg))
 				setPositiveButton(context.getString(R.string.ok_button)) { _, _ -> }
@@ -391,35 +468,29 @@ object AuthManager {
 	}
 
 	fun onEndSession() {
-		deleteUserState()
-		mainCoroutineScope.launch { userState.emit(UserState(AuthState(), true)) }
-	}
-
-	private fun readAuthState(): UserState {
-		application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).apply {
-			val authState = getString(PREF_AUTH_STATE, null)?.let {
-				AuthState.jsonDeserialize(it)
-			} ?: AuthState()
-
-			val isValidRole = getBoolean(PREF_ACCESS_GRANTED_STATE, true)
-
-			return UserState(authState, isValidRole)
-		}
-
-	}
-
-	private fun writeAuthState(userState: UserState) {
-		application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).edit {
-			putString(PREF_AUTH_STATE, userState.authState.jsonSerializeString())
-			putBoolean(PREF_ACCESS_GRANTED_STATE, userState.validRole)
+		mainCoroutineScope.launch {
+			deleteUserState()
+			userState.emit(UserState(AuthState(), true))
 		}
 	}
 
-	private fun deleteUserState() {
-		application.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).edit {
-			remove(PREF_AUTH_STATE)
-			remove(PREF_ACCESS_GRANTED_STATE)
-		}
+	private fun readAuthState(): UserState = with(application) {
+		val authState = runBlocking {
+			getAuthState()
+		} ?: AuthState()
+		val isValidRole = runBlocking { getAccessGranted(true) }
+		UserState(authState, isValidRole)
 	}
 
+	private suspend fun writeAuthState(userState: UserState) = with(application) {
+		setAuthState(userState.authState)
+		setAccessGranted(userState.validRole)
+	}
+
+	private suspend fun deleteUserState() = with(application) {
+		setWelcomeUnderstood(false)
+		setPrivacyAccepted(false)
+		removeAuthState()
+		removeAccessGranted()
+	}
 }

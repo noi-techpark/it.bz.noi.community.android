@@ -8,12 +8,15 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.lifecycle.SavedStateHandle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import it.bz.noi.community.BuildConfig
 import it.bz.noi.community.R
 import it.bz.noi.community.data.models.EventsResponse
 import java.net.URLEncoder
 import java.text.Normalizer
 import java.util.*
+import kotlin.reflect.KProperty
 
 object Utils {
 
@@ -45,9 +48,11 @@ object Utils {
 			ITALIAN -> {
 				event.descriptionIT
 			}
+
 			GERMAN -> {
 				event.descriptionDE
 			}
+
 			else -> {
 				event.descriptionEN
 			}
@@ -59,9 +64,11 @@ object Utils {
 			ITALIAN -> {
 				event.nameIT ?: event.name ?: fallback
 			}
+
 			GERMAN -> {
 				event.nameDE ?: event.name ?: fallback
 			}
+
 			else -> {
 				event.nameEN ?: event.name ?: fallback
 			}
@@ -129,6 +136,9 @@ object Utils {
 			}
 
 		}
+
+		if (intent.resolveActivity(packageManager) == null) return
+
 		startActivity(intent)
 	}
 
@@ -136,6 +146,7 @@ object Utils {
 		val intent = Intent(Intent.ACTION_DIAL).apply {
 			data = Uri.parse("tel:$phoneNumber")
 		}
+		if (intent.resolveActivity(packageManager) == null) return
 		startActivity(intent)
 	}
 
@@ -144,15 +155,16 @@ object Utils {
 		val gmmIntentUri: Uri = Uri.parse("geo:0,0?q=$encodedAddress")
 		val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
 
-		try {
-			startActivity(mapIntent)
-		} catch (ex: ActivityNotFoundException) {
+		if (mapIntent.resolveActivity(packageManager) == null) {
 			MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_NOI_MaterialAlertDialog).apply {
 				setMessage(getString(R.string.maps_error_msg))
 				setPositiveButton(context.getString(R.string.ok_button)) { _, _ -> }
 				show()
 			}
+			return
 		}
+
+		startActivity(mapIntent)
 	}
 
 	fun String.removeAccents(): String {
@@ -161,3 +173,29 @@ object Utils {
 		return string
 	}
 }
+
+public fun <T> savedStateProperty(
+	savedStateHandle: SavedStateHandle,
+	key: String,
+	default: T
+): SaveStateProperty<T> = SaveStateProperty(savedStateHandle, key, default)
+
+class SaveStateProperty<T : Any?>(
+	val savedStateHandle: SavedStateHandle,
+	val key: String,
+	val default: T
+) {
+	operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+		return if (savedStateHandle.contains(key)) {
+			savedStateHandle.get<T>(key) as T
+		} else {
+			default
+		}
+	}
+
+	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+		savedStateHandle[key] = value
+	}
+}
+
+fun getAppVersion() = "${BuildConfig.VERSION_NAME}.${BuildConfig.VERSION_CODE}"

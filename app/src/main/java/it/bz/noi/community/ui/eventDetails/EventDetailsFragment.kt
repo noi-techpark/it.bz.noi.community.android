@@ -270,7 +270,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 				override fun onLoadFailed(
 					e: GlideException?,
 					model: Any?,
-					target: Target<Drawable>?,
+					target: Target<Drawable>,
 					isFirstResource: Boolean
 				): Boolean {
 					startPostponedEnterTransition()
@@ -278,10 +278,10 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 				}
 
 				override fun onResourceReady(
-					resource: Drawable?,
-					model: Any?,
+					resource: Drawable,
+					model: Any,
 					target: Target<Drawable>?,
-					dataSource: DataSource?,
+					dataSource: DataSource,
 					isFirstResource: Boolean
 				): Boolean {
 					startPostponedEnterTransition()

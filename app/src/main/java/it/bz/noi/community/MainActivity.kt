@@ -19,37 +19,47 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import it.bz.noi.community.OnboardingActivity.Companion.LOGOUT_REQUEST
+import it.bz.noi.community.ui.onboarding.OnboardingActivity.Companion.LOGOUT_REQUEST
 import it.bz.noi.community.databinding.ActivityMainBinding
 import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
 import it.bz.noi.community.notifications.MessagingService
+import it.bz.noi.community.storage.getWelcomeUnderstood
 import it.bz.noi.community.ui.WebViewFragment
+import it.bz.noi.community.ui.onboarding.OnboardingActivity
 import it.bz.noi.community.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthorizationException
 
 class MainActivity : AppCompatActivity() {
 
 	private lateinit var binding: ActivityMainBinding
 
-	private val navController: NavController by lazy {
-		findNavController(R.id.nav_host_fragment)
+	private val navController: NavController get() = findNavController(R.id.nav_host_fragment)
+
+
+	private val showWelcome by lazy {
+		intent.getBooleanExtra(EXTRA_SHOW_WELCOME, false)
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-			window.navigationBarColor =
-				resources.getColor(R.color.background_color, theme)
-		} else {
-			window.navigationBarColor = resources.getColor(R.color.background_color)
-		}
+		window.navigationBarColor = resources.getColor(R.color.background_color, theme)
 
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
+
+		if (true || showWelcome) {
+			if (!runBlocking { getWelcomeUnderstood() }) {
+				val inflater = navController.navInflater
+				val graph = inflater.inflate(R.navigation.mobile_navigation)
+				graph.setStartDestination(R.id.welcome)
+				navController.graph = graph
+			}
+		}
 
 		val toolbar = binding.toolbar
 		setSupportActionBar(toolbar)
@@ -62,7 +72,8 @@ class MainActivity : AppCompatActivity() {
 				R.id.navigation_orientate,
 				R.id.meet,
 				R.id.navigation_eat,
-				R.id.navigation_more
+				R.id.navigation_more,
+				R.id.welcome,
 			)
 		)
 		setupActionBarWithNavController(navController, appBarConfiguration)
@@ -92,6 +103,11 @@ class MainActivity : AppCompatActivity() {
 					binding.navView.isVisible = true
 					toolbar.setTitleTextAppearance(toolbar.context, R.style.TextAppearance_NOI_Toolbar_TitleSecondary)
 				}
+				R.id.welcome -> {
+					supportActionBar?.show()
+					binding.navView.isVisible = false
+					toolbar.setTitleTextAppearance(toolbar.context, R.style.TextAppearance_NOI_Toolbar_TitlePrimary)
+				}
 				else -> {
 					supportActionBar?.show()
 					binding.navView.isVisible = true
@@ -103,7 +119,7 @@ class MainActivity : AppCompatActivity() {
 		AuthManager.status.asLiveData(Dispatchers.Main).observe(this) { status ->
 			when (status) {
 				is AuthStateStatus.Authorized -> {
-					AccountsManager.relaod()
+					AccountsManager.reload()
 				}
 				is AuthStateStatus.Error,
 				AuthStateStatus.Unauthorized.UserAuthRequired,
@@ -118,7 +134,9 @@ class MainActivity : AppCompatActivity() {
 
 		lifecycleScope.launch {
 			repeatOnLifecycle(Lifecycle.State.STARTED) {
-				AccountsManager.availableCompanies.collect {}
+				AccountsManager.availableCompanies.collect {
+					Log.d("MainActivity", "availableCompanies: $it")
+				}
 			}
 		}
 
@@ -127,7 +145,6 @@ class MainActivity : AppCompatActivity() {
 			MessagingService.registrationToken()
 		}
 		subscribeToNewsTopic(Utils.getPreferredNoiNewsTopic())
-
 	}
 
 	private fun subscribeToNewsTopic(preferredNewsTopic: String) {
@@ -149,6 +166,7 @@ class MainActivity : AppCompatActivity() {
 		startActivity(Intent(this, OnboardingActivity::class.java))
 	}
 
+	@Deprecated("Deprecated in Java")
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		Log.d(TAG, "onActivityResult")
 		when (requestCode) {
@@ -170,7 +188,7 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	companion object {
+		internal const val EXTRA_SHOW_WELCOME: String = "show_welcome"
 		private const val TAG = "MainActivity"
 	}
-
 }

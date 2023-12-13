@@ -1,5 +1,4 @@
 <!--
-Copyright © 2021 Dimension S.r.l. All rights reserved.
 SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 
 SPDX-License-Identifier: CC0-1.0
@@ -7,7 +6,7 @@ SPDX-License-Identifier: CC0-1.0
 
 <resources>
 	<string name="access_not_granted_format" comment="Formatted access not granted body">Hi %1$s (%2$s), you are not authorised to use this app. Please contact your HR office for more information.</string>
-	<string name="access_not_granted_msg" comment="Access not granted body">Hi, you have a valid Open Data Hub- or NOI-Account and you are logged in, but you miss the permissions to access the Community App. Please write to community@noi.bz.it to learn more.</string>
+	<string name="access_not_granted_msg" comment="Access not granted body. Used instead of access_not_granted_format when fullname and email are not available">Hi, you have a valid Open Data Hub- or NOI-Account and you are logged in, but you miss the permissions to access the Community App. Please write to community@noi.bz.it to learn more.</string>
 	<string name="alumix_name" comment="Alumix displayed name">Alumix</string>
 	<string name="alumix_openings" comment="Alumix openings days and hours">Monday - Friday: 5:00 - 15:00\n\nSaturday and Sunday: closed</string>
 	<string name="app_name" comment="The app name displayed near the app icon">Community</string>
@@ -100,6 +99,17 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="title_orientate" comment="Tab Orientate: title on action bar">Find your way!</string>
 	<string name="title_today" comment="Tab Today: title on action bar">Hey you!</string>
 	<string name="user_info_error_msg" comment="Message to show when an error occurs loding user info (i.e. connection error, json parsing error...)">Profile data cannot be loaded.</string>
+	<string name="app_privacy_policy_label" comment="Privacy policy label on welcome page">By selecting this checkbox I accept the privacy policy.</string>
+	<string name="app_privacy_policy_label_link_part" comment="Link part of the privacy policy label on welcome page">privacy policy</string>
+	<string name="app_privacy_policy_page_title" comment="Title of privacy policy page">Privacy policy</string>
+	<string name="warning_title" comment="Warning title">Oh no!</string>
+	<string name="outsider_user_title" comment="Title of user outsider of NOI community">Oops, that didn\'t work!</string>
+	<string name="outsider_user_body" comment="Body of user outsider of NOI community">The e-mail address you provided does not exist in our database.  \n \nThis app is reserved for members of the NOI-Community. If you are one of them, please check the e-mail address you entered and try again, or send an e-mail to community@noi.bz.it.</string>
+	<string name="come_on_board_onboarding_page_title" comment="Title of come on board onboarding page">Hello!</string>
+	<string name="come_on_board_onboarding_title" comment="Title of come on board onboarding">Your registration has been successful</string>
+	<string name="come_on_board_onboarding_body" comment="Body of come on board onboarding">Welcome to the NOI-Community App!\n\nNew to NOI? Take a look at our Community Manual, where we have compiled useful information for you.</string>
+	<string name="dont_show_again_toogle_title" comment="Label of don\'t show again toggle">Don\'t show again</string>
+	<string name="understood_button_title" comment="Title of understood button">Understood</string>
 	<string name="url_home" comment="">https://noi.bz.it/en</string>
 	<string name="url_privacy" comment="">https://noi.bz.it/en/privacy-cookie-policy</string>
 	<string name="url_companies" comment="">https://noi.bz.it/en/companies</string>
@@ -118,4 +128,5 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="url_onboarding" comment="">https://community.noi.bz.it/onboarding/en.html</string>
 	<string name="url_bug_report" comment="">https://forms.office.com/Pages/ResponsePage.aspx?id=R_WstlLDCEenJewOZixdERIOZ0hE1k5LlWwUM_AXhdlUQUVFR0c1MThYUUw3T1lTMFJZNjkxU05SWi4u&amp;embed=true</string>
 	<string name="url_google_playstore" comment="">https://play.google.com/store/apps/details?id=it.bz.noi.community</string>
+	<string name="url_app_privacy" comment="">https://noi.bz.it/en/privacy-app</string>
 </resources>

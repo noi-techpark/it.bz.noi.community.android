@@ -9,24 +9,28 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import it.bz.noi.community.OnboardingActivity
 import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentAuthorizationErrorBinding
 import it.bz.noi.community.oauth.AuthManager
+import it.bz.noi.community.oauth.AuthStateStatus
 import it.bz.noi.community.utils.Status
+import it.bz.noi.community.utils.getAppVersion
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class AuthorizationErrorFragment : Fragment() {
+class AuthorizationErrorFragment : BaseOnboardingFragment() {
 
 	private var _binding: FragmentAuthorizationErrorBinding? = null
 	private val binding get() = _binding!!
-
-	private var reloadUserInfo = true
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -37,41 +41,41 @@ class AuthorizationErrorFragment : Fragment() {
 		return binding.root
 	}
 
+	override fun onStart() {
+		super.onStart()
+		(requireActivity() as? AppCompatActivity)?.apply {
+			supportActionBar?.apply {
+				show()
+				title = getString(R.string.warning_title)
+			}
+		}
+	}
+
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		viewLifecycleOwner.lifecycleScope.launch {
-			viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-				AuthManager.userInfo.collect {
-					it?.let { userInfoRes ->
-						when (userInfoRes.status) {
-							Status.SUCCESS -> {
-								val userInfo = userInfoRes.data!!
-								binding.message.text = getString(R.string.access_not_granted_format, userInfo.fullname, userInfo.email)
-							}
-							Status.ERROR -> {
-								if (reloadUserInfo) {
-									AuthManager.relaodUserInfo()
-								} else {
-									MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_NOI_MaterialAlertDialog)
-										.setTitle(R.string.error_title)
-										.setMessage(R.string.user_info_error_msg)
-										.setPositiveButton(R.string.ok_button) { _, _ -> }
-										.show()
-								}
-								reloadUserInfo = !reloadUserInfo
-							}
-							Status.LOADING -> {
-								Log.d(TAG, "Loading user info...")
-							}
-						}
-					}
-				}
-			}
+		requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+			// Just intercept and do nothing.
 		}
 
 		binding.logout.setOnClickListener {
 			AuthManager.logout(requireActivity(), OnboardingActivity.LOGOUT_REQUEST)
+		}
+
+		binding.appVersion.tvAppVersion.text = getAppVersion()
+
+		viewLifecycleOwner.lifecycleScope.launch {
+			repeatOnLifecycle(Lifecycle.State.STARTED) {
+				viewModel.status.collectLatest {  status ->
+					when (status) {
+						is AuthStateStatus.Authorized -> onboardingActivity?.goToMainActivity()
+						!is AuthStateStatus.Unauthorized.NotValidRole -> {
+							findNavController().popBackStack()
+						}
+						else -> Unit
+					}
+				}
+			}
 		}
 	}
 
@@ -83,5 +87,4 @@ class AuthorizationErrorFragment : Fragment() {
 	companion object {
 		private const val TAG = "AuthorizationErrorFragment"
 	}
-
 }

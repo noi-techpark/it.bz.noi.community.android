@@ -4,15 +4,20 @@
 
 package it.bz.noi.community.ui
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import it.bz.noi.community.MainActivity
+import it.bz.noi.community.NoiApplication
 import it.bz.noi.community.data.api.ApiHelper
+import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.*
 import it.bz.noi.community.data.repository.FilterRepository
+import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.data.repository.MainRepository
 import it.bz.noi.community.ui.today.news.NewsPagingSource
 import it.bz.noi.community.utils.DateUtils.endOfDay
@@ -31,12 +36,22 @@ import java.util.*
 /**
  * Factory for creating the MainViewModel
  */
-class ViewModelFactory(private val apiHelper: ApiHelper, private val filterRepo: FilterRepository) : ViewModelProvider.Factory {
-	override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+@OptIn(ExperimentalCoroutinesApi::class)
+class ViewModelFactory(private val apiHelper: ApiHelper, private val filterRepo: FilterRepository) : AbstractSavedStateViewModelFactory() {
+	override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
 		if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-			return MainViewModel(MainRepository(apiHelper), filterRepo) as T
+			return MainViewModel(NoiApplication.currentApplication, MainRepository(apiHelper), filterRepo, handle) as T
 		}
 		throw IllegalArgumentException("Unknown class name")
+	}
+
+	companion object {
+		fun defaultFactory(): ViewModelProvider.Factory {
+			return ViewModelFactory(
+				ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
+				JsonFilterRepository(NoiApplication.currentApplication)
+			)
+		}
 	}
 }
 
@@ -44,7 +59,12 @@ class ViewModelFactory(private val apiHelper: ApiHelper, private val filterRepo:
  * The ViewModel shared between all the components of the app
  */
 @ExperimentalCoroutinesApi
-class MainViewModel(private val mainRepository: MainRepository, private val filterRepo: FilterRepository) : ViewModel() {
+class MainViewModel(
+	app: Application,
+	private val mainRepository: MainRepository,
+	private val filterRepo: FilterRepository,
+	private val savedStateHandle: SavedStateHandle,
+) : AndroidViewModel(app) {
 
 	companion object {
 		private const val TAG = "MainViewModel"
@@ -73,6 +93,12 @@ class MainViewModel(private val mainRepository: MainRepository, private val filt
 			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
 		}
 	}
+
+	var showWelcome: Boolean
+		get() = savedStateHandle.get<Boolean>(MainActivity.EXTRA_SHOW_WELCOME) ?: true
+		set(value) {
+			savedStateHandle[MainActivity.EXTRA_SHOW_WELCOME] = value
+		}
 
 	/**
 	 * live data of the event filters

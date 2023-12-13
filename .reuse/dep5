@@ -3,6 +3,6 @@ Upstream-Name: it.bz.noi.community.android
 Upstream-Contact: NOI Techpark <digital@noi.bz.it>
 Source: https://github.com/noi-techpark/it.bz.noi.community.android
 
-Files: .github/* infrastructure/* .gitignore .pre-commit-config.yaml LICENSE .editorconfig *.properties gradlew gradle/* docs/* .idea/.gitignore .idea/.name app/.gitignore app/google-services-mock.json app/proguard-rules.pro app/src/main/ic_launcher-playstore.png app/src/main/res/**/*.png app/src/main/res/**/*.jpg app/src/main/res/**/*.jpeg app/src/main/res/**/*.json app/src/main/res/**/*.mp4 app/src/main/res/**/*.ttf
+Files: .github/* infrastructure/* .gitignore .pre-commit-config.yaml LICENSE .editorconfig *.properties gradlew gradle/* docs/* .idea/* app/.gitignore app/google-services-mock.json app/proguard-rules.pro app/src/main/ic_launcher-playstore.png app/src/main/res/**/*.png app/src/main/res/**/*.jpg app/src/main/res/**/*.jpeg app/src/main/res/**/*.json app/src/main/res/**/*.mp4 app/src/main/res/**/*.ttf
 Copyright: (c) NOI Techpark <digital@noi.bz.it>
 License: CC0-1.0

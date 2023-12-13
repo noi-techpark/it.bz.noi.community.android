@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
+import it.bz.noi.community.ui.eat.EatFragmentDirections
 
 /**
  * Eat tab fragment. Contains the available restaurants
@@ -93,5 +94,5 @@ class EatFragment : Fragment() {
 	private fun getRestaurantNameByPos(pos: Int): String {
 		return restaurants[pos].name
 	}
-	
+
 }

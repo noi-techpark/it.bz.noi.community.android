@@ -16,8 +16,9 @@ data class MultiLangEventsFilterValue(
     val type: String,
 	@SerializedName("Parent")
 	val parent: String,
+	@Deprecated("Is not used anymore. Kept for compatibility reasons.")
 	@SerializedName("Bitmask")
-	val bitmask: String,
+	val bitmask: Int = 0,
     @SerializedName("TypeDesc")
     val desc: TypeDesc
 )

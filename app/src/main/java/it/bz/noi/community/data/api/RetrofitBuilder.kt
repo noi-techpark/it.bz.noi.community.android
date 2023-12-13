@@ -17,16 +17,16 @@ import java.util.*
 
 object RetrofitBuilder {
 
-	private const val OPENDATAHUB_API_BASE_URL = "https://tourism.opendatahub.com/"
-
 	private fun getRetrofit(baseUrl: String): Retrofit {
-		val interceptor = HttpLoggingInterceptor()
-		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-		val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
-		val gsonBuilder = GsonBuilder()
-		gsonBuilder.registerTypeAdapter(Date::class.java, NOIDateDeserializer)
+		val gsonBuilder = GsonBuilder().apply {
+			registerTypeAdapter(Date::class.java, NOIDateDeserializer)
+		}
 
+		val interceptor = HttpLoggingInterceptor().apply {
+			setLevel(if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE)
+		}
+		val client: OkHttpClient = OkHttpClient.Builder().addNetworkInterceptor(interceptor).build()
 		return Retrofit.Builder()
 			.baseUrl(baseUrl)
 			.client(client)
@@ -34,8 +34,10 @@ object RetrofitBuilder {
 			.build() //Doesn't require the adapter
 	}
 
-	val opendatahubApiService: OpendatahubApiService = getRetrofit(OPENDATAHUB_API_BASE_URL).create(OpendatahubApiService::class.java)
-	val communityApiService: CommunityApiService = getRetrofit(BuildConfig.COMMUNITY_API_URL).create(CommunityApiService::class.java)
+	val opendatahubApiService: OpendatahubApiService =
+		getRetrofit(BuildConfig.OPENDATAHUB_API_BASE_URL).create(OpendatahubApiService::class.java)
+	val communityApiService: CommunityApiService =
+		getRetrofit(BuildConfig.COMMUNITY_API_URL).create(CommunityApiService::class.java)
 }
 
 object NOIDateDeserializer : JsonDeserializer<Date> {

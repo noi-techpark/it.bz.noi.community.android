@@ -29,7 +29,7 @@ SPDX-License-Identifier: CC0-1.0
 			style="?attr/textAppearanceSubtitle1"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:text="@string/outsider_user_title"
+			android:text="@string/come_on_board_onboarding_title"
 			android:textAlignment="center"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
@@ -41,12 +41,11 @@ SPDX-License-Identifier: CC0-1.0
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="8dp"
-			android:text="@string/outsider_user_body"
+			android:text="@string/come_on_board_onboarding_body"
 			android:textAlignment="center"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/title" />
-
 	</LinearLayout>
 
 	<include
@@ -58,15 +57,46 @@ SPDX-License-Identifier: CC0-1.0
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/header" />
 
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/logout"
+	<LinearLayout
+		android:id="@+id/footer"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:layout_margin="@dimen/default_margin"
-		android:layout_marginTop="30dp"
-		android:text="@string/btn_logout"
+		android:background="?attr/background"
+		android:gravity="center_horizontal"
+		android:orientation="vertical"
+		android:padding="@dimen/default_margin"
+		android:theme="@style/Theme.NOICommunity.Primary"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent" />
+		app:layout_constraintStart_toStartOf="parent">
+
+		<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center_vertical"
+			android:orientation="horizontal">
+
+			<CheckBox
+				android:id="@+id/checkbox"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+
+			<TextView
+				android:id="@+id/checkbox_text"
+				style="?attr/textAppearanceBody1"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="@string/dont_show_again_toogle_title" />
+		</LinearLayout>
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/understood"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="@dimen/default_margin"
+			android:text="@string/understood_button_title" />
+	</LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

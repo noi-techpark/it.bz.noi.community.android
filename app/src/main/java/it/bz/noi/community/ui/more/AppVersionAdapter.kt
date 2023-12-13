@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.BuildConfig
 import it.bz.noi.community.R
 import android.view.MotionEvent
+import it.bz.noi.community.utils.getAppVersion
 
 class AppVersionAdapter : RecyclerView.Adapter<AppVersionViewHolder>() {
 
@@ -83,7 +84,6 @@ class AppVersionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 	}
 
 	fun bind() {
-		tvAppVersion.text = "${BuildConfig.VERSION_NAME}.${BuildConfig.VERSION_CODE}"
+		tvAppVersion.text = getAppVersion()
 	}
-
 }

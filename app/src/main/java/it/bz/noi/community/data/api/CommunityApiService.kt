@@ -18,3 +18,5 @@ interface CommunityApiService {
 		@Header("Authorization") accessToken: String
 	): ContactResponse
 }
+
+fun String.bearer() = "Bearer $this"

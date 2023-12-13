@@ -5,8 +5,25 @@ SPDX-License-Identifier: CC0-1.0
 -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
-	<!-- Base application theme. -->
-	<style name="Theme.NOICommunity" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+
+	<!-- This overlay actually the "primary" theme, black background with white text and accent -->
+	<style name="Theme.NOICommunity.Primary">
+		<item name="colorPrimary">@color/primary_color</item>
+		<item name="colorOnPrimary">@color/background_color</item>
+		<item name="colorSurface">@color/background_color</item>
+		<item name="colorOnSurface">@color/primary_color</item>
+		<item name="colorOnBackground">@color/primary_color</item>
+		<item name="background">@color/background_color</item>
+		<item name="android:textColorPrimary">@color/primary_color</item>
+		<item name="android:textColorPrimaryInverse">@color/background_color</item>
+	</style>
+
+	<style name="Theme.NOICommunity.Secondary">
+		<item name="background">@color/secondary_background_color</item>
+	</style>
+
+	<!-- Base application theme, it is actually the "tertiary" variant that is white background and dark text -->
+	<style name="Theme.NOICommunity" parent="Theme.MaterialComponents.Light.DarkActionBar">
 
 		<item name="windowActionBar">false</item>
 		<item name="windowNoTitle">true</item>
@@ -19,6 +36,7 @@ SPDX-License-Identifier: CC0-1.0
 		<item name="colorSecondary">@color/primary_color</item>
 		<item name="colorSecondaryVariant">@color/primary_color</item>
 		<item name="colorOnSecondary">@color/background_color</item>
+
 		<!-- Status bar color. -->
 		<item name="android:statusBarColor" tools:targetApi="l">@color/background_color</item>
 
@@ -84,6 +102,28 @@ SPDX-License-Identifier: CC0-1.0
 	</style>
 
 	<style name="ThemeOverlay.NOI.MaterialButton" parent="Widget.MaterialComponents.Button">
+		<item name="cornerRadius">@dimen/button_corner_radius</item>
+		<item name="android:elevation">0dp</item>
+		<item name="elevation">0dp</item>
+		<item name="android:insetTop">0dp</item>
+		<item name="android:insetBottom">0dp</item>
+		<item name="textAllCaps">false</item>
+		<item name="iconPadding">@dimen/default_button_icon_padding</item>
+		<item name="iconGravity">textStart</item>
+	</style>
+
+	<style name="ThemeOverlay.NOI.ContainedButtonV2" parent="Widget.MaterialComponents.Button">
+		<item name="cornerRadius">@dimen/button_corner_radius</item>
+		<item name="android:elevation">0dp</item>
+		<item name="elevation">0dp</item>
+		<item name="android:insetTop">0dp</item>
+		<item name="android:insetBottom">0dp</item>
+		<item name="textAllCaps">false</item>
+		<item name="iconPadding">@dimen/default_button_icon_padding</item>
+		<item name="iconGravity">textStart</item>
+	</style>
+
+	<style name="ThemeOverlay.NOI.TextButtonV2" parent="Widget.MaterialComponents.Button.TextButton">
 		<item name="cornerRadius">@dimen/button_corner_radius</item>
 		<item name="android:elevation">0dp</item>
 		<item name="elevation">0dp</item>

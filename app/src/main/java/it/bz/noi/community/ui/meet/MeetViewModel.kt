@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import it.bz.noi.community.data.api.ApiHelper
+import it.bz.noi.community.data.api.bearer
 import it.bz.noi.community.data.models.AccountType
 import it.bz.noi.community.data.models.Contact
 import it.bz.noi.community.data.models.FilterValue
@@ -65,7 +66,7 @@ class MeetViewModel(
 		emit(Resource.loading(data = null))
 		try {
 			val accessToken = AuthManager.obtainFreshToken()
-			val contacts = mainRepository.getContacts("Bearer $accessToken")
+			val contacts = mainRepository.getContacts(accessToken.bearer())
 			Log.d(TAG, "Caricati ${contacts.size} contatti")
 			val availableCompanies = AccountsManager.availableCompanies.value
 			val allContacts = contacts.map { c ->
@@ -153,7 +154,7 @@ class MeetViewModelFactory(
 	owner: Fragment
 ) : AbstractSavedStateViewModelFactory(owner, owner.arguments) {
 
-	override fun <T : ViewModel?> create(
+	override fun <T : ViewModel> create(
 		key: String,
 		modelClass: Class<T>,
 		handle: SavedStateHandle

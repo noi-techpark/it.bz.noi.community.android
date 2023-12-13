@@ -1,86 +1,72 @@
 [
 	{
-		"Id":"noicommunity",
-		"Key":"NOI Community",
-		"Type":"CustomTagging",
-		"Parent":"EventType",
-		"Bitmask":0,
-		"TypeDesc":{
-			"de":"NOI Community",
-			"en":"NOI Community",
-			"it":"NOI Community"
+		"Id": "sport",
+		"Key": "Sport",
+		"Type": "CustomTagging",
+		"TypeDesc": {
+			"de": "Sport",
+			"en": "Sport",
+			"it": "Sport"
 		}
 	},
 	{
-		"Id":"public",
-		"Key":"Public",
-		"Type":"CustomTagging",
-		"Parent":"EventType",
-		"Bitmask":0,
-		"TypeDesc":{
-			"de":"Public",
-			"en":"Public",
-			"it":"Public"
+		"Id": "noicommunity",
+		"Key": "NOI Community",
+		"Type": "CustomTagging",
+		"TypeDesc": {
+			"de": "NOI Community",
+			"en": "NOI Community",
+			"it": "NOI Community"
 		}
 	},
 	{
-		"Id":"alpine",
-		"Key":"Alpine",
-		"Type":"TechnologyFields",
-		"Parent":"",
-		"Bitmask":0,
-		"TypeDesc":{
-			"de":"Alpine",
-			"en":"Alpine",
-			"it":"Alpine"
+		"Id": "alpine",
+		"Key": "Alpine",
+		"Type": "TechnologyFields",
+		"TypeDesc": {
+			"de": "Alpine",
+			"en": "Alpine",
+			"it": "Alpine"
 		}
 	},
 	{
-		"Id":"automotiveautomation",
-		"Key":"Automotive/Automation",
-		"Type":"TechnologyFields",
-		"Parent":"",
-		"Bitmask":0,
-		"TypeDesc":{
-			"de":"Automotive / Automation",
-			"en":"Automotive / Automation",
-			"it":"Automotive / Automation"
+		"Id": "automotiveautomation",
+		"Key": "Automotive/Automation",
+		"Type": "TechnologyFields",
+		"TypeDesc": {
+			"de": "Automotive / Automation",
+			"en": "Automotive / Automation",
+			"it": "Automotive / Automation"
 		}
 	},
 	{
-		"Id":"digital",
-		"Key":"Digital",
-		"Type":"TechnologyFields",
-		"Parent":"",
-		"Bitmask":0,
-		"TypeDesc":{
-			"de":"Digital",
-			"en":"Digital",
-			"it":"Digital"
+		"Id": "digital",
+		"Key": "Digital",
+		"Type": "TechnologyFields",
+		"TypeDesc": {
+			"de": "Digital",
+			"en": "Digital",
+			"it": "Digital"
 		}
 	},
 	{
-		"Id":"food",
-		"Key":"Food",
-		"Type":"TechnologyFields",
-		"Parent":"",
-		"Bitmask":0,
-		"TypeDesc":{
-			"de":"Food",
-			"en":"Food",
-			"it":"Food"
+		"Id": "food",
+		"Key": "Food",
+		"Type": "TechnologyFields",
+		"TypeDesc": {
+			"de": "Food",
+			"en": "Food",
+			"it": "Food"
 		}
 	},
 	{
-		"Id":"green",
-		"Key":"Green",
-		"Type":"TechnologyFields",
-		"Parent":"",
-		"Bitmask":0,
-		"TypeDesc":{
-			"de":"Green",
-			"en":"Green",
-			"it":"Green"
+		"Id": "green",
+		"Key": "Green",
+		"Type": "TechnologyFields",
+		"TypeDesc": {
+			"de": "Green",
+			"en": "Green",
+			"it": "Green"
 		}
 	}
 ]
