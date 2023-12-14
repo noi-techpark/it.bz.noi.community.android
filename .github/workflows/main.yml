@@ -28,8 +28,10 @@ jobs:
         with:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '17'
-      - name: Mock google-services.json
-        run: mv app/google-services-mock.json app/google-services.json
+      - name: Inject google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
       - name: Test the app
         # If you want to test a specific variant, use one of the following:
         # testDevelopmentDebugUnitTest - Run unit tests for the developmentDebug build.
@@ -50,8 +52,10 @@ jobs:
         with:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '17'
-      - name: Mock google-services.json
-        run: mv app/google-services-mock.json app/google-services.json
+      - name: Inject google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
       - name: Instrumentation Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
