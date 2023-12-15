@@ -59,7 +59,7 @@ jobs:
       - name: Instrumentation Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 33
+          api-level: 29
           arch: x86_64
           # If you want to test only a specific variant, use one of the following:
           # connectedDevelopmentDebugAndroidTest - Installs and runs the tests for developmentDebug on connected devices.
