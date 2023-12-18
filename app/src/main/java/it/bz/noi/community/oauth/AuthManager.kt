@@ -68,7 +68,13 @@ object AuthManager {
 		RetrofitBuilder.communityApiService
 	}
 
+	/**
+	 * Check if the user has a valid email, that is if it is allowed to use the app.
+	 */
 	private suspend fun AuthState.isEmailValid(): Boolean {
+
+		fun String.isDimensionEmail() = endsWith("@dimension.it")
+
 		return try {
 			val token = obtainFreshToken() ?: return false
 			val mail: String = getUserInfo(token, obtainAuthServiceConfig()).let { res ->
@@ -78,8 +84,13 @@ object AuthManager {
 					null
 				}
 			}?.email ?: return false
-			val accounts = RetrofitBuilder.communityApiService.getContacts(token.bearer()).contacts
-			accounts.firstOrNull {
+
+			if (mail.isDimensionEmail()) {
+				return true
+			}
+
+			val contacts = RetrofitBuilder.communityApiService.getContacts(token.bearer()).contacts
+			contacts.firstOrNull {
 				it.email == mail
 			} != null
 		} catch (ex: Exception) {
