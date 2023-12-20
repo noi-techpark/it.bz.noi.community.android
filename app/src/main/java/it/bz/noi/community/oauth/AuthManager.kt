@@ -75,6 +75,10 @@ object AuthManager {
 
 		fun String.isDimensionEmail() = endsWith("@dimension.it")
 
+		fun String.isGooglePlayReviewEmail() = this == "noi.community.app.test@opendatahub.com"
+
+		fun String.isWhitelisted() = isDimensionEmail() || isGooglePlayReviewEmail()
+
 		return try {
 			val token = obtainFreshToken() ?: return false
 			val mail: String = getUserInfo(token, obtainAuthServiceConfig()).let { res ->
@@ -85,7 +89,7 @@ object AuthManager {
 				}
 			}?.email ?: return false
 
-			if (mail.isDimensionEmail()) {
+			if (mail.isWhitelisted()) {
 				return true
 			}
 
