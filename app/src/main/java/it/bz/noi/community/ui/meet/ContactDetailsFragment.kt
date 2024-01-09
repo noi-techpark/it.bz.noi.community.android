@@ -106,27 +106,6 @@ class ContactDetailsFragment : Fragment() {
 				phone.root.isVisible = false
 				binding.call.isVisible = false
 			}
-
-			if (company?.address != null) {
-				val formattedAddress = company.address.replace("\r\n", ", ")
-
-				address.apply {
-					fieldLbl.text = getString(R.string.label_address)
-					fieldValue.text = formattedAddress
-					root.setOnClickListener {
-						copyToClipboard("address_copied", formattedAddress)
-						showCheckmark(address.copyValueIcon)
-					}
-				}
-
-				binding.find.setOnClickListener {
-					requireContext().findOnMaps(formattedAddress)
-				}
-			} else {
-				address.root.isVisible = false
-				binding.find.isVisible = false
-			}
-
 		}
 
 		(requireActivity() as AppCompatActivity).supportActionBar?.title = contact.fullName
