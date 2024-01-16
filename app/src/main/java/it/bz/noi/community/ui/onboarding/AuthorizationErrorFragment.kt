@@ -4,25 +4,28 @@
 
 package it.bz.noi.community.ui.onboarding
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.core.content.ContextCompat
+import androidx.core.text.buildSpannedString
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentAuthorizationErrorBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
-import it.bz.noi.community.utils.Status
+import it.bz.noi.community.utils.addClickableSpan
+import it.bz.noi.community.utils.addLinkSpan
 import it.bz.noi.community.utils.getAppVersion
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -63,6 +66,36 @@ class AuthorizationErrorFragment : BaseOnboardingFragment() {
 		}
 
 		binding.appVersion.tvAppVersion.text = getAppVersion()
+
+		binding.message.apply {
+			movementMethod = LinkMovementMethod.getInstance()
+			text = buildSpannedString {
+				append(getString(R.string.outsider_user_body))
+				val jobsSnippet = getString(R.string.outsider_user_body_link_1_part)
+				addClickableSpan(jobsSnippet) {
+					try {
+						startActivity(Intent(Intent.ACTION_VIEW).apply {
+							data = Uri.parse(getString(R.string.url_jobs_noi_techpark))
+						})
+					} catch (ex: Exception) {
+						FirebaseCrashlytics.getInstance().recordException(ex)
+					}
+				}
+				addLinkSpan(jobsSnippet, ContextCompat.getColor(requireContext(), R.color.secondary_color))
+
+				val emailSnippet = getString(R.string.community_email_address_link)
+				addClickableSpan(emailSnippet) {
+					try {
+						startActivity(Intent(Intent.ACTION_SENDTO).apply {
+							data = Uri.parse(getString(R.string.community_email_address))
+						})
+					} catch (ex: Exception) {
+						FirebaseCrashlytics.getInstance().recordException(ex)
+					}
+				}
+				addLinkSpan(emailSnippet, ContextCompat.getColor(requireContext(), R.color.secondary_color))
+			}
+		}
 
 		viewLifecycleOwner.lifecycleScope.launch {
 			repeatOnLifecycle(Lifecycle.State.STARTED) {
