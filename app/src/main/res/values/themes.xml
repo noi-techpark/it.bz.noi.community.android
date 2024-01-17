@@ -12,8 +12,8 @@ SPDX-License-Identifier: CC0-1.0
 		<item name="colorOnPrimary">@color/background_color</item>
 		<item name="colorSurface">@color/background_color</item>
 		<item name="colorOnSurface">@color/primary_color</item>
-		<item name="colorOnBackground">@color/primary_color</item>
 		<item name="background">@color/background_color</item>
+		<item name="colorOnBackground">@color/primary_color</item>
 		<item name="android:textColorPrimary">@color/primary_color</item>
 		<item name="android:textColorPrimaryInverse">@color/background_color</item>
 	</style>
