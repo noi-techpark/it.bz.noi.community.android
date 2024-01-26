@@ -24,8 +24,10 @@ data class Contact(
 	val email: String?,
 	@SerializedName("_parentcustomerid_value")
 	val accountId: String?,
-
-	val companyName: String?
+	@SerializedName("companyName")
+	val companyName: String?,
+	@SerializedName("app-opt-out")
+	val appOptOut: Boolean = false,
 ) : Parcelable
 
 data class ContactResponse(

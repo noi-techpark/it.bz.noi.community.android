@@ -7,7 +7,16 @@ package it.bz.noi.community.data.repository
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.models.*
 
-class MainRepository(private val apiHelper: ApiHelper) {
+class MainRepository(
+	/**
+	 * Remote data source.
+	 */
+	private val apiHelper: ApiHelper,
+	/**
+	 * If enabled, [Contact]s with `appOptOut` set to `true` will be filtered out.
+	 */
+	private val isOptOutEnabled: Boolean = false
+) {
 	// EVENTS
 	suspend fun getEvents(eventsParams: EventsParams) = apiHelper.getEvents(eventsParams)
 	suspend fun getEventDetails(eventID: String) = apiHelper.getEventDetails(eventID)
@@ -23,6 +32,7 @@ class MainRepository(private val apiHelper: ApiHelper) {
 
 	// CONTACTS
 	suspend fun getAccounts(accessToken: String): List<Account> = apiHelper.getAccounts(accessToken).accounts
-	suspend fun getContacts(accessToken: String): List<Contact> = apiHelper.getContacts(accessToken).contacts
-
+	suspend fun getContacts(accessToken: String): List<Contact> = apiHelper.getContacts(accessToken).contacts.let {
+		if (isOptOutEnabled) it.filter { !it.appOptOut } else it
+	}
 }

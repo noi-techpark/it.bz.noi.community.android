@@ -13,7 +13,6 @@ import retrofit2.http.*
 interface OpendatahubApiService {
     @GET("v1/EventShort")
     suspend fun getEvents(
-        @Query("onlyactive") onlyActive: Boolean = true,
 		@Query("removenullvalues") removeNullValues: Boolean = true,
 		@Query("optimizedates") optimizeDates: Boolean = true,
         @Query("eventlocation") eventLocation: String = "NOI",
@@ -21,7 +20,8 @@ interface OpendatahubApiService {
         @Query("pagesize") pageSize: Int = 20,
         @Query("startdate") startDate: String,
         @Query("enddate") endDate: String? = null,
-        @Query("rawfilter") rawFilter: String?
+        @Query("rawfilter") rawFilter: String?,
+		@Query("publishedon") publishedOn: String? = "noi-communityapp",
     ): EventsResponse
 
     @GET("v1/EventShort/Detail/{id}")
@@ -40,7 +40,6 @@ interface OpendatahubApiService {
 
 	@GET("v1/Article")
 	suspend fun getNews(
-		@Query("odhactive") onlyActive: Boolean = true,
 		@Query("removenullvalues") removeNullValues: Boolean = true,
 		@Query("articletype") endDate: String = "newsfeednoi",
 		@Query("rawsort") rawFilter: String = "-ArticleDate",
@@ -48,7 +47,8 @@ interface OpendatahubApiService {
 		@Query("pagesize") pageSize: Int,
 		@Query("pagenumber") pageNumber: Int,
 		@Query("startdate") startDate: String,
-		@Query("language") language: String?
+		@Query("language") language: String?,
+		@Query("publishedon") publishedOn: String? = "noi-communityapp",
 	): NewsResponse
 
 	@GET("v1/Article/{id}")
