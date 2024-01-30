@@ -42,10 +42,12 @@ class EatFragment : Fragment() {
 		val rest1 = Restaurant(
 			resources.getString(R.string.community_bar_name),
 			listOf(
-				R.drawable.rockinbeets_asparagi_lasagne,
-				R.drawable.rockinbeets_meal_prep,
-				R.drawable.rockinbeets_meals,
-				R.drawable.rockinbeets_obstmarkt),
+				R.drawable.community_bar_01,
+				R.drawable.community_bar_02,
+				R.drawable.community_bar_03,
+				R.drawable.community_bar_04,
+				R.drawable.community_bar_05,
+			),
 			resources.getString(R.string.community_bar_openings),
 			resources.getString(R.string.url_noi_bar_menu)
 		)
