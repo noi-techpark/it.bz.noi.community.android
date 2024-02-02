@@ -27,6 +27,7 @@ import it.bz.noi.community.R
 import it.bz.noi.community.databinding.ActivityOnboardingBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
+import it.bz.noi.community.storage.getWelcomeUnderstood
 import it.bz.noi.community.ui.WebViewFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -112,9 +113,10 @@ class OnboardingActivity : AppCompatActivity() {
 		}
 	}
 
-	internal fun goToMainActivity() {
+	internal suspend fun goToMainActivity() {
+		val showWelcome = !getWelcomeUnderstood()
 		startActivity(Intent(this, MainActivity::class.java).apply {
-			putExtra(MainActivity.EXTRA_SHOW_WELCOME, true)
+			putExtra(MainActivity.EXTRA_SHOW_WELCOME, showWelcome)
 		})
 	}
 
