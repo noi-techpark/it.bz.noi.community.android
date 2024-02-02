@@ -6,6 +6,7 @@ package it.bz.noi.community
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -40,10 +41,7 @@ class MainActivity : AppCompatActivity() {
 
 	private val navController: NavController get() = findNavController(R.id.nav_host_fragment)
 
-
-	private val showWelcome by lazy {
-		intent.getBooleanExtra(EXTRA_SHOW_WELCOME, false)
-	}
+	private var showWelcome: Boolean = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -52,13 +50,14 @@ class MainActivity : AppCompatActivity() {
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 
-		if (true || showWelcome) {
-			if (!runBlocking { getWelcomeUnderstood() }) {
-				val inflater = navController.navInflater
-				val graph = inflater.inflate(R.navigation.mobile_navigation)
-				graph.setStartDestination(R.id.welcome)
-				navController.graph = graph
-			}
+		showWelcome = savedInstanceState?.getBoolean(STATE_SHOW_WELCOME) ?: intent.getBooleanExtra(EXTRA_SHOW_WELCOME, false)
+
+		if (showWelcome) {
+			showWelcome = false
+			val inflater = navController.navInflater
+			val graph = inflater.inflate(R.navigation.mobile_navigation)
+			graph.setStartDestination(R.id.welcome)
+			navController.graph = graph
 		}
 
 		val toolbar = binding.toolbar
@@ -187,8 +186,14 @@ class MainActivity : AppCompatActivity() {
 		}
 	}
 
+	override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+		super.onSaveInstanceState(outState, outPersistentState)
+		outState.putBoolean(STATE_SHOW_WELCOME, showWelcome)
+	}
+
 	companion object {
 		internal const val EXTRA_SHOW_WELCOME: String = "show_welcome"
+		private const val STATE_SHOW_WELCOME: String = "show_welcome"
 		private const val TAG = "MainActivity"
 	}
 }

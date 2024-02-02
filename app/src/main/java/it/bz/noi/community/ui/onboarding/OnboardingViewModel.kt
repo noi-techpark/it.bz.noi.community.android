@@ -10,15 +10,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
-import it.bz.noi.community.storage.getPrivacyAccepted
 import it.bz.noi.community.storage.getPrivacyAcceptedFlow
 import it.bz.noi.community.storage.setPrivacyAccepted
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class OnboardingViewModel(
     app: Application,

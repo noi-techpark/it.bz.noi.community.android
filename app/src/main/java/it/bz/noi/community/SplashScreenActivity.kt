@@ -17,6 +17,7 @@ import it.bz.noi.community.databinding.ActivitySplashBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
 import it.bz.noi.community.storage.getSkipParam
+import it.bz.noi.community.storage.getWelcomeUnderstood
 import it.bz.noi.community.storage.setSkipParam
 import it.bz.noi.community.ui.onboarding.OnboardingActivity
 import kotlinx.coroutines.Dispatchers
@@ -82,7 +83,9 @@ class SplashScreenActivity : AppCompatActivity() {
 
 	private fun goToMainActivity() {
 		if (isFinishing) return
-		startActivity(Intent(this, MainActivity::class.java))
+		startActivity(Intent(this, MainActivity::class.java).apply {
+			putExtra(MainActivity.EXTRA_SHOW_WELCOME, runBlocking { !getWelcomeUnderstood() })
+		})
 		finish()
 	}
 
