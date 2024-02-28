@@ -41,6 +41,7 @@ android {
 		buildConfigField("String", "SIGNUP_URL", "\"https://auth.opendatahub.com/auth/realms/noi/protocol/openid-connect/registrations?client_id=it.bz.noi.community&redirect_uri=https://noi.bz.it&response_type=code&scope=openid\"")
 		buildConfigField("String", "COMMUNITY_API_URL", "\"https://api.community.noi.opendatahub.com\"")
 		buildConfigField("String", "OPENDATAHUB_API_BASE_URL", "\"https://tourism.opendatahub.com/\"")
+		buildConfigField("Boolean", "CHECK_ACCESS_GRANTED_TOKEN", "false")
 	}
 
 	buildTypes {
