@@ -393,25 +393,20 @@ object AuthManager {
 			val state = userState.first()
 			state.authState.update(response, exception)
 			writeAuthState(state)
-			val authResponse = state.authState.lastAuthorizationResponse
-			if (authResponse != null) {
-				try {
-					val tokenResponse = obtainToken(authResponse)
-					tokenResponse.accessToken?.let { jwtToken ->
-						decode(jwtToken)?.let { decodedToken ->
-							if (verifyToken(decodedToken)) {
-								Log.d(TAG, "Access granted role check: true")
-								onTokenObtained(tokenResponse, null, true)
-							} else {
-								Log.d(TAG, "Access granted role check: false")
-								onTokenObtained(tokenResponse, null, false)
-							}
-						}
-					}
-				} catch (ex: AuthorizationException) {
-					onTokenObtained(null, ex, state.validRole)
+			val authResponse = state.authState.lastAuthorizationResponse ?: return@launch
+			try {
+				val tokenResponse = obtainToken(authResponse)
+				val jwtToken = tokenResponse.accessToken ?: return@launch
+				val decodedToken = decode(jwtToken) ?: return@launch
+				if (decodedToken.isValid()) {
+					Log.d(TAG, "Access granted role check: true")
+					onTokenObtained(tokenResponse, null, true)
+				} else {
+					Log.d(TAG, "Access granted role check: false")
+					onTokenObtained(tokenResponse, null, false)
 				}
-
+			} catch (ex: AuthorizationException) {
+				onTokenObtained(null, ex, state.validRole)
 			}
 		}
 	}
@@ -434,8 +429,7 @@ object AuthManager {
 			}
 		}
 
-	private fun verifyToken(token: NOIJwtAccessToken) =
-		token.checkResourceAccessRoles(CLIENT_ID, listOf(ACCESS_GRANTED_ROLE))
+	private fun NOIJwtAccessToken.isValid() = if (BuildConfig.CHECK_ACCESS_GRANTED_TOKEN) checkResourceAccessRoles(CLIENT_ID, listOf(ACCESS_GRANTED_ROLE)) else true
 
 	private suspend fun onTokenObtained(
 		tokenResponse: TokenResponse?,
