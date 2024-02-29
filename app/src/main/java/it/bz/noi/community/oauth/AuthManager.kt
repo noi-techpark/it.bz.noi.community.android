@@ -18,6 +18,7 @@ import it.bz.noi.community.R
 import it.bz.noi.community.data.api.CommunityApiService
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.api.bearer
+import it.bz.noi.community.data.models.Contact
 import it.bz.noi.community.storage.removeAccessGranted
 import it.bz.noi.community.storage.removeAuthState
 import it.bz.noi.community.storage.getAccessGranted
@@ -94,13 +95,13 @@ object AuthManager {
 			}
 
 			val contacts = RetrofitBuilder.communityApiService.getContacts(token.bearer()).contacts
-			contacts.firstOrNull {
-				it.email == mail
-			} != null
+			contacts.any { it.matches(mail) }
 		} catch (ex: Exception) {
 			false
 		}
 	}
+
+	private fun Contact.matches(mail: String): Boolean = mail == email || mail == email2 || mail == email3
 
 	private suspend fun UserState.toStatus(): AuthStateStatus {
 		return when {

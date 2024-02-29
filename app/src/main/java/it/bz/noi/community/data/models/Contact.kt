@@ -22,6 +22,10 @@ data class Contact(
 	val fullName: String,
 	@SerializedName("emailaddress1")
 	val email: String?,
+	@SerializedName("emailaddress2")
+	val email2: String?,
+	@SerializedName("emailaddress3")
+	val email3: String?,
 	@SerializedName("_parentcustomerid_value")
 	val accountId: String?,
 	@SerializedName("companyName")

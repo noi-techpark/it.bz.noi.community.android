@@ -13,7 +13,7 @@ interface CommunityApiService {
 		@Header("Authorization") accessToken: String
 	): AccountsResponse
 
-	@GET("contacts?@p1='noi_contactcat_placepresscommunity'&@p2=['181640000']&\$select=emailaddress1,firstname,lastname,fullname,_parentcustomerid_value&\$filter=Microsoft.Dynamics.CRM.ContainValues(PropertyName%3D@p1,PropertyValues%3D@p2)%20and%20statuscode%20eq%201&\$count=true&\$orderby=fullname")
+	@GET("contacts?@p1='noi_contactcat_placepresscommunity'&@p2=['181640000']&\$select=emailaddress1,emailaddress2,emailaddress3,firstname,lastname,fullname,_parentcustomerid_value&\$filter=Microsoft.Dynamics.CRM.ContainValues(PropertyName%3D@p1,PropertyValues%3D@p2)%20and%20statuscode%20eq%201&\$count=true&\$orderby=fullname")
 	suspend fun getContacts(
 		@Header("Authorization") accessToken: String
 	): ContactResponse
