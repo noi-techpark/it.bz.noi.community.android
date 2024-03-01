@@ -101,7 +101,15 @@ object AuthManager {
 		}
 	}
 
-	private fun Contact.matches(mail: String): Boolean = mail == email || mail == email2 || mail == email3
+	private fun Contact.matches(mail: String): Boolean {
+
+		// Mail can include garbage whitespaces.
+		fun String.sanitized() = trim()
+
+		return with (mail.sanitized()) {
+			equals(email?.sanitized(), true) || equals(email2?.sanitized(), true) || equals(email3?.sanitized(), true)
+		}
+	}
 
 	private suspend fun UserState.toStatus(): AuthStateStatus {
 		return when {
