@@ -17,68 +17,58 @@ import it.bz.noi.community.ui.FilterViewHolder
 import it.bz.noi.community.ui.HeaderViewHolder
 import it.bz.noi.community.ui.UpdateResultsListener
 
-class MeetFiltersAdapter(private val headers: Map<AccountType, String>,
-						 private val updateResultsListener: UpdateResultsListener
-) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+private const val SHOW_HEADERS = false
+private const val VIEWTYPE_HEADER = 0
+private const val VIEWTYPE_FILTER = 1
+private const val VIEWTYPE_EMPTY = 4
 
-    companion object {
-        private const val HEADER = 0
-		private const val COMPANY_FILTER = 1
-		private const val STARTUP_FILTER = 2
-		private const val RESEARCH_INSTITUTION_FILTER = 3
-		private const val EMPTY = 4
-    }
+class MeetFiltersAdapter(
+	private val headers: Map<AccountType, String>,
+	private val updateResultsListener: UpdateResultsListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    sealed class Item {
-        data class Header(val text: String): Item()
-
-		sealed class Filter(val filter: FilterValue) : Item() {
-			data class Company(val f: FilterValue) : Filter(f)
-			data class StartUp(val f: FilterValue) : Filter(f)
-			data class ResearchInstitutions(val f: FilterValue) : Filter(f)
-		}
-
-		object Empty: Item()
-    }
+	private sealed class Item {
+		data class Header(val title: String) : Item()
+		data class Filter(val accountType: AccountType, val filter: FilterValue) : Item()
+		data object Empty : Item()
+	}
 
 	var filters: Map<AccountType, List<FilterValue>> = emptyMap()
 		set(value) {
 			if (value != field) {
 				field = value
-				items = toItems()
+				items = value.toItems(SHOW_HEADERS) { type ->
+					headers.getOrDefault(type, "")
+				}
 				notifyDataSetChanged()
 			}
 		}
 	private var items: List<Item> = emptyList()
 
-	private fun toItems(): List<Item> {
+	private fun Map<AccountType, List<FilterValue>>.toItems(showHeaders: Boolean, getHeaderTitle: (AccountType) -> String): List<Item> {
 
-		val filterItems = arrayListOf<Item>()
+		val filterItems = mutableListOf<Item>()
 
-		val companyFilters = filters[AccountType.COMPANY]
-		val startupFilters = filters[AccountType.STARTUP]
-		val researchInstitutionsFilters = filters[AccountType.RESEARCH_INSTITUTION]
-
-		if (companyFilters?.isNotEmpty() == true) {
-			filterItems.add(Item.Header(headers.getOrDefault(AccountType.COMPANY, "")))
-			filterItems.addAll(companyFilters.map {
-				Item.Filter.Company(it)
-			})
-		}
-
-		if (startupFilters?.isNotEmpty() == true) {
-			filterItems.add(Item.Header(headers.getOrDefault(AccountType.STARTUP, "")))
-			filterItems.addAll(startupFilters.map {
-				Item.Filter.StartUp(it)
-			})
-		}
-
-		if (researchInstitutionsFilters?.isNotEmpty() == true) {
-			filterItems.add(Item.Header(headers.getOrDefault(AccountType.RESEARCH_INSTITUTION, "")))
-			filterItems.addAll(researchInstitutionsFilters.map {
-				Item.Filter.ResearchInstitutions(it)
-			})
+		if (showHeaders) {
+			// Segmented list with headers, with each section sorted by desc.
+			forEach { (type, filters) ->
+				if (filters.isNotEmpty()) {
+					filterItems += Item.Header(getHeaderTitle(type))
+					filterItems.addAll(filters.sortedBy { it.desc }. map {
+						Item.Filter(type, it)
+					})
+				}
+			}
+		} else {
+			// Flat list without headers, sorted by desc.
+			val sortedFilterItems = buildList {
+				this@toItems.forEach { (type, filters) ->
+					filters.forEach { filter ->
+						add(Item.Filter(type, filter))
+					}
+				}
+			}.sortedBy { it.filter.desc }
+			filterItems.addAll(sortedFilterItems)
 		}
 
 		if (filterItems.isEmpty()) {
@@ -88,55 +78,58 @@ class MeetFiltersAdapter(private val headers: Map<AccountType, String>,
 		return filterItems
 	}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            HEADER -> HeaderViewHolder(VhHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            COMPANY_FILTER -> FilterViewHolder(VhSwitchBinding.inflate(LayoutInflater.from(parent.context), parent, false), updateResultsListener, exclusive = false)
-			STARTUP_FILTER -> FilterViewHolder(VhSwitchBinding.inflate(LayoutInflater.from(parent.context), parent, false), updateResultsListener, exclusive = false)
-			RESEARCH_INSTITUTION_FILTER -> FilterViewHolder(VhSwitchBinding.inflate(LayoutInflater.from(parent.context), parent, false), updateResultsListener, exclusive = false)
-            EMPTY -> EmptyViewHolder(
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+		return when (viewType) {
+			VIEWTYPE_HEADER -> HeaderViewHolder(
+				VhHeaderBinding.inflate(
+					LayoutInflater.from(parent.context),
+					parent,
+					false
+				)
+			)
+
+			VIEWTYPE_FILTER -> FilterViewHolder(
+				VhSwitchBinding.inflate(
+					LayoutInflater.from(parent.context),
+					parent,
+					false
+				), updateResultsListener, exclusive = false
+			)
+
+			VIEWTYPE_EMPTY -> EmptyViewHolder(
 				VhEmptyBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
-					subtitle.text = parent.resources.getString(R.string.label_filters_empty_state_subtitle)
+					subtitle.text =
+						parent.resources.getString(R.string.label_filters_empty_state_subtitle)
 				}
 			)
-            else -> throw RuntimeException("Unsupported viewType $viewType")
-        }
-    }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (holder) {
-            is HeaderViewHolder -> {
-                (getItem(position) as Item.Header).let {
-                    holder.bind(it.text)
-                }
-            }
-            is FilterViewHolder -> {
+			else -> throw RuntimeException("Unsupported viewType $viewType")
+		}
+	}
+
+	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+		when (holder) {
+			is HeaderViewHolder -> {
+				(getItem(position) as Item.Header).let {
+					holder.bind(it.title)
+				}
+			}
+
+			is FilterViewHolder -> {
 				(getItem(position) as Item.Filter).let {
 					holder.bind(it.filter)
 				}
-            }
-        }
-    }
+			}
+		}
+	}
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
+	override fun getItemCount(): Int = items.size
 
-    override fun getItemViewType(position: Int): Int {
-        return when(getItem(position)){
-            is Item.Header -> HEADER
-            is Item.Filter.Company -> COMPANY_FILTER
-			is Item.Filter.StartUp -> STARTUP_FILTER
-			is Item.Filter.ResearchInstitutions -> RESEARCH_INSTITUTION_FILTER
-			Item.Empty -> EMPTY
-        }
-    }
+	override fun getItemViewType(position: Int) = when (getItem(position)) {
+			is Item.Header -> VIEWTYPE_HEADER
+			is Item.Filter -> VIEWTYPE_FILTER
+			Item.Empty -> VIEWTYPE_EMPTY
+	}
 
-    private fun getItem(position: Int): Item {
-        return items.get(position)
-    }
-
+	private fun getItem(position: Int): Item = items[position]
 }
-
-
-

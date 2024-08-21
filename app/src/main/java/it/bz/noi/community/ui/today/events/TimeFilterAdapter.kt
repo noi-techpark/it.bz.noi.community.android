@@ -15,10 +15,16 @@ interface TimeFilterClickListener {
 }
 
 class TimeFilterAdapter(
-    private val timeFilters: List<TimeFilter>,
-    private val listener: TimeFilterClickListener
+	timeFilters: List<TimeFilter>,
+	private val listener: TimeFilterClickListener
 ) :
     RecyclerView.Adapter<TimeFilterAdapter.TimeFilterViewHolder>() {
+
+	var timeFilters: List<TimeFilter> = timeFilters
+		set(value) {
+			field = value
+			notifyDataSetChanged()
+		}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeFilterViewHolder {
         return TimeFilterViewHolder(VhTimeFilterBinding.inflate(LayoutInflater.from(parent.context), parent, false))

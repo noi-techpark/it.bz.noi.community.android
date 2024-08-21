@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
@@ -27,6 +28,8 @@ import it.bz.noi.community.data.models.*
 import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.UpdateResultsListener
+import it.bz.noi.community.ui.today.events.TimeFilterAdapter
+import it.bz.noi.community.ui.today.events.TimeFilterClickListener
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,27 +39,48 @@ import kotlinx.coroutines.launch
 @ExperimentalCoroutinesApi
 class MeetFiltersFragment : Fragment() {
 
-    private lateinit var filterAdapter: MeetFiltersAdapter
+	private lateinit var filterAdapter: MeetFiltersAdapter
 
-    private var _binding: FragmentFiltersBinding? = null
+	private var _binding: FragmentFiltersBinding? = null
 	private val binding get() = _binding!!
 
-	private val viewModel: MeetViewModel by navGraphViewModels(R.id.navigation_meet, factoryProducer = {
-		MeetViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService), this)
-	})
+	private val categoriesListener by lazy {
+		object : TimeFilterClickListener {
+			override fun onTimeFilterClick(position: Int) {
+				Log.d(TAG, "Categories filter clicked at position $position")
+				viewModel.updateCategoriesFilter(
+					CategoryFilter.entries[position].types
+				)
+			}
+		}
+	}
+
+	private val categoriesAdapter: TimeFilterAdapter = TimeFilterAdapter(emptyList(), categoriesListener)
+
+	private val viewModel: MeetViewModel by navGraphViewModels(
+		R.id.navigation_meet,
+		factoryProducer = {
+			MeetViewModelFactory(
+				apiHelper = ApiHelper(
+					RetrofitBuilder.opendatahubApiService,
+					RetrofitBuilder.communityApiService
+				), this
+			)
+		})
 
 	private val updateResultsListener = object : UpdateResultsListener {
 		override fun updateResults() {
 			// FIXME
-			val selectedFilters: Map<AccountType, List<FilterValue>> = filterAdapter.filters.mapValues { entry ->
-				entry.value.filter { it.checked }
-			}
+			val selectedFilters: Map<AccountType, List<FilterValue>> =
+				filterAdapter.filters.mapValues { entry ->
+					entry.value.filter { it.checked }
+				}
 			viewModel.updateSelectedFilters(selectedFilters)
 		}
 	}
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
 
 		val headers = mapOf(
 			AccountType.COMPANY to getString(R.string.filter_by_company),
@@ -67,16 +91,45 @@ class MeetFiltersFragment : Fragment() {
 			headers = headers,
 			updateResultsListener = updateResultsListener
 		)
-    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentFiltersBinding.inflate(inflater)
+		lifecycleScope.launch {
+			repeatOnLifecycle(Lifecycle.State.STARTED) {
+				viewModel.categoriesFilter.collectLatest { filters ->
+					categoriesAdapter.timeFilters = CategoryFilter.entries.map { cat ->
+
+						fun CategoryFilter.toDescription(): String = when (this) {
+							CategoryFilter.ALL -> "Tutti"
+							CategoryFilter.COMPANY -> "Compagnie"
+							CategoryFilter.STARTUP -> "Startup"
+							CategoryFilter.RESEARCH_INSTITUTION -> "Istituzioni"
+						}
+
+						/**
+						 * Se la categoria è selezionata in base ai filtri di categoria attivi.
+						 */
+						fun CategoryFilter.matches(types: List<AccountType>): Boolean = when (this) {
+							CategoryFilter.ALL -> types.isEmpty()
+							else -> types.containsAll(this.types)
+						}
+
+						TimeFilter(
+							cat.toDescription(),
+							cat.matches(filters),
+						)
+					}
+				}
+			}
+		}
+	}
+
+	override fun onCreateView(
+		inflater: LayoutInflater,
+		container: ViewGroup?,
+		savedInstanceState: Bundle?
+	): View {
+		_binding = FragmentFiltersBinding.inflate(inflater)
 		return binding.root
-    }
+	}
 
 	override fun onDestroyView() {
 		super.onDestroyView()
@@ -84,10 +137,10 @@ class MeetFiltersFragment : Fragment() {
 		AccountsManager.updateSearchParam("")
 	}
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
 
-		viewModel.appliedFiltersFlow.asLiveData(Dispatchers.Main).observe(requireActivity()) {
+		viewModel.filtersFlow.asLiveData(Dispatchers.Main).observe(requireActivity()) {
 			filterAdapter.filters = it
 		}
 
@@ -98,10 +151,12 @@ class MeetFiltersFragment : Fragment() {
 						Status.SUCCESS -> {
 							updateNumberOfResults(res.data?.size ?: 0)
 						}
+
 						Status.ERROR -> {
 							// Continuiamo a mostrare il valore precedente
 							Log.e(TAG, "Error loading results with new filters selection")
 						}
+
 						Status.LOADING -> {
 							// Continuiamo a mostrare il valore precedente, per evitare side effects grafici introducendo un loader sul pulsante
 							Log.d(TAG, "Loading results with new filters selection in progress...")
@@ -111,44 +166,50 @@ class MeetFiltersFragment : Fragment() {
 			}
 		}
 
-        binding.apply {
-            filterstRV.adapter = filterAdapter
-			filterstRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+		binding.apply {
+			filterstRecyclerView.apply {
+				adapter = filterAdapter
+				addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-				// Nasconde la tastiera, quando l'utente inizia a scrollare la lista
-				override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-					super.onScrollStateChanged(recyclerView, newState)
-					if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-						val imm: InputMethodManager =
-							recyclerView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-						imm.hideSoftInputFromWindow(recyclerView.windowToken, 0)
+					// Nasconde la tastiera, quando l'utente inizia a scrollare la lista
+					override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+						super.onScrollStateChanged(recyclerView, newState)
+						if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+							val imm: InputMethodManager =
+								recyclerView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+							imm.hideSoftInputFromWindow(recyclerView.windowToken, 0)
+						}
 					}
-				}
 
-			})
+				})
+			}
 
-            resetBtn.setOnClickListener {
-                resetFilters()
-            }
+			resetBtn.setOnClickListener {
+				resetFilters()
+			}
 
-            showBtn.setOnClickListener {
-                findNavController().popBackStack()
-            }
+			showBtn.setOnClickListener {
+				findNavController().popBackStack()
+			}
 
 			searchFieldEditText.addTextChangedListener { text ->
 				AccountsManager.updateSearchParam(text?.toString() ?: "")
 			}
-        }
 
-    }
+			categoriesRecyclerView.apply {
+				layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+				adapter = categoriesAdapter
+			}
+		}
+	}
 
-    private fun updateNumberOfResults(numResults: Int?) {
-        binding.showBtn.text = getString(R.string.show_results_btn_format, numResults ?: 0)
-    }
+	private fun updateNumberOfResults(numResults: Int?) {
+		binding.showBtn.text = getString(R.string.show_results_btn_format, numResults ?: 0)
+	}
 
-    private fun resetFilters() {
+	private fun resetFilters() {
 		viewModel.updateSelectedFilters(emptyMap())
-    }
+	}
 
 	companion object {
 		private const val TAG = "MeetFiltersFragment"

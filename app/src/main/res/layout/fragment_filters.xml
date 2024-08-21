@@ -22,7 +22,6 @@ SPDX-License-Identifier: CC0-1.0
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintBottom_toTopOf="@id/filterstRV"
 		app:startIconDrawable="@drawable/ic_search"
 		app:endIconMode="clear_text"
 		style="@style/ThemeOverlay.NOI.SearchField">
@@ -39,14 +38,25 @@ SPDX-License-Identifier: CC0-1.0
 	</com.google.android.material.textfield.TextInputLayout>
 
 	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/filterstRV"
+		android:id="@+id/categoriesRecyclerView"
+		android:layout_marginStart="@dimen/default_margin"
+		android:layout_marginTop="@dimen/default_margin"
+		android:layout_marginEnd="0dp"
+		android:clipToPadding="false"
+		app:layout_constraintTop_toBottomOf="@id/searchField"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"/>
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/filterst_recycler_view"
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
-		android:layout_marginTop="-10dp"
+		android:paddingTop="@dimen/default_margin"
+		android:clipToPadding="false"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/searchField"
+		app:layout_constraintTop_toBottomOf="@id/categoriesRecyclerView"
 		app:layout_constraintBottom_toTopOf="@id/footer"
 		tools:listitem="@layout/vh_switch" />
 
@@ -56,7 +66,7 @@ SPDX-License-Identifier: CC0-1.0
 		android:layout_height="wrap_content"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/filterstRV"
+		app:layout_constraintTop_toBottomOf="@id/filterst_recycler_view"
 		app:layout_constraintBottom_toBottomOf="parent"
 		android:background="@color/tertiary_background_color"
 		android:paddingStart="@dimen/default_margin"

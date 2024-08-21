@@ -87,7 +87,7 @@ class EventsFiltersFragment : Fragment() {
         binding.apply {
 			searchField.isVisible = false
 
-			filterstRV.adapter = filterAdapter
+			filterstRecyclerView.adapter = filterAdapter
 
             resetBtn.setOnClickListener {
                 resetFilters()
