@@ -29,7 +29,7 @@ class FilterViewHolder(private val binding: VhSwitchBinding, updateResultsListen
 			if (exclusive && filter.checked)
 				turnOffOtherSwitch()
 
-			updateResultsListener.updateResults()
+			updateResultsListener.updateResults(filter)
 		}
 	}
 
@@ -45,7 +45,6 @@ class FilterViewHolder(private val binding: VhSwitchBinding, updateResultsListen
 							switch.callOnClick()
 						}
 					}
-
 				}
 			}
 		}
@@ -60,5 +59,5 @@ class FilterViewHolder(private val binding: VhSwitchBinding, updateResultsListen
 }
 
 interface UpdateResultsListener {
-	fun updateResults()
+	fun updateResults(filter: FilterValue)
 }

@@ -16,9 +16,16 @@ import it.bz.noi.community.ui.HeaderViewHolder
 private const val CONTACT = 0
 private const val HEADER = 4
 
-class ContactsSectionAdapter(private val detailListener: ContactDetailListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ContactsSectionAdapter(
+	private val initial: Char,
+	private val detailListener: ContactDetailListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-	constructor(contacs: List<Contact>, detailListener: ContactDetailListener) : this(detailListener) {
+	init {
+	    setHasStableIds(true)
+	}
+
+	constructor(initial: Char, contacs: List<Contact>, detailListener: ContactDetailListener) : this(initial, detailListener) {
 		this.contacts = contacs
 	}
 
@@ -38,6 +45,14 @@ class ContactsSectionAdapter(private val detailListener: ContactDetailListener) 
 		else -> CONTACT
 	}
 
+	override fun getItemId(position: Int): Long {
+		return when (val viewType = getItemViewType(position)) {
+			HEADER -> initial.code.toLong()
+			CONTACT -> viewType.toLong() * 33 + contacts[position - 1].id.hashCode()
+			else -> throw UnkownViewTypeException(viewType)
+		}
+	}
+
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 		return when (viewType) {
 			CONTACT -> ContactVH(
@@ -47,7 +62,7 @@ class ContactsSectionAdapter(private val detailListener: ContactDetailListener) 
 					false
 				), detailListener
 			)
-			HEADER -> HeaderViewHolder(VhHeaderBinding.bind(LayoutInflater.from(parent.context).inflate(R.layout.vh_header_dark, parent, false)))
+			HEADER -> HeaderViewHolder(VhHeaderBinding.bind(LayoutInflater.from(parent.context).inflate(R.layout.vh_header, parent, false)))
 			else -> throw UnkownViewTypeException(viewType)
 		}
 	}
@@ -56,7 +71,7 @@ class ContactsSectionAdapter(private val detailListener: ContactDetailListener) 
 		Log.d("AdapterDebug", "Binding item at position: " + position + ", itemViewType: " + getItemViewType(position));
 		when (holder) {
 			is ContactVH -> holder.bind(contacts[position - 1])
-			is HeaderViewHolder -> holder.bind(contacts[0].firstName.substring(0, 1))
+			is HeaderViewHolder -> holder.bind("$initial")
 		}
 	}
 }

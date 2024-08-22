@@ -28,6 +28,7 @@ import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.Contact
 import it.bz.noi.community.databinding.FragmentMeetBinding
 import it.bz.noi.community.utils.Status
+import it.bz.noi.community.utils.groupedByInitial
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -56,8 +57,12 @@ class MeetFragment : Fragment() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		// Define a map of contacts adapters for each alphabet letter
-		contactsAdapters = (('A'..'Z').associateWith { ContactsSectionAdapter(listener) }) + ('#' to ContactsSectionAdapter(listener))
+		contactsAdapters = (('A'..'Z').associateWith { c -> ContactsSectionAdapter(c, listener) }) + ('#' to ContactsSectionAdapter('#', listener))
 		contactsAdapter = ConcatAdapter(
+			ConcatAdapter.Config.Builder()
+				.setIsolateViewTypes(false)
+				.setStableIdMode(ConcatAdapter.Config.StableIdMode.SHARED_STABLE_IDS)
+				.build(),
 			contactsAdapters.values.toList()
 		)
 	}
@@ -111,21 +116,9 @@ class MeetFragment : Fragment() {
 		setupObservers()
 	}
 
-	/**
-	 * Given a list of Contact, group them by the first letter of their first name.
-	 * If there are not contacts for a given letter, use the empty list.
-	 * Name starting not with a letter are grouped under the "#" key.
-	 */
-	private fun List<Contact>.groupedByFirstLetter(): Map<Char, List<Contact>> {
+	private fun Contact.initial(): Char {
 		fun String.removeAccents() = Normalizer.normalize(this, Normalizer.Form.NFD)
-		fun String.firstLetterOrDefault(): Char = removeAccents().firstOrNull()?.takeIf { it.isLetter() }?.uppercaseChar() ?: '#'
-		val contactsByFirstLetter: Map<Char,List<Contact>> = groupBy { it.firstName.firstLetterOrDefault() }
-		val result: MutableMap<Char, List<Contact>> = mutableMapOf()
-		('A'..'Z').forEach { letter: Char ->
-			result[letter] = contactsByFirstLetter[letter] ?: emptyList()
-		}
-		result['#'] = contactsByFirstLetter['#'] ?: emptyList()
-		return result
+		return firstName.removeAccents().firstOrNull()?.takeIf { it.isLetter() }?.uppercaseChar() ?: '#'
 	}
 
 	private fun setupObservers() {
@@ -140,7 +133,7 @@ class MeetFragment : Fragment() {
 							if (contacts.isEmpty()) {
 								binding.contacts.swapAdapter(ContactsLoadingOrEmptyAdapter(ContactsLoadingOrEmptyAdapter.State.Empty), false)
 							} else {
-								contacts.groupedByFirstLetter().forEach { (letter, contacts) ->
+								contacts.groupedByInitial(initial = { contact -> contact.initial() }).forEach { (letter, contacts) ->
 									contactsAdapters[letter]?.updateContacts(contacts)
 								}
 								binding.contacts.swapAdapter(contactsAdapter, false)

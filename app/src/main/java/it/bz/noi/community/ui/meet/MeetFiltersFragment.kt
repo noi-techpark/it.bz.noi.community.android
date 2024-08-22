@@ -19,6 +19,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import androidx.paging.Config
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
@@ -31,18 +33,21 @@ import it.bz.noi.community.ui.UpdateResultsListener
 import it.bz.noi.community.ui.today.events.TimeFilterAdapter
 import it.bz.noi.community.ui.today.events.TimeFilterClickListener
 import it.bz.noi.community.utils.Status
+import it.bz.noi.community.utils.groupedByInitial
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Contextual
 
 @ExperimentalCoroutinesApi
 class MeetFiltersFragment : Fragment() {
 
-	private lateinit var filterAdapter: MeetFiltersAdapter
-
 	private var _binding: FragmentFiltersBinding? = null
 	private val binding get() = _binding!!
+
+	private lateinit var adapters: Map<Char, MeetFiltersSectionAdapter>
+	private lateinit var adapter: ConcatAdapter
 
 	private val categoriesListener by lazy {
 		object : TimeFilterClickListener {
@@ -69,27 +74,21 @@ class MeetFiltersFragment : Fragment() {
 		})
 
 	private val updateResultsListener = object : UpdateResultsListener {
-		override fun updateResults() {
-			// FIXME
-			val selectedFilters: Map<AccountType, List<FilterValue>> =
-				filterAdapter.filters.mapValues { entry ->
-					entry.value.filter { it.checked }
-				}
-			viewModel.updateSelectedFilters(selectedFilters)
+		override fun updateResults(filter: FilterValue) {
+			viewModel.updateSelectedFilters(filter)
 		}
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		val headers = mapOf(
-			AccountType.COMPANY to getString(R.string.filter_by_company),
-			AccountType.STARTUP to getString(R.string.filter_by_startup),
-			AccountType.RESEARCH_INSTITUTION to getString(R.string.filter_by_research_institution)
-		)
-		filterAdapter = MeetFiltersAdapter(
-			headers = headers,
-			updateResultsListener = updateResultsListener
+		adapters = (('A'..'Z').associateWith { c -> MeetFiltersSectionAdapter(c, updateResultsListener) }) + ('#' to MeetFiltersSectionAdapter('#', updateResultsListener))
+		adapter = ConcatAdapter(
+			ConcatAdapter.Config.Builder()
+				.setIsolateViewTypes(false)
+				.setStableIdMode(ConcatAdapter.Config.StableIdMode.SHARED_STABLE_IDS)
+				.build(),
+			adapters.values.toList()
 		)
 
 		lifecycleScope.launch {
@@ -97,11 +96,13 @@ class MeetFiltersFragment : Fragment() {
 				viewModel.categoriesFilter.collectLatest { filters ->
 					categoriesAdapter.timeFilters = CategoryFilter.entries.map { cat ->
 
-						fun CategoryFilter.toDescription(): String = when (this) {
-							CategoryFilter.ALL -> "Tutti"
-							CategoryFilter.COMPANY -> "Compagnie"
-							CategoryFilter.STARTUP -> "Startup"
-							CategoryFilter.RESEARCH_INSTITUTION -> "Istituzioni"
+						fun CategoryFilter.toDescription(): String = with(requireContext()) {
+							when (this@toDescription) {
+								CategoryFilter.ALL -> getString(R.string.filter_by_none)
+								CategoryFilter.COMPANY -> getString(R.string.filter_by_company)
+								CategoryFilter.STARTUP -> getString(R.string.filter_by_startup)
+								CategoryFilter.RESEARCH_INSTITUTION -> getString(R.string.filter_by_research_institution)
+							}
 						}
 
 						/**
@@ -140,8 +141,12 @@ class MeetFiltersFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		viewModel.filtersFlow.asLiveData(Dispatchers.Main).observe(requireActivity()) {
-			filterAdapter.filters = it
+		viewModel.filtersFlow.asLiveData(Dispatchers.Main).observe(requireActivity()) { filtersByType ->
+			filtersByType.values.flatten().groupedByInitial {
+				it.desc.first().uppercaseChar()
+			}.forEach { (initial, filters) ->
+				adapters[initial]?.filters = filters
+			}
 		}
 
 		viewLifecycleOwner.lifecycleScope.launch {
@@ -168,7 +173,7 @@ class MeetFiltersFragment : Fragment() {
 
 		binding.apply {
 			filterstRecyclerView.apply {
-				adapter = filterAdapter
+				adapter = this@MeetFiltersFragment.adapter
 				addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
 					// Nasconde la tastiera, quando l'utente inizia a scrollare la lista
@@ -208,7 +213,7 @@ class MeetFiltersFragment : Fragment() {
 	}
 
 	private fun resetFilters() {
-		viewModel.updateSelectedFilters(emptyMap())
+		viewModel.clearSelctedFilters()
 	}
 
 	companion object {

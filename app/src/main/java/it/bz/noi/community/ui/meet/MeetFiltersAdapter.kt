@@ -22,6 +22,74 @@ private const val VIEWTYPE_HEADER = 0
 private const val VIEWTYPE_FILTER = 1
 private const val VIEWTYPE_EMPTY = 4
 
+class MeetFiltersSectionAdapter(
+	private val initial: Char,
+	private val updateResultsListener: UpdateResultsListener,
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+	init {
+	    setHasStableIds(true)
+	}
+
+	var filters: List<FilterValue> = emptyList()
+		set(value) {
+			field = value
+			notifyDataSetChanged()
+		}
+
+	override fun getItemId(position: Int): Long {
+		return when (val viewType = getItemViewType(position)) {
+			VIEWTYPE_HEADER -> initial.code.toLong()
+			VIEWTYPE_FILTER -> viewType.toLong() * 33 + filters[position - 1].key.hashCode()
+			else -> throw UnkownViewTypeException(viewType)
+		}
+	}
+
+	override fun getItemCount(): Int {
+		if (filters.isEmpty()) {
+			return 0
+		} else {
+			return filters.size + 1
+		}
+	}
+
+	override fun getItemViewType(position: Int): Int = when (position) {
+		0 -> VIEWTYPE_HEADER
+		else -> VIEWTYPE_FILTER
+	}
+
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+		return when (viewType) {
+			VIEWTYPE_HEADER -> HeaderViewHolder(
+				VhHeaderBinding.inflate(
+					LayoutInflater.from(parent.context),
+					parent,
+					false
+				)
+			)
+			VIEWTYPE_FILTER -> FilterViewHolder(
+				VhSwitchBinding.inflate(
+					LayoutInflater.from(parent.context),
+					parent,
+					false
+				), updateResultsListener, exclusive = false
+			)
+			else -> throw RuntimeException("Unsupported viewType $viewType")
+		}
+	}
+
+	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+		when (holder) {
+			is HeaderViewHolder -> {
+				holder.bind("$initial")
+			}
+			is FilterViewHolder -> {
+				holder.bind(filters[position - 1])
+			}
+		}
+	}
+}
+
 class MeetFiltersAdapter(
 	private val headers: Map<AccountType, String>,
 	private val updateResultsListener: UpdateResultsListener

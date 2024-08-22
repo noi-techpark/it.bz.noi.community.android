@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
+import it.bz.noi.community.data.models.FilterValue
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.MainViewModel
@@ -36,7 +37,7 @@ class EventsFiltersFragment : Fragment() {
     })
 
 	private val updateResultsListener = object : UpdateResultsListener {
-		override fun updateResults() {
+		override fun updateResults(filter: FilterValue) {
 			mainViewModel.updateSelectedFilters(filterAdapter.filters.filter { it.checked })
 		}
 	}
