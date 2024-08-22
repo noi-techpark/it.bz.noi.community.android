@@ -16,7 +16,6 @@ class HeaderViewHolder(private val binding: VhHeaderBinding) : RecyclerView.View
 	fun bind(header: String) {
 		binding.headerTextView.text = header
 	}
-
 }
 
 class FilterViewHolder(private val binding: VhSwitchBinding, updateResultsListener: UpdateResultsListener, exclusive: Boolean = false) : RecyclerView.ViewHolder(binding.root) {
