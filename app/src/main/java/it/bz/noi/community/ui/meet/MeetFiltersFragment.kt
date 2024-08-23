@@ -88,7 +88,7 @@ class MeetFiltersFragment : Fragment() {
 				.setIsolateViewTypes(false)
 				.setStableIdMode(ConcatAdapter.Config.StableIdMode.SHARED_STABLE_IDS)
 				.build(),
-			adapters.values.toList()
+			adapters.entries.sortedBy { it.key }.map { it.value }
 		)
 
 		lifecycleScope.launch {
