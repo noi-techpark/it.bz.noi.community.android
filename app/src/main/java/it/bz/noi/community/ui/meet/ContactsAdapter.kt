@@ -75,6 +75,7 @@ class ContactsLoadingOrEmptyAdapter(state: State) : RecyclerView.Adapter<Recycle
 	override fun getItemCount(): Int = 1
 }
 
+@Deprecated("Concatenate ContactsSectionAdapter instead")
 class ContactsAdapter(private val detailListener: ContactDetailListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 	sealed class AdapterState {

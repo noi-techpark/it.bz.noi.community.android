@@ -90,6 +90,7 @@ class MeetFiltersSectionAdapter(
 	}
 }
 
+@Deprecated("Concatenate MeetFiltersSectionAdapter instead")
 class MeetFiltersAdapter(
 	private val headers: Map<AccountType, String>,
 	private val updateResultsListener: UpdateResultsListener
