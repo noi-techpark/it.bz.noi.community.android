@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+﻿// SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -19,7 +19,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
-import androidx.paging.Config
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,7 +37,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Contextual
+import java.text.Normalizer
 
 @ExperimentalCoroutinesApi
 class MeetFiltersFragment : Fragment() {
@@ -142,10 +141,21 @@ class MeetFiltersFragment : Fragment() {
 		super.onViewCreated(view, savedInstanceState)
 
 		viewModel.filtersFlow.asLiveData(Dispatchers.Main).observe(requireActivity()) { filtersByType ->
+
+			fun compareFilters(str1: String, str2: String): Int {
+				val normalizedStr1 = Normalizer.normalize(str1, Normalizer.Form.NFD)
+					.replace("\\p{M}".toRegex(), "")
+				val normalizedStr2 = Normalizer.normalize(str2, Normalizer.Form.NFD)
+					.replace("\\p{M}".toRegex(), "")
+				return normalizedStr1.compareTo(normalizedStr2, ignoreCase = true)
+			}
+
 			filtersByType.values.flatten().groupedByInitial {
 				it.desc.first().uppercaseChar()
 			}.forEach { (initial, filters) ->
-				adapters[initial]?.filters = filters
+				adapters[initial]?.filters = filters.sortedWith(Comparator { a, b ->
+					compareFilters(a.desc, b.desc)
+				})
 			}
 		}
 
