@@ -8,5 +8,12 @@ data class NewsParams(
 	var startDate: String,
 	var pageSize: Int = 10,
 	var pageNumber: Int,
-	var language: String?
+	var language: String?,
+	var highlight: Boolean = false
 )
+
+fun NewsParams.getRawFilter(): String {
+	if (highlight)
+		return "eq(Highlight,\"true\")"
+	return "or(eq(Highlight,\"false\"),isnull(Highlight))"
+}

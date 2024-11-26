@@ -29,7 +29,8 @@ class ApiHelper(
 			startDate = newsParams.startDate,
 			pageNumber = newsParams.pageNumber,
 			pageSize = newsParams.pageSize,
-			language = newsParams.language
+			language = newsParams.language,
+			rawFilter = newsParams.getRawFilter()
 		)
 
 	suspend fun getNewsDetails(newsId: String, language: String?) =

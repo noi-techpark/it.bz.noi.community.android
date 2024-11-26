@@ -21,11 +21,13 @@ data class News(
 	@SerializedName("Detail")
 	val detail: Map<String, Detail>,
 	@SerializedName("ContactInfos")
-	val contactInfo: Map<String, ContactInfo>,
+	val contactInfo: Map<String, ContactInfo>? = null,
 	@SerializedName("ImageGallery")
 	val images: List<NewsImage>? = null,
 	@SerializedName("ODHTags")
-	val tags: List<Tag>? = null
+	val tags: List<Tag>? = null,
+	@SerializedName("Highlight")
+	val highlighted: Boolean = false,
 ) : Parcelable
 
 @Keep
@@ -71,11 +73,15 @@ fun News.getDetail(): Detail? {
 }
 
 fun News.getContactInfo(): ContactInfo? {
-	return contactInfo[Utils.getAppLanguage()]
+	return contactInfo?.let {
+		it[Utils.getAppLanguage()]
+	}
 }
 
+// FIXME -> WIP
 fun News.hasImportantFlag(): Boolean {
-	return tags != null && tags.filter { it.id == "important" }.isNotEmpty()
+	val isImportant = tags != null && tags.filter { it.id == "important" }.isNotEmpty()
+	return isImportant || highlighted
 }
 
 data class NewsResponse(

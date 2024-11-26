@@ -198,18 +198,22 @@ class NewsVH(private val binding: VhNewsBinding, detailListener: NewsDetailListe
 		this.news = news
 		binding.date.text = df.format(news.date)
 		binding.importantTag.isVisible = news.hasImportantFlag()
+		if (news.highlighted) // FIXME -> WIP
+			binding.importantTag.text = "TMP PINNATO"
 		news.getDetail()?.let { detail ->
 			binding.title.text = detail.title
 			binding.shortText.text = detail.abstract
 		}
-		news.getContactInfo()?.let { contactInfo ->
+		val contactInfo = news.getContactInfo()
+		if (contactInfo == null)  {
+			binding.publisher.text = "N/D"
+		} else {
 			binding.publisher.text = contactInfo.publisher
 			Glide
 				.with(binding.root.context)
 				.load(contactInfo.logo)
 				.centerCrop()
 				.into(binding.logo)
-
 		}
 
 		setTransitionNames(news.id)

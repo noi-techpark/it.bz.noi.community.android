@@ -24,25 +24,35 @@ class NewsPagingSource(private val mainRepository: MainRepository) :
     }
 
 	private val startDate = Date()
+	private var moreHighlight = true
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, News> {
         // Start refresh at page 1 if undefined.
         val nextPageNumber = params.key ?: 1
 
-		val newsParams = NewsParams(
-			startDate = DateUtils.parameterDateFormatter().format(startDate),
-			pageSize = PAGE_ITEMS,
-			pageNumber = nextPageNumber,
-			language = Utils.getAppLanguage()
-		)
+		val newsParams = getNewsParams(nextPageNumber)
 
 		return try {
 			val newsResponse = mainRepository.getNews(newsParams)
 
+			val news = mutableListOf<News>()
+			news.addAll(newsResponse.news)
+
+			var nextKey = if (newsResponse.nextPage != null) newsResponse.currentPage + 1 else null
+			if (moreHighlight && nextKey == null) {
+				moreHighlight = false
+
+				val notHighlightedNewsParams = getNewsParams(nextPageNumber)
+				val notHighlightedNewsResponse = mainRepository.getNews(notHighlightedNewsParams)
+				news.addAll(notHighlightedNewsResponse.news)
+
+				nextKey = if (notHighlightedNewsResponse.nextPage != null) notHighlightedNewsResponse.currentPage + 1 else null
+			}
+
 			LoadResult.Page(
-				data = newsResponse.news,
+				data = news,
 				prevKey = null, // Only paging forward.
-				nextKey = if (newsResponse.nextPage != null) newsResponse.currentPage + 1 else null
+				nextKey = nextKey
 			)
 		} catch (ex: Exception) {
 			Log.e(TAG, "Error loading news", ex)
@@ -51,6 +61,14 @@ class NewsPagingSource(private val mainRepository: MainRepository) :
 		}
 
     }
+
+	private fun getNewsParams(nextPageNumber: Int) = NewsParams(
+		startDate = DateUtils.parameterDateFormatter().format(startDate),
+		pageSize = PAGE_ITEMS,
+		pageNumber = nextPageNumber,
+		language = Utils.getAppLanguage(),
+		highlight = moreHighlight
+	)
 
     override fun getRefreshKey(state: PagingState<Int, News>): Int? {
         // Try to find the page key of the closest page to anchorPosition, from

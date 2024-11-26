@@ -110,16 +110,18 @@ class NewsDetailsFragment: Fragment() {
 
 			binding.title.text = detail.title
 			binding.shortText.text = detail.abstract
-			binding.longText.text = Html.fromHtml(detail.text, Html.FROM_HTML_MODE_LEGACY)
+			binding.longText.text = detail.text?.let{ Html.fromHtml(it, Html.FROM_HTML_MODE_LEGACY) }
 			binding.longText.movementMethod = LinkMovementMethod.getInstance()
 		}
 
 		var isExternalLink = false
 		var isEmail = false
-		news.getContactInfo()?.let { contactInfo ->
+		val contactInfo = news.getContactInfo()
+		if (contactInfo == null) {
+			binding.publisher.text = "N/D"
+		} else {
 			binding.publisher.text = contactInfo.publisher
 
-			binding.logo.isVisible = true
 			Glide
 				.with(binding.root.context)
 				.load(contactInfo.logo)
