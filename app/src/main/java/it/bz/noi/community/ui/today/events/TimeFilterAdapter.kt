@@ -4,6 +4,7 @@
 
 package it.bz.noi.community.ui.today.events
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +22,7 @@ class TimeFilterAdapter(
     RecyclerView.Adapter<TimeFilterAdapter.TimeFilterViewHolder>() {
 
 	var timeFilters: List<TimeFilter> = timeFilters
+		@SuppressLint("NotifyDataSetChanged")
 		set(value) {
 			field = value
 			notifyDataSetChanged()

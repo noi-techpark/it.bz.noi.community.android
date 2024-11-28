@@ -37,6 +37,15 @@ SPDX-License-Identifier: CC0-1.0
 			tools:ignore="TouchTargetSizeCheck" />
 	</com.google.android.material.textfield.TextInputLayout>
 
+	<androidx.constraintlayout.widget.Group
+		android:id="@+id/categoriesGroup"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:constraint_referenced_ids="searchField,categoriesRecyclerView"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"/>
+
+	<!-- RV "chip" filtri -->
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/categoriesRecyclerView"
 		android:layout_marginStart="@dimen/default_margin"
@@ -47,12 +56,14 @@ SPDX-License-Identifier: CC0-1.0
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"/>
 
+	<!-- RV filtri -->
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/filterst_recycler_view"
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
-		android:paddingTop="@dimen/default_margin"
 		android:clipToPadding="false"
+		android:paddingBottom="@dimen/default_margin"
+		android:layout_marginTop="@dimen/default_margin"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"

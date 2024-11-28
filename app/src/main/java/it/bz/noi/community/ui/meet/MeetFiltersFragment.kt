@@ -97,10 +97,10 @@ class MeetFiltersFragment : Fragment() {
 
 						fun CategoryFilter.toDescription(): String = with(requireContext()) {
 							when (this@toDescription) {
-								CategoryFilter.ALL -> getString(R.string.filter_by_none)
-								CategoryFilter.COMPANY -> getString(R.string.filter_by_company)
+								CategoryFilter.ALL -> getString(R.string.filter_by_all)
+								CategoryFilter.COMPANY -> getString(R.string.filter_by_companies)
 								CategoryFilter.STARTUP -> getString(R.string.filter_by_startup)
-								CategoryFilter.RESEARCH_INSTITUTION -> getString(R.string.filter_by_research_institution)
+								CategoryFilter.RESEARCH_INSTITUTION -> getString(R.string.filter_by_institutions)
 							}
 						}
 
