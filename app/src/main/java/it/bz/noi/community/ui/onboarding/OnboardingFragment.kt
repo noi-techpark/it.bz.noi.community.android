@@ -88,9 +88,9 @@ class OnboardingFragment : BaseOnboardingFragment() {
 							showLoginInterface(false)
 							onboardingActivity?.goToMainActivity()
 						}
-						AuthStateStatus.Unauthorized.NotValidRole -> {
+						is AuthStateStatus.Unauthorized.NotValidRole -> {
 							showLoginInterface(false)
-							findNavController().navigate(OnboardingFragmentDirections.loginToError())
+							findNavController().navigate(OnboardingFragmentDirections.loginToError(status.emailAddress))
 						}
 						else -> {
 							showLoginInterface(true)
