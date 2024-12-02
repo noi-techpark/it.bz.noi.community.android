@@ -119,7 +119,7 @@ object AuthManager {
 				)
 			)
 
-			true || !validRole -> AuthStateStatus.Unauthorized.NotValidRole("")
+			!validRole -> AuthStateStatus.Unauthorized.NotValidRole("")
 			authState.isAuthorized -> {
 				authState.isEmailValid().let { (mail, isValid) ->
 					if (!isValid) {
