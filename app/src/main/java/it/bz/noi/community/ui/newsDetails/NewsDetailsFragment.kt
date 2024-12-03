@@ -65,8 +65,9 @@ class NewsDetailsFragment : Fragment() {
 		}
 		sharedElementReturnTransition = null
 
-		if (savedInstanceState == null)
+		if (savedInstanceState == null) {
 			postponeEnterTransition()
+		}
 	}
 
 	override fun onCreateView(
@@ -85,7 +86,7 @@ class NewsDetailsFragment : Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-
+		setTransitionNames()
 		viewModel.newsFlow.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) {
 			when (it.status) {
 				Status.SUCCESS -> {
@@ -108,7 +109,6 @@ class NewsDetailsFragment : Fragment() {
 	}
 
 	private fun loadNewsData(news: News) {
-		setTransitionNames(news.id)
 
 		binding.date.text = dateFormat.format(news.date)
 
@@ -117,8 +117,10 @@ class NewsDetailsFragment : Fragment() {
 
 			binding.title.text = detail.title
 			binding.shortText.text = detail.abstract
+			binding.shortText.isVisible = detail.abstract?.isNotBlank() == true
 			binding.longText.text =
 				detail.text?.let { Html.fromHtml(it, Html.FROM_HTML_MODE_LEGACY) }
+			binding.longText.isVisible = detail.text?.isNotBlank() == true
 			binding.longText.movementMethod = LinkMovementMethod.getInstance()
 		}
 
@@ -185,15 +187,16 @@ class NewsDetailsFragment : Fragment() {
 		} else {
 			binding.images.isVisible = false
 		}
+		startPostponedEnterTransition()
 	}
 
-	private fun setTransitionNames(newsId: String) {
-		binding.header.transitionName = "header_${newsId}"
-		binding.logo.transitionName = "logo_${newsId}"
-		binding.publisher.transitionName = "publisher_${newsId}"
-		binding.date.transitionName = "date_${newsId}"
-		binding.title.transitionName = "title_${newsId}"
-		binding.shortText.transitionName = "shortText_${newsId}"
+	private fun setTransitionNames() {
+		binding.header.transitionName = "header"
+		binding.logo.transitionName = "logo"
+		binding.publisher.transitionName = "publisher"
+		binding.date.transitionName = "date"
+		binding.title.transitionName = "title"
+		binding.shortText.transitionName = "shortText"
 	}
 
 	private fun writeEmail(receiverAddress: String) {

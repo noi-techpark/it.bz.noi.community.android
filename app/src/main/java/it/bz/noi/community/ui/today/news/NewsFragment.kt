@@ -218,16 +218,16 @@ class NewsVH(private val binding: VhNewsBinding, detailListener: NewsDetailListe
 				.into(binding.logo)
 		}
 
-		setTransitionNames(news.id)
+		setTransitionNames()
 	}
 
-	private fun setTransitionNames(newsId: String) {
-		binding.header.transitionName = "header_${newsId}"
-		binding.logo.transitionName = "logo_${newsId}"
-		binding.publisher.transitionName = "publisher_${newsId}"
-		binding.date.transitionName = "date_${newsId}"
-		binding.title.transitionName = "title_${newsId}"
-		binding.shortText.transitionName = "shortText_${newsId}"
+	private fun setTransitionNames() {
+		binding.header.transitionName = "header"
+		binding.logo.transitionName = "logo"
+		binding.publisher.transitionName = "publisher"
+		binding.date.transitionName = "date"
+		binding.title.transitionName = "title"
+		binding.shortText.transitionName = "shortText"
 	}
 
 }
