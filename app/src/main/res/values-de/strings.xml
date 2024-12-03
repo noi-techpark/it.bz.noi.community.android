@@ -101,7 +101,7 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="app_privacy_policy_page_title" comment="Title of privacy policy page">Datenschutzrichtlinie</string>
 	<string name="warning_title" comment="Warning title">Oh no!</string>
 	<string name="outsider_user_title" comment="Title of user outsider of NOI community">Hoppla, das hat leider nicht geklappt!</string>
-	<string name="outsider_user_body" comment="Body of user outsider of NOI community">Die angegebene E-Mail-Adresse scheint in unserer Datenbank nicht auf.  \n \nDiese App ist den Mitgliedern der NOI-Community vorbehalten. Wenn du Teil davon bist, prüfe bitte die angegebene E-Mail-Adresse und versuch es noch einmal. Klappt es dann immer noch nicht, schreib uns bitte eine E-Mail an community@noi.bz.it. \n \nDu möchtest auch zur NOI-Community gehören? Hier geht’s zu unseren Job-Angeboten.</string>
+	<string name="outsider_user_body" comment="Body of user outsider of NOI community">Die angegebene E-Mail-Adresse (%1$s) scheint in unserer Datenbank nicht auf.  \n \nDiese App ist den Mitgliedern der NOI-Community vorbehalten. Wenn du Teil davon bist, prüfe bitte die angegebene E-Mail-Adresse und versuch es noch einmal. Klappt es dann immer noch nicht, schreib uns bitte eine E-Mail an community@noi.bz.it. \n \nDu möchtest auch zur NOI-Community gehören? Hier geht’s zu unseren Job-Angeboten.</string>
 	<string name="outsider_user_body_link_1_part" comment="Text to match for adding the first link inside outsider_user_body ">Job-Angeboten</string>
 	<string name="come_on_board_onboarding_page_title" comment="Title of come on board onboarding page">Hallo!</string>
 	<string name="come_on_board_onboarding_title" comment="Title of come on board onboarding">Deine Anmeldung war erfolgreich</string>

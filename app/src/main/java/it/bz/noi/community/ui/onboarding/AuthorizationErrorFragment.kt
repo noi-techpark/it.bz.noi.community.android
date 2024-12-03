@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentAuthorizationErrorBinding
@@ -34,6 +35,8 @@ class AuthorizationErrorFragment : BaseOnboardingFragment() {
 
 	private var _binding: FragmentAuthorizationErrorBinding? = null
 	private val binding get() = _binding!!
+
+	private val args by navArgs<AuthorizationErrorFragmentArgs>()
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -70,7 +73,10 @@ class AuthorizationErrorFragment : BaseOnboardingFragment() {
 		binding.message.apply {
 			movementMethod = LinkMovementMethod.getInstance()
 			text = buildSpannedString {
-				append(getString(R.string.outsider_user_body))
+				append(
+					getString(R.string.outsider_user_body, args.emailAddress)
+					.replace("() ", "") // Remove blank email address.
+				)
 				val jobsSnippet = getString(R.string.outsider_user_body_link_1_part)
 				addClickableSpan(jobsSnippet) {
 					try {
