@@ -137,6 +137,21 @@ class MeetFiltersFragment : Fragment() {
 		AccountsManager.updateSearchParam("")
 	}
 
+	/**
+	 * Estrae la prima lettera dalla descrizione del filtro, se è una lettera. Altrimenti restituisce '#'.
+	 */
+	private val FilterValue.initial: Char
+		get() = normalizedDesc().first().takeIf { it.isLetter() }?.uppercaseChar() ?: '#'
+
+	/**
+	 * Restituisce la descrizione del filtro normalizzata, senza caratteri diacritici.
+	 * Usata sia per ordinare i filtri, sia per raggrupparli per iniziale.
+	 */
+	private fun FilterValue.normalizedDesc(): String {
+		return Normalizer.normalize(desc, Normalizer.Form.NFD)
+			.replace("\\p{M}".toRegex(), "")
+	}
+
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
@@ -151,11 +166,11 @@ class MeetFiltersFragment : Fragment() {
 			}
 
 			filtersByType.values.flatten().groupedByInitial {
-				it.desc.first().uppercaseChar()
+				it.initial
 			}.forEach { (initial, filters) ->
-				adapters[initial]?.filters = filters.sortedWith(Comparator { a, b ->
+				adapters[initial]?.filters = filters.sortedWith { a, b ->
 					compareFilters(a.desc, b.desc)
-				})
+				}
 			}
 		}
 
@@ -214,6 +229,7 @@ class MeetFiltersFragment : Fragment() {
 			categoriesRecyclerView.apply {
 				layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 				adapter = categoriesAdapter
+				addItemDecoration(CategoriesItemDecoration())
 			}
 		}
 	}
