@@ -110,6 +110,8 @@ class NewsDetailsFragment : Fragment() {
 
 	private fun loadNewsData(news: News) {
 
+		var startPostponedEnterTransitionInvoked = false
+
 		binding.date.text = dateFormat.format(news.date)
 
 		news.getLocalizedDetail()?.let { detail ->
@@ -131,6 +133,8 @@ class NewsDetailsFragment : Fragment() {
 			binding.publisher.text = "N/D" //TODO: localize this
 		} else {
 			binding.publisher.text = contactInfo.publisher
+
+			startPostponedEnterTransitionInvoked = true
 
 			Glide
 				.with(binding.root.context)
@@ -187,7 +191,11 @@ class NewsDetailsFragment : Fragment() {
 		} else {
 			binding.images.isVisible = false
 		}
-		startPostponedEnterTransition()
+
+		if (!startPostponedEnterTransitionInvoked) {
+			startPostponedEnterTransitionInvoked = true
+			startPostponedEnterTransition()
+		}
 	}
 
 	private fun setTransitionNames() {
