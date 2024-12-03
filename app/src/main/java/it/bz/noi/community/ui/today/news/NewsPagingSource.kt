@@ -15,22 +15,20 @@ import it.bz.noi.community.utils.DateUtils
 import it.bz.noi.community.utils.Utils
 import java.util.*
 
-class NewsPagingSource(private val mainRepository: MainRepository) :
+private const val TAG = "NewsPagingSource"
+
+class NewsPagingSource(private val pageSize: Int, private val mainRepository: MainRepository) :
     PagingSource<Int, News>() {
-
-    companion object {
-        private const val TAG = "NewsPagingSource"
-		const val PAGE_ITEMS = 10
-    }
-
+		
 	private val startDate = Date()
+
 	private var moreHighlight = true
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, News> {
         // Start refresh at page 1 if undefined.
         val nextPageNumber = params.key ?: 1
 
-		val newsParams = getNewsParams(nextPageNumber)
+		val newsParams = NewsParams(nextPageNumber, pageSize, startDate, moreHighlight)
 
 		return try {
 			val newsResponse = mainRepository.getNews(newsParams)
@@ -42,7 +40,12 @@ class NewsPagingSource(private val mainRepository: MainRepository) :
 			if (moreHighlight && nextKey == null) {
 				moreHighlight = false
 
-				val notHighlightedNewsParams = getNewsParams(nextPageNumber)
+				val notHighlightedNewsParams = NewsParams(
+					nextPageNumber,
+					pageSize,
+					startDate,
+					false
+				)
 				val notHighlightedNewsResponse = mainRepository.getNews(notHighlightedNewsParams)
 				news.addAll(notHighlightedNewsResponse.news)
 
@@ -59,16 +62,7 @@ class NewsPagingSource(private val mainRepository: MainRepository) :
 			FirebaseCrashlytics.getInstance().recordException(ex)
 			LoadResult.Error(ex)
 		}
-
     }
-
-	private fun getNewsParams(nextPageNumber: Int) = NewsParams(
-		startDate = DateUtils.parameterDateFormatter().format(startDate),
-		pageSize = PAGE_ITEMS,
-		pageNumber = nextPageNumber,
-		language = Utils.getAppLanguage(),
-		highlight = moreHighlight
-	)
 
     override fun getRefreshKey(state: PagingState<Int, News>): Int? {
         // Try to find the page key of the closest page to anchorPosition, from

@@ -11,6 +11,8 @@ import it.bz.noi.community.utils.Utils
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
+private const val ID_TAG_IMPORTANT = "important" // ID of the "important" tag
+
 @Keep
 @Parcelize
 data class News(
@@ -27,7 +29,7 @@ data class News(
 	@SerializedName("ODHTags")
 	val tags: List<Tag>? = null,
 	@SerializedName("Highlight")
-	val highlighted: Boolean = false,
+	val isHighlighted: Boolean = false,
 ) : Parcelable
 
 @Keep
@@ -68,21 +70,21 @@ data class NewsImage(
 	val url: String? = null
 ) : Parcelable
 
-fun News.getDetail(): Detail? {
-	return detail[Utils.getAppLanguage()]
-}
+/**
+ * Get the localized detail for the current app language.
+ */
+fun News.getLocalizedDetail(): Detail? = detail[Utils.getAppLanguage()]
 
-fun News.getContactInfo(): ContactInfo? {
-	return contactInfo?.let {
-		it[Utils.getAppLanguage()]
-	}
-}
+/**
+ * Get the localized contact info for the current app language.
+ */
+fun News.getLocalizedContactInfo(): ContactInfo? = contactInfo?.get(Utils.getAppLanguage())
 
 // FIXME -> WIP
-fun News.hasImportantFlag(): Boolean {
-	val isImportant = tags != null && tags.filter { it.id == "important" }.isNotEmpty()
-	return isImportant || highlighted
-}
+/**
+ * Whether the news is important, that is, it has the "important" tag.
+ */
+val News.isImportant get(): Boolean = tags?.any { it.id == ID_TAG_IMPORTANT } ?: false
 
 data class NewsResponse(
 	@SerializedName("TotalResults")

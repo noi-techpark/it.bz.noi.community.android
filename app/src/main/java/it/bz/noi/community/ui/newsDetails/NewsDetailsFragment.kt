@@ -32,8 +32,8 @@ import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.News
 import it.bz.noi.community.data.models.NewsImage
-import it.bz.noi.community.data.models.getContactInfo
-import it.bz.noi.community.data.models.getDetail
+import it.bz.noi.community.data.models.getLocalizedContactInfo
+import it.bz.noi.community.data.models.getLocalizedDetail
 import it.bz.noi.community.databinding.FragmentNewsDetailsBinding
 import it.bz.noi.community.databinding.VhHorizontalImageBinding
 import it.bz.noi.community.utils.Status
@@ -41,17 +41,22 @@ import kotlinx.coroutines.Dispatchers
 import java.text.DateFormat
 
 
-class NewsDetailsFragment: Fragment() {
+class NewsDetailsFragment : Fragment() {
 
 	private var _binding: FragmentNewsDetailsBinding? = null
 	private val binding get() = _binding!!
 
 	private val viewModel: NewsDetailViewModel by viewModels(factoryProducer = {
-		NewsDetailViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
-			this@NewsDetailsFragment)
+		NewsDetailViewModelFactory(
+			apiHelper = ApiHelper(
+				RetrofitBuilder.opendatahubApiService,
+				RetrofitBuilder.communityApiService
+			),
+			this@NewsDetailsFragment
+		)
 	})
 
-	private val df = DateFormat.getDateInstance(DateFormat.SHORT)
+	private val dateFormat = DateFormat.getDateInstance(DateFormat.SHORT)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -82,16 +87,18 @@ class NewsDetailsFragment: Fragment() {
 		super.onViewCreated(view, savedInstanceState)
 
 		viewModel.newsFlow.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) {
-			when(it.status) {
+			when (it.status) {
 				Status.SUCCESS -> {
 					binding.newsLoader.isVisible = false
 					val news = it.data!!
 					loadNewsData(news)
 				}
+
 				Status.ERROR -> {
 					binding.newsLoader.isVisible = false
 					Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
 				}
+
 				Status.LOADING -> {
 					binding.newsLoader.isVisible = true
 				}
@@ -103,22 +110,23 @@ class NewsDetailsFragment: Fragment() {
 	private fun loadNewsData(news: News) {
 		setTransitionNames(news.id)
 
-		binding.date.text = df.format(news.date)
+		binding.date.text = dateFormat.format(news.date)
 
-		news.getDetail()?.let { detail ->
+		news.getLocalizedDetail()?.let { detail ->
 			(requireActivity() as AppCompatActivity).supportActionBar?.title = detail.title
 
 			binding.title.text = detail.title
 			binding.shortText.text = detail.abstract
-			binding.longText.text = detail.text?.let{ Html.fromHtml(it, Html.FROM_HTML_MODE_LEGACY) }
+			binding.longText.text =
+				detail.text?.let { Html.fromHtml(it, Html.FROM_HTML_MODE_LEGACY) }
 			binding.longText.movementMethod = LinkMovementMethod.getInstance()
 		}
 
 		var isExternalLink = false
 		var isEmail = false
-		val contactInfo = news.getContactInfo()
+		val contactInfo = news.getLocalizedContactInfo()
 		if (contactInfo == null) {
-			binding.publisher.text = "N/D"
+			binding.publisher.text = "N/D" //TODO: localize this
 		} else {
 			binding.publisher.text = contactInfo.publisher
 
@@ -169,9 +177,10 @@ class NewsDetailsFragment: Fragment() {
 		binding.askQuestion.isVisible = isEmail
 		binding.footer.isVisible = isExternalLink || isEmail
 
-		if (news.images != null && news.images.isNotEmpty()) {
+		if (!news.images.isNullOrEmpty()) {
 			binding.images.isVisible = true
-			binding.images.layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+			binding.images.layoutManager =
+				LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
 			binding.images.adapter = NewsImagesAdapter(news.images)
 		} else {
 			binding.images.isVisible = false
@@ -190,7 +199,7 @@ class NewsDetailsFragment: Fragment() {
 	private fun writeEmail(receiverAddress: String) {
 		val intent = Intent(Intent.ACTION_SENDTO).apply {
 			data = Uri.parse("mailto:") // only email apps should handle this
-			putExtra(Intent.EXTRA_EMAIL, Array(1) {receiverAddress})
+			putExtra(Intent.EXTRA_EMAIL, Array(1) { receiverAddress })
 		}
 		if (intent.resolveActivity(requireContext().packageManager) != null) {
 			startActivity(intent)
@@ -198,25 +207,27 @@ class NewsDetailsFragment: Fragment() {
 	}
 
 	private fun openExternalLink(url: String) {
-		val intent = Intent(Intent.ACTION_VIEW).apply {
-			data = Uri.parse(url)
-		}
+		val intent =
+			Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER).apply {
+				data = Uri.parse(url)
+			}
 		if (intent.resolveActivity(requireContext().packageManager) != null) {
 			startActivity(intent)
 		}
 	}
-
 }
 
 /**
  * Adapter used to populate the image gallery of news detail
  */
-class NewsImagesAdapter(private val images: List<NewsImage>) : RecyclerView.Adapter<NewsImagesAdapter.NewsImageViewHolder>() {
+class NewsImagesAdapter(private val images: List<NewsImage>) :
+	RecyclerView.Adapter<NewsImagesAdapter.NewsImageViewHolder>() {
 
 	/**
 	 * View holder of a single picture
 	 */
-	inner class NewsImageViewHolder(private val binding: VhHorizontalImageBinding) : RecyclerView.ViewHolder(binding.root) {
+	inner class NewsImageViewHolder(private val binding: VhHorizontalImageBinding) :
+		RecyclerView.ViewHolder(binding.root) {
 
 		fun bind(image: NewsImage) {
 			Glide
@@ -228,7 +239,13 @@ class NewsImagesAdapter(private val images: List<NewsImage>) : RecyclerView.Adap
 	}
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsImageViewHolder {
-		return NewsImageViewHolder(VhHorizontalImageBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+		return NewsImageViewHolder(
+			VhHorizontalImageBinding.inflate(
+				LayoutInflater.from(parent.context),
+				parent,
+				false
+			)
+		)
 	}
 
 	override fun onBindViewHolder(holder: NewsImageViewHolder, position: Int) {

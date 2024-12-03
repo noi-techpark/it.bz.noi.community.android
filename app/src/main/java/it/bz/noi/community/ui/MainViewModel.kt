@@ -33,6 +33,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import java.util.*
 
+private const val PAGE_SIZE = 10 // How many news to load at once
+
 /**
  * Factory for creating the MainViewModel
  */
@@ -242,7 +244,7 @@ class MainViewModel(
 			filters= filterRepo.loadFilters()
 		}
 
-		if (filters != null && filters.isNotEmpty())
+		if (filters.isNotEmpty())
 			emit(Resource.success(data = filters))
 		else
 			emit(Resource.error(data = null, message = "Filter loading: error occurred!"))
@@ -256,8 +258,8 @@ class MainViewModel(
 		loadNews()
 	}.stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
-	private fun loadNews(): Flow<PagingData<News>> = Pager(PagingConfig(pageSize = NewsPagingSource.PAGE_ITEMS)) {
-		NewsPagingSource(mainRepository)
+	private fun loadNews(): Flow<PagingData<News>> = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
+		NewsPagingSource(PAGE_SIZE, mainRepository)
 	}.flow.cachedIn(viewModelScope)
 
 	fun refreshNews() {
@@ -267,9 +269,8 @@ class MainViewModel(
 }
 
 object NewsTickerFlow {
-	val ticker = MutableSharedFlow<Unit>(replay = 1).apply {
+	private val ticker = MutableSharedFlow<Unit>(replay = 1).apply {
 		tryEmit(Unit)
 	}
 	fun tick() = ticker.tryEmit(Unit)
 }
-

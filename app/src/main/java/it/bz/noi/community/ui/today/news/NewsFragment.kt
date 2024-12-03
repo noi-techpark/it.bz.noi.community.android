@@ -30,9 +30,9 @@ import com.bumptech.glide.Glide
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.News
-import it.bz.noi.community.data.models.getContactInfo
-import it.bz.noi.community.data.models.getDetail
-import it.bz.noi.community.data.models.hasImportantFlag
+import it.bz.noi.community.data.models.getLocalizedContactInfo
+import it.bz.noi.community.data.models.getLocalizedDetail
+import it.bz.noi.community.data.models.isImportant
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentNewsBinding
 import it.bz.noi.community.databinding.VhNewsBinding
@@ -197,14 +197,16 @@ class NewsVH(private val binding: VhNewsBinding, detailListener: NewsDetailListe
 	fun bind(news: News) {
 		this.news = news
 		binding.date.text = df.format(news.date)
-		binding.importantTag.isVisible = news.hasImportantFlag()
-		if (news.highlighted) // FIXME -> WIP
+		binding.importantTag.isVisible = news.isImportant || news.isHighlighted
+		if (news.isHighlighted) { // FIXME -> WIP
 			binding.importantTag.text = "TMP PINNATO"
-		news.getDetail()?.let { detail ->
+		}
+
+		news.getLocalizedDetail()?.let { detail ->
 			binding.title.text = detail.title
 			binding.shortText.text = detail.abstract
 		}
-		val contactInfo = news.getContactInfo()
+		val contactInfo = news.getLocalizedContactInfo()
 		if (contactInfo == null)  {
 			binding.publisher.text = "N/D"
 		} else {
