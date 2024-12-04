@@ -4,6 +4,7 @@
 
 package it.bz.noi.community.ui.meet
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +33,7 @@ class MeetFiltersSectionAdapter(
 	}
 
 	var filters: List<FilterValue> = emptyList()
+		@SuppressLint("NotifyDataSetChanged")
 		set(value) {
 			field = value
 			notifyDataSetChanged()
@@ -81,6 +83,7 @@ class MeetFiltersSectionAdapter(
 	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 		when (holder) {
 			is HeaderViewHolder -> {
+				println("HeaderViewHolder: $initial")
 				holder.bind("$initial")
 			}
 			is FilterViewHolder -> {
