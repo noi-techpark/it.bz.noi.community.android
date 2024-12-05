@@ -41,7 +41,7 @@ class MessagingService : FirebaseMessagingService() {
 		with (NotificationManagerCompat.from(this)) {
 			val id = Random.nextInt()
 
-			val newsDetailsPendingIntent = PendingIntent.getActivity(
+			val newsOrEventDetailsPendingIntent = PendingIntent.getActivity(
 				applicationContext,
 				0,
 				Intent(Intent.ACTION_VIEW).apply { data = link },
@@ -53,7 +53,7 @@ class MessagingService : FirebaseMessagingService() {
 				.setContentTitle(title)
 				.setContentText(message)
 				.setAutoCancel(true)
-				.setContentIntent(newsDetailsPendingIntent)
+				.setContentIntent(newsOrEventDetailsPendingIntent)
 				.build()
 
 			notify(id, notification)

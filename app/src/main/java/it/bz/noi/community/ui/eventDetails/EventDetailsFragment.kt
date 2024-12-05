@@ -55,8 +55,10 @@ import it.bz.noi.community.utils.Utils.getEventDescription
 import it.bz.noi.community.utils.Utils.getEventName
 import it.bz.noi.community.utils.Utils.getEventOrganizer
 import it.bz.noi.community.utils.Utils.getImageUrl
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.*
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class EventDetailsFragment : Fragment(), EventClickListener {
 	private lateinit var binding: FragmentEventDetailsBinding
 
@@ -114,11 +116,11 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 			}
 		}
 
-		mainViewModel.mediatorEvents.observe(viewLifecycleOwner, Observer {
+		mainViewModel.mediatorEvents.observe(viewLifecycleOwner) {
 			when (it.status) {
 				Status.SUCCESS -> {
 					val events = it.data
-					if (events != null && events.isNotEmpty()) {
+					if (!events.isNullOrEmpty()) {
 						allEvents = events as ArrayList<EventsResponse.Event>
 						selectedEvent = events[args.eventID]
 
@@ -189,9 +191,11 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 											)
 										)
 									}
+
 									Status.LOADING -> {
 										binding.progressBarLoading.isVisible = true
 									}
+
 									Status.ERROR -> {
 										binding.progressBarLoading.isVisible = false
 										Toast.makeText(
@@ -218,12 +222,14 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 						binding.tvInterestingForYou.isVisible = false
 					}
 				}
+
 				Status.ERROR -> {
 				}
+
 				Status.LOADING -> {
 				}
 			}
-		})
+		}
 	}
 
 	/**

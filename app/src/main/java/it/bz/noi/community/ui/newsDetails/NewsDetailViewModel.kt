@@ -40,7 +40,7 @@ class NewsDetailViewModel(
 				try {
 					Resource.success(
 						data = mainRepository.getNewsDetails(
-							_newsId!!,
+							_newsId,
 							Utils.getAppLanguage()
 						)
 					)

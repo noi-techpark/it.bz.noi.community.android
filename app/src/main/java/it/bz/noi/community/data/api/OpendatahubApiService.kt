@@ -24,11 +24,16 @@ interface OpendatahubApiService {
 		@Query("publishedon") publishedOn: String? = "noi-communityapp",
     ): EventsResponse
 
-    @GET("v1/EventShort/Detail/{id}")
+	@GET("v1/EventShort/{id}")
+	suspend fun getEventDetails(
+		@Path("id") eventID: String,
+	): EventsResponse.Event
+
+    /*@GET("v1/EventShort/Detail/{id}")
     suspend fun getEventDetails(
         @Path("id") eventID: String,
 		@Query("optimizedates") optimizeDates: Boolean = true,
-    ): EventDetailsResponse
+    ): EventDetailsResponse*/
 
     @GET("v1/EventShort/RoomMapping")
     suspend fun getRoomMapping(
