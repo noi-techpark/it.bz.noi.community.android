@@ -24,7 +24,9 @@ import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -55,6 +57,7 @@ import it.bz.noi.community.utils.Utils.getEventDescription
 import it.bz.noi.community.utils.Utils.getEventName
 import it.bz.noi.community.utils.Utils.getEventOrganizer
 import it.bz.noi.community.utils.Utils.getImageUrl
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.*
 
@@ -69,6 +72,11 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 			ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
 			JsonFilterRepository(requireActivity().application)
 		)
+	})
+
+	private val eventViewModel: EventDetailsViewModel by viewModels(factoryProducer = {
+		EventDetailsViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
+			this@EventDetailsFragment)
 	})
 
 	private lateinit var allEvents: ArrayList<EventsResponse.Event>
@@ -115,6 +123,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 				startPostponedEnterTransition()
 			}
 		}
+
 
 		mainViewModel.mediatorEvents.observe(viewLifecycleOwner) {
 			when (it.status) {
@@ -230,6 +239,24 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 				}
 			}
 		}
+
+
+/*		eventViewModel.eventFlow.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) {
+			when(it.status) {
+				Status.SUCCESS -> {
+					binding.progressBarLoading.isVisible = false
+					val event = it.data!!
+					//loadEventData(event)
+				}
+				Status.ERROR -> {
+					binding.progressBarLoading.isVisible = false
+					Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+				}
+				Status.LOADING -> {
+					binding.progressBarLoading.isVisible = true
+				}
+			}
+		}*/
 	}
 
 	/**
