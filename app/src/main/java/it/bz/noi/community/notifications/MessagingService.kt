@@ -26,13 +26,17 @@ import kotlin.random.Random
 
 class MessagingService : FirebaseMessagingService() {
 
+	override fun onNewToken(token: String) {
+		super.onNewToken(token)
+	}
+
 	override fun onMessageReceived(remoteMessage: RemoteMessage) {
 		remoteMessage.notification?.let {
 			val title = it.title ?: ""
 			val message = it.body ?: ""
-			val link = it.link ?: Uri.parse("")
+			val link = remoteMessage.data["deep_link"]
 
-			showNotificationBanner(message, title, link)
+			showNotificationBanner(message, title, Uri.parse(link ?: ""))
 			NewsTickerFlow.tick()
 		}
 	}
@@ -56,7 +60,11 @@ class MessagingService : FirebaseMessagingService() {
 				.setContentIntent(newsOrEventDetailsPendingIntent)
 				.build()
 
-			notify(id, notification)
+			try {
+				notify(id, notification)
+			} catch (e: SecurityException) {
+				Log.e(TAG, "No permission granted", e)
+			}
 		}
 	}
 

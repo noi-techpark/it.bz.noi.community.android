@@ -80,7 +80,7 @@ class MainViewModel(
 	/**
 	 * represents the parameters of the URL for filtering the events
 	 */
-	var eventsParams = EventsParams(startDate = parameterDateTimeFormatter().format(startDate))
+	private var eventsParams = EventsParams(startDate = parameterDateTimeFormatter().format(startDate))
 
 	/**
 	 * live data of the events
@@ -144,10 +144,10 @@ class MainViewModel(
 			mediatorEvents.value = it
 		}
 
-		appliedFilters.addSource(availableFilters) { newAvailableFilters ->
+		appliedFilters.addSource(availableFilters) {
 			appliedFilters.value = loadAppliedFilters()
 		}
-		appliedFilters.addSource(selectedFilters) { newSelectedFilters ->
+		appliedFilters.addSource(selectedFilters) {
 			appliedFilters.value = loadAppliedFilters()
 		}
 	}
@@ -242,7 +242,7 @@ class MainViewModel(
 			filters= filterRepo.loadFilters()
 		}
 
-		if (filters != null && filters.isNotEmpty())
+		if (filters.isNotEmpty())
 			emit(Resource.success(data = filters))
 		else
 			emit(Resource.error(data = null, message = "Filter loading: error occurred!"))
@@ -267,7 +267,7 @@ class MainViewModel(
 }
 
 object NewsTickerFlow {
-	val ticker = MutableSharedFlow<Unit>(replay = 1).apply {
+	private val ticker = MutableSharedFlow<Unit>(replay = 1).apply {
 		tryEmit(Unit)
 	}
 	fun tick() = ticker.tryEmit(Unit)

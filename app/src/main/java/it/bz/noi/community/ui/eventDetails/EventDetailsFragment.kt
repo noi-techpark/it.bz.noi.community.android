@@ -122,7 +122,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 					val events = it.data
 					if (!events.isNullOrEmpty()) {
 						allEvents = events as ArrayList<EventsResponse.Event>
-						selectedEvent = events[args.eventID]
+						selectedEvent = events[args.eventIndex]
 
 						(requireActivity() as AppCompatActivity).supportActionBar?.title =
 							getEventName(selectedEvent)
@@ -335,6 +335,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
 		findNavController().navigate(
 			EventDetailsFragmentDirections.actionEventDetailsFragmentSelf(
+				null,
 				allEvents.indexOf(event)
 			),
 			extras
