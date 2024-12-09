@@ -137,7 +137,7 @@ class MainViewModel(
 	/**
 	 * mediator live data that emits the events to the observers
 	 */
-	val mediatorEvents = MediatorLiveData<Resource<List<EventsResponse.Event>>>()
+	val mediatorEvents = MediatorLiveData<Resource<List<Event>>>()
 
 	init {
 		mediatorEvents.addSource(events) {

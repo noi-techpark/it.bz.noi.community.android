@@ -9,7 +9,7 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import it.bz.noi.community.data.api.ApiHelper
-import it.bz.noi.community.data.models.EventsResponse
+import it.bz.noi.community.data.models.Event
 import it.bz.noi.community.data.repository.MainRepository
 import it.bz.noi.community.utils.Resource
 import kotlinx.coroutines.flow.Flow
@@ -26,10 +26,10 @@ class EventDetailsViewModel(
 		private const val EVENT_ARG = "event"
 	}
 
-	private val event = MutableStateFlow<EventsResponse.Event?>(savedStateHandle[EVENT_ARG])
+	private val event = MutableStateFlow<Event?>(savedStateHandle[EVENT_ARG])
 	private val eventId = MutableStateFlow<String?>(savedStateHandle[EVENT_ID_ARG])
 
-	val eventFlow: Flow<Resource<EventsResponse.Event>> = event.combine(eventId) { _event, _eventId ->
+	val eventFlow: Flow<Resource<Event>> = event.combine(eventId) { _event, _eventId ->
 		Resource.loading(null)
 		when {
 			_event != null -> {

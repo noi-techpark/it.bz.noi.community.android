@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
-import it.bz.noi.community.data.models.EventsResponse
+import it.bz.noi.community.data.models.Event
 import it.bz.noi.community.utils.DateUtils.getDateIntervalString
 import it.bz.noi.community.utils.DateUtils.getHoursIntervalString
 import it.bz.noi.community.utils.Utils
@@ -28,7 +28,7 @@ import it.bz.noi.community.utils.Utils.getEventName
  */
 interface EventClickListener {
 	fun onEventClick(
-		event: EventsResponse.Event,
+		event: Event,
 		cardEvent: MaterialCardView,
 		cardDate: CardView,
 		eventName: TextView,
@@ -47,7 +47,7 @@ interface EventClickListener {
  * fragment parameter to avoid clicked view to have the fade out animation
  */
 class EventsAdapter(
-	private val events: List<EventsResponse.Event>,
+	private val events: List<Event>,
 	private val listener: EventClickListener,
 	private val isSuggestedEvents: Boolean = false
 ) :
@@ -82,7 +82,7 @@ class EventsAdapter(
 		private val locationIcon = view.findViewById<ImageView>(R.id.ivLocation)
 		private val timeIcon = view.findViewById<ImageView>(R.id.ivTime)
 
-		private lateinit var event: EventsResponse.Event
+		private lateinit var event: Event
 
 		init {
 			view.rootView.setOnClickListener {
@@ -101,7 +101,7 @@ class EventsAdapter(
 			}
 		}
 
-		fun bind(event: EventsResponse.Event) {
+		fun bind(event: Event) {
 			this.event = event
 
 			eventName.text = getEventName(event)
