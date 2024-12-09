@@ -6,6 +6,7 @@ package it.bz.noi.community.ui.eventDetails
 
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.provider.CalendarContract.Events
@@ -62,8 +63,6 @@ import java.util.Date
 class EventDetailsFragment : Fragment(), EventClickListener {
 	private lateinit var binding: FragmentEventDetailsBinding
 
-	//private val args: EventDetailsFragmentArgs by navArgs()
-
 	private val mainViewModel: MainViewModel by activityViewModels(factoryProducer = {
 		ViewModelFactory(
 			ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
@@ -77,8 +76,6 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 	})
 
 	private lateinit var allEvents: ArrayList<Event>
-
-	//private lateinit var selectedEvent: EventsResponse.Event
 
 	private val suggestedEvents = arrayListOf<Event>()
 
@@ -121,125 +118,6 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 			}
 		}
 
-
-/*
-		mainViewModel.mediatorEvents.observe(viewLifecycleOwner) {
-			when (it.status) {
-				Status.SUCCESS -> {
-					val events = it.data
-					if (!events.isNullOrEmpty()) {
-						allEvents = events as ArrayList<EventsResponse.Event>
-						selectedEvent = events[args.eventIndex]
-
-						(requireActivity() as AppCompatActivity).supportActionBar?.title =
-							getEventName(selectedEvent)
-
-						setTransitionNames(selectedEvent.eventId!!)
-						loadEventImage(getImageUrl(selectedEvent))
-
-						setDate(selectedEvent.startDate, selectedEvent.endDate)
-
-						if (selectedEvent.webAddress != null) {
-							binding.addToCalendarOrSignup.text = getString(R.string.btn_sign_up)
-							binding.addToCalendarOrSignup.setIconResource(R.drawable.ic_sign_up)
-							binding.addToCalendarOrSignup.setOnClickListener {
-//								val browserIntent =
-//									Intent(Intent.ACTION_VIEW, Uri.parse(selectedEvent.webAddress))
-//								startActivity(browserIntent)
-							}
-						} else {
-							binding.addToCalendarOrSignup.text =
-								getString(R.string.btn_add_to_calendar)
-							binding.addToCalendarOrSignup.setIconResource(R.drawable.ic_add_to_calendar)
-							binding.addToCalendarOrSignup.setOnClickListener {
-								val beginTime = selectedEvent.startDate.time
-								val endTime = selectedEvent.endDate.time
-
-								val intent: Intent = Intent(Intent.ACTION_INSERT)
-									.setData(Events.CONTENT_URI)
-									.putExtra(
-										CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-										beginTime
-									)
-									.putExtra(
-										CalendarContract.EXTRA_EVENT_END_TIME,
-										endTime
-									)
-									.putExtra(Events.TITLE, getEventName(selectedEvent))
-									.putExtra(
-										Events.DESCRIPTION,
-										getEventDescription(selectedEvent)
-									)
-									.putExtra(Events.EVENT_LOCATION, selectedEvent.location)
-									.putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY)
-
-								startActivity(intent)
-							}
-						}
-
-						binding.findOnMaps.setOnClickListener {
-							mainViewModel.getRoomMapping().observe(viewLifecycleOwner, Observer {
-								when (it.status) {
-									Status.SUCCESS -> {
-										binding.progressBarLoading.isVisible = false
-
-										val mapTitle = selectedEvent.location
-										val mapUrl = it.data?.get(selectedEvent.roomName)
-											?: resources.getString(R.string.url_map)
-
-										findNavController().navigate(
-											R.id.action_global_webViewFragment, bundleOf(
-												WebViewFragment.TITLE_ARG to mapTitle,
-												WebViewFragment.URL_ARG to Utils.addParamsToUrl(
-													mapUrl,
-													fullview = true,
-													hidezoom = true
-												)
-											)
-										)
-									}
-
-									Status.LOADING -> {
-										binding.progressBarLoading.isVisible = true
-									}
-
-									Status.ERROR -> {
-										binding.progressBarLoading.isVisible = false
-										Toast.makeText(
-											requireContext(),
-											it.message,
-											Toast.LENGTH_LONG
-										).show()
-									}
-								}
-							})
-						}
-
-						binding.tvEventName.text = getEventName(selectedEvent)
-						binding.tvEventLocation.text = selectedEvent.location
-						binding.tvEventOrganizer.text = getEventOrganizer(selectedEvent)
-						if (getEventDescription(selectedEvent).isNullOrEmpty()) {
-							binding.tvAboutLabel.isVisible = false
-							binding.tvEventDescription.isVisible = false
-						} else
-							binding.tvEventDescription.text = getEventDescription(selectedEvent)
-
-						populateSuggestedEvents(events)
-					} else {
-						binding.tvInterestingForYou.isVisible = false
-					}
-				}
-
-				Status.ERROR -> {
-				}
-
-				Status.LOADING -> {
-				}
-			}
-		}
-*/
-
-
 		eventViewModel.eventFlow.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) {
 			when(it.status) {
 				Status.SUCCESS -> {
@@ -256,6 +134,26 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 				}
 			}
 		}
+
+		mainViewModel.mediatorEvents.observe(viewLifecycleOwner) {
+			when (it.status) {
+				Status.SUCCESS -> {
+					val events = it.data
+					if (!events.isNullOrEmpty()) {
+						allEvents = events as ArrayList<Event>
+					} else {
+						binding.tvInterestingForYou.isVisible = false
+					}
+				}
+
+				Status.ERROR -> {
+				}
+
+				Status.LOADING -> {
+				}
+			}
+		}
+
 	}
 
 	private fun loadEventData(event: Event) {
@@ -271,9 +169,9 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 			binding.addToCalendarOrSignup.text = getString(R.string.btn_sign_up)
 			binding.addToCalendarOrSignup.setIconResource(R.drawable.ic_sign_up)
 			binding.addToCalendarOrSignup.setOnClickListener {
-//								val browserIntent =
-//									Intent(Intent.ACTION_VIEW, Uri.parse(selectedEvent.webAddress))
-//								startActivity(browserIntent)
+				val browserIntent =
+					Intent(Intent.ACTION_VIEW, Uri.parse(event.webAddress))
+				startActivity(browserIntent)
 			}
 		} else {
 			binding.addToCalendarOrSignup.text =
@@ -352,8 +250,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		} else
 			binding.tvEventDescription.text = getEventDescription(event)
 
-		// FIXME -> come viene popolata la lista degli eventi?
-		//populateSuggestedEvents(events, event)
+		populateSuggestedEvents(allEvents, event)
 	}
 
 	/**
