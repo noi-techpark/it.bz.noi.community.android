@@ -27,7 +27,7 @@ interface OpendatahubApiService {
 	@GET("v1/EventShort/{id}")
 	suspend fun getEventDetails(
 		@Path("id") eventID: String,
-	): EventsResponse.Event
+	): Event
 
     /*@GET("v1/EventShort/Detail/{id}")
     suspend fun getEventDetails(

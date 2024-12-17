@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
-import it.bz.noi.community.data.models.EventsResponse
+import it.bz.noi.community.data.models.Event
 import it.bz.noi.community.data.models.TimeFilter
 import it.bz.noi.community.data.models.TimeRange
 import it.bz.noi.community.databinding.FragmentEventsBinding
@@ -162,7 +162,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		}
 	}
 
-	private fun retrieveList(events: List<EventsResponse.Event>) {
+	private fun retrieveList(events: List<Event>) {
 		todayViewModel.events.apply {
 			clear()
 			addAll(events)
@@ -171,7 +171,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 	}
 
 	override fun onEventClick(
-		event: EventsResponse.Event,
+		event: Event,
 		cardEvent: MaterialCardView,
 		cardDate: CardView,
 		eventName: TextView,
@@ -194,7 +194,8 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		)
 		findNavController().navigate(
 			TodayFragmentDirections.actionNavigationTodayToEventDetailsFragment(
-				event.eventId,
+				null,
+				event
 			),
 			extras
 		)

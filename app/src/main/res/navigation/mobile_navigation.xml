@@ -72,6 +72,10 @@ SPDX-License-Identifier: CC0-1.0
 			android:name="eventId"
 			app:argType="string"
 			app:nullable="true" />
+		<argument
+			android:name="event"
+			app:argType="it.bz.noi.community.data.models.Event"
+			app:nullable="true" />
 		<action
             android:id="@+id/action_eventDetailsFragment_self"
             app:destination="@id/eventDetailsFragment" />

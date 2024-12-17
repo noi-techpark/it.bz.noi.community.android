@@ -24,19 +24,17 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import it.bz.noi.community.ui.onboarding.OnboardingActivity.Companion.LOGOUT_REQUEST
-import it.bz.noi.community.databinding.ActivityMainBinding
 import it.bz.noi.community.data.repository.AccountsManager
+import it.bz.noi.community.databinding.ActivityMainBinding
+import it.bz.noi.community.notifications.MessagingService
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
-import it.bz.noi.community.notifications.MessagingService
-import it.bz.noi.community.storage.getWelcomeUnderstood
 import it.bz.noi.community.ui.WebViewFragment
 import it.bz.noi.community.ui.onboarding.OnboardingActivity
+import it.bz.noi.community.ui.onboarding.OnboardingActivity.Companion.LOGOUT_REQUEST
 import it.bz.noi.community.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthorizationException
 
 class MainActivity : AppCompatActivity() {
@@ -93,7 +91,7 @@ class MainActivity : AppCompatActivity() {
 		setupActionBarWithNavController(navController, appBarConfiguration)
 		binding.navView.setupWithNavController(navController)
 
-		navController.addOnDestinationChangedListener { controller, destination, arguments ->
+		navController.addOnDestinationChangedListener { _, destination, arguments ->
 			when (destination.id) {
 				R.id.navigation_more -> {
 					supportActionBar?.hide()
