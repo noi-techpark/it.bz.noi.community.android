@@ -194,8 +194,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		)
 		findNavController().navigate(
 			TodayFragmentDirections.actionNavigationTodayToEventDetailsFragment(
-				null,
-				todayViewModel.events.indexOf(event)
+				event.eventId,
 			),
 			extras
 		)

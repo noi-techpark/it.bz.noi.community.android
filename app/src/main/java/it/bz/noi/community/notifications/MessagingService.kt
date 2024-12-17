@@ -20,9 +20,11 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.firebase.messaging.ktx.messaging
+import it.bz.noi.community.MainActivity
 import it.bz.noi.community.R
 import it.bz.noi.community.ui.NewsTickerFlow
 import kotlin.random.Random
+
 
 class MessagingService : FirebaseMessagingService() {
 
@@ -41,43 +43,63 @@ class MessagingService : FirebaseMessagingService() {
 		}
 	}
 
-	private fun showNotificationBanner(message: CharSequence, title: CharSequence, link: Uri) {
-		with (NotificationManagerCompat.from(this)) {
-			val id = Random.nextInt()
-
-			val newsOrEventDetailsPendingIntent = PendingIntent.getActivity(
-				applicationContext,
-				0,
-				Intent(Intent.ACTION_VIEW).apply { data = link },
-				PendingIntent.FLAG_IMMUTABLE
-			)
-
-			val notification = NotificationCompat.Builder(this@MessagingService, CHANNEL_ID)
-				.setSmallIcon(R.drawable.ic_notification)
-				.setContentTitle(title)
-				.setContentText(message)
-				.setAutoCancel(true)
-				.setContentIntent(newsOrEventDetailsPendingIntent)
-				.build()
-
-			try {
-				notify(id, notification)
-			} catch (e: SecurityException) {
-				Log.e(TAG, "No permission granted", e)
-			}
-		}
-	}
-
 	companion object {
 		private const val TAG = "MessagingService"
 		private const val CHANNEL_ID = "newsChannel"
 
+		fun Context.showNotification() {
+			showNotificationBanner(
+				"Test",
+				"Test",
+				Uri.parse("noi-community://it.bz.noi.community/eventDetails/2343242")
+			)
+		}
+
+		private fun Context.showNotificationBanner(
+			message: CharSequence,
+			title: CharSequence,
+			link: Uri
+		) {
+			with(NotificationManagerCompat.from(this)) {
+				val id = Random.nextInt()
+
+				val newsOrEventDetailsPendingIntent = PendingIntent.getActivity(
+					applicationContext,
+					0,
+					Intent(this@showNotificationBanner, MainActivity::class.java).apply {
+						data = link
+						flags = Intent.FLAG_ACTIVITY_NEW_TASK
+					},
+					PendingIntent.FLAG_IMMUTABLE
+				)
+
+				val notification =
+					NotificationCompat.Builder(this@showNotificationBanner, CHANNEL_ID)
+						.setSmallIcon(R.drawable.ic_notification)
+						.setContentTitle(title)
+						.setContentText(message)
+						.setAutoCancel(true)
+						.setContentIntent(newsOrEventDetailsPendingIntent)
+						.build()
+
+				try {
+					notify(id, notification)
+				} catch (e: SecurityException) {
+					Log.e(TAG, "No permission granted", e)
+				}
+			}
+		}
+
 		@JvmStatic
 		fun createChannelIfNeeded(context: Context) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-				with (NotificationManagerCompat.from(context)) {
+				with(NotificationManagerCompat.from(context)) {
 					val channelName = context.getString(R.string.news_notification_channel_name)
-					val channel = NotificationChannel(CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_HIGH)
+					val channel = NotificationChannel(
+						CHANNEL_ID,
+						channelName,
+						NotificationManager.IMPORTANCE_HIGH
+					)
 					createNotificationChannel(channel)
 				}
 			}
@@ -93,7 +115,7 @@ class MessagingService : FirebaseMessagingService() {
 				// Get new FCM registration token
 				val token = task.result
 
-				val msg ="FCM registration token: $token"
+				val msg = "FCM registration token: $token"
 				Log.d(TAG, msg)
 			})
 		}

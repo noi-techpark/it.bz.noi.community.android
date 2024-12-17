@@ -5,11 +5,15 @@
 package it.bz.noi.community
 
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
@@ -45,6 +49,17 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+
+		if (intent.hasExtra("deep_link")) {
+			val deepLink = intent.getStringExtra("deep_link")
+			if (deepLink != null) {
+				val uri = Uri.parse(deepLink)
+				startActivity(Intent(Intent.ACTION_VIEW).apply { data = uri })
+				finish()
+				return
+			}
+		}
+
 		window.navigationBarColor = resources.getColor(R.color.background_color, theme)
 
 		binding = ActivityMainBinding.inflate(layoutInflater)
@@ -144,6 +159,38 @@ class MainActivity : AppCompatActivity() {
 			MessagingService.registrationToken()
 		}
 		subscribeToNewsTopic(Utils.getPreferredNoiNewsTopic())
+
+		checkNotificationPermission()
+	}
+
+	/**
+	 * Very crude solution to quick add notification permission.
+	 */
+	private fun checkNotificationPermission() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+			if (ActivityCompat.checkSelfPermission(
+					this,
+					android.Manifest.permission.POST_NOTIFICATIONS
+				) != PackageManager.PERMISSION_GRANTED
+			) {
+				ActivityCompat.requestPermissions(
+					this,
+					arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+					0
+				)
+			}
+		}
+	}
+
+	override fun onRequestPermissionsResult(
+		requestCode: Int,
+		permissions: Array<out String>,
+		grantResults: IntArray
+	) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+		if (requestCode == 0 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+			Log.d(TAG, "Notification permission granted")
+		}
 	}
 
 	private fun subscribeToNewsTopic(preferredNewsTopic: String) {
