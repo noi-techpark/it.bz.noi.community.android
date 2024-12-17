@@ -75,7 +75,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 			this@EventDetailsFragment)
 	})
 
-	private lateinit var allEvents: ArrayList<Event>
+	private var allEvents: List<Event> = emptyList()
 
 	private val suggestedEvents = arrayListOf<Event>()
 
@@ -140,17 +140,13 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 				Status.SUCCESS -> {
 					val events = it.data
 					if (!events.isNullOrEmpty()) {
-						allEvents = events as ArrayList<Event>
+						allEvents = events
 					} else {
 						binding.tvInterestingForYou.isVisible = false
 					}
 				}
-
-				Status.ERROR -> {
-				}
-
-				Status.LOADING -> {
-				}
+				Status.ERROR -> Unit
+				Status.LOADING -> Unit
 			}
 		}
 
