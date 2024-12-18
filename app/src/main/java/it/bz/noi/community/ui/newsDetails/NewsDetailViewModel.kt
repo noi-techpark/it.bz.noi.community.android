@@ -25,8 +25,8 @@ class NewsDetailViewModel(
 		private const val NEWS_ARG = "news"
 	}
 
-	private val news = MutableStateFlow<News?>(savedStateHandle.get(NEWS_ARG))
-	private val newsId = MutableStateFlow<String?>(savedStateHandle.get(NEWS_ID_ARG))
+	private val news = MutableStateFlow<News?>(savedStateHandle[NEWS_ARG])
+	private val newsId = MutableStateFlow<String?>(savedStateHandle[NEWS_ID_ARG])
 
 	val newsFlow: Flow<Resource<News>> = news.combine(newsId) { _news, _newsId ->
 		Resource.loading(null)
@@ -40,7 +40,7 @@ class NewsDetailViewModel(
 				try {
 					Resource.success(
 						data = mainRepository.getNewsDetails(
-							_newsId!!,
+							_newsId,
 							Utils.getAppLanguage()
 						)
 					)

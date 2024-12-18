@@ -11,7 +11,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.bz.noi.community.BuildConfig
 import it.bz.noi.community.R
-import it.bz.noi.community.data.models.EventsResponse
+import it.bz.noi.community.data.models.Event
 import java.net.URLEncoder
 import java.text.Normalizer
 import java.util.*
@@ -42,7 +42,7 @@ object Utils {
 			return null
 	}
 
-	fun getEventDescription(event: EventsResponse.Event): String? {
+	fun getEventDescription(event: Event): String? {
 		return when (Locale.getDefault().language) {
 			ITALIAN -> {
 				event.descriptionIT
@@ -58,7 +58,7 @@ object Utils {
 		}
 	}
 
-	fun getEventName(event: EventsResponse.Event, fallback: String = "N/D"): String {
+	fun getEventName(event: Event, fallback: String = "N/D"): String {
 		return when (Locale.getDefault().language) {
 			ITALIAN -> {
 				event.nameIT ?: event.name ?: fallback
@@ -74,14 +74,14 @@ object Utils {
 		}
 	}
 
-	fun getEventOrganizer(event: EventsResponse.Event, fallback: String = "N/D"): String {
+	fun getEventOrganizer(event: Event, fallback: String = "N/D"): String {
 		return if (event.eventOrganizer.isNullOrEmpty())
 			event.eventOrganizerFallback ?: fallback
 		else
 			event.eventOrganizer
 	}
 
-	fun getImageUrl(event: EventsResponse.Event): String? {
+	fun getImageUrl(event: Event): String? {
 		var eventImageUrl = event.imageGallery?.firstOrNull { it.imageUrl != null }?.imageUrl
 
 		if (eventImageUrl?.startsWith(HTTP_PREFIX) == true) {
