@@ -4,6 +4,7 @@
 
 package it.bz.noi.community.ui.today.events
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -15,10 +16,17 @@ interface TimeFilterClickListener {
 }
 
 class TimeFilterAdapter(
-    private val timeFilters: List<TimeFilter>,
-    private val listener: TimeFilterClickListener
+	timeFilters: List<TimeFilter>,
+	private val listener: TimeFilterClickListener
 ) :
     RecyclerView.Adapter<TimeFilterAdapter.TimeFilterViewHolder>() {
+
+	var timeFilters: List<TimeFilter> = timeFilters
+		@SuppressLint("NotifyDataSetChanged")
+		set(value) {
+			field = value
+			notifyDataSetChanged()
+		}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeFilterViewHolder {
         return TimeFilterViewHolder(VhTimeFilterBinding.inflate(LayoutInflater.from(parent.context), parent, false))

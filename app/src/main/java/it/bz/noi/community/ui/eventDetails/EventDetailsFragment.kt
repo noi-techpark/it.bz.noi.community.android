@@ -48,6 +48,7 @@ import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
 import it.bz.noi.community.ui.today.events.EventClickListener
 import it.bz.noi.community.ui.today.events.EventsAdapter
+import it.bz.noi.community.ui.today.events.EventsItemDecoration
 import it.bz.noi.community.utils.DateUtils
 import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils
@@ -61,7 +62,9 @@ import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class EventDetailsFragment : Fragment(), EventClickListener {
-	private lateinit var binding: FragmentEventDetailsBinding
+
+	private var _binding: FragmentEventDetailsBinding? = null
+	private val binding get() = _binding!!
 
 	private val mainViewModel: MainViewModel by activityViewModels(factoryProducer = {
 		ViewModelFactory(
@@ -97,12 +100,17 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 			postponeEnterTransition()
 	}
 
+	override fun onDestroyView() {
+		super.onDestroyView()
+		_binding = null
+	}
+
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 		savedInstanceState: Bundle?
 	): View {
-		binding = FragmentEventDetailsBinding.inflate(inflater)
+		_binding = FragmentEventDetailsBinding.inflate(inflater)
 		return binding.root
 	}
 
@@ -110,6 +118,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		super.onViewCreated(view, savedInstanceState)
 
 		binding.rvSuggestedEvents.apply {
+			addItemDecoration(EventsItemDecoration())
 			layoutManager = LinearLayoutManager(requireContext(), HORIZONTAL, false)
 			adapter = suggestedEventsAdapter
 

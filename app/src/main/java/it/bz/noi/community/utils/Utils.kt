@@ -198,3 +198,13 @@ class SaveStateProperty<T : Any?>(
 }
 
 fun getAppVersion() = "${BuildConfig.VERSION_NAME}.${BuildConfig.VERSION_CODE}"
+
+fun <T> List<T>.groupedByInitial(initial: (T) -> Char): Map<Char, List<T>> {
+	val contactsByFirstLetter: Map<Char,List<T>> = groupBy { initial(it) }
+	val result: MutableMap<Char, List<T>> = mutableMapOf()
+	('A'..'Z').forEach { letter: Char ->
+		result[letter] = contactsByFirstLetter[letter] ?: emptyList()
+	}
+	result['#'] = contactsByFirstLetter['#'] ?: emptyList()
+	return result
+}
