@@ -52,7 +52,7 @@ class NewsFragment : Fragment() {
 
 	private val viewModel: MainViewModel by activityViewModels(factoryProducer = {
 		ViewModelFactory(
-			ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
+			ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService, RetrofitBuilder.vimeoApiService),
 			JsonFilterRepository(requireActivity().application)
 		)
 	})

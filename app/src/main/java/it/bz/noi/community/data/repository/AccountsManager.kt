@@ -27,7 +27,8 @@ object AccountsManager {
 	private val mainRepository = MainRepository(
 		ApiHelper(
 			RetrofitBuilder.opendatahubApiService,
-			RetrofitBuilder.communityApiService
+			RetrofitBuilder.communityApiService,
+			RetrofitBuilder.vimeoApiService
 		)
 	)
 	private val mainCoroutineScope = CoroutineScope(Dispatchers.Main + Job())

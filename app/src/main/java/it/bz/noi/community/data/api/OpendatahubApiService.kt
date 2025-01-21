@@ -43,7 +43,7 @@ interface OpendatahubApiService {
 		@Query("removenullvalues") removeNullValues: Boolean = true,
 		@Query("articletype") endDate: String = "newsfeednoi",
 		@Query("rawsort") rawSort: String = "-ArticleDate",
-		@Query("fields") fields: String = "Id,ArticleDate,Detail,ContactInfos,ImageGallery,ODHTags,Highlight",
+		@Query("fields") fields: String = "Id,ArticleDate,Detail,ContactInfos,ImageGallery,VideoItems,ODHTags,Highlight",
 		@Query("pagesize") pageSize: Int,
 		@Query("pagenumber") pageNumber: Int,
 		@Query("startdate") startDate: String,
@@ -56,7 +56,7 @@ interface OpendatahubApiService {
 	suspend fun getNewsDetails(
 		@Path("id") newsId: String,
 		@Query("removenullvalues") removeNullValues: Boolean = true,
-		@Query("fields") fields: String = "Id,ArticleDate,Detail,ContactInfos,ImageGallery,ODHTags",
+		@Query("fields") fields: String = "Id,ArticleDate,Detail,ContactInfos,ImageGallery,VideoItems,ODHTags",
 		@Query("language") language: String?
 	): News
 }

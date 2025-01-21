@@ -50,7 +50,7 @@ class ViewModelFactory(private val apiHelper: ApiHelper, private val filterRepo:
 	companion object {
 		fun defaultFactory(): ViewModelProvider.Factory {
 			return ViewModelFactory(
-				ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
+				ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService, RetrofitBuilder.vimeoApiService),
 				JsonFilterRepository(NoiApplication.currentApplication)
 			)
 		}

@@ -30,6 +30,8 @@ data class News(
 	val tags: List<Tag>? = null,
 	@SerializedName("Highlight")
 	val isHighlighted: Boolean = false,
+	@SerializedName("VideoItems")
+	val videos: Map<String, List<NewsVideo>?>? = null
 ) : Parcelable
 
 @Keep
@@ -70,6 +72,14 @@ data class NewsImage(
 	val url: String? = null
 ) : Parcelable
 
+@Keep
+@Parcelize
+data class NewsVideo(
+	@SerializedName("Url")
+	val url: String,
+	var thumbnailUrl: String? = null
+) : Parcelable
+
 /**
  * Get the localized detail for the current app language.
  */
@@ -79,6 +89,11 @@ fun News.getLocalizedDetail(): Detail? = detail[Utils.getAppLanguage()]
  * Get the localized contact info for the current app language.
  */
 fun News.getLocalizedContactInfo(): ContactInfo? = contactInfo?.get(Utils.getAppLanguage())
+
+/**
+ * Get the localized videos for the current app language.
+ */
+fun News.getLocalizedVideos(): List<NewsVideo>? = videos?.get(Utils.getAppLanguage())
 
 // FIXME -> WIP
 /**

@@ -17,6 +17,8 @@ import java.util.*
 
 object RetrofitBuilder {
 
+	const val VIMEO_BASE_URL = "https://vimeo.com/"
+
 	private fun getRetrofit(baseUrl: String): Retrofit {
 
 		val gsonBuilder = GsonBuilder().apply {
@@ -38,6 +40,7 @@ object RetrofitBuilder {
 		getRetrofit(BuildConfig.OPENDATAHUB_API_BASE_URL).create(OpendatahubApiService::class.java)
 	val communityApiService: CommunityApiService =
 		getRetrofit(BuildConfig.COMMUNITY_API_URL).create(CommunityApiService::class.java)
+	val vimeoApiService = getRetrofit(VIMEO_BASE_URL).create(VimeoApiService::class.java)
 }
 
 object NOIDateDeserializer : JsonDeserializer<Date> {
