@@ -6,7 +6,7 @@ SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 SPDX-License-Identifier: CC0-1.0
 -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -15,13 +15,15 @@ SPDX-License-Identifier: CC0-1.0
 	android:paddingEnd="@dimen/default_margin"
 	android:paddingTop="20dp"
 	android:paddingBottom="8dp"
-    android:background="@color/secondary_background_color" >
+    android:background="@color/background_color" >
 
     <TextView
         android:id="@+id/headerTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         tools:text="Header"
-        android:textColor="@color/secondary_color"
-		style="?attr/textAppearanceHeadline4" />
-</FrameLayout>
+        android:textColor="@color/primary_color"
+		style="?attr/textAppearanceHeadline4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

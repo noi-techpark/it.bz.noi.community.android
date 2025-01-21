@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
 				}
 				is AuthStateStatus.Error,
 				AuthStateStatus.Unauthorized.UserAuthRequired,
-				AuthStateStatus.Unauthorized.NotValidRole -> {
+				is AuthStateStatus.Unauthorized.NotValidRole -> {
 					goToOnboardingActivity()
 				}
 				else -> {
