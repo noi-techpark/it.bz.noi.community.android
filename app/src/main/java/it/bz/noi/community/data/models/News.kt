@@ -5,10 +5,13 @@
 package it.bz.noi.community.data.models
 
 import android.os.Parcelable
+import android.util.Log
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import it.bz.noi.community.utils.Utils
 import kotlinx.parcelize.Parcelize
+import java.net.MalformedURLException
+import java.net.URL
 import java.util.*
 
 private const val ID_TAG_IMPORTANT = "important" // ID of the "important" tag
@@ -77,8 +80,37 @@ data class NewsImage(
 data class NewsVideo(
 	@SerializedName("Url")
 	val url: String,
-	var thumbnailUrl: String? = null
+	var thumbnailUrl: String? = null,
+	var videoId: String? = null
 ) : Parcelable
+
+// funzione per ricavare l'id dall'url del video
+fun extractNewsVideoId(videoUrl: String): String? {
+	try {
+		val url = URL(videoUrl)
+
+		// Estrai il percorso dall'URL (la parte dopo il dominio)
+		val path = url.path
+
+		val pathComponents = path.split("/")
+		if (pathComponents.isNotEmpty()) {
+			// L'ID del video è il componente che segue "external"
+			var videoId = pathComponents[pathComponents.size - 1]
+
+			// Rimuovi l'estensione ".m3u8" se presente
+			val m3u8Index = videoId.indexOf(".m3u8")
+			if (m3u8Index >= 0) {
+				videoId = videoId.substring(0, m3u8Index)
+			}
+
+			Log.d("extractVideoId", "Video Id: $videoId")
+			return videoId
+		}
+	} catch (e: MalformedURLException) {
+		// TODO
+	}
+	return null
+}
 
 /**
  * Get the localized detail for the current app language.

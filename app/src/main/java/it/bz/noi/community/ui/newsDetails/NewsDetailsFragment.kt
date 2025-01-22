@@ -19,6 +19,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +33,7 @@ import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.News
+import it.bz.noi.community.data.models.extractNewsVideoId
 import it.bz.noi.community.data.models.getLocalizedContactInfo
 import it.bz.noi.community.data.models.getLocalizedDetail
 import it.bz.noi.community.data.models.getLocalizedVideos
@@ -40,6 +42,7 @@ import it.bz.noi.community.databinding.VhHorizontalImageBinding
 import it.bz.noi.community.databinding.VhVideoBinding
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.DateFormat
 
 
@@ -60,6 +63,9 @@ class NewsDetailsFragment : Fragment(), GalleryClickListener {
 	})
 
 	private val dateFormat = DateFormat.getDateInstance(DateFormat.SHORT)
+
+	private val videoAdapter = NewsVideosAdapter(this)
+	private val imageAdapter = NewsImagesAdapter()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -106,6 +112,13 @@ class NewsDetailsFragment : Fragment(), GalleryClickListener {
 				Status.LOADING -> {
 					binding.newsLoader.isVisible = true
 				}
+			}
+		}
+
+		// Osserva le thumbnail
+		viewLifecycleOwner.lifecycleScope.launch {
+			viewModel.videoThumbnails.collect { thumbnails ->
+				videoAdapter.updateThumbnails(thumbnails)
 			}
 		}
 
@@ -190,9 +203,6 @@ class NewsDetailsFragment : Fragment(), GalleryClickListener {
 			binding.images.isVisible = true
 			binding.images.layoutManager =
 				LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
-
-			val videoAdapter = NewsVideosAdapter(this)
-			val imageAdapter = NewsImagesAdapter()
 
 			if (!news.images.isNullOrEmpty()) {
 				imageAdapter.setImageItems(news.images.mapNotNull { image ->
@@ -294,7 +304,9 @@ class NewsImagesAdapter :
 	private val images: MutableList<GalleryItem.Image> = mutableListOf()
 
 	fun setImageItems(items: List<GalleryItem.Image>) {
+		images.clear()
 		images.addAll(items)
+		notifyDataSetChanged()
 	}
 
 	/**
@@ -338,10 +350,19 @@ class NewsVideosAdapter(private val clickListener: GalleryClickListener) :
 	RecyclerView.Adapter<NewsVideosAdapter.NewsVideoViewHolder>() {
 
 	private val videos: MutableList<GalleryItem.Video> = mutableListOf()
+	private val thumbnailsMap = mutableMapOf<String, String>()
 
 	fun setVideoItems(items: List<GalleryItem.Video>) {
+		videos.clear()
 		videos.addAll(items)
+		notifyDataSetChanged()
 	}
+
+	fun updateThumbnails(newThumbnails: Map<String, String>) {
+		thumbnailsMap.putAll(newThumbnails)
+		notifyDataSetChanged() // In un'implementazione più efficiente, potresti usare notifyItemChanged // TODO
+	}
+
 
 	/**
 	 * View holder of a single video
@@ -351,9 +372,14 @@ class NewsVideosAdapter(private val clickListener: GalleryClickListener) :
 
 		override fun bind(item: GalleryItem) {
 			item as GalleryItem.Video
+
+			val videoId = extractNewsVideoId(item.videoUrl) // Implementa questa funzione come nel ViewModel
+			val thumbnailUrl = thumbnailsMap[videoId] ?: item.thumbnailUrl
+
+
 			Glide
 				.with(binding.root.context)
-				.load(item.thumbnailUrl)
+				.load(thumbnailUrl)
 				.placeholder(R.drawable.news_placeholder)
 				.into(binding.thumbnailImageView)
 

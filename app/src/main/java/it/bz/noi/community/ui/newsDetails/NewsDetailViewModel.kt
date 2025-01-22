@@ -4,26 +4,29 @@
 
 package it.bz.noi.community.ui.newsDetails
 
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.News
 import it.bz.noi.community.data.models.NewsVideo
+import it.bz.noi.community.data.models.extractNewsVideoId
 import it.bz.noi.community.data.models.getLocalizedVideos
 import it.bz.noi.community.data.repository.MainRepository
 import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.net.MalformedURLException
-import java.net.URL
 
 class NewsDetailViewModel(
 	private val mainRepository: MainRepository,
@@ -37,6 +40,9 @@ class NewsDetailViewModel(
 
 	private val news = savedStateHandle.getStateFlow(NEWS_ARG, null as News?)
 	private val newsId = savedStateHandle.getStateFlow(NEWS_ID_ARG, null as String?)
+
+	private val _videoThumbnails = MutableStateFlow<Map<String, String>>(emptyMap())
+	val videoThumbnails: StateFlow<Map<String, String>> = _videoThumbnails.asStateFlow()
 
 	val newsFlow: Flow<Resource<News>> = news.combine(newsId) { news, newsId ->
 		Resource.loading(null)
@@ -82,38 +88,10 @@ class NewsDetailViewModel(
 	}
 
 	private fun getThumbnailUrl(videoUrl: String) {
-		val videoId = extractVideoId(videoUrl)
+		val videoId = extractNewsVideoId(videoUrl)
 		videoId?.let {
 			fetchVimeoAPIResponse(videoId)
 		}
-	}
-
-	// funzione per ricavare l'id dall'url del video
-	private fun extractVideoId(from: String): String? {
-		try {
-			val url = URL(from)
-
-			// Estrai il percorso dall'URL (la parte dopo il dominio)
-			val path = url.path
-
-			val pathComponents = path.split("/")
-			if (pathComponents.isNotEmpty()) {
-				// L'ID del video è il componente che segue "external"
-				var videoId = pathComponents[pathComponents.size - 1]
-
-				// Rimuovi l'estensione ".m3u8" se presente
-				val m3u8Index = videoId.indexOf(".m3u8")
-				if (m3u8Index >= 0) {
-					videoId = videoId.substring(0, m3u8Index)
-				}
-
-				Log.d("extractVideoId", "Video Id: $videoId")
-				return videoId
-			}
-		} catch (e: MalformedURLException) {
-			// TODO
-		}
-		return null
 	}
 
 	private fun fetchVimeoAPIResponse(videoId: String) {
@@ -124,15 +102,22 @@ class NewsDetailViewModel(
 			try {
 				val response = mainRepository.getVideoThumbnail(vimeoURL)
 				if (response.isSuccessful) {
-					// Gestisci i dati ricevuti
-					val data = response.body()
-					data?.thumbnailUrl
-					// TODO
+
+					response.body()?.thumbnailUrl?.let { thumbnailUrl ->
+						// Aggiorna la mappa delle thumbnail
+						_videoThumbnails.update { currentMap ->
+							currentMap + (videoId to thumbnailUrl)
+						}
+					}
+
+
 				} else {
+					// TODO
 					// Gestisci gli errori
 					response.message()
 				}
 			} catch (e: Exception) {
+				// TODO
 				// Gestisci le eccezioni di rete
 			}
 		}
