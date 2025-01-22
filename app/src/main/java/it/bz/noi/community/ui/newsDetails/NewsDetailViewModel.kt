@@ -15,7 +15,6 @@ import androidx.lifecycle.viewModelScope
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.News
-import it.bz.noi.community.data.models.NewsVideo
 import it.bz.noi.community.data.models.extractNewsVideoId
 import it.bz.noi.community.data.models.getLocalizedVideos
 import it.bz.noi.community.data.repository.MainRepository
@@ -57,17 +56,8 @@ class NewsDetailViewModel(
 		Resource.loading(null)
 		when {
 			news != null -> {
-				var fakeNews = news
-				if (news.videos == null) {
-					fakeNews = news.copy(videos = mapOf(Pair("it",
-						listOf(
-							NewsVideo(url = "https://player.vimeo.com/external/1043375608.m3u8?s=b7ef4718f09d0f5f23e2b58e3b38eb1f4c3834c7&logging=false"),
-							NewsVideo(url = "https://player.vimeo.com/external/1024278566.m3u8?s=cbcbf4d98e7a731751c7361dd2d037ac1e4aa62e&logging=false")
-						)
-					)))
-				}
 				Resource.success(
-					data = fakeNews // news // FIXME
+					data = news
 				)
 			}
 			newsId != null -> {
