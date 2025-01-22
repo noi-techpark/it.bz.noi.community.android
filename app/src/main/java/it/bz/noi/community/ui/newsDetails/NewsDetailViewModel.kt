@@ -4,6 +4,7 @@
 
 package it.bz.noi.community.ui.newsDetails
 
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
@@ -36,6 +37,7 @@ class NewsDetailViewModel(
 	companion object {
 		const val NEWS_ID_ARG = "newsId"
 		private const val NEWS_ARG = "news"
+		private const val TAG = "NewsDetailViewModel"
 	}
 
 	private val news = savedStateHandle.getStateFlow(NEWS_ARG, null as News?)
@@ -102,23 +104,17 @@ class NewsDetailViewModel(
 			try {
 				val response = mainRepository.getVideoThumbnail(vimeoURL)
 				if (response.isSuccessful) {
-
 					response.body()?.thumbnailUrl?.let { thumbnailUrl ->
 						// Aggiorna la mappa delle thumbnail
 						_videoThumbnails.update { currentMap ->
 							currentMap + (videoId to thumbnailUrl)
 						}
 					}
-
-
 				} else {
-					// TODO
-					// Gestisci gli errori
-					response.message()
+					Log.e(TAG, "Error in retrieving the thumbnail URL for the video with id $videoId: ${response.message()}")
 				}
 			} catch (e: Exception) {
-				// TODO
-				// Gestisci le eccezioni di rete
+				Log.e(TAG, "Exception in retrieving the thumbnail URL for the video with id $videoId", e)
 			}
 		}
 	}

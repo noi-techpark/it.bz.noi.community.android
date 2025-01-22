@@ -360,7 +360,7 @@ class NewsVideosAdapter(private val clickListener: GalleryClickListener) :
 
 	fun updateThumbnails(newThumbnails: Map<String, String>) {
 		thumbnailsMap.putAll(newThumbnails)
-		notifyDataSetChanged() // In un'implementazione più efficiente, potresti usare notifyItemChanged // TODO
+		notifyDataSetChanged()
 	}
 
 
@@ -373,9 +373,8 @@ class NewsVideosAdapter(private val clickListener: GalleryClickListener) :
 		override fun bind(item: GalleryItem) {
 			item as GalleryItem.Video
 
-			val videoId = extractNewsVideoId(item.videoUrl) // Implementa questa funzione come nel ViewModel
+			val videoId = extractNewsVideoId(item.videoUrl)
 			val thumbnailUrl = thumbnailsMap[videoId] ?: item.thumbnailUrl
-
 
 			Glide
 				.with(binding.root.context)
