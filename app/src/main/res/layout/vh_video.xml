@@ -5,65 +5,28 @@
 	android:layout_height="210dp"
 	android:layout_marginEnd="17dp">
 
-	<androidx.constraintlayout.widget.ConstraintLayout
-		android:id="@+id/thumbnailContainer"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent">
-
-		<!-- Thumbnail ImageView -->
-		<ImageView
-			android:id="@+id/thumbnailImageView"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:scaleType="centerCrop"
-			android:importantForAccessibility="no"
-			android:src="@drawable/news_placeholder"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"/>
-
-		<!-- Play Button -->
-		<ImageButton
-			android:id="@+id/playButton"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:background="@android:color/transparent"
-			android:src="@drawable/play_circle_solid"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
-			/>
-
-	</androidx.constraintlayout.widget.ConstraintLayout>
-
-	<!-- Video View -->
-	<androidx.media3.ui.PlayerView
-		android:id="@+id/videoPlayer"
+	<!-- Thumbnail ImageView -->
+	<ImageView
+		android:id="@+id/thumbnailImageView"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:visibility="gone"
-		app:layout_constraintTop_toTopOf="parent"
+		android:importantForAccessibility="no"
+		android:scaleType="centerCrop"
+		android:src="@drawable/news_placeholder"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:use_controller="true" />
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
 
-	<!-- Loading Indicator -->
-	<ProgressBar
-		android:id="@+id/loadingIndicator"
+	<!-- Play Button -->
+	<ImageButton
+		android:id="@+id/playButton"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:visibility="gone"
-		app:layout_constraintTop_toTopOf="parent"
+		android:background="@android:color/transparent"
+		android:src="@drawable/play_circle_solid"
 		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintEnd_toEndOf="parent" />
-
-
+		app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

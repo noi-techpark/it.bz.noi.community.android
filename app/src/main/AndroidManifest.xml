@@ -62,6 +62,10 @@ SPDX-License-Identifier: CC0-1.0
 					android:scheme="noi-community" />
 			</intent-filter>
 		</activity>
+		<activity android:name=".ui.newsDetails.VideoPlayerActivity"
+			android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+			android:theme="@style/Theme.AppCompat.NoActionBar" >
+		</activity>
 
 		<service android:name=".notifications.MessagingService"
 			android:exported="false">

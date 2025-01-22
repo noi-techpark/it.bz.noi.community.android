@@ -47,12 +47,12 @@ import kotlinx.coroutines.Dispatchers
 import java.text.DateFormat
 
 
-class NewsDetailsFragment : Fragment() {
+class NewsDetailsFragment : Fragment(), GalleryClickListener {
 
 	private var _binding: FragmentNewsDetailsBinding? = null
 	private val binding get() = _binding!!
 
-	private val videoAdapter = NewsVideosAdapter()
+	private val videoAdapter = NewsVideosAdapter(this)
 	private val imageAdapter = NewsImagesAdapter()
 
 	private val viewModel: NewsDetailViewModel by viewModels(factoryProducer = {
@@ -257,6 +257,14 @@ class NewsDetailsFragment : Fragment() {
 		}
 	}
 
+	override fun onVideoClick(video: GalleryItem.Video) {
+		val intent = VideoPlayerActivity.createIntent(
+			requireContext(),
+			video.videoUrl
+		)
+		startActivity(intent)
+	}
+
 }
 
 // Data classes per rappresentare gli elementi della gallery
@@ -284,7 +292,7 @@ abstract class BaseGalleryViewHolder(view: View) : RecyclerView.ViewHolder(view)
 /**
  * Adapter used to populate the image gallery of news detail
  */
-class NewsImagesAdapter() :
+class NewsImagesAdapter :
 	RecyclerView.Adapter<NewsImagesAdapter.NewsImageViewHolder>() {
 
 	private val images: MutableList<GalleryItem.Image> = mutableListOf()
@@ -292,7 +300,6 @@ class NewsImagesAdapter() :
 	fun setImageItems(items: List<GalleryItem.Image>) {
 		images.addAll(items)
 	}
-
 
 	/**
 	 * View holder of a single picture
@@ -331,7 +338,7 @@ class NewsImagesAdapter() :
 /**
  * Adapter used to populate the video gallery of news detail
  */
-class NewsVideosAdapter() :
+class NewsVideosAdapter(private val clickListener: GalleryClickListener) :
 	RecyclerView.Adapter<NewsVideosAdapter.NewsVideoViewHolder>() {
 
 	private val videos: MutableList<GalleryItem.Video> = mutableListOf()
@@ -346,14 +353,6 @@ class NewsVideosAdapter() :
 	inner class NewsVideoViewHolder(private val binding: VhVideoBinding) :
 		BaseGalleryViewHolder(binding.root) {
 
-		private var player: ExoPlayer? = null
-		private var playWhenReady = true
-		private var currentItem = 0
-		private var playbackPosition = 0L
-		private var isPlayerView = false
-
-		private val playbackStateListener: Player.Listener = playbackStateListener()
-
 		override fun bind(item: GalleryItem) {
 			item as GalleryItem.Video
 			Glide
@@ -363,71 +362,10 @@ class NewsVideosAdapter() :
 				.into(binding.thumbnailImageView)
 
 			binding.playButton.setOnClickListener {
-				startPlayback(item.videoUrl)
+				clickListener.onVideoClick(item)
 			}
 		}
 
-		private fun startPlayback(videoUrl: String) {
-			isPlayerView = true
-			binding.thumbnailContainer.visibility = View.GONE
-			binding.videoPlayer.visibility = View.VISIBLE
-			initializePlayer(videoUrl)
-		}
-
-		private fun initializePlayer(videoUrl: String) {
-			player = ExoPlayer.Builder(binding.root.context)
-				.build()
-				.also { exoPlayer ->
-					binding.videoPlayer.player = exoPlayer
-					val mediaItem = MediaItem.fromUri(videoUrl)
-					exoPlayer.setMediaItem(mediaItem)
-					exoPlayer.playWhenReady = playWhenReady
-					exoPlayer.seekTo(currentItem, playbackPosition)
-					exoPlayer.addListener(playbackStateListener)
-					exoPlayer.prepare()
-				}
-		}
-
-		private fun playbackStateListener() = object : Player.Listener {
-			override fun onPlaybackStateChanged(playbackState: Int) {
-				when (playbackState) {
-					ExoPlayer.STATE_BUFFERING -> {
-						updateLoadingIndicator(true)
-					}
-
-					ExoPlayer.STATE_READY -> {
-						updateLoadingIndicator(false)
-					}
-
-					ExoPlayer.STATE_ENDED -> {
-						// Return to thumbnail view when video ends
-						isPlayerView = false
-						binding.thumbnailContainer.visibility = View.VISIBLE
-						binding.videoPlayer.visibility = View.GONE
-					}
-
-					ExoPlayer.STATE_IDLE -> {
-						updateLoadingIndicator(false)
-					}
-				}
-			}
-
-			override fun onPlayerError(error: PlaybackException) {
-				Toast.makeText(
-					binding.root.context,
-					"An error occurred: ${error.message}",
-					Toast.LENGTH_LONG
-				).show()
-				// Return to thumbnail view on error
-				isPlayerView = false
-				binding.thumbnailContainer.visibility = View.VISIBLE
-				binding.videoPlayer.visibility = View.GONE
-			}
-		}
-
-		private fun updateLoadingIndicator(show: Boolean) {
-			binding.loadingIndicator.visibility = if (show) View.VISIBLE else View.GONE
-		}
 	}
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsVideoViewHolder {
