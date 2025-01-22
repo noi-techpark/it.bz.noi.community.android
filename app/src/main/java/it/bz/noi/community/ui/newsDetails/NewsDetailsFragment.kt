@@ -19,9 +19,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
-import androidx.media3.common.MediaItem
-import androidx.media3.common.PlaybackException
-import androidx.media3.common.Player
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,7 +28,6 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import androidx.media3.exoplayer.ExoPlayer
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
@@ -51,9 +47,6 @@ class NewsDetailsFragment : Fragment(), GalleryClickListener {
 
 	private var _binding: FragmentNewsDetailsBinding? = null
 	private val binding get() = _binding!!
-
-	private val videoAdapter = NewsVideosAdapter(this)
-	private val imageAdapter = NewsImagesAdapter()
 
 	private val viewModel: NewsDetailViewModel by viewModels(factoryProducer = {
 		NewsDetailViewModelFactory(
@@ -197,6 +190,9 @@ class NewsDetailsFragment : Fragment(), GalleryClickListener {
 			binding.images.isVisible = true
 			binding.images.layoutManager =
 				LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+
+			val videoAdapter = NewsVideosAdapter(this)
+			val imageAdapter = NewsImagesAdapter()
 
 			if (!news.images.isNullOrEmpty()) {
 				imageAdapter.setImageItems(news.images.mapNotNull { image ->
