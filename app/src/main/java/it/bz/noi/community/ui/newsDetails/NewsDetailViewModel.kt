@@ -4,7 +4,9 @@
 
 package it.bz.noi.community.ui.newsDetails
 
+import android.content.res.Resources
 import android.util.Log
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
@@ -45,6 +47,11 @@ class NewsDetailViewModel(
 
 	private val _videoThumbnails = MutableStateFlow<Map<String, String>>(emptyMap())
 	val videoThumbnails: StateFlow<Map<String, String>> = _videoThumbnails.asStateFlow()
+
+	// Calcoliamo i pixel dalle dimensioni in dp
+	private val metrics = Resources.getSystem().displayMetrics
+	private val thumbnailWidthPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 315f, metrics).toInt()
+	private val thumbnailHeightPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 210f, metrics).toInt()
 
 	val newsFlow: Flow<Resource<News>> = news.combine(newsId) { news, newsId ->
 		Resource.loading(null)
@@ -104,7 +111,12 @@ class NewsDetailViewModel(
 			try {
 				val response = mainRepository.getVideoThumbnail(vimeoURL)
 				if (response.isSuccessful) {
-					response.body()?.thumbnailUrl?.let { thumbnailUrl ->
+					response.body()?.thumbnailUrl?.let {
+						val baseUrl = it.substring(0, it.indexOfLast { c ->
+							c == '_'
+						}+1)
+						val thumbnailUrl = baseUrl + thumbnailWidthPx + "x" + thumbnailHeightPx
+
 						// Aggiorna la mappa delle thumbnail
 						_videoThumbnails.update { currentMap ->
 							currentMap + (videoId to thumbnailUrl)

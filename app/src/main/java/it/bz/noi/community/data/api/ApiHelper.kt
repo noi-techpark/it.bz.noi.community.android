@@ -37,7 +37,7 @@ class ApiHelper(
 	suspend fun getNewsDetails(newsId: String, language: String?) =
 		opendatahubApiService.getNewsDetails(newsId = newsId, language = language)
 
-	suspend fun getVideoThumbnail(url: String) = vimeoApiService.getVideoThumbnail(url = url, width = 640)
+	suspend fun getVideoThumbnail(url: String) = vimeoApiService.getVideoThumbnail(url = url)
 
 	// CONTACTS
 	suspend fun getAccounts(accessToken: String): AccountsResponse = communityApiService.getAccounts(accessToken)

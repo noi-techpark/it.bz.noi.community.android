@@ -8,7 +8,6 @@ import retrofit2.http.Query
 interface VimeoApiService {
 	@GET("api/oembed.json")
 	suspend fun getVideoThumbnail(
-		@Query("url") url: String,
-		@Query("width") width: Int
+		@Query("url") url: String
 	): Response<VimeoResponse>
 }
