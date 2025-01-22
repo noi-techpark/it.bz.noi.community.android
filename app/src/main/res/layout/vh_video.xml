@@ -43,7 +43,7 @@
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
 	<!-- Video View -->
-	<com.google.android.exoplayer2.ui.StyledPlayerView
+	<androidx.media3.ui.PlayerView
 		android:id="@+id/videoPlayer"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"

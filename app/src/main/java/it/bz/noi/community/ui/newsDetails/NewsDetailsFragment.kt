@@ -19,6 +19,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
+import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,10 +31,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.PlaybackException
-import com.google.android.exoplayer2.Player
+import androidx.media3.exoplayer.ExoPlayer
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
@@ -47,12 +47,12 @@ import kotlinx.coroutines.Dispatchers
 import java.text.DateFormat
 
 
-class NewsDetailsFragment : Fragment(), GalleryClickListener {
+class NewsDetailsFragment : Fragment() {
 
 	private var _binding: FragmentNewsDetailsBinding? = null
 	private val binding get() = _binding!!
 
-	private val videoAdapter = NewsVideosAdapter(this)
+	private val videoAdapter = NewsVideosAdapter()
 	private val imageAdapter = NewsImagesAdapter()
 
 	private val viewModel: NewsDetailViewModel by viewModels(factoryProducer = {
@@ -257,10 +257,6 @@ class NewsDetailsFragment : Fragment(), GalleryClickListener {
 		}
 	}
 
-	override fun onVideoClick(video: GalleryItem.Video) {
-		//startPlayback(video.videoUrl)
-	}
-
 }
 
 // Data classes per rappresentare gli elementi della gallery
@@ -335,7 +331,7 @@ class NewsImagesAdapter() :
 /**
  * Adapter used to populate the video gallery of news detail
  */
-class NewsVideosAdapter(private val clickListener: GalleryClickListener) :
+class NewsVideosAdapter() :
 	RecyclerView.Adapter<NewsVideosAdapter.NewsVideoViewHolder>() {
 
 	private val videos: MutableList<GalleryItem.Video> = mutableListOf()
@@ -368,7 +364,6 @@ class NewsVideosAdapter(private val clickListener: GalleryClickListener) :
 
 			binding.playButton.setOnClickListener {
 				startPlayback(item.videoUrl)
-				//clickListener.onVideoClick(item)
 			}
 		}
 

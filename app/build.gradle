@@ -143,5 +143,11 @@ dependencies {
 	implementation 'net.openid:appauth:0.11.1'
 
 	// ExoPlayer
-	implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
+	def media3_version = "1.5.1"
+	// For media playback using ExoPlayer
+	implementation "androidx.media3:media3-exoplayer:$media3_version"
+	// For building media playback UIs
+	implementation "androidx.media3:media3-ui:$media3_version"
+	// For HLS playback support with ExoPlayer
+	implementation "androidx.media3:media3-exoplayer-hls:$media3_version"
 }
