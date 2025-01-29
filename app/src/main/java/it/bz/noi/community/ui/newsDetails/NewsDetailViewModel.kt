@@ -102,10 +102,8 @@ class NewsDetailViewModel(
 				val response = mainRepository.getVideoThumbnail(vimeoURL)
 				if (response.isSuccessful) {
 					response.body()?.thumbnailUrl?.let {
-						val baseUrl = it.substring(0, it.indexOfLast { c ->
-							c == '_'
-						}+1)
-						val thumbnailUrl = baseUrl + thumbnailWidthPx + "x" + thumbnailHeightPx
+						val pattern = Regex("-d_\\d+x\\d+")
+						val thumbnailUrl = it.replace(pattern, "-d_${thumbnailWidthPx}x${thumbnailHeightPx}")
 
 						// Aggiorna la mappa delle thumbnail
 						_videoThumbnails.update { currentMap ->
