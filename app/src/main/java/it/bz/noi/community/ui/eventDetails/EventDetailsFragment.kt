@@ -24,10 +24,10 @@ import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.transition.TransitionInflater
@@ -40,7 +40,7 @@ import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
-import it.bz.noi.community.data.models.EventsResponse
+import it.bz.noi.community.data.models.Event
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentEventDetailsBinding
 import it.bz.noi.community.ui.MainViewModel
@@ -48,6 +48,7 @@ import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.WebViewFragment
 import it.bz.noi.community.ui.today.events.EventClickListener
 import it.bz.noi.community.ui.today.events.EventsAdapter
+import it.bz.noi.community.ui.today.events.EventsItemDecoration
 import it.bz.noi.community.utils.DateUtils
 import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils
@@ -55,12 +56,15 @@ import it.bz.noi.community.utils.Utils.getEventDescription
 import it.bz.noi.community.utils.Utils.getEventName
 import it.bz.noi.community.utils.Utils.getEventOrganizer
 import it.bz.noi.community.utils.Utils.getImageUrl
-import java.util.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.util.Date
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class EventDetailsFragment : Fragment(), EventClickListener {
-	private lateinit var binding: FragmentEventDetailsBinding
 
-	private val args: EventDetailsFragmentArgs by navArgs()
+	private var _binding: FragmentEventDetailsBinding? = null
+	private val binding get() = _binding!!
 
 	private val mainViewModel: MainViewModel by activityViewModels(factoryProducer = {
 		ViewModelFactory(
@@ -69,11 +73,14 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		)
 	})
 
-	private lateinit var allEvents: ArrayList<EventsResponse.Event>
+	private val eventViewModel: EventDetailsViewModel by viewModels(factoryProducer = {
+		EventDetailsViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
+			this@EventDetailsFragment)
+	})
 
-	private lateinit var selectedEvent: EventsResponse.Event
+	private var allEvents: List<Event> = emptyList()
 
-	private val suggestedEvents = arrayListOf<EventsResponse.Event>()
+	private val suggestedEvents = arrayListOf<Event>()
 
 	private val suggestedEventsAdapter by lazy {
 		EventsAdapter(
@@ -93,12 +100,17 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 			postponeEnterTransition()
 	}
 
+	override fun onDestroyView() {
+		super.onDestroyView()
+		_binding = null
+	}
+
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 		savedInstanceState: Bundle?
 	): View {
-		binding = FragmentEventDetailsBinding.inflate(inflater)
+		_binding = FragmentEventDetailsBinding.inflate(inflater)
 		return binding.root
 	}
 
@@ -106,6 +118,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		super.onViewCreated(view, savedInstanceState)
 
 		binding.rvSuggestedEvents.apply {
+			addItemDecoration(EventsItemDecoration())
 			layoutManager = LinearLayoutManager(requireContext(), HORIZONTAL, false)
 			adapter = suggestedEventsAdapter
 
@@ -114,122 +127,141 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 			}
 		}
 
-		mainViewModel.mediatorEvents.observe(viewLifecycleOwner, Observer {
+		eventViewModel.eventFlow.asLiveData(Dispatchers.Main).observe(viewLifecycleOwner) {
+			when(it.status) {
+				Status.SUCCESS -> {
+					binding.progressBarLoading.isVisible = false
+					val event = it.data!!
+					loadEventData(event)
+				}
+				Status.ERROR -> {
+					binding.progressBarLoading.isVisible = false
+					Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+				}
+				Status.LOADING -> {
+					binding.progressBarLoading.isVisible = true
+				}
+			}
+		}
+
+		mainViewModel.mediatorEvents.observe(viewLifecycleOwner) {
 			when (it.status) {
 				Status.SUCCESS -> {
 					val events = it.data
-					if (events != null && events.isNotEmpty()) {
-						allEvents = events as ArrayList<EventsResponse.Event>
-						selectedEvent = events[args.eventID]
-
-						(requireActivity() as AppCompatActivity).supportActionBar?.title =
-							getEventName(selectedEvent)
-
-						setTransitionNames(selectedEvent.eventId!!)
-						loadEventImage(getImageUrl(selectedEvent))
-
-						setDate(selectedEvent.startDate, selectedEvent.endDate)
-
-						if (selectedEvent.webAddress != null) {
-							binding.addToCalendarOrSignup.text = getString(R.string.btn_sign_up)
-							binding.addToCalendarOrSignup.setIconResource(R.drawable.ic_sign_up)
-							binding.addToCalendarOrSignup.setOnClickListener {
-								val browserIntent =
-									Intent(Intent.ACTION_VIEW, Uri.parse(selectedEvent.webAddress))
-								startActivity(browserIntent)
-							}
-						} else {
-							binding.addToCalendarOrSignup.text =
-								getString(R.string.btn_add_to_calendar)
-							binding.addToCalendarOrSignup.setIconResource(R.drawable.ic_add_to_calendar)
-							binding.addToCalendarOrSignup.setOnClickListener {
-								val beginTime = selectedEvent.startDate.time
-								val endTime = selectedEvent.endDate.time
-
-								val intent: Intent = Intent(Intent.ACTION_INSERT)
-									.setData(Events.CONTENT_URI)
-									.putExtra(
-										CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-										beginTime
-									)
-									.putExtra(
-										CalendarContract.EXTRA_EVENT_END_TIME,
-										endTime
-									)
-									.putExtra(Events.TITLE, getEventName(selectedEvent))
-									.putExtra(
-										Events.DESCRIPTION,
-										getEventDescription(selectedEvent)
-									)
-									.putExtra(Events.EVENT_LOCATION, selectedEvent.location)
-									.putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY)
-
-								startActivity(intent)
-							}
-						}
-
-						binding.findOnMaps.setOnClickListener {
-							mainViewModel.getRoomMapping().observe(viewLifecycleOwner, Observer {
-								when (it.status) {
-									Status.SUCCESS -> {
-										binding.progressBarLoading.isVisible = false
-
-										val mapTitle = selectedEvent.location
-										val mapUrl = it.data?.get(selectedEvent.roomName)
-											?: resources.getString(R.string.url_map)
-
-										findNavController().navigate(
-											R.id.action_global_webViewFragment, bundleOf(
-												WebViewFragment.TITLE_ARG to mapTitle,
-												WebViewFragment.URL_ARG to Utils.addParamsToUrl(
-													mapUrl,
-													fullview = true,
-													hidezoom = true
-												)
-											)
-										)
-									}
-									Status.LOADING -> {
-										binding.progressBarLoading.isVisible = true
-									}
-									Status.ERROR -> {
-										binding.progressBarLoading.isVisible = false
-										Toast.makeText(
-											requireContext(),
-											it.message,
-											Toast.LENGTH_LONG
-										).show()
-									}
-								}
-							})
-						}
-
-						binding.tvEventName.text = getEventName(selectedEvent)
-						binding.tvEventLocation.text = selectedEvent.location
-						binding.tvEventOrganizer.text = getEventOrganizer(selectedEvent)
-						if (getEventDescription(selectedEvent).isNullOrEmpty()) {
-							binding.tvAboutLabel.isVisible = false
-							binding.tvEventDescription.isVisible = false
-						} else
-							binding.tvEventDescription.text = getEventDescription(selectedEvent)
-
-						populateSuggestedEvents(events)
+					if (!events.isNullOrEmpty()) {
+						allEvents = events
 					} else {
 						binding.tvInterestingForYou.isVisible = false
 					}
 				}
-				Status.ERROR -> {
-				}
-				Status.LOADING -> {
+				Status.ERROR -> Unit
+				Status.LOADING -> Unit
+			}
+		}
+
+	}
+
+	private fun loadEventData(event: Event) {
+		(requireActivity() as AppCompatActivity).supportActionBar?.title =
+			getEventName(event)
+
+		setTransitionNames(event.eventId!!)
+		loadEventImage(getImageUrl(event))
+
+		setDate(event.startDate, event.endDate)
+
+		if (event.webAddress != null) {
+			binding.addToCalendarOrSignup.text = getString(R.string.btn_sign_up)
+			binding.addToCalendarOrSignup.setIconResource(R.drawable.ic_sign_up)
+			binding.addToCalendarOrSignup.setOnClickListener {
+				val browserIntent =
+					Intent(Intent.ACTION_VIEW, Uri.parse(event.webAddress))
+				startActivity(browserIntent)
+			}
+		} else {
+			binding.addToCalendarOrSignup.text =
+				getString(R.string.btn_add_to_calendar)
+			binding.addToCalendarOrSignup.setIconResource(R.drawable.ic_add_to_calendar)
+			binding.addToCalendarOrSignup.setOnClickListener {
+				val beginTime = event.startDate.time
+				val endTime = event.endDate.time
+
+				val intent: Intent = Intent(Intent.ACTION_INSERT)
+					.setData(Events.CONTENT_URI)
+					.putExtra(
+						CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+						beginTime
+					)
+					.putExtra(
+						CalendarContract.EXTRA_EVENT_END_TIME,
+						endTime
+					)
+					.putExtra(Events.TITLE, getEventName(event))
+					.putExtra(
+						Events.DESCRIPTION,
+						getEventDescription(event)
+					)
+					.putExtra(Events.EVENT_LOCATION, event.location)
+					.putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY)
+
+				startActivity(intent)
+			}
+		}
+
+		binding.findOnMaps.setOnClickListener {
+			mainViewModel.getRoomMapping().observe(viewLifecycleOwner) {
+				when (it.status) {
+					Status.SUCCESS -> {
+						binding.progressBarLoading.isVisible = false
+
+						val mapTitle = event.location
+						val mapUrl = it.data?.get(event.roomName)
+							?: resources.getString(R.string.url_map)
+
+						findNavController().navigate(
+							R.id.action_global_webViewFragment, bundleOf(
+								WebViewFragment.TITLE_ARG to mapTitle,
+								WebViewFragment.URL_ARG to Utils.addParamsToUrl(
+									mapUrl,
+									fullview = true,
+									hidezoom = true
+								)
+							)
+						)
+					}
+
+					Status.LOADING -> {
+						binding.progressBarLoading.isVisible = true
+					}
+
+					Status.ERROR -> {
+						binding.progressBarLoading.isVisible = false
+						Toast.makeText(
+							requireContext(),
+							it.message,
+							Toast.LENGTH_LONG
+						).show()
+					}
 				}
 			}
-		})
+		}
+
+		binding.tvEventName.text = getEventName(event)
+		binding.tvEventLocation.text = event.location
+		binding.tvEventOrganizer.text = getEventOrganizer(event)
+		if (getEventDescription(event).isNullOrEmpty()) {
+			binding.tvAboutLabel.isVisible = false
+			binding.tvEventDescription.isVisible = false
+		} else
+			binding.tvEventDescription.text = getEventDescription(event)
+
+		populateSuggestedEvents(allEvents, event)
 	}
 
 	/**
 	 * populate the UI of the suggested filters
 	 */
-	private fun populateSuggestedEvents(events: List<EventsResponse.Event>) {
+	private fun populateSuggestedEvents(events: List<Event>, selectedEvent: Event) {
 		suggestedEvents.clear()
 		for (event in events) {
 			if (suggestedEvents.size == 3)
@@ -305,7 +337,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 	 * Clicking on suggested event will result in open another EventDetailsFragment instance
 	 */
 	override fun onEventClick(
-		event: EventsResponse.Event,
+		event: Event,
 		cardEvent: MaterialCardView,
 		cardDate: CardView,
 		eventName: TextView,
@@ -329,7 +361,8 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
 		findNavController().navigate(
 			EventDetailsFragmentDirections.actionEventDetailsFragmentSelf(
-				allEvents.indexOf(event)
+				null,
+				event
 			),
 			extras
 		)

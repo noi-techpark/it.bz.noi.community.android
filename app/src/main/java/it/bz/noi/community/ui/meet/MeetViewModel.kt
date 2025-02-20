@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+@file:OptIn(FlowPreview::class)
+
 package it.bz.noi.community.ui.meet
 
 import android.util.Log
@@ -20,6 +22,7 @@ import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils.removeAccents
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 
 @ExperimentalCoroutinesApi
@@ -33,60 +36,81 @@ class MeetViewModel(
 		private const val SEARCH_PARAM_STATE = "search_param_state"
 	}
 
+	/**
+	 * The ticker to reload contacts.
+	 * See [contactsFlow].
+	 */
 	private val reloadContactsTickerFlow = MutableSharedFlow<Unit>(replay = 1).apply {
 		tryEmit(Unit)
 	}
 
+	/**
+	 * The categories filter.
+	 */
+	val categoriesFilter: StateFlow<List<AccountType>> = savedStateHandle.getStateFlow("categoriesFilter", emptyList())
+
+	fun updateCategoriesFilter(categories: List<AccountType>) {
+		savedStateHandle["categoriesFilter"] = categories
+	}
+
+	/**
+	 * The contacts to be filtered before displaying.
+	 * See [filteredContactsFlow].
+	 */
 	private val contactsFlow = reloadContactsTickerFlow.flatMapLatest {
 		reloadableContactsFlow()
 	}
 
-	private val searchParamFlow = MutableStateFlow(savedStateHandle.get(SEARCH_PARAM_STATE) ?: "")
+	/**
+	 * The search param to filter contacts by name.
+	 * See [filteredContactsFlow].
+	 */
+	private val textSearchParamFlow = MutableStateFlow(savedStateHandle[SEARCH_PARAM_STATE] ?: "")
 
+	/**
+	 * The available filters.
+	 */
 	private val availableFiltersFlow: StateFlow<Map<AccountType, List<FilterValue>>> =
 		AccountsManager.availableAccountsFilters
-	private val selectedFiltersFlow = MutableStateFlow(emptyMap<AccountType, List<FilterValue>>())
 
-	val appliedFiltersFlow: Flow<Map<AccountType, List<FilterValue>>> =
-		availableFiltersFlow.combine(selectedFiltersFlow) { availableFilters, selectedFilters ->
-			val appliedFilters = mutableMapOf<AccountType, List<FilterValue>>()
-			availableFilters.entries.forEach { availableEntry ->
-				appliedFilters[availableEntry.key] = availableEntry.value.map { f ->
-					f.copy(checked = selectedFilters[availableEntry.key]?.find { it.key == f.key } != null)
+	/**
+	 * The selected filters (keys).
+	 * See [filteredContactsFlow].
+	 */
+	private val selectedFiltersFlow = MutableStateFlow(setOf<String>())
+
+	/**
+	 * The filters to be displayed.
+	 */
+	val filtersFlow: Flow<Map<AccountType, List<FilterValue>>> =
+		combine(availableFiltersFlow, categoriesFilter, selectedFiltersFlow.debounce(250)) { availableFilters, categories, selectedFilters ->
+			var appliedFilters: Map<AccountType, List<FilterValue>> = availableFilters
+			if (categories.isNotEmpty()) {
+				appliedFilters = availableFilters.filterKeys { categories.contains(it) }
+			}
+			appliedFilters = appliedFilters.mapValues { filters ->
+				filters.value.map { f ->
+					f.copy(checked = selectedFilters.contains(f.key))
 				}
 			}
 			appliedFilters
 		}
 
-	val selectedFiltersCount = selectedFiltersFlow.flatMapLatest { selectedFilters ->
-		flowOf(cumulativeCount(selectedFilters.values))
+	/**
+	 * The amount of selected filters.
+	 */
+	val selectedFiltersCount = selectedFiltersFlow.map { selectedFilters ->
+		selectedFilters.size
 	}.asLiveData(Dispatchers.IO)
 
-	private fun reloadableContactsFlow(): Flow<Resource<List<Contact>>> = flow {
-		emit(Resource.loading(data = null))
-		try {
-			val accessToken = AuthManager.obtainFreshToken()
-			val contacts = mainRepository.getContacts(accessToken.bearer())
-			Log.d(TAG, "Caricati ${contacts.size} contatti")
-			val availableCompanies = AccountsManager.availableCompanies.value
-			val allContacts = contacts.map { c ->
-				if (c.accountId != null) {
-					c.copy(companyName = availableCompanies.get(c.accountId)?.name)
-				} else {
-					c
-				}
-			}
-			emit(Resource.success(data = allContacts))
-		} catch (exception: Exception) {
-			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
-		}
-	}
-
+	/**
+	 * The contacts to be displayed, filtered by search param and selected filters.
+	 */
 	val filteredContactsFlow: Flow<Resource<List<Contact>>> =
-		combine(searchParamFlow, selectedFiltersFlow, contactsFlow) { searchParam: String,
-																	  selectedFilters: Map<AccountType, List<FilterValue>>,
-																	  allContacts: Resource<List<Contact>> ->
-			val selectedFilterCount = cumulativeCount(selectedFilters.values)
+		combine(textSearchParamFlow, selectedFiltersFlow, contactsFlow) { searchParam: String,
+																		  selectedFilters: Set<String>,
+																		  allContacts: Resource<List<Contact>> ->
+			val selectedFilterCount = selectedFilters.size
 
 			when (allContacts.status) {
 				Status.SUCCESS -> {
@@ -95,15 +119,7 @@ class MeetViewModel(
 					else {
 						var filteredContacts = allContacts.data!!
 						if (selectedFilterCount > 0) {
-							val accountIdsFilters = selectedFilters.values.reduce { acc, list ->
-								val newList = acc.toMutableList()
-								newList.addAll(list)
-								newList
-							}.map {
-								it.key
-							}
-							filteredContacts =
-								filteredContacts.filterContactsByAccount(accountIdsFilters)
+							filteredContacts = filteredContacts.filterContactsByAccount(selectedFilters.toList())
 						}
 						if (searchParam.isNotEmpty()) {
 							filteredContacts =
@@ -118,15 +134,46 @@ class MeetViewModel(
 			}
 		}.stateIn(viewModelScope, SharingStarted.Lazily, Resource.loading(data = null))
 
+	/**
+	 * Returns the contacts from the repository enriched with the company name.
+	 */
+	private fun reloadableContactsFlow(): Flow<Resource<List<Contact>>> = flow {
+		emit(Resource.loading(data = null))
+		try {
+			val accessToken = AuthManager.obtainFreshToken()
+			val contacts = mainRepository.getContacts(accessToken.bearer())
+			Log.d(TAG, "Caricati ${contacts.size} contatti")
+			val availableCompanies = AccountsManager.availableCompanies.value
+			val allContacts = contacts.map { c ->
+				if (c.accountId != null) {
+					c.copy(companyName = availableCompanies[c.accountId]?.name)
+				} else {
+					c
+				}
+			}
+			emit(Resource.success(data = allContacts))
+		} catch (exception: Exception) {
+			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
+		}
+	}
+
 	fun refreshContacts() = reloadContactsTickerFlow.tryEmit(Unit)
 
 	fun updateSearchParam(searchParam: String) {
-		searchParamFlow.tryEmit(searchParam)
-		savedStateHandle.set(SEARCH_PARAM_STATE, searchParam)
+		textSearchParamFlow.tryEmit(searchParam)
+		savedStateHandle[SEARCH_PARAM_STATE] = searchParam
 	}
 
-	fun updateSelectedFilters(filters: Map<AccountType, List<FilterValue>>) {
-		selectedFiltersFlow.tryEmit(filters)
+	fun updateSelectedFilters(filters: FilterValue) {
+		selectedFiltersFlow.update { selectedFilters ->
+			val newSelectedFilters = selectedFilters.toMutableSet()
+			if (filters.checked) {
+				newSelectedFilters.add(filters.key)
+			} else {
+				newSelectedFilters.remove(filters.key)
+			}
+			newSelectedFilters.toSet()
+		}
 	}
 
 	private fun List<Contact>.filterContactsByName(text: String): List<Contact> {
@@ -142,10 +189,11 @@ class MeetViewModel(
 		}
 	}
 
-	private fun <T> cumulativeCount(values: Collection<List<T>>): Int = values.sumOf {
-		it.size
+	fun clearSelctedFilters() {
+		selectedFiltersFlow.update {
+			emptySet()
+		}
 	}
-
 }
 
 @ExperimentalCoroutinesApi

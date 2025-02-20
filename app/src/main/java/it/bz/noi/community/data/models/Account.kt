@@ -35,7 +35,7 @@ enum class AccountType(val code: String? = null) {
 
 fun Account.getAccountType(): AccountType {
 	val categories = type.split(",")
-	AccountType.values().forEach {
+	AccountType.entries.forEach {
 		if (categories.contains(it.code))
 			return it
 	}

@@ -48,7 +48,7 @@ sealed class AuthStateStatus {
 	sealed class Unauthorized : AuthStateStatus() {
 		object UserAuthRequired : Unauthorized()
 		object PendingToken : Unauthorized()
-		object NotValidRole : Unauthorized()
+		data class NotValidRole(val emailAddress: String) : Unauthorized()
 	}
 
 	data class Authorized(val state: AuthState) : AuthStateStatus()
@@ -72,7 +72,7 @@ object AuthManager {
 	/**
 	 * Check if the user has a valid email, that is if it is allowed to use the app.
 	 */
-	private suspend fun AuthState.isEmailValid(): Boolean {
+	private suspend fun AuthState.isEmailValid(): Pair<String,Boolean> {
 
 		fun String.isDimensionEmail() = endsWith("@dimension.it")
 
@@ -81,23 +81,23 @@ object AuthManager {
 		fun String.isWhitelisted() = isDimensionEmail() || isGooglePlayReviewEmail()
 
 		return try {
-			val token = obtainFreshToken() ?: return false
+			val token = obtainFreshToken() ?: return ("" to false)
 			val mail: String = getUserInfo(token, obtainAuthServiceConfig()).let { res ->
 				if (res.status == Status.SUCCESS) {
 					res.data
 				} else {
 					null
 				}
-			}?.email ?: return false
+			}?.email ?: return "" to false
 
 			if (mail.isWhitelisted()) {
-				return true
+				return mail to true
 			}
 
 			val contacts = RetrofitBuilder.communityApiService.getContacts(token.bearer()).contacts
-			contacts.any { it.matches(mail) }
+			mail to contacts.any { it.matches(mail) }
 		} catch (ex: Exception) {
-			false
+			"" to false
 		}
 	}
 
@@ -119,11 +119,11 @@ object AuthManager {
 				)
 			)
 
-			!validRole -> AuthStateStatus.Unauthorized.NotValidRole
+			!validRole -> AuthStateStatus.Unauthorized.NotValidRole("")
 			authState.isAuthorized -> {
-				authState.isEmailValid().let { isValid ->
+				authState.isEmailValid().let { (mail, isValid) ->
 					if (!isValid) {
-						AuthStateStatus.Unauthorized.NotValidRole
+						AuthStateStatus.Unauthorized.NotValidRole(mail)
 					} else {
 						AuthStateStatus.Authorized(authState)
 					}

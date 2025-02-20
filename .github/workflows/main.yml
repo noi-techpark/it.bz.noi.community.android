@@ -43,7 +43,7 @@ jobs:
   ## Run tests on an Android Simulator
   ## We use macos as it has hardware acceleration for that
   android_tests:
-    runs-on: macos-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

@@ -82,7 +82,7 @@ class MainViewModel(
 	/**
 	 * represents the parameters of the URL for filtering the events
 	 */
-	var eventsParams = EventsParams(startDate = parameterDateTimeFormatter().format(startDate))
+	private var eventsParams = EventsParams(startDate = parameterDateTimeFormatter().format(startDate))
 
 	/**
 	 * live data of the events
@@ -139,17 +139,17 @@ class MainViewModel(
 	/**
 	 * mediator live data that emits the events to the observers
 	 */
-	val mediatorEvents = MediatorLiveData<Resource<List<EventsResponse.Event>>>()
+	val mediatorEvents = MediatorLiveData<Resource<List<Event>>>()
 
 	init {
 		mediatorEvents.addSource(events) {
 			mediatorEvents.value = it
 		}
 
-		appliedFilters.addSource(availableFilters) { newAvailableFilters ->
+		appliedFilters.addSource(availableFilters) {
 			appliedFilters.value = loadAppliedFilters()
 		}
-		appliedFilters.addSource(selectedFilters) { newSelectedFilters ->
+		appliedFilters.addSource(selectedFilters) {
 			appliedFilters.value = loadAppliedFilters()
 		}
 	}

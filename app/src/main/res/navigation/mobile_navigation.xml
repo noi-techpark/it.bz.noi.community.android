@@ -65,10 +65,17 @@ SPDX-License-Identifier: CC0-1.0
         android:name="it.bz.noi.community.ui.eventDetails.EventDetailsFragment"
         android:label=" "
         tools:layout="@layout/fragment_event_details">
+		<deepLink
+			android:id="@+id/eventDetailsDeepLink"
+			app:uri="noi-community://it.bz.noi.community/eventDetails/{eventId}" />
 		<argument
-			android:name="eventID"
-			app:argType="integer"
-			app:nullable="false"/>
+			android:name="eventId"
+			app:argType="string"
+			app:nullable="true" />
+		<argument
+			android:name="event"
+			app:argType="it.bz.noi.community.data.models.Event"
+			app:nullable="true" />
 		<action
             android:id="@+id/action_eventDetailsFragment_self"
             app:destination="@id/eventDetailsFragment" />

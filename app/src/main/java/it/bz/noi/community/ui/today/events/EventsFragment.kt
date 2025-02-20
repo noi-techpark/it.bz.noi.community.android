@@ -4,6 +4,7 @@
 
 package it.bz.noi.community.ui.today.events
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.google.android.material.card.MaterialCardView
 import it.bz.noi.community.R
-import it.bz.noi.community.data.models.EventsResponse
+import it.bz.noi.community.data.models.Event
 import it.bz.noi.community.data.models.TimeFilter
 import it.bz.noi.community.data.models.TimeRange
 import it.bz.noi.community.databinding.FragmentEventsBinding
@@ -32,10 +33,13 @@ import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.ui.today.TodayViewModel
 import it.bz.noi.community.utils.Status
 import it.bz.noi.community.ui.today.TodayFragmentDirections
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 
-	private lateinit var binding: FragmentEventsBinding
+	private var _binding: FragmentEventsBinding? = null
+	private val binding get() = _binding!!
 
 	private val todayViewModel: TodayViewModel by activityViewModels()
 
@@ -77,12 +81,17 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 
 	}
 
+	override fun onDestroyView() {
+		super.onDestroyView()
+		_binding = null
+	}
+
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 		savedInstanceState: Bundle?
 	): View {
-		binding = FragmentEventsBinding.inflate(inflater)
+		_binding = FragmentEventsBinding.inflate(inflater)
 		return binding.root
 	}
 
@@ -91,28 +100,29 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 
 		layoutManagerFilters = LinearLayoutManager(requireContext(), HORIZONTAL, false)
 
-		binding.rvTimeFilters.apply {
+		binding.timeFiltersRecyclerView.apply {
+			addItemDecoration(TimeFilterItemDecoration())
 			layoutManager = layoutManagerFilters
 			adapter = timeFilterAdapter
 		}
 
-		binding.rvEvents.apply {
+		binding.eventsRecyclerView.apply {
+			addItemDecoration(EventsItemDecoration())
 			layoutManager = LinearLayoutManager(requireContext())
 			adapter = eventsAdapter
-
 			doOnPreDraw {
 				startPostponedEnterTransition()
 			}
 		}
 
-		binding.cdFilterEvents.root.setOnClickListener {
+		binding.editFiltersButton.root.setOnClickListener {
 			exitTransition = null
 			findNavController().navigate(
 				TodayFragmentDirections.actionNavigationTodayToFiltersFragment()
 			)
 		}
 
-		binding.swipeRefreshEvents.setOnRefreshListener {
+		binding.eventsSwipeToRefresh.setOnRefreshListener {
 			viewModel.refreshEvents()
 		}
 
@@ -120,41 +130,42 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 	}
 
 	private fun setupObservers() {
-		viewModel.mediatorEvents.observe(viewLifecycleOwner) {
-			it?.let { resource ->
-				when (resource.status) {
-					Status.SUCCESS -> {
-						binding.swipeRefreshEvents.isRefreshing = false
-						val events = resource.data
-						if (events != null && events.isNotEmpty()) {
-							binding.rvEvents.isVisible = true
-							binding.emptyState.root.isVisible = false
-							retrieveList(events)
-						} else {
-							binding.rvEvents.isVisible = false
-							binding.emptyState.apply {
-								root.isVisible = true
-								subtitle.text = getString(R.string.label_events_empty_state_subtitle)
-							}
+		viewModel.mediatorEvents.observe(viewLifecycleOwner) { resource ->
+			if (resource == null) return@observe
+			when (resource.status) {
+				Status.SUCCESS -> {
+					binding.eventsSwipeToRefresh.isRefreshing = false
+					val events = resource.data
+					if (!events.isNullOrEmpty()) {
+						binding.eventsRecyclerView.isVisible = true
+						binding.emptyState.root.isVisible = false
+						retrieveList(events)
+					} else {
+						binding.eventsRecyclerView.isVisible = false
+						binding.emptyState.apply {
+							root.isVisible = true
+							subtitle.text = getString(R.string.label_events_empty_state_subtitle)
 						}
 					}
-					Status.ERROR -> {
-						binding.swipeRefreshEvents.isRefreshing = false
-						binding.rvEvents.isVisible = false
-						Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
-					}
-					Status.LOADING -> {
-						binding.swipeRefreshEvents.isRefreshing = true
-					}
+				}
+
+				Status.ERROR -> {
+					binding.eventsSwipeToRefresh.isRefreshing = false
+					binding.eventsRecyclerView.isVisible = false
+					Toast.makeText(requireContext(), resource.message, Toast.LENGTH_LONG).show()
+				}
+
+				Status.LOADING -> {
+					binding.eventsSwipeToRefresh.isRefreshing = true
 				}
 			}
 		}
 
 		viewModel.selectedFiltersCount.observe(viewLifecycleOwner) { count ->
-			binding.cdFilterEvents.appliedFiltersCount.apply {
+			binding.editFiltersButton.appliedFiltersCount.apply {
 				if (count > 0) {
 					isVisible = true
-					text = "($count)"
+					text = "$count"
 				} else {
 					isVisible = false
 				}
@@ -162,7 +173,8 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		}
 	}
 
-	private fun retrieveList(events: List<EventsResponse.Event>) {
+	private fun retrieveList(events: List<Event>) {
+
 		todayViewModel.events.apply {
 			clear()
 			addAll(events)
@@ -171,7 +183,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 	}
 
 	override fun onEventClick(
-		event: EventsResponse.Event,
+		event: Event,
 		cardEvent: MaterialCardView,
 		cardDate: CardView,
 		eventName: TextView,
@@ -194,12 +206,14 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		)
 		findNavController().navigate(
 			TodayFragmentDirections.actionNavigationTodayToEventDetailsFragment(
-				todayViewModel.events.indexOf(event)
+				null,
+				event
 			),
 			extras
 		)
 	}
 
+	@SuppressLint("NotifyDataSetChanged")
 	override fun onTimeFilterClick(position: Int) {
 		// used for avoiding reselection of one element
 		if (position != viewModel.selectedTimeFilter.ordinal) {
@@ -208,9 +222,9 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 
 			// used for avoiding UI partial filter selection
 			if (layoutManagerFilters.findLastCompletelyVisibleItemPosition() < position)
-				binding.rvTimeFilters.smoothScrollToPosition(timeFilters.lastIndex)
+				binding.timeFiltersRecyclerView.smoothScrollToPosition(timeFilters.lastIndex)
 			else if (layoutManagerFilters.findFirstCompletelyVisibleItemPosition() > position)
-				binding.rvTimeFilters.smoothScrollToPosition(0)
+				binding.timeFiltersRecyclerView.smoothScrollToPosition(0)
 
 			when (position) {
 				0 -> viewModel.filterTime(TimeRange.ALL)

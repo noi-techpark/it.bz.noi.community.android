@@ -16,7 +16,6 @@ class HeaderViewHolder(private val binding: VhHeaderBinding) : RecyclerView.View
 	fun bind(header: String) {
 		binding.headerTextView.text = header
 	}
-
 }
 
 class FilterViewHolder(private val binding: VhSwitchBinding, updateResultsListener: UpdateResultsListener, exclusive: Boolean = false) : RecyclerView.ViewHolder(binding.root) {
@@ -30,7 +29,7 @@ class FilterViewHolder(private val binding: VhSwitchBinding, updateResultsListen
 			if (exclusive && filter.checked)
 				turnOffOtherSwitch()
 
-			updateResultsListener.updateResults()
+			updateResultsListener.updateResults(filter)
 		}
 	}
 
@@ -46,7 +45,6 @@ class FilterViewHolder(private val binding: VhSwitchBinding, updateResultsListen
 							switch.callOnClick()
 						}
 					}
-
 				}
 			}
 		}
@@ -61,5 +59,5 @@ class FilterViewHolder(private val binding: VhSwitchBinding, updateResultsListen
 }
 
 interface UpdateResultsListener {
-	fun updateResults()
+	fun updateResults(filter: FilterValue)
 }

@@ -4,7 +4,6 @@
 
 package it.bz.noi.community.ui.meet
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -21,18 +20,19 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.Contact
 import it.bz.noi.community.databinding.FragmentMeetBinding
-import it.bz.noi.community.databinding.VhContactBinding
-import it.bz.noi.community.databinding.VhEmptyBinding
 import it.bz.noi.community.utils.Status
+import it.bz.noi.community.utils.groupedByInitial
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.Normalizer
 
 
 @ExperimentalCoroutinesApi
@@ -45,15 +45,26 @@ class MeetFragment : Fragment() {
 		MeetViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService), this)
 	})
 
-	private lateinit var contactsAdapter: ContactsAdapter
+	private lateinit var contactsAdapters: Map<Char,ContactsSectionAdapter>
+	private lateinit var contactsAdapter: RecyclerView.Adapter<*>
+
+	private val listener = object : ContactDetailListener {
+		override fun openContactDetail(contact: Contact) {
+			findNavController().navigate(MeetFragmentDirections.actionToContactDetails(contact))
+		}
+	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		contactsAdapter = ContactsAdapter(object : ContactDetailListener {
-			override fun openContactDetail(contact: Contact) {
-				findNavController().navigate(MeetFragmentDirections.actionToContactDetails(contact))
-			}
-		})
+		// Define a map of contacts adapters for each alphabet letter
+		contactsAdapters = (('A'..'Z').associateWith { c -> ContactsSectionAdapter(c, listener) }) + ('#' to ContactsSectionAdapter('#', listener))
+		contactsAdapter = ConcatAdapter(
+			ConcatAdapter.Config.Builder()
+				.setIsolateViewTypes(false)
+				.setStableIdMode(ConcatAdapter.Config.StableIdMode.SHARED_STABLE_IDS)
+				.build(),
+			contactsAdapters.values.toList()
+		)
 	}
 
 	override fun onCreateView(
@@ -74,7 +85,7 @@ class MeetFragment : Fragment() {
 		super.onViewCreated(view, savedInstanceState)
 
 		binding.apply {
-			contacts.adapter = contactsAdapter
+			contacts.adapter = this@MeetFragment.contactsAdapter
 			contacts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
 				// Nasconde la tastiera, quando l'utente inizia a scrollare la lista
@@ -86,7 +97,6 @@ class MeetFragment : Fragment() {
 						imm.hideSoftInputFromWindow(recyclerView.windowToken, 0)
 					}
 				}
-
 			})
 
 			swipeRefreshContacts.setOnRefreshListener {
@@ -106,16 +116,28 @@ class MeetFragment : Fragment() {
 		setupObservers()
 	}
 
+	private fun Contact.initial(): Char {
+		fun String.removeAccents() = Normalizer.normalize(this, Normalizer.Form.NFD)
+		return firstName.removeAccents().firstOrNull()?.takeIf { it.isLetter() }?.uppercaseChar() ?: '#'
+	}
+
 	private fun setupObservers() {
 		viewLifecycleOwner.lifecycleScope.launch {
 			viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 				viewModel.filteredContactsFlow.collectLatest { res ->
 					when (res.status) {
 						Status.SUCCESS -> {
-							val contacts = res.data!!
+							val contacts: List<Contact> = res.data!!
 							Log.d(TAG, "Caricati ${contacts.size} contatti")
-							contactsAdapter.state = ContactsAdapter.AdapterState.Ok(contacts)
 							binding.swipeRefreshContacts.isRefreshing = false
+							if (contacts.isEmpty()) {
+								binding.contacts.swapAdapter(ContactsLoadingOrEmptyAdapter(ContactsLoadingOrEmptyAdapter.State.Empty), false)
+							} else {
+								contacts.groupedByInitial(initial = { contact -> contact.initial() }).forEach { (letter, contacts) ->
+									contactsAdapters[letter]?.updateContacts(contacts)
+								}
+								binding.contacts.swapAdapter(contactsAdapter, false)
+							}
 						}
 						Status.ERROR -> {
 							Log.d(TAG, "Caricamento contatti KO")
@@ -146,117 +168,6 @@ class MeetFragment : Fragment() {
 
 	companion object {
 		private const val TAG = "MeetFragment"
-	}
-
-}
-
-interface ContactDetailListener {
-	fun openContactDetail(contact: Contact)
-}
-
-class ContactsAdapter(private val detailListener: ContactDetailListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-	companion object {
-		const val TAG = "ContactsAdapter"
-		const val CONTACT = 0
-		const val LOADING = 1
-		const val EMPTY = 3
-	}
-
-
-	sealed class AdapterState {
-		data class Ok(val contacts: List<Contact> = emptyList()) : AdapterState()
-		object Loading : AdapterState()
-	}
-
-	sealed class Item(val viewType: Int) {
-		object Loading: Item(LOADING)
-		object Empty: Item(EMPTY)
-		data class Contact(val contact: it.bz.noi.community.data.models.Contact) : Item(CONTACT)
-	}
-
-	var state: AdapterState = AdapterState.Loading
-		set(value) {
-			if (field != value) {
-				field = value
-				items = value.toItems()
-			}
-		}
-
-	private var items: List<Item> = listOf(Item.Loading)
-		@SuppressLint("NotifyDataSetChanged")
-		set(value) {
-			field = value
-			notifyDataSetChanged()
-		}
-
-	private fun AdapterState.toItems(): List<Item> {
-		return when (this) {
-			is AdapterState.Ok -> when (contacts.size) {
-				0 -> listOf(Item.Empty)
-				else -> contacts.map { c ->
-					Item.Contact(c)
-				}
-			}
-			is AdapterState.Loading -> listOf(Item.Loading)
-		}
-	}
-
-	override fun getItemViewType(position: Int): Int = items[position].viewType
-
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-		return when (viewType) {
-			CONTACT -> ContactVH(VhContactBinding.inflate(LayoutInflater.from(parent.context), parent, false), detailListener)
-			LOADING -> EmptyViewHolder(
-				VhEmptyBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
-					title.isVisible = false
-					subtitle.isVisible = false
-				}
-			)
-			EMPTY -> EmptyViewHolder(
-				VhEmptyBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
-					subtitle.text = parent.resources.getString(R.string.label_contacts_empty_state_subtitle)
-				}
-			)
-			else -> throw UnkownViewTypeException(viewType)
-		}
-	}
-
-
-	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-		when (holder.itemViewType) {
-			CONTACT -> {
-				(items[position] as Item.Contact).let { txItem ->
-					(holder as ContactVH).bind(txItem.contact)
-				}
-			}
-		}
-	}
-
-	override fun getItemCount(): Int = items.size
-}
-
-class UnkownViewTypeException(id: Int) : Exception("Unkown view type $id")
-
-class EmptyViewHolder(binding: VhEmptyBinding) : RecyclerView.ViewHolder(binding.root)
-
-class ContactVH(private val binding: VhContactBinding, detailListener: ContactDetailListener) : RecyclerView.ViewHolder(binding.root) {
-
-	private lateinit var contact: Contact
-
-	init {
-		binding.root.setOnClickListener {
-			detailListener.openContactDetail(contact)
-		}
-	}
-
-	fun bind(c: Contact) {
-		contact = c
-
-		binding.contactName.text = c.fullName
-		binding.companyName.text = c.companyName
-		binding.companyName.isVisible = c.companyName != null
-		binding.contactIcon.text = "${c.firstName[0]}${c.lastName[0]}"
 	}
 
 }

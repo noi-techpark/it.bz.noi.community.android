@@ -83,10 +83,20 @@ class SplashScreenActivity : AppCompatActivity() {
 
 	private fun goToMainActivity() {
 		if (isFinishing) return
-		startActivity(Intent(this, MainActivity::class.java).apply {
-			putExtra(MainActivity.EXTRA_SHOW_WELCOME, runBlocking { !getWelcomeUnderstood() })
-		})
-		finish()
+		if (intent.hasExtra("deep_link")) {
+			val deepLink = Uri.parse(intent.getStringExtra("deep_link"))
+			startActivity(Intent(this, MainActivity::class.java).apply {
+				setData(deepLink)
+				flags = Intent.FLAG_ACTIVITY_NEW_TASK
+				putExtra(MainActivity.EXTRA_SHOW_WELCOME, false)
+			})
+			finish()
+		} else {
+			startActivity(Intent(this, MainActivity::class.java).apply {
+				putExtra(MainActivity.EXTRA_SHOW_WELCOME, runBlocking { !getWelcomeUnderstood() })
+			})
+			finish()
+		}
 	}
 
 	private fun goToOnboardingActivity() {

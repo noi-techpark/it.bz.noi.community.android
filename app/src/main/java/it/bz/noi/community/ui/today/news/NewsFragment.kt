@@ -102,8 +102,8 @@ class NewsFragment : Fragment() {
 		super.onViewCreated(view, savedInstanceState)
 
 		binding.news.apply {
+			addItemDecoration(NewsItemDecoration())
 			adapter = newsAdapter
-
 			doOnPreDraw {
 				startPostponedEnterTransition()
 			}
@@ -236,6 +236,7 @@ class PagingNewsAdapter(
 	diffCallback: DiffUtil.ItemCallback<News>,
 	private val detailListener: NewsDetailListener
 ) : PagingDataAdapter<News, NewsVH>(diffCallback) {
+
 	override fun onBindViewHolder(holder: NewsVH, position: Int) {
 		getItem(position)?.let {
 			holder.bind(it)

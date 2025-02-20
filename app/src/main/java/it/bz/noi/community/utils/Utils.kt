@@ -4,7 +4,6 @@
 
 package it.bz.noi.community.utils
 
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -12,7 +11,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.bz.noi.community.BuildConfig
 import it.bz.noi.community.R
-import it.bz.noi.community.data.models.EventsResponse
+import it.bz.noi.community.data.models.Event
 import java.net.URLEncoder
 import java.text.Normalizer
 import java.util.*
@@ -43,7 +42,7 @@ object Utils {
 			return null
 	}
 
-	fun getEventDescription(event: EventsResponse.Event): String? {
+	fun getEventDescription(event: Event): String? {
 		return when (Locale.getDefault().language) {
 			ITALIAN -> {
 				event.descriptionIT
@@ -59,7 +58,7 @@ object Utils {
 		}
 	}
 
-	fun getEventName(event: EventsResponse.Event, fallback: String = "N/D"): String {
+	fun getEventName(event: Event, fallback: String = "N/D"): String {
 		return when (Locale.getDefault().language) {
 			ITALIAN -> {
 				event.nameIT ?: event.name ?: fallback
@@ -75,14 +74,14 @@ object Utils {
 		}
 	}
 
-	fun getEventOrganizer(event: EventsResponse.Event, fallback: String = "N/D"): String {
+	fun getEventOrganizer(event: Event, fallback: String = "N/D"): String {
 		return if (event.eventOrganizer.isNullOrEmpty())
 			event.eventOrganizerFallback ?: fallback
 		else
 			event.eventOrganizer
 	}
 
-	fun getImageUrl(event: EventsResponse.Event): String? {
+	fun getImageUrl(event: Event): String? {
 		var eventImageUrl = event.imageGallery?.firstOrNull { it.imageUrl != null }?.imageUrl
 
 		if (eventImageUrl?.startsWith(HTTP_PREFIX) == true) {
@@ -199,3 +198,13 @@ class SaveStateProperty<T : Any?>(
 }
 
 fun getAppVersion() = "${BuildConfig.VERSION_NAME}.${BuildConfig.VERSION_CODE}"
+
+fun <T> List<T>.groupedByInitial(initial: (T) -> Char): Map<Char, List<T>> {
+	val contactsByFirstLetter: Map<Char,List<T>> = groupBy { initial(it) }
+	val result: MutableMap<Char, List<T>> = mutableMapOf()
+	('A'..'Z').forEach { letter: Char ->
+		result[letter] = contactsByFirstLetter[letter] ?: emptyList()
+	}
+	result['#'] = contactsByFirstLetter['#'] ?: emptyList()
+	return result
+}

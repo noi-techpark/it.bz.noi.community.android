@@ -12,7 +12,6 @@ SPDX-License-Identifier: CC0-1.0
 	android:id="@+id/cardViewEvent"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:layout_marginTop="@dimen/default_margin"
 	android:elevation="0dp"
 	app:cardCornerRadius="0dp">
 
