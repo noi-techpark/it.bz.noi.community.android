@@ -41,8 +41,8 @@ class NewsDetailViewModel(
 		private const val TAG = "NewsDetailViewModel"
 	}
 
-	private val news = savedStateHandle.getStateFlow(NEWS_ARG, null as News?)
-	private val newsId = savedStateHandle.getStateFlow(NEWS_ID_ARG, null as String?)
+	private val news = MutableStateFlow<News?>(savedStateHandle[NEWS_ARG])
+	private val newsId = MutableStateFlow<String?>(savedStateHandle[NEWS_ID_ARG])
 
 	private val _videoThumbnails = MutableStateFlow<Map<String, String>>(emptyMap())
 	val videoThumbnails: StateFlow<Map<String, String>> = _videoThumbnails.asStateFlow()
@@ -52,19 +52,19 @@ class NewsDetailViewModel(
 	private val thumbnailWidthPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 315f, metrics).toInt()
 	private val thumbnailHeightPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 210f, metrics).toInt()
 
-	val newsFlow: Flow<Resource<News>> = news.combine(newsId) { news, newsId ->
+	val newsFlow: Flow<Resource<News>> = news.combine(newsId) { _news, _newsId ->
 		Resource.loading(null)
 		when {
-			news != null -> {
+			_news != null -> {
 				Resource.success(
-					data = news
+					data = _news
 				)
 			}
-			newsId != null -> {
+			_newsId != null -> {
 				try {
 					Resource.success(
 						data = mainRepository.getNewsDetails(
-							newsId,
+							_newsId,
 							Utils.getAppLanguage()
 						)
 					)

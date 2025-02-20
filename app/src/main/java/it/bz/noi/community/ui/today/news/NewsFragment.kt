@@ -4,6 +4,7 @@
 
 package it.bz.noi.community.ui.today.news
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.News
@@ -174,7 +176,11 @@ interface NewsDetailListener {
 	)
 }
 
-class NewsVH(private val binding: VhNewsBinding, detailListener: NewsDetailListener) :
+class NewsVH(
+	private val binding: VhNewsBinding,
+	private val context: Context,
+	detailListener: NewsDetailListener
+) :
 	RecyclerView.ViewHolder(binding.root) {
 
 	private val df = DateFormat.getDateInstance(DateFormat.SHORT)
@@ -198,8 +204,10 @@ class NewsVH(private val binding: VhNewsBinding, detailListener: NewsDetailListe
 		this.news = news
 		binding.date.text = df.format(news.date)
 		binding.importantTag.isVisible = news.isImportant || news.isHighlighted
-		if (news.isHighlighted) { // FIXME -> WIP
-			binding.importantTag.text = "TMP PINNATO"
+		if (news.isHighlighted) {
+			binding.importantTag.text = context.resources.getString(R.string.highlighted_tag)
+		} else if (news.isImportant) {
+			binding.importantTag.text = context.resources.getString(R.string.important_tag)
 		}
 
 		news.getLocalizedDetail()?.let { detail ->
@@ -249,7 +257,7 @@ class PagingNewsAdapter(
 				LayoutInflater.from(parent.context),
 				parent,
 				false
-			), detailListener
+			), parent.context, detailListener
 		)
 	}
 

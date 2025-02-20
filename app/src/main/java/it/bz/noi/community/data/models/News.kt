@@ -127,7 +127,6 @@ fun News.getLocalizedContactInfo(): ContactInfo? = contactInfo?.get(Utils.getApp
  */
 fun News.getLocalizedVideos(): List<NewsVideo>? = videos?.get(Utils.getAppLanguage())
 
-// FIXME -> WIP
 /**
  * Whether the news is important, that is, it has the "important" tag.
  */
