@@ -101,7 +101,7 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="app_privacy_policy_page_title" comment="Title of privacy policy page">Privacy policy</string>
 	<string name="warning_title" comment="Warning title">Oh no!</string>
 	<string name="outsider_user_title" comment="Title of user outsider of NOI community">Oops, that didn\'t work!</string>
-	<string name="outsider_user_body" comment="Body of user outsider of NOI community">The e-mail address you provided (%1$s) does not exist in our database.   \n  \nThis app is reserved for members of the NOI-Community. If you are one of them, please check the e-mail address you entered and try again. It it still doesn’t work, please email us at community@noi.bz.it. \n \nWant to join the NOI-Community? Click here for our job offers!</string>
+	<string name="outsider_user_body_format" comment="Body of user outsider of NOI community">The e-mail address (%1$s) you provided does not exist in our database.   \n  \nThis app is reserved for members of the NOI-Community. If you are one of them, please check the e-mail address you entered and try again. It it still doesn’t work, please email us at community@noi.bz.it. \n \nWant to join the NOI-Community? Click here for our job offers!</string>
 	<string name="outsider_user_body_link_1_part" comment="Text to match for adding the first link inside outsider_user_body ">here</string>
 	<string name="come_on_board_onboarding_page_title" comment="Title of come on board onboarding page">Hello!</string>
 	<string name="come_on_board_onboarding_title" comment="Title of come on board onboarding">Your registration has been successful</string>
@@ -113,6 +113,7 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="filter_by_institutions" comment="Companies filters in Meet section: Button title - Filter by Institution">Institutions</string>
 	<string name="filter_by_companies" comment="Companies filters in Meet section: Button title - Filter by Companies">Companies</string>
 	<string name="filter_by_startup" comment="Companies filter in Meet section: Button title - Filter by Startups">Start-ups</string>
+	<string name="highlighted_tag" comment="Tab News: text of the label to show on news flagged as highlighted">Highlight</string>
 	<string name="url_home" comment="">https://noi.bz.it/en</string>
 	<string name="url_privacy" comment="">https://noi.bz.it/en/privacy-cookie-policy</string>
 	<string name="url_companies" comment="">https://noi.bz.it/en/companies</string>

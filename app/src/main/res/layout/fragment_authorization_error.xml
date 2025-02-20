@@ -41,7 +41,7 @@ SPDX-License-Identifier: CC0-1.0
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="8dp"
-			android:text="@string/outsider_user_body"
+			android:text="@string/outsider_user_body_format"
 			android:textAlignment="center"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"

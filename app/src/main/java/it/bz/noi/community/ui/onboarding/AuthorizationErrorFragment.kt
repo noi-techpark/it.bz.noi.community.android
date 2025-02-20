@@ -74,7 +74,7 @@ class AuthorizationErrorFragment : BaseOnboardingFragment() {
 			movementMethod = LinkMovementMethod.getInstance()
 			text = buildSpannedString {
 				append(
-					getString(R.string.outsider_user_body, args.emailAddress)
+					getString(R.string.outsider_user_body_format, args.emailAddress)
 					.replace("() ", "") // Remove blank email address.
 				)
 				val jobsSnippet = getString(R.string.outsider_user_body_link_1_part)
