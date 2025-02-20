@@ -80,7 +80,6 @@ fun News.getLocalizedDetail(): Detail? = detail[Utils.getAppLanguage()]
  */
 fun News.getLocalizedContactInfo(): ContactInfo? = contactInfo?.get(Utils.getAppLanguage())
 
-// FIXME -> WIP
 /**
  * Whether the news is important, that is, it has the "important" tag.
  */
