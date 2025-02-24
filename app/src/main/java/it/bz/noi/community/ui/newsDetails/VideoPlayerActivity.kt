@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
 package it.bz.noi.community.ui.newsDetails
 
 import android.content.Context
@@ -12,22 +15,14 @@ class VideoPlayerActivity : AppCompatActivity() {
 	private var player: ExoPlayer? = null
 	private lateinit var binding: ActivityVideoPlayerBinding
 
-	companion object {
-		const val EXTRA_VIDEO_URL = "video_url"
-
-		fun createIntent(context: Context, videoUrl: String): Intent {
-			return Intent(context, VideoPlayerActivity::class.java).apply {
-				putExtra(EXTRA_VIDEO_URL, videoUrl)
-			}
-		}
-	}
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+
+		val videoUrl = intent.getStringExtra(EXTRA_VIDEO_URL) ?: return finish()
+
 		binding = ActivityVideoPlayerBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 
-		val videoUrl = intent.getStringExtra(EXTRA_VIDEO_URL) ?: return finish()
 		initializePlayer(videoUrl)
 	}
 
@@ -52,5 +47,16 @@ class VideoPlayerActivity : AppCompatActivity() {
 	override fun onDestroy() {
 		super.onDestroy()
 		player?.release()
+	}
+
+	companion object {
+
+		private const val EXTRA_VIDEO_URL = "video_url"
+
+		fun createIntent(context: Context, videoUrl: String): Intent {
+			return Intent(context, VideoPlayerActivity::class.java).apply {
+				putExtra(EXTRA_VIDEO_URL, videoUrl)
+			}
+		}
 	}
 }
