@@ -67,7 +67,8 @@ class MeetFiltersFragment : Fragment() {
 			MeetViewModelFactory(
 				apiHelper = ApiHelper(
 					RetrofitBuilder.opendatahubApiService,
-					RetrofitBuilder.communityApiService
+					RetrofitBuilder.communityApiService,
+					RetrofitBuilder.vimeoApiService
 				), this
 			)
 		})

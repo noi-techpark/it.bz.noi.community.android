@@ -10,46 +10,62 @@ import androidx.paging.PagingState
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import it.bz.noi.community.data.models.News
 import it.bz.noi.community.data.models.NewsParams
+import it.bz.noi.community.data.models.NewsResponse
 import it.bz.noi.community.data.repository.MainRepository
 import it.bz.noi.community.utils.DateUtils
 import it.bz.noi.community.utils.Utils
 import java.util.*
 
-class NewsPagingSource(private val mainRepository: MainRepository) :
-    PagingSource<Int, News>() {
+private const val TAG = "NewsPagingSource"
 
-    companion object {
-        private const val TAG = "NewsPagingSource"
-		const val PAGE_ITEMS = 10
-    }
+class NewsPagingSource(private val pageSize: Int, private val mainRepository: MainRepository) :
+    PagingSource<Int, News>() {
 
 	private val startDate = Date()
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, News> {
-        // Start refresh at page 1 if undefined.
-        val nextPageNumber = params.key ?: 1
+	private var moreHighlight = true
 
-		val newsParams = NewsParams(
-			startDate = DateUtils.parameterDateFormatter().format(startDate),
-			pageSize = PAGE_ITEMS,
-			pageNumber = nextPageNumber,
-			language = Utils.getAppLanguage()
-		)
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, News> {
 
 		return try {
+
+			val nextPageNumber = params.key ?: 1 // Start refresh at page 1 if undefined.
+
+			// 1. Obtain the "next" page, optionally highlighted.
+			val newsParams = NewsParams(nextPageNumber, pageSize, startDate, moreHighlight)
 			val newsResponse = mainRepository.getNews(newsParams)
+			val news = newsResponse.news.toMutableList()
+
+			// 2. If there are more pages, load the next page.
+			var nextKey = if (newsResponse.nextPage != null) newsResponse.currentPage + 1 else null
+
+			// 3. If there are more highlights but there's no next page, load the next page without
+			// highlights.
+			if (moreHighlight && nextKey == null) {
+				moreHighlight = false
+
+				val notHighlightedNewsParams = NewsParams(
+					nextPageNumber,
+					pageSize,
+					startDate,
+					false
+				)
+				val notHighlightedNewsResponse = mainRepository.getNews(notHighlightedNewsParams)
+				news += notHighlightedNewsResponse.news
+				nextKey = if (notHighlightedNewsResponse.nextPage != null) notHighlightedNewsResponse.currentPage + 1 else null
+			}
 
 			LoadResult.Page(
-				data = newsResponse.news,
+				data = news,
 				prevKey = null, // Only paging forward.
-				nextKey = if (newsResponse.nextPage != null) newsResponse.currentPage + 1 else null
+				nextKey = nextKey
 			)
+
 		} catch (ex: Exception) {
 			Log.e(TAG, "Error loading news", ex)
 			FirebaseCrashlytics.getInstance().recordException(ex)
 			LoadResult.Error(ex)
 		}
-
     }
 
     override fun getRefreshKey(state: PagingState<Int, News>): Int? {

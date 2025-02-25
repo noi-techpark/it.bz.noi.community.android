@@ -33,7 +33,7 @@ android {
 		minSdkVersion 24
 		targetSdkVersion 34
 		versionCode code
-		versionName "1.0.0"
+		versionName "1.2.0"
 
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -77,12 +77,14 @@ android {
 			buildConfigField("String", "ISSUER_URL", "\"https://auth.opendatahub.testingmachine.eu/auth/realms/noi/\"")
 			buildConfigField("String", "SIGNUP_URL", "\"https://auth.opendatahub.testingmachine.eu/auth/realms/noi/protocol/openid-connect/registrations?client_id=it.bz.noi.community&redirect_uri=https://noi.bz.it&response_type=code&scope=openid\"")
 			buildConfigField("String", "COMMUNITY_API_URL", "\"https://api.community.noi.testingmachine.eu\"")
+			buildConfigField("String", "OPENDATAHUB_API_BASE_URL", "\"https://api.tourism.testingmachine.eu/\"")
 			dimension = 'environment'
 		}
 		production {
 			buildConfigField("String", "ISSUER_URL", "\"https://auth.opendatahub.com/auth/realms/noi/\"")
 			buildConfigField("String", "SIGNUP_URL", "\"https://auth.opendatahub.com/auth/realms/noi/protocol/openid-connect/registrations?client_id=it.bz.noi.community&redirect_uri=https://noi.bz.it&response_type=code&scope=openid\"")
 			buildConfigField("String", "COMMUNITY_API_URL", "\"https://api.community.noi.opendatahub.com\"")
+			buildConfigField("String", "OPENDATAHUB_API_BASE_URL", "\"https://tourism.opendatahub.com/\"")
 			dimension = 'environment'
 		}
 	}
@@ -96,7 +98,7 @@ dependencies {
 	implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
 	implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 	testImplementation 'junit:junit:4.13.2'
-	implementation 'androidx.recyclerview:recyclerview:1.3.2'
+	implementation 'androidx.recyclerview:recyclerview:1.4.0'
 	androidTestImplementation 'androidx.test.ext:junit:1.2.1'
 	androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 	implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1'
@@ -129,7 +131,7 @@ dependencies {
 	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
 	// Paging 3
-	implementation "androidx.paging:paging-runtime-ktx:3.3.4"
+	implementation "androidx.paging:paging-runtime-ktx:3.3.6"
 
 	// BoM for the Firebase platform
 	implementation platform('com.google.firebase:firebase-bom:33.6.0')
@@ -139,4 +141,13 @@ dependencies {
 
 	// OAuth
 	implementation 'net.openid:appauth:0.11.1'
+
+	// ExoPlayer
+	def media3_version = "1.5.1"
+	// For media playback using ExoPlayer
+	implementation "androidx.media3:media3-exoplayer:$media3_version"
+	// For building media playback UIs
+	implementation "androidx.media3:media3-ui:$media3_version"
+	// For HLS playback support with ExoPlayer
+	implementation "androidx.media3:media3-exoplayer-hls:$media3_version"
 }

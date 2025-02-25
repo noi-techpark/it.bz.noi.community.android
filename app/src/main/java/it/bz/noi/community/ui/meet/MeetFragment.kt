@@ -42,7 +42,7 @@ class MeetFragment : Fragment() {
 	private val binding get() = _binding!!
 
 	private val viewModel: MeetViewModel by navGraphViewModels(R.id.navigation_meet, factoryProducer = {
-		MeetViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService), this)
+		MeetViewModelFactory(apiHelper = ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService, RetrofitBuilder.vimeoApiService), this)
 	})
 
 	private lateinit var contactsAdapters: Map<Char,ContactsSectionAdapter>

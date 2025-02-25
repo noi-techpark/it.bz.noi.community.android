@@ -47,20 +47,21 @@ interface OpendatahubApiService {
 	suspend fun getNews(
 		@Query("removenullvalues") removeNullValues: Boolean = true,
 		@Query("articletype") endDate: String = "newsfeednoi",
-		@Query("rawsort") rawFilter: String = "-ArticleDate",
-		@Query("fields") fields: String = "Id,ArticleDate,Detail,ContactInfos,ImageGallery,ODHTags",
+		@Query("rawsort") rawSort: String = "-ArticleDate",
+		@Query("fields") fields: String = "Id,ArticleDate,Detail,ContactInfos,ImageGallery,VideoItems,ODHTags,Highlight",
 		@Query("pagesize") pageSize: Int,
 		@Query("pagenumber") pageNumber: Int,
 		@Query("startdate") startDate: String,
 		@Query("language") language: String?,
 		@Query("publishedon") publishedOn: String? = "noi-communityapp",
+		@Query("rawfilter") rawFilter: String?,
 	): NewsResponse
 
 	@GET("v1/Article/{id}")
 	suspend fun getNewsDetails(
 		@Path("id") newsId: String,
 		@Query("removenullvalues") removeNullValues: Boolean = true,
-		@Query("fields") fields: String = "Id,ArticleDate,Detail,ContactInfos,ImageGallery,ODHTags",
+		@Query("fields") fields: String = "Id,ArticleDate,Detail,ContactInfos,ImageGallery,VideoItems,ODHTags",
 		@Query("language") language: String?
 	): News
 }

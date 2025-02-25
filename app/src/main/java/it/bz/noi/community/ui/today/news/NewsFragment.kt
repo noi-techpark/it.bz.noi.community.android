@@ -4,6 +4,7 @@
 
 package it.bz.noi.community.ui.today.news
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,12 +28,13 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.News
-import it.bz.noi.community.data.models.getContactInfo
-import it.bz.noi.community.data.models.getDetail
-import it.bz.noi.community.data.models.hasImportantFlag
+import it.bz.noi.community.data.models.getLocalizedContactInfo
+import it.bz.noi.community.data.models.getLocalizedDetail
+import it.bz.noi.community.data.models.isImportant
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.databinding.FragmentNewsBinding
 import it.bz.noi.community.databinding.VhNewsBinding
@@ -52,7 +54,7 @@ class NewsFragment : Fragment() {
 
 	private val viewModel: MainViewModel by activityViewModels(factoryProducer = {
 		ViewModelFactory(
-			ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
+			ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService, RetrofitBuilder.vimeoApiService),
 			JsonFilterRepository(requireActivity().application)
 		)
 	})
@@ -174,7 +176,11 @@ interface NewsDetailListener {
 	)
 }
 
-class NewsVH(private val binding: VhNewsBinding, detailListener: NewsDetailListener) :
+class NewsVH(
+	private val binding: VhNewsBinding,
+	private val context: Context,
+	detailListener: NewsDetailListener
+) :
 	RecyclerView.ViewHolder(binding.root) {
 
 	private val df = DateFormat.getDateInstance(DateFormat.SHORT)
@@ -197,31 +203,39 @@ class NewsVH(private val binding: VhNewsBinding, detailListener: NewsDetailListe
 	fun bind(news: News) {
 		this.news = news
 		binding.date.text = df.format(news.date)
-		binding.importantTag.isVisible = news.hasImportantFlag()
-		news.getDetail()?.let { detail ->
+		binding.importantTag.isVisible = news.isImportant || news.isHighlighted
+		if (news.isHighlighted) {
+			binding.importantTag.text = context.resources.getString(R.string.highlighted_tag)
+		} else if (news.isImportant) {
+			binding.importantTag.text = context.resources.getString(R.string.important_tag)
+		}
+
+		news.getLocalizedDetail()?.let { detail ->
 			binding.title.text = detail.title
 			binding.shortText.text = detail.abstract
 		}
-		news.getContactInfo()?.let { contactInfo ->
+		val contactInfo = news.getLocalizedContactInfo()
+		if (contactInfo == null)  {
+			binding.publisher.text = "N/D"
+		} else {
 			binding.publisher.text = contactInfo.publisher
 			Glide
 				.with(binding.root.context)
 				.load(contactInfo.logo)
 				.centerCrop()
 				.into(binding.logo)
-
 		}
 
-		setTransitionNames(news.id)
+		setTransitionNames()
 	}
 
-	private fun setTransitionNames(newsId: String) {
-		binding.header.transitionName = "header_${newsId}"
-		binding.logo.transitionName = "logo_${newsId}"
-		binding.publisher.transitionName = "publisher_${newsId}"
-		binding.date.transitionName = "date_${newsId}"
-		binding.title.transitionName = "title_${newsId}"
-		binding.shortText.transitionName = "shortText_${newsId}"
+	private fun setTransitionNames() {
+		binding.header.transitionName = "header"
+		binding.logo.transitionName = "logo"
+		binding.publisher.transitionName = "publisher"
+		binding.date.transitionName = "date"
+		binding.title.transitionName = "title"
+		binding.shortText.transitionName = "shortText"
 	}
 
 }
@@ -243,7 +257,7 @@ class PagingNewsAdapter(
 				LayoutInflater.from(parent.context),
 				parent,
 				false
-			), detailListener
+			), parent.context, detailListener
 		)
 	}
 

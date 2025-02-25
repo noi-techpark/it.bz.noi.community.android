@@ -33,6 +33,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import java.util.*
 
+private const val PAGE_SIZE = 10 // How many news to load at once
+
 /**
  * Factory for creating the MainViewModel
  */
@@ -48,7 +50,7 @@ class ViewModelFactory(private val apiHelper: ApiHelper, private val filterRepo:
 	companion object {
 		fun defaultFactory(): ViewModelProvider.Factory {
 			return ViewModelFactory(
-				ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService),
+				ApiHelper(RetrofitBuilder.opendatahubApiService, RetrofitBuilder.communityApiService, RetrofitBuilder.vimeoApiService),
 				JsonFilterRepository(NoiApplication.currentApplication)
 			)
 		}
@@ -256,8 +258,8 @@ class MainViewModel(
 		loadNews()
 	}.stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
-	private fun loadNews(): Flow<PagingData<News>> = Pager(PagingConfig(pageSize = NewsPagingSource.PAGE_ITEMS)) {
-		NewsPagingSource(mainRepository)
+	private fun loadNews(): Flow<PagingData<News>> = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
+		NewsPagingSource(PAGE_SIZE, mainRepository)
 	}.flow.cachedIn(viewModelScope)
 
 	fun refreshNews() {
@@ -272,4 +274,3 @@ object NewsTickerFlow {
 	}
 	fun tick() = ticker.tryEmit(Unit)
 }
-

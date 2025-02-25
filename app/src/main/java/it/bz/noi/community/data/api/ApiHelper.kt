@@ -8,7 +8,8 @@ import it.bz.noi.community.data.models.*
 
 class ApiHelper(
 	private val opendatahubApiService: OpendatahubApiService,
-	private val communityApiService: CommunityApiService) {
+	private val communityApiService: CommunityApiService,
+	private val vimeoApiService: VimeoApiService) {
 
 	// EVENTS
 	suspend fun getEvents(eventsParams: EventsParams): EventsResponse = opendatahubApiService.getEvents(
@@ -29,11 +30,14 @@ class ApiHelper(
 			startDate = newsParams.startDate,
 			pageNumber = newsParams.pageNumber,
 			pageSize = newsParams.pageSize,
-			language = newsParams.language
+			language = newsParams.language,
+			rawFilter = newsParams.getRawFilter()
 		)
 
 	suspend fun getNewsDetails(newsId: String, language: String?) =
 		opendatahubApiService.getNewsDetails(newsId = newsId, language = language)
+
+	suspend fun getVideoThumbnail(url: String) = vimeoApiService.getVideoThumbnail(url = url)
 
 	// CONTACTS
 	suspend fun getAccounts(accessToken: String): AccountsResponse = communityApiService.getAccounts(accessToken)

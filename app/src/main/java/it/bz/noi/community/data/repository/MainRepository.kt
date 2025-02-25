@@ -29,6 +29,7 @@ class MainRepository(
 	suspend fun getNews(newsParams: NewsParams) = apiHelper.getNews(newsParams)
 	suspend fun getNewsDetails(newsId: String, language: String?) =
 		apiHelper.getNewsDetails(newsId = newsId, language = language)
+	suspend fun getVideoThumbnail(url: String) = apiHelper.getVideoThumbnail(url = url)
 
 	// CONTACTS
 	suspend fun getAccounts(accessToken: String): List<Account> = apiHelper.getAccounts(accessToken).accounts
