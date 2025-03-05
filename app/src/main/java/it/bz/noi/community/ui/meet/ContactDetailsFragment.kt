@@ -6,6 +6,7 @@ package it.bz.noi.community.ui.meet
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,21 +15,25 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import it.bz.noi.community.R
+import it.bz.noi.community.data.models.Account
 import it.bz.noi.community.data.models.AccountType
 import it.bz.noi.community.data.models.Contact
 import it.bz.noi.community.data.models.getAccountType
 import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.databinding.FragmentContactDetailsBinding
-import it.bz.noi.community.utils.Utils.findOnMaps
 import it.bz.noi.community.utils.Utils.showDial
 import it.bz.noi.community.utils.Utils.writeEmail
 import kotlinx.coroutines.*
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 class ContactDetailsFragment : Fragment() {
@@ -71,6 +76,10 @@ class ContactDetailsFragment : Fragment() {
 			companyName.isVisible = contact.companyName != null
 			companyName.text = contact.companyName
 
+			shareContactIcon.setOnClickListener {
+				shareVCard(contact, company)
+			}
+
 			if (contact.email != null) {
 				email.apply {
 					fieldLbl.text = getString(R.string.label_email)
@@ -110,6 +119,75 @@ class ContactDetailsFragment : Fragment() {
 
 		(requireActivity() as AppCompatActivity).supportActionBar?.title = contact.fullName
 
+	}
+
+	private fun shareVCard(contact: Contact, company: Account?) {
+		val vcfFile = createVCard(contact, company)
+
+		vcfFile?.let { file ->
+			// Crea un URI usando FileProvider per la compatibilità con Android 7+
+			val fileUri = FileProvider.getUriForFile(
+				requireContext(),
+				"${requireContext().packageName}.fileprovider",
+				file
+			)
+
+			// Intent per condividere il vCard
+			val shareIntent = Intent(Intent.ACTION_SEND).apply {
+				type = "text/x-vcard"
+				putExtra(Intent.EXTRA_STREAM, fileUri)
+				addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+			}
+
+			// Intent per salvare in rubrica
+			val saveIntent = Intent(Intent.ACTION_VIEW).apply {
+				setDataAndType(fileUri, "text/x-vcard")
+				flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+			}
+
+			// Crea un intent chooser personalizzato
+			val chooserIntent = Intent.createChooser(shareIntent, "Condividi o Salva Contatto")
+
+			// Aggiungi l'intent per salvare in rubrica
+			val extraIntents = arrayOf(saveIntent)
+			chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents)
+
+			startActivity(chooserIntent)
+		}
+	}
+
+	private fun createVCard(contact: Contact, company: Account?): File? {
+		return try {
+			// Crea un file temporaneo per il vCard
+			val vcfFile = File(requireContext().cacheDir, "${contact.fullName}.vcf")
+
+			FileWriter(vcfFile).use { writer ->
+				writer.write("BEGIN:VCARD\n")
+				writer.write("VERSION:3.0\n")
+				writer.write("N:${contact.lastName};${contact.firstName}\n")
+				writer.write("FN:${contact.fullName}\n")
+
+				company?.phoneNumber?.let {
+					writer.write("TEL;TYPE=WORK:$it\n")
+				}
+
+				contact.email?.let {
+					writer.write("EMAIL;TYPE=WORK:$it\n")
+				}
+
+				company?.let {
+					writer.write("ORG:${company.name}\n")
+				}
+
+				writer.write("END:VCARD")
+			}
+
+			vcfFile
+		} catch (e: IOException) {
+			// TODO
+			e.printStackTrace()
+			null
+		}
 	}
 
 	private fun copyToClipboard(label: String, value: String) {

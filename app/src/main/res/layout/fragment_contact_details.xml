@@ -67,6 +67,19 @@ SPDX-License-Identifier: CC0-1.0
 						app:layout_constraintTop_toBottomOf="@id/contactIconCardView"
 						tools:text="Mario\nRossi" />
 
+					<ImageView
+						android:id="@+id/shareContactIcon"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:padding="0dp"
+						android:layout_marginTop="5dp"
+						android:layout_marginEnd="@dimen/default_margin"
+						android:src="@drawable/ic_copy_selector"
+						android:background="@color/primary_color"
+						app:layout_constraintStart_toEndOf="@id/contactName"
+						app:layout_constraintTop_toBottomOf="@id/contactIconCardView"
+						app:layout_constraintEnd_toEndOf="parent" />
+
 					<TextView
 						android:id="@+id/companyName"
 						style="?attr/textAppearanceHeadline5"
