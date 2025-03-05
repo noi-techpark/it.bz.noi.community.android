@@ -8,6 +8,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,13 +31,20 @@ import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.databinding.FragmentContactDetailsBinding
 import it.bz.noi.community.utils.Utils.showDial
 import it.bz.noi.community.utils.Utils.writeEmail
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 class ContactDetailsFragment : Fragment() {
+
+	companion object {
+		private const val TAG = "ContactDetailsFragment"
+	}
 
 	private var _binding: FragmentContactDetailsBinding? = null
 	private val binding get() = _binding!!
@@ -145,13 +153,8 @@ class ContactDetailsFragment : Fragment() {
 				flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
 			}
 
-			// Crea un intent chooser personalizzato
-			val chooserIntent = Intent.createChooser(shareIntent, "Condividi o Salva Contatto")
-
-			// Aggiungi l'intent per salvare in rubrica
-			val extraIntents = arrayOf(saveIntent)
-			chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents)
-
+			val chooserIntent = Intent.createChooser(shareIntent, "Condividi contatto")
+			chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(saveIntent))
 			startActivity(chooserIntent)
 		}
 	}
@@ -184,8 +187,7 @@ class ContactDetailsFragment : Fragment() {
 
 			vcfFile
 		} catch (e: IOException) {
-			// TODO
-			e.printStackTrace()
+			Log.e(TAG, "Error creating tmp file for contact vCard", e)
 			null
 		}
 	}
