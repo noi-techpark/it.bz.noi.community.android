@@ -4,18 +4,22 @@
 
 package it.bz.noi.community.ui.meet
 
-import android.content.ClipData
-import android.content.ClipboardManager
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Icon
+import android.os.Build
 import android.os.Bundle
+import android.service.chooser.ChooserAction
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat.getDrawable
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -29,6 +33,7 @@ import it.bz.noi.community.data.models.Contact
 import it.bz.noi.community.data.models.getAccountType
 import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.databinding.FragmentContactDetailsBinding
+import it.bz.noi.community.utils.Utils.copyToClipboard
 import it.bz.noi.community.utils.Utils.showDial
 import it.bz.noi.community.utils.Utils.writeEmail
 import kotlinx.coroutines.CoroutineScope
@@ -85,7 +90,7 @@ class ContactDetailsFragment : Fragment() {
 			companyName.text = contact.companyName
 
 			shareContactIcon.setOnClickListener {
-				shareVCard(contact, company)
+				shareContactInfo(contact, company)
 			}
 
 			if (contact.email != null) {
@@ -93,7 +98,7 @@ class ContactDetailsFragment : Fragment() {
 					fieldLbl.text = getString(R.string.label_email)
 					fieldValue.text = contact.email
 					root.setOnClickListener {
-						copyToClipboard("email_copied", contact.email)
+						requireContext().copyToClipboard("email_copied", contact.email)
 						showCheckmark(email.copyValueIcon)
 					}
 				}
@@ -111,7 +116,7 @@ class ContactDetailsFragment : Fragment() {
 					fieldLbl.text = getString(R.string.label_phone)
 					fieldValue.text = company.phoneNumber
 					root.setOnClickListener {
-						copyToClipboard("phone_copied", company.phoneNumber)
+						requireContext().copyToClipboard("phone_copied", company.phoneNumber)
 						showCheckmark(phone.copyValueIcon)
 					}
 				}
@@ -129,7 +134,24 @@ class ContactDetailsFragment : Fragment() {
 
 	}
 
-	private fun shareVCard(contact: Contact, company: Account?) {
+	private fun showCheckmark(icon: ImageView) {
+		icon.isSelected = true
+		CoroutineScope(Dispatchers.IO).launch {
+			delay(TimeUnit.SECONDS.toMillis(1))
+			icon.isSelected = false
+		}
+	}
+
+	private fun getImageId(accountType: AccountType): Int? {
+		return when (accountType) {
+			AccountType.COMPANY -> R.drawable.contact_detail_company
+			AccountType.STARTUP -> R.drawable.contact_detail_startup
+			AccountType.RESEARCH_INSTITUTION -> R.drawable.contact_detail_institution
+			AccountType.DEFAULT -> null
+		}
+	}
+
+	private fun shareContactInfo(contact: Contact, company: Account?) {
 		val vcfFile = createVCard(contact, company)
 
 		vcfFile?.let { file ->
@@ -140,12 +162,13 @@ class ContactDetailsFragment : Fragment() {
 				file
 			)
 
-			// Intent per condividere il vCard
-			val shareIntent = Intent(Intent.ACTION_SEND).apply {
-				type = "text/x-vcard"
-				putExtra(Intent.EXTRA_STREAM, fileUri)
-				addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-			}
+			val contactInfo = getContactInfo(contact, company)
+
+			// Intent per condividere la vCard e le info testuali
+			val shareIntentBuilder = ShareCompat.IntentBuilder(requireActivity())
+				.setType("text/x-vcard")
+				.setStream(fileUri)
+				.setText(contactInfo)
 
 			// Intent per salvare in rubrica
 			val saveIntent = Intent(Intent.ACTION_VIEW).apply {
@@ -153,10 +176,59 @@ class ContactDetailsFragment : Fragment() {
 				flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
 			}
 
-			val chooserIntent = Intent.createChooser(shareIntent, "Condividi contatto")
+			val chooserIntent = shareIntentBuilder.createChooserIntent()
 			chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(saveIntent))
-			startActivity(chooserIntent)
+
+			try {
+				// Per aggiungere le opzioni di azione diretta è necessario API 34+
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+
+					// Aggiunge un gestore di copia al click dell'opzione
+					val pendingIntent = PendingIntent.getBroadcast(
+						requireContext(),
+						0,
+						Intent(requireContext(), CopyReceiver::class.java)
+							.putExtra(
+								CopyReceiver.CONTACT_INFO,
+								contactInfo
+							),
+						PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+					)
+
+					// Crea l'azione personalizzata
+					val copyCustomAction = ChooserAction.Builder(
+						Icon.createWithResource(requireContext(), R.drawable.ic_copy),
+						"COPIA", // TODO serve una stringa localizzata
+						pendingIntent
+					).build()
+
+					// Aggiunge le azioni personalizzate all'intent chooser
+					chooserIntent.putExtra(
+						Intent.EXTRA_CHOOSER_CUSTOM_ACTIONS,
+						arrayOf(copyCustomAction)
+					)
+
+				}
+
+				startActivity(chooserIntent)
+
+			} catch (e: IOException) {
+				Log.e(TAG, "Error creating custom action to copy contact info", e)
+			}
 		}
+	}
+
+	private fun getContactInfo(contact: Contact, company: Account?): String {
+		return mutableListOf(
+			contact.fullName,
+			company?.name,
+			contact.email,
+			company?.phoneNumber
+		).apply {
+			removeAll {
+				it.isNullOrEmpty()
+			}
+		}.joinToString(separator = "\n")
 	}
 
 	private fun createVCard(contact: Contact, company: Account?): File? {
@@ -192,29 +264,20 @@ class ContactDetailsFragment : Fragment() {
 		}
 	}
 
-	private fun copyToClipboard(label: String, value: String) {
-		val clipboard = getSystemService(requireContext(), ClipboardManager::class.java) as ClipboardManager
-		val clip: ClipData = ClipData.newPlainText(label, value)
-		clipboard.setPrimaryClip(clip)
+}
+
+// BroadcastReceiver per gestire l'azione di copia
+class CopyReceiver : BroadcastReceiver() {
+	companion object {
+		const val CONTACT_INFO = "CONTACT_INFO"
 	}
 
-	private fun showCheckmark(icon: ImageView) {
-		icon.isSelected = true
-		CoroutineScope(Dispatchers.IO).launch {
-			delay(TimeUnit.SECONDS.toMillis(1))
-			icon.isSelected = false
+	override fun onReceive(context: Context, intent: Intent) {
+		val textToCopy = intent.getStringExtra(CONTACT_INFO)
+		if (textToCopy != null) {
+			context.copyToClipboard("contact_info_copied", textToCopy)
 		}
 	}
-
-	private fun getImageId(accountType: AccountType): Int? {
-		return when (accountType) {
-			AccountType.COMPANY -> R.drawable.contact_detail_company
-			AccountType.STARTUP -> R.drawable.contact_detail_startup
-			AccountType.RESEARCH_INSTITUTION -> R.drawable.contact_detail_institution
-			AccountType.DEFAULT -> null
-		}
-	}
-
 }
 
 class ContactDetailsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
