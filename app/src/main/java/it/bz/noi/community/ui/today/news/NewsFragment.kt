@@ -167,6 +167,21 @@ class NewsFragment : Fragment() {
 		binding.swipeRefreshNews.setOnRefreshListener {
 			viewModel.refreshNews()
 		}
+
+		setupObservers()
+	}
+
+	private fun setupObservers() {
+		viewModel.selectedNewsFiltersCount.observe(viewLifecycleOwner) { count ->
+			binding.newsFilter.appliedFiltersCount.apply {
+				if (count > 0) {
+					isVisible = true
+					text = "$count"
+				} else {
+					isVisible = false
+				}
+			}
+		}
 	}
 
 }

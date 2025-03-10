@@ -41,7 +41,7 @@ class EventsFiltersFragment : Fragment() {
 
 	private val updateResultsListener = object : UpdateResultsListener {
 		override fun updateResults(filter: FilterValue) {
-			mainViewModel.updateSelectedFilters(filterAdapter.filters.filter { it.checked })
+			mainViewModel.updateSelectedEventFilters(filterAdapter.filters.filter { it.checked })
 		}
 	}
 
@@ -72,7 +72,7 @@ class EventsFiltersFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		mainViewModel.appliedFilters.observe(requireActivity()) {
+		mainViewModel.appliedEventFilters.observe(requireActivity()) {
 			filterAdapter.filters = it
 			mainViewModel.refreshEvents()
 		}
@@ -116,7 +116,7 @@ class EventsFiltersFragment : Fragment() {
 	}
 
 	private fun resetFilters() {
-		mainViewModel.updateSelectedFilters(emptyList())
+		mainViewModel.updateSelectedEventFilters(emptyList())
 	}
 
 	companion object {

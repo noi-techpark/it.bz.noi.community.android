@@ -1,0 +1,166 @@
+[
+	{
+		"Id": "dce044b2-e5e5-4e86-992a-b7e6562e5934",
+		"TagName": {
+			"de": "A1",
+			"en": "A1",
+			"it": "A1"
+		},
+		"Types": [
+			"noicommunitycategory"
+		]
+	},
+	{
+		"Id": "6f6a4377-f9a5-4536-aab6-72470e5ab2ca",
+		"TagName": {
+			"de": "A3",
+			"en": "A3",
+			"it": "A3"
+		},
+		"Types": [
+			"noicommunitycategory"
+		]
+	},
+	{
+		"Id": "4fa326d5-37a8-43f0-866e-c87faaabb075",
+		"TagName": {
+			"de": "A4",
+			"en": "A4",
+			"it": "A4"
+		},
+		"Types": [
+			"noicommunitycategory"
+		]
+	},
+	{
+		"Id": "82cb2c2f-0677-4923-97e1-cfcde01b69e0",
+		"TagName": {
+			"de": "A5",
+			"en": "A5",
+			"it": "A5"
+		},
+		"Types": [
+			"noicommunitycategory"
+		]
+	},
+	{
+		"Id": "55d0e9a2-b823-4398-96fe-885634746a33",
+		"TagName": {
+			"de": "A6",
+			"en": "A6",
+			"it": "A6"
+		},
+		"Types": [
+			"noicommunitycategory"
+		]
+	},
+	{
+		"Id": "67bb7a98-99e3-49f2-92f8-feeaadf4f462",
+		"TagName": {
+			"de": "P (Garage)",
+			"en": "P (Garage)",
+			"it": "P (Garage)"
+		},
+		"Types": [
+			"noicommunitycategory"
+		]
+	},
+	{
+		"Id": "12f85a78-f339-4559-8148-233c06013fc3",
+		"TagName": {
+			"de": "B1",
+			"en": "B1",
+			"it": "B1"
+		},
+		"Types": [
+			"noicommunitycategory"
+		]
+	},
+	{
+		"Id": "400370b9-166e-44c5-b9bb-c24b046ad47d",
+		"TagName": {
+			"en": "B5",
+			"it": "B5"
+		},
+		"Types": [
+			"noicommunitycategory"
+		]
+	},
+	{
+		"Id": "afe2ca09-d0d9-4d8f-812b-8b22fe0ef4e8",
+		"TagName": {
+			"de": "D1",
+			"en": "D1",
+			"it": "D1"
+		},
+		"Types": [
+			"noicommunitycategory"
+		]
+	},
+	{
+		"Id": "eff1b5f8-399e-4f76-9231-d07555f5bb78",
+		"TagName": {
+			"de": "D2",
+			"en": "D2",
+			"it": "D2"
+		},
+		"Types": [
+			"noicommunitycategory"
+		]
+	},
+	{
+		"Id": "427f10a9-7d07-4004-8037-8235faec26a0",
+		"TagName": {
+			"de": "D3",
+			"en": "D3",
+			"it": "D3"
+		},
+		"Types": [
+			"noicommunitycategory"
+		]
+	},
+	{
+		"Id": "abc044b3-e5e5-4e87-992a-b7e6562e5934",
+		"TagName": {
+			"de": "Executives",
+			"en": "Executives",
+			"it": "Executives"
+		},
+		"Types": [
+			"noicommunitycategory"
+		]
+	},
+	{
+		"Id": "e1bd6862-1b2b-4888-ba15-ec75c0404a94",
+		"TagName": {
+			"de": "Bruneck",
+			"en": "Brunico/Bruneck",
+			"it": "Brunico"
+		},
+		"Types": [
+			"noicommunitycategory"
+		]
+	},
+	{
+		"Id": "1334267f-41ce-433a-9080-d4541c75762c",
+		"TagName": {
+			"de": "A2",
+			"en": "A2",
+			"it": "A2"
+		},
+		"Types": [
+			"noicommunitycategory"
+		]
+	},
+	{
+		"Id": "9cfd63a6-d1fe-468c-acc6-c454bc82a93f",
+		"TagName": {
+			"de": "F1",
+			"en": "F1",
+			"it": "F1"
+		},
+		"Types": [
+			"noicommunitycategory"
+		]
+	}
+]

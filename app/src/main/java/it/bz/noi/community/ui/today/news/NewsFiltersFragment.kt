@@ -5,7 +5,6 @@
 package it.bz.noi.community.ui.today.news
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,15 +21,12 @@ import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.UpdateResultsListener
 import it.bz.noi.community.ui.ViewModelFactory
-import it.bz.noi.community.ui.today.events.EventsFiltersAdapter
-import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-// TODO
 @ExperimentalCoroutinesApi
 class NewsFiltersFragment : Fragment() {
 
-	private lateinit var filterAdapter: EventsFiltersAdapter
+	private lateinit var filterAdapter: NewsFilterAdapter
 	private var _binding: FragmentFiltersBinding? = null
 	private val binding get() = _binding!!
 
@@ -43,16 +39,14 @@ class NewsFiltersFragment : Fragment() {
 
 	private val updateResultsListener = object : UpdateResultsListener {
 		override fun updateResults(filter: FilterValue) {
-			mainViewModel.updateSelectedFilters(filterAdapter.filters.filter { it.checked })
+			mainViewModel.updateSelectedNewsFilters(filterAdapter.filters.filter { it.checked })
 		}
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		filterAdapter = EventsFiltersAdapter(
-			eventTypeHeader = resources.getString(R.string.filter_by_type),
-			technlogySectorHeader = resources.getString(R.string.filter_by_sector),
+		filterAdapter = NewsFilterAdapter(
 			updateResultsListener = updateResultsListener
 		)
 	}
@@ -74,27 +68,9 @@ class NewsFiltersFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		mainViewModel.appliedFilters.observe(requireActivity()) {
+		mainViewModel.appliedNewsFilters.observe(requireActivity()) {
 			filterAdapter.filters = it
-			mainViewModel.refreshEvents()
-		}
-
-		mainViewModel.mediatorEvents.observe(viewLifecycleOwner) {
-			when (it.status) {
-				Status.LOADING -> {
-					// Continuiamo a mostrare il valore precedente, per evitare side effects grafici introducendo un loader sul pulsante
-					Log.d(TAG, "Loading results with new filters selection in progress...")
-				}
-
-				Status.SUCCESS -> {
-					updateNumberOfResults(it.data?.size ?: 0)
-				}
-
-				Status.ERROR -> {
-					// Continuiamo a mostrare il valore precedente
-					Log.e(TAG, "Error loading results with new filters selection")
-				}
-			}
+			mainViewModel.refreshNews()
 		}
 
 		binding.apply {
@@ -118,10 +94,10 @@ class NewsFiltersFragment : Fragment() {
 	}
 
 	private fun resetFilters() {
-		mainViewModel.updateSelectedFilters(emptyList())
+		mainViewModel.updateSelectedNewsFilters(emptyList())
 	}
 
 	companion object {
-		private const val TAG = "EventsFiltersFragment"
+		private const val TAG = "NewsFiltersFragment"
 	}
 }
