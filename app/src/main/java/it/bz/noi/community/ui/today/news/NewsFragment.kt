@@ -157,6 +157,13 @@ class NewsFragment : Fragment() {
 			}
 		}
 
+		binding.newsFilter.root.setOnClickListener {
+			exitTransition = null
+			findNavController().navigate(
+				TodayFragmentDirections.actionNavigationTodayToNewsFiltersFragment()
+			)
+		}
+
 		binding.swipeRefreshNews.setOnRefreshListener {
 			viewModel.refreshNews()
 		}

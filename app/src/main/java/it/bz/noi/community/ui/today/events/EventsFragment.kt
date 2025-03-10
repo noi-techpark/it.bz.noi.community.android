@@ -118,7 +118,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		binding.editFiltersButton.root.setOnClickListener {
 			exitTransition = null
 			findNavController().navigate(
-				TodayFragmentDirections.actionNavigationTodayToFiltersFragment()
+				TodayFragmentDirections.actionNavigationTodayToEventFiltersFragment()
 			)
 		}
 
