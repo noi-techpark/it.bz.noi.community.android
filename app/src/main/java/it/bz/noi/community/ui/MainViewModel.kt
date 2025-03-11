@@ -306,7 +306,8 @@ class MainViewModel(
 	}.stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
 	private fun loadNews(): Flow<PagingData<News>> = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
-		NewsPagingSource(PAGE_SIZE, mainRepository)
+		val selectedFilters = selectedNewsFilters.value
+		NewsPagingSource(PAGE_SIZE, selectedFilters ?: emptyList(), mainRepository)
 	}.flow.cachedIn(viewModelScope)
 
 	fun refreshNews() {

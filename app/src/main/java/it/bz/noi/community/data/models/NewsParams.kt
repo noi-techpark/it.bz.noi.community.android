@@ -21,40 +21,38 @@ data class NewsParams(
 /**
  * Factory for creating [NewsParams].
  */
-fun NewsParams(nextPageNumber: Int, pageSize: Int, from: Date, moreHighlights: Boolean) =
+fun NewsParams(nextPageNumber: Int, pageSize: Int, from: Date, moreHighlights: Boolean, selectedFilters: List<FilterValue>) =
 	NewsParams(
 		startDate = DateUtils.parameterDateFormatter().format(from),
 		pageSize = pageSize,
 		pageNumber = nextPageNumber,
 		language = Utils.getAppLanguage(),
-		highlight = moreHighlights
+		highlight = moreHighlights,
+		selectedFilters = selectedFilters
 	)
 
 fun NewsParams.getRawFilter(): String {
 	var rawFilter: String?
 
-	if (highlight) {
-		rawFilter = "eq(Highlight,\"true\")"
+	rawFilter = if (highlight) {
+		"eq(Highlight,\"true\")"
 	} else {
-		rawFilter = "or(eq(Highlight,\"false\"),isnull(Highlight))"
+		"or(eq(Highlight,\"false\"),isnull(Highlight))"
 	}
 
-	// FIXME
 	if (selectedFilters.isNotEmpty()) {
-		var tagFilter = "and ("
+		rawFilter = "and($rawFilter,"
 		val rawFiltersList = selectedFilters.map {
 			"in(TagIds.[],\"${it.key}\")"
 		}
 
-		if (rawFiltersList.size == 1) {
-			tagFilter += rawFiltersList[0]
+		rawFilter += if (rawFiltersList.size == 1) {
+			rawFiltersList[0]
 		} else {
-			tagFilter += rawFiltersList.joinToString(prefix = "or(", separator = ",", postfix = ")")
+			rawFiltersList.joinToString(prefix = "or(", separator = ",", postfix = ")")
 		}
 
-		tagFilter += ")"
-
-		rawFilter += tagFilter
+		rawFilter += ")"
 	}
 
 	return rawFilter
