@@ -66,5 +66,5 @@ interface OpendatahubApiService {
 	): News
 
 	@GET("https://tourism.opendatahub.com/v1/Tag?validforentity=article&types=noicommunitycategory&fields=Id,TagName,Types&pagesize=0")
-	suspend fun getNewsFilterValues(): List<MultiLangNewsFilterValue>
+	suspend fun getNewsFilterValues(): NewsFilterResponse
 }

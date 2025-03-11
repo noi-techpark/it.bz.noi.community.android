@@ -7,6 +7,11 @@ package it.bz.noi.community.data.models
 import com.google.gson.annotations.SerializedName
 import it.bz.noi.community.utils.Utils
 
+data class NewsFilterResponse(
+	@SerializedName("Items")
+	val filters: List<MultiLangNewsFilterValue>
+)
+
 data class MultiLangNewsFilterValue(
 	@SerializedName("Id")
 	val id: String,

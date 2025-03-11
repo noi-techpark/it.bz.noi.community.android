@@ -320,7 +320,7 @@ class MainViewModel(
 		emit(Resource.loading(null))
 		var filters: List<MultiLangNewsFilterValue>
 		try {
-			filters = mainRepository.getNewsFilterValues()
+			filters = mainRepository.getNewsFilterValues().filters
 			if (filters.isEmpty())
 				filters= filterRepo.loadNewsFilters()
 			else
