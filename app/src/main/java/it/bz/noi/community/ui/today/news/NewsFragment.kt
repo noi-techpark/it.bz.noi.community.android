@@ -111,6 +111,9 @@ class NewsFragment : Fragment() {
 			}
 		}
 
+		// FIXME serve una nuova stringa localizzata
+		binding.emptyState.subtitle.text = "Non abbiamo trovato nessuna news che corrisponda ai tuoi filtri di ricerca. Prova a rivedere la tua ricerca."
+
 		viewLifecycleOwner.lifecycleScope.launch {
 			viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 				viewModel.newsFlow.collectLatest { pagingData ->
@@ -154,6 +157,8 @@ class NewsFragment : Fragment() {
 						binding.swipeRefreshNews.isRefreshing = false
 					}
 				}
+
+				showEmptyState(loadStates.refresh is LoadState.NotLoading && newsAdapter.itemCount == 0)
 			}
 		}
 
@@ -169,6 +174,11 @@ class NewsFragment : Fragment() {
 		}
 
 		setupObservers()
+	}
+
+	private fun showEmptyState(show: Boolean) {
+		binding.swipeRefreshNews.isVisible = !show
+		binding.emptyState.root.isVisible = show
 	}
 
 	private fun setupObservers() {

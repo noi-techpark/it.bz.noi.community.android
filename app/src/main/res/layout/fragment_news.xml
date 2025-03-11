@@ -24,6 +24,16 @@ SPDX-License-Identifier: CC0-1.0
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
 
+	<include layout="@layout/vh_empty"
+		android:id="@+id/emptyState"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="50dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/newsFilter"
+		android:visibility="gone" />
+
 	<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 		android:id="@+id/swipeRefreshNews"
 		android:layout_width="match_parent"
