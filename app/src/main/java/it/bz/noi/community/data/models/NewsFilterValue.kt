@@ -36,6 +36,6 @@ fun MultiLangNewsFilterValue.toFilterValue(language: String): FilterValue {
 		Utils.GERMAN -> tagName.de
 		else -> tagName.en
 	}
-	val type = if (types.isEmpty()) "-" else types[0]
-	return FilterValue(id, type, description ?: "ND")
+	val type = if (types.isEmpty()) "N/D" else types[0]
+	return FilterValue(id, type, description ?: "N/D")
 }
