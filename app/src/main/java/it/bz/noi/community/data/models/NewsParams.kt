@@ -13,7 +13,7 @@ data class NewsParams(
 	var pageSize: Int = 10,
 	var pageNumber: Int,
 	var language: String?,
-	var highlight: Boolean = false,
+	var highlight: Boolean?,
 
 	var selectedFilters: List<FilterValue> = emptyList()
 )
@@ -21,7 +21,7 @@ data class NewsParams(
 /**
  * Factory for creating [NewsParams].
  */
-fun NewsParams(nextPageNumber: Int, pageSize: Int, from: Date, moreHighlights: Boolean, selectedFilters: List<FilterValue>) =
+fun NewsParams(nextPageNumber: Int, pageSize: Int, from: Date, moreHighlights: Boolean?, selectedFilters: List<FilterValue>) =
 	NewsParams(
 		startDate = DateUtils.parameterDateFormatter().format(from),
 		pageSize = pageSize,
@@ -31,28 +31,52 @@ fun NewsParams(nextPageNumber: Int, pageSize: Int, from: Date, moreHighlights: B
 		selectedFilters = selectedFilters
 	)
 
-fun NewsParams.getRawFilter(): String {
-	var rawFilter: String?
+fun getNewsCountParams(from: Date, selectedFilters: List<FilterValue>) =
+	NewsParams(
+		startDate = DateUtils.parameterDateFormatter().format(from),
+		pageSize = 1,
+		pageNumber = 1,
+		language = null,
+		highlight = null,
+		selectedFilters = selectedFilters
+	)
 
-	rawFilter = if (highlight) {
-		"eq(Highlight,\"true\")"
-	} else {
-		"or(eq(Highlight,\"false\"),isnull(Highlight))"
-	}
+fun NewsParams.getRawFilter(): String? {
+	var rawFilter: String?  = null
 
-	if (selectedFilters.isNotEmpty()) {
-		rawFilter = "and($rawFilter,"
-		val rawFiltersList = selectedFilters.map {
-			"in(TagIds.[],\"${it.key}\")"
-		}
-
-		rawFilter += if (rawFiltersList.size == 1) {
-			rawFiltersList[0]
+	if (highlight != null) {
+		rawFilter = if (highlight == true) {
+			"eq(Highlight,\"true\")"
 		} else {
-			rawFiltersList.joinToString(prefix = "or(", separator = ",", postfix = ")")
+			"or(eq(Highlight,\"false\"),isnull(Highlight))"
 		}
 
-		rawFilter += ")"
+		if (selectedFilters.isNotEmpty()) {
+			rawFilter = "and($rawFilter,"
+			val rawFiltersList = selectedFilters.map {
+				"in(TagIds.[],\"${it.key}\")"
+			}
+
+			rawFilter += if (rawFiltersList.size == 1) {
+				rawFiltersList[0]
+			} else {
+				rawFiltersList.joinToString(prefix = "or(", separator = ",", postfix = ")")
+			}
+
+			rawFilter += ")"
+		}
+	} else {
+		if (selectedFilters.isNotEmpty()) {
+			val rawFiltersList = selectedFilters.map {
+				"in(TagIds.[],\"${it.key}\")"
+			}
+
+			rawFilter = if (rawFiltersList.size == 1) {
+				rawFiltersList[0]
+			} else {
+				rawFiltersList.joinToString(prefix = "or(", separator = ",", postfix = ")")
+			}
+		}
 	}
 
 	return rawFilter

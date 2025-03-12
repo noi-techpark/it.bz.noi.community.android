@@ -41,6 +41,12 @@ class ApiHelper(
 
 	suspend fun getNewsFilterValues() = opendatahubApiService.getNewsFilterValues()
 
+	suspend fun getNewsCount(newsParams: NewsParams): NewsResponse =
+		opendatahubApiService.getNewsCount(
+			startDate = newsParams.startDate,
+			rawFilter = newsParams.getRawFilter()
+		)
+
 	// CONTACTS
 	suspend fun getAccounts(accessToken: String): AccountsResponse = communityApiService.getAccounts(accessToken)
 	suspend fun getContacts(accessToken: String): ContactResponse = communityApiService.getContacts(accessToken)

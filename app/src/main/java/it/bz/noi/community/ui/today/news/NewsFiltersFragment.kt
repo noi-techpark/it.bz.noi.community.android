@@ -5,6 +5,7 @@
 package it.bz.noi.community.ui.today.news
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,7 @@ import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.UpdateResultsListener
 import it.bz.noi.community.ui.ViewModelFactory
+import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -68,9 +70,25 @@ class NewsFiltersFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		mainViewModel.appliedNewsFilters.observe(requireActivity()) {
-			filterAdapter.filters = it
+		mainViewModel.appliedNewsFilters.observe(viewLifecycleOwner) { filters ->
+			filterAdapter.filters = filters
 			mainViewModel.refreshNews()
+		}
+
+		mainViewModel.mediatorNewsCount.observe(viewLifecycleOwner) { resource ->
+			when (resource.status) {
+				Status.LOADING -> {
+					// Continuiamo a mostrare il valore precedente, per evitare side effects grafici introducendo un loader sul pulsante
+					Log.d(TAG, "Loading results with new filters selection in progress...")
+				}
+				Status.SUCCESS -> {
+					updateNumberOfResults(resource.data)
+				}
+				Status.ERROR -> {
+					// Continuiamo a mostrare il valore precedente
+					Log.e(TAG, "Error loading results with new filters selection")
+				}
+			}
 		}
 
 		binding.apply {
