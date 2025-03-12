@@ -381,7 +381,7 @@ class MainViewModel(
 		liveData(Dispatchers.IO) {
 			emit(Resource.loading(data = null))
 			try {
-				emit(Resource.success(data = mainRepository.getNewsCount(getNewsCou ntParams(
+				emit(Resource.success(data = mainRepository.getNewsCount(getNewsCountParams(
 					from = startDate,
 					selectedFilters = selectedFilters
 				)).totalResult))
