@@ -100,6 +100,11 @@ class NewsFragment : Fragment() {
 		_binding = null
 	}
 
+	override fun onResume() {
+		super.onResume()
+		viewModel.refreshNews()
+	}
+
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 

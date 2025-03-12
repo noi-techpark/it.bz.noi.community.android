@@ -72,7 +72,6 @@ class NewsFiltersFragment : Fragment() {
 
 		mainViewModel.appliedNewsFilters.observe(viewLifecycleOwner) { filters ->
 			filterAdapter.filters = filters
-			mainViewModel.refreshNews()
 		}
 
 		mainViewModel.mediatorNewsCount.observe(viewLifecycleOwner) { resource ->
