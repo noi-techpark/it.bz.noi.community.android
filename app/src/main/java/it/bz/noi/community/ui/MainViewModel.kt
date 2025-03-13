@@ -6,16 +6,33 @@ package it.bz.noi.community.ui
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asFlow
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import it.bz.noi.community.MainActivity
 import it.bz.noi.community.NoiApplication
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
-import it.bz.noi.community.data.models.*
+import it.bz.noi.community.data.models.Event
+import it.bz.noi.community.data.models.EventsParams
+import it.bz.noi.community.data.models.FilterValue
+import it.bz.noi.community.data.models.MultiLangEventsFilterValue
+import it.bz.noi.community.data.models.News
+import it.bz.noi.community.data.models.TimeRange
+import it.bz.noi.community.data.models.toFilterValue
 import it.bz.noi.community.data.repository.FilterRepository
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.data.repository.MainRepository
@@ -30,8 +47,14 @@ import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
-import java.util.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
+import java.util.Calendar
 
 private const val PAGE_SIZE = 10 // How many news to load at once
 
@@ -95,12 +118,6 @@ class MainViewModel(
 			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
 		}
 	}
-
-	var showWelcome: Boolean
-		get() = savedStateHandle.get<Boolean>(MainActivity.EXTRA_SHOW_WELCOME) ?: true
-		set(value) {
-			savedStateHandle[MainActivity.EXTRA_SHOW_WELCOME] = value
-		}
 
 	/**
 	 * live data of the event filters

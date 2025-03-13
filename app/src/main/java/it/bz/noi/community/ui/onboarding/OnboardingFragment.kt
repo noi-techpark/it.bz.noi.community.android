@@ -16,14 +16,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.tabs.TabLayoutMediator
 import it.bz.noi.community.BuildConfig
 import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentOnboardingBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
-import it.bz.noi.community.ui.onboarding.OnboardingFragmentDirections
 import it.bz.noi.community.utils.Utils.openLinkInExternalBrowser
 import it.bz.noi.community.utils.addLinkSpan
 import kotlinx.coroutines.flow.collectLatest

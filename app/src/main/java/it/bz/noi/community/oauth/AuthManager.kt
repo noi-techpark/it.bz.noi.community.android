@@ -25,7 +25,6 @@ import it.bz.noi.community.storage.getAccessGranted
 import it.bz.noi.community.storage.getAuthState
 import it.bz.noi.community.storage.setAccessGranted
 import it.bz.noi.community.storage.setAuthState
-import it.bz.noi.community.storage.setPrivacyAccepted
 import it.bz.noi.community.storage.setWelcomeUnderstood
 import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
@@ -507,7 +506,6 @@ object AuthManager {
 
 	private suspend fun deleteUserState() = with(application) {
 		setWelcomeUnderstood(false)
-		setPrivacyAccepted(false)
 		removeAuthState()
 		removeAccessGranted()
 	}

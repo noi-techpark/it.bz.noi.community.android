@@ -15,12 +15,11 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import it.bz.noi.community.NoiApplication
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import net.openid.appauth.AuthState
 
-private const val VERSION = 1
+private const val VERSION = 2
 private const val NAME = "settings"
 
 // At the top level of your kotlin file:
@@ -28,7 +27,6 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = NAM
 	listOf(getSharedPreferencesMigration())
 })
 
-val PRIVACY_ACCEPTED_KEY = booleanPreferencesKey("privacy_accepted")
 val WELCOME_UNDERSTOOD_KEY = booleanPreferencesKey("welcome_understood")
 val VERSION_KEY = intPreferencesKey("version")
 private const val OLD_SKIP_PARAM_KEY = "skip_splash_screen"
@@ -37,21 +35,6 @@ private const val OLD_AUTH_STATE_KEY = "authState"
 val AUTH_STATE_KEY = stringPreferencesKey("auth_state")
 private const val OLD_ACCESS_GRANTED_KEY = "accessGrantedState"
 val ACCESS_GRANTED_KEY = booleanPreferencesKey("access_granted_state")
-
-//region Privacy accepted
-
-fun Context.getPrivacyAcceptedFlow(): Flow<Boolean> = this.dataStore.data
-	.map { preferences ->
-		preferences[PRIVACY_ACCEPTED_KEY] ?: false
-	}
-
-suspend fun Context.setPrivacyAccepted(privacyAccepted: Boolean) {
-	this.dataStore.edit { preferences ->
-		preferences[PRIVACY_ACCEPTED_KEY] = privacyAccepted
-	}
-}
-
-//endregion
 
 //region Welcome understood
 
