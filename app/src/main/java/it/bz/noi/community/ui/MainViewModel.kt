@@ -11,6 +11,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -39,6 +40,8 @@ import it.bz.noi.community.data.models.toFilterValue
 import it.bz.noi.community.data.repository.FilterRepository
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.data.repository.MainRepository
+import it.bz.noi.community.storage.getSelectedNewsFilters
+import it.bz.noi.community.storage.setSelectedNewsFilters
 import it.bz.noi.community.ui.today.news.NewsPagingSource
 import it.bz.noi.community.utils.DateUtils.endOfDay
 import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentMonth
@@ -54,9 +57,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 private const val PAGE_SIZE = 10 // How many news to load at once
@@ -88,7 +94,7 @@ class ViewModelFactory(private val apiHelper: ApiHelper, private val filterRepo:
  */
 @ExperimentalCoroutinesApi
 class MainViewModel(
-	app: Application,
+	private val app: Application,
 	private val mainRepository: MainRepository,
 	private val filterRepo: FilterRepository,
 	private val savedStateHandle: SavedStateHandle,
@@ -187,18 +193,15 @@ class MainViewModel(
 	private val selectedNewsFilters = MutableLiveData(emptyList<FilterValue>())
 	fun updateSelectedNewsFilters(filters: List<FilterValue>) {
 		selectedNewsFilters.postValue(filters)
-		updateNewsCount(filters)
+		saveCurrentNewsFilters(filters)
 	}
 
 	val appliedNewsFilters = MediatorLiveData<List<FilterValue>>()
 
-	val selectedNewsFiltersCount = selectedNewsFilters.asFlow().flatMapLatest {
+	val selectedNewsFiltersCount: Flow<Int> = selectedNewsFilters.asFlow().flatMapLatest {
 		flowOf(it.size)
-	}.asLiveData(Dispatchers.IO)
+	}
 
-
-	private var newsCount: LiveData<Resource<Int>> = getNewsCount()
-	val mediatorNewsCount = MediatorLiveData<Resource<Int>>()
 	/**
 	 * mediator live data that emits the events to the observers
 	 */
@@ -209,8 +212,21 @@ class MainViewModel(
 			mediatorEvents.value = it
 		}
 
-		mediatorNewsCount.addSource(newsCount) {
-			mediatorNewsCount.value = it
+		// Carica i filtri salvati
+		viewModelScope.launch {
+			val savedFilterKeys = app.getSelectedNewsFilters()
+			val savedNewsFiltersObserver = object : Observer<List<FilterValue>> {
+				override fun onChanged(availableFilters: List<FilterValue>) {
+					if (availableFilters.isNotEmpty() && savedFilterKeys.isNotEmpty()) {
+						val filtersToApply = availableFilters.map { filter ->
+							filter.copy(checked = filter.key in savedFilterKeys)
+						}
+						selectedNewsFilters.postValue(filtersToApply.filter { it.checked })
+						availableNewsFilters.removeObserver(this)
+					}
+				}
+			}
+			availableNewsFilters.observeForever(savedNewsFiltersObserver)
 		}
 
 		appliedEventFilters.addSource(availableEventFilters) {
@@ -240,6 +256,11 @@ class MainViewModel(
 		} ?: emptyList()
 	}
 
+	private fun saveCurrentNewsFilters(filters: List<FilterValue>) {
+		viewModelScope.launch {
+			app.setSelectedNewsFilters(filters)
+		}
+	}
 
 	/**
 	 * function used to filter the events by time
@@ -334,14 +355,17 @@ class MainViewModel(
 		tryEmit(Unit)
 	}
 
-	val newsFlow: StateFlow<PagingData<News>> = reloadNewsTickerFlow.flatMapLatest {
-		loadNews()
-	}.stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+	val newsFlow: StateFlow<PagingData<News>> = combine(
+		reloadNewsTickerFlow,
+		selectedNewsFilters.asFlow()
+	) { _, selectedFilters -> selectedFilters }
+		.flatMapLatest { loadNews(it) }
+		.stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
-	private fun loadNews(): Flow<PagingData<News>> = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
-		val selectedFilters = selectedNewsFilters.value
-		NewsPagingSource(PAGE_SIZE, selectedFilters ?: emptyList(), mainRepository)
-	}.flow.cachedIn(viewModelScope)
+	private fun loadNews(selectedFilters: List<FilterValue>?): Flow<PagingData<News>> =
+		Pager(PagingConfig(pageSize = PAGE_SIZE)) {
+			NewsPagingSource(PAGE_SIZE, selectedFilters ?: emptyList(), mainRepository)
+		}.flow.cachedIn(viewModelScope)
 
 	fun refreshNews() {
 		reloadNewsTickerFlow.tryEmit(Unit)
@@ -369,16 +393,14 @@ class MainViewModel(
 			emit(Resource.error(data = null, message = "News filter loading: error occurred!"))
 	}
 
-	private fun updateNewsCount(selectedFilters: List<FilterValue> = emptyList()) {
-		mediatorNewsCount.removeSource(newsCount)
-		newsCount = getNewsCount(selectedFilters)
-		mediatorNewsCount.addSource(newsCount) {
-			mediatorNewsCount.value = it
-		}
+	private var _newsCount: Flow<Resource<Int>> = selectedNewsFilters.asFlow().flatMapLatest { selectedFilters ->
+		getNewsCount(selectedFilters)
 	}
+	val newsCount: Flow<Resource<Int>>
+		get() = _newsCount
 
-	private fun getNewsCount(selectedFilters: List<FilterValue> = emptyList()) =
-		liveData(Dispatchers.IO) {
+	private fun getNewsCount(selectedFilters: List<FilterValue> = emptyList()): Flow<Resource<Int>> =
+		flow {
 			emit(Resource.loading(data = null))
 			try {
 				emit(Resource.success(data = mainRepository.getNewsCount(getNewsCountParams(

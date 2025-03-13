@@ -100,11 +100,6 @@ class NewsFragment : Fragment() {
 		_binding = null
 	}
 
-	override fun onResume() {
-		super.onResume()
-		viewModel.refreshNews()
-	}
-
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
@@ -178,25 +173,25 @@ class NewsFragment : Fragment() {
 			viewModel.refreshNews()
 		}
 
-		setupObservers()
+		viewLifecycleOwner.lifecycleScope.launch {
+			viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+				viewModel.selectedNewsFiltersCount.collectLatest { count ->
+					binding.newsFilter.appliedFiltersCount.apply {
+						if (count > 0) {
+							isVisible = true
+							text = "$count"
+						} else {
+							isVisible = false
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private fun showEmptyState(show: Boolean) {
 		binding.swipeRefreshNews.isVisible = !show
 		binding.emptyState.root.isVisible = show
-	}
-
-	private fun setupObservers() {
-		viewModel.selectedNewsFiltersCount.observe(viewLifecycleOwner) { count ->
-			binding.newsFilter.appliedFiltersCount.apply {
-				if (count > 0) {
-					isVisible = true
-					text = "$count"
-				} else {
-					isVisible = false
-				}
-			}
-		}
 	}
 
 }

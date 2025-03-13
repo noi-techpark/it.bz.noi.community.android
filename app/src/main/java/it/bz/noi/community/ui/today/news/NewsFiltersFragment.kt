@@ -12,6 +12,9 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
@@ -24,6 +27,8 @@ import it.bz.noi.community.ui.UpdateResultsListener
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 class NewsFiltersFragment : Fragment() {
@@ -74,18 +79,22 @@ class NewsFiltersFragment : Fragment() {
 			filterAdapter.filters = filters
 		}
 
-		mainViewModel.mediatorNewsCount.observe(viewLifecycleOwner) { resource ->
-			when (resource.status) {
-				Status.LOADING -> {
-					// Continuiamo a mostrare il valore precedente, per evitare side effects grafici introducendo un loader sul pulsante
-					Log.d(TAG, "Loading results with new filters selection in progress...")
-				}
-				Status.SUCCESS -> {
-					updateNumberOfResults(resource.data)
-				}
-				Status.ERROR -> {
-					// Continuiamo a mostrare il valore precedente
-					Log.e(TAG, "Error loading results with new filters selection")
+		viewLifecycleOwner.lifecycleScope.launch {
+			viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+				mainViewModel.newsCount.collectLatest { resource ->
+					when (resource.status) {
+						Status.LOADING -> {
+							// Continuiamo a mostrare il valore precedente, per evitare side effects grafici introducendo un loader sul pulsante
+							Log.d(TAG, "Loading results with new filters selection in progress...")
+						}
+						Status.SUCCESS -> {
+							updateNumberOfResults(resource.data)
+						}
+						Status.ERROR -> {
+							// Continuiamo a mostrare il valore precedente
+							Log.e(TAG, "Error loading results with new filters selection")
+						}
+					}
 				}
 			}
 		}
