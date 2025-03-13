@@ -141,8 +141,8 @@ class MainViewModel(
 		when (it.status) {
 			Status.SUCCESS -> {
 				val language = Utils.getAppLanguage() ?: Utils.FALLBACK_LANGUAGE
-				it.data!!.map {
-					it.toFilterValue(language)
+				it.data!!.map { eventFilterValue ->
+					eventFilterValue.toFilterValue(language)
 				}
 			}
 			Status.ERROR -> {
@@ -175,8 +175,8 @@ class MainViewModel(
 		when (it.status) {
 			Status.SUCCESS -> {
 				val language = Utils.getAppLanguage() ?: Utils.FALLBACK_LANGUAGE
-				it.data!!.map {
-					it.toFilterValue(language)
+				it.data!!.map { newsFilterValue ->
+					newsFilterValue.toFilterValue(language, app)
 				}
 			}
 			Status.ERROR -> {

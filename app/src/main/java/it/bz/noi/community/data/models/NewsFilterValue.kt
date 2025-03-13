@@ -4,7 +4,9 @@
 
 package it.bz.noi.community.data.models
 
+import android.content.Context
 import com.google.gson.annotations.SerializedName
+import it.bz.noi.community.R
 import it.bz.noi.community.utils.Utils
 
 data class NewsFilterResponse(
@@ -30,12 +32,12 @@ data class TagName(
     val it: String?
 )
 
-fun MultiLangNewsFilterValue.toFilterValue(language: String): FilterValue {
+fun MultiLangNewsFilterValue.toFilterValue(language: String, context: Context): FilterValue {
 	val description = when (language) {
 		Utils.ITALIAN -> tagName.it
 		Utils.GERMAN -> tagName.de
 		else -> tagName.en
 	}
-	val type = if (types.isEmpty()) "N/D" else types[0]
-	return FilterValue(id, type, description ?: "N/D")
+	val type = if (types.isEmpty()) context.resources.getString(R.string.label_no_value) else types[0]
+	return FilterValue(id, type, description ?: context.resources.getString(R.string.label_no_value))
 }

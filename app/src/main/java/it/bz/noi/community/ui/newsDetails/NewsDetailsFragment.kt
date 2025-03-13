@@ -146,7 +146,7 @@ class NewsDetailsFragment : Fragment(), GalleryClickListener {
 		var isEmail = false
 		val contactInfo = news.getLocalizedContactInfo()
 		if (contactInfo == null) {
-			binding.publisher.text = "N/D" //TODO: localize this
+			binding.publisher.text = getString(R.string.label_no_value)
 		} else {
 			binding.publisher.text = contactInfo.publisher
 

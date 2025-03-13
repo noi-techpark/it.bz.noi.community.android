@@ -248,7 +248,7 @@ class NewsVH(
 		}
 		val contactInfo = news.getLocalizedContactInfo()
 		if (contactInfo == null)  {
-			binding.publisher.text = "N/D"
+			binding.publisher.text = context.getString(R.string.label_no_value)
 		} else {
 			binding.publisher.text = contactInfo.publisher
 			Glide
