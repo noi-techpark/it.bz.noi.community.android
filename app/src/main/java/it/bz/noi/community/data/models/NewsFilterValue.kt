@@ -17,8 +17,6 @@ data class NewsFilterResponse(
 data class MultiLangNewsFilterValue(
 	@SerializedName("Id")
 	val id: String,
-    @SerializedName("Types")
-    val types: List<String>,
     @SerializedName("TagName")
     val tagName: TagName
 )
@@ -38,6 +36,5 @@ fun MultiLangNewsFilterValue.toFilterValue(language: String, context: Context): 
 		Utils.GERMAN -> tagName.de
 		else -> tagName.en
 	}
-	val type = if (types.isEmpty()) context.resources.getString(R.string.label_no_value) else types[0]
-	return FilterValue(id, type, description ?: context.resources.getString(R.string.label_no_value))
+	return FilterValue(id, "", description ?: context.resources.getString(R.string.label_no_value))
 }

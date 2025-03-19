@@ -65,7 +65,7 @@ interface OpendatahubApiService {
 		@Query("language") language: String?
 	): News
 
-	@GET("https://tourism.opendatahub.com/v1/Tag?validforentity=article&types=noicommunitycategory&fields=Id,TagName,Types&pagesize=0")
+	@GET("https://tourism.opendatahub.com/v1/Tag?validforentity=article&types=noicommunitycategory&fields=Id,TagName&pagesize=0")
 	suspend fun getNewsFilterValues(): NewsFilterResponse
 
 	@GET("v1/Article")
