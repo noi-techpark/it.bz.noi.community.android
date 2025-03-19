@@ -111,8 +111,7 @@ class NewsFragment : Fragment() {
 			}
 		}
 
-		// FIXME serve una nuova stringa localizzata
-		binding.emptyState.subtitle.text = "Non abbiamo trovato nessuna news che corrisponda ai tuoi filtri di ricerca. Prova a rivedere la tua ricerca."
+		binding.emptyState.subtitle.text = getString(R.string.label_news_empty_state_subtitle)
 
 		viewLifecycleOwner.lifecycleScope.launch {
 			viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
