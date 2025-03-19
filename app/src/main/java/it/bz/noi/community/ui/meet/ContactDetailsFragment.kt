@@ -83,7 +83,7 @@ class ContactDetailsFragment : Fragment() {
 				}
 			}
 
-			contactName.text = "${contact.firstName}\n${contact.lastName}"
+			contactName.text = "${contact.firstName.trim()} ${contact.lastName.trim()}"
 			contactIcon.text = "${contact.firstName[0]}${contact.lastName[0]}"
 
 			companyName.isVisible = contact.companyName != null
