@@ -102,7 +102,7 @@ class EventsFiltersAdapter(private val eventTypeHeader: String,
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when(getItem(position)){
+        return when(getItem(position)) {
             is Item.Header -> HEADER
             is Item.Filter.EventType -> EVENT_TYPE_FILTER
 			is Item.Filter.TechnologySector -> TECHNOLOGY_SECTOR_FILTER
@@ -110,7 +110,7 @@ class EventsFiltersAdapter(private val eventTypeHeader: String,
     }
 
     private fun getItem(position: Int): Item {
-        return items.get(position)
+        return items[position]
     }
 
 }

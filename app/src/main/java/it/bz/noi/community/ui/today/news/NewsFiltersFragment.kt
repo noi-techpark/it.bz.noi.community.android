@@ -54,6 +54,7 @@ class NewsFiltersFragment : Fragment() {
 		super.onCreate(savedInstanceState)
 
 		filterAdapter = NewsFilterAdapter(
+			filterHeader = getString(R.string.filter_by),
 			updateResultsListener = updateResultsListener
 		)
 	}
