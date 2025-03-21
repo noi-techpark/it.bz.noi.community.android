@@ -15,11 +15,12 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import it.bz.noi.community.NoiApplication
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import net.openid.appauth.AuthState
 
-private const val VERSION = 2
+private const val VERSION = 1
 private const val NAME = "settings"
 
 // At the top level of your kotlin file:
@@ -27,6 +28,8 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = NAM
 	listOf(getSharedPreferencesMigration())
 })
 
+@Deprecated("Value is now handled locally")
+val PRIVACY_ACCEPTED_KEY = booleanPreferencesKey("privacy_accepted")
 val WELCOME_UNDERSTOOD_KEY = booleanPreferencesKey("welcome_understood")
 val VERSION_KEY = intPreferencesKey("version")
 private const val OLD_SKIP_PARAM_KEY = "skip_splash_screen"
