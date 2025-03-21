@@ -134,4 +134,5 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="url_google_playstore" comment="">https://play.google.com/store/apps/details?id=it.bz.noi.community</string>
 	<string name="url_app_privacy" comment="">https://noi.bz.it/en/privacy-app</string>
 	<string name="url_jobs_noi_techpark" comment="">https://noi.bz.it/en/jobs-noi-techpark</string>
+	<string name="share_copy">COPY</string>
 </resources>

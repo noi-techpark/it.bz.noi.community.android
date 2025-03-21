@@ -5,8 +5,6 @@
 package it.bz.noi.community.ui.meet
 
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Icon
 import android.os.Build
@@ -152,69 +150,67 @@ class ContactDetailsFragment : Fragment() {
 	}
 
 	private fun shareContactInfo(contact: Contact, company: Account?) {
-		val vcfFile = createVCard(contact, company)
+		val vcfFile = createVCard(contact, company) ?: return
 
-		vcfFile?.let { file ->
-			// Crea un URI usando FileProvider per la compatibilità con Android 7+
-			val fileUri = FileProvider.getUriForFile(
-				requireContext(),
-				"${requireContext().packageName}.fileprovider",
-				file
-			)
+		// Crea un URI usando FileProvider per la compatibilità con Android 7+
+		val fileUri = FileProvider.getUriForFile(
+			requireContext(),
+			"${requireContext().packageName}.fileprovider",
+			vcfFile
+		)
 
-			val contactInfo = getContactInfo(contact, company)
+		val contactInfo = getContactInfo(contact, company)
 
-			// Intent per condividere la vCard e le info testuali
-			val shareIntentBuilder = ShareCompat.IntentBuilder(requireActivity())
-				.setType("text/x-vcard")
-				.setStream(fileUri)
-				.setText(contactInfo)
+		// Intent per condividere la vCard e le info testuali
+		val shareIntentBuilder = ShareCompat.IntentBuilder(requireActivity())
+			.setType("text/x-vcard")
+			.setStream(fileUri)
+			.setText(contactInfo)
 
-			// Intent per salvare in rubrica
-			val saveIntent = Intent(Intent.ACTION_VIEW).apply {
-				setDataAndType(fileUri, "text/x-vcard")
-				flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+		// Intent per salvare in rubrica
+		val saveIntent = Intent(Intent.ACTION_VIEW).apply {
+			setDataAndType(fileUri, "text/x-vcard")
+			flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+		}
+
+		val chooserIntent = shareIntentBuilder.createChooserIntent()
+		chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(saveIntent))
+
+		try {
+			// Per aggiungere le opzioni di azione diretta è necessario API 34+
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+
+				// Aggiunge un gestore di copia al click dell'opzione
+				val pendingIntent = PendingIntent.getBroadcast(
+					requireContext(),
+					0,
+					Intent(requireContext(), CopyBroadcastReceiver::class.java)
+						.putExtra(
+							CopyBroadcastReceiver.CONTACT_INFO,
+							contactInfo
+						),
+					PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+				)
+
+				// Crea l'azione personalizzata
+				val copyCustomAction = ChooserAction.Builder(
+					Icon.createWithResource(requireContext(), R.drawable.ic_copy),
+					getString(R.string.share_copy), // TODO serve una stringa localizzata
+					pendingIntent
+				).build()
+
+				// Aggiunge le azioni personalizzate all'intent chooser
+				chooserIntent.putExtra(
+					Intent.EXTRA_CHOOSER_CUSTOM_ACTIONS,
+					arrayOf(copyCustomAction)
+				)
+
 			}
 
-			val chooserIntent = shareIntentBuilder.createChooserIntent()
-			chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(saveIntent))
+			startActivity(chooserIntent)
 
-			try {
-				// Per aggiungere le opzioni di azione diretta è necessario API 34+
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-
-					// Aggiunge un gestore di copia al click dell'opzione
-					val pendingIntent = PendingIntent.getBroadcast(
-						requireContext(),
-						0,
-						Intent(requireContext(), CopyReceiver::class.java)
-							.putExtra(
-								CopyReceiver.CONTACT_INFO,
-								contactInfo
-							),
-						PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-					)
-
-					// Crea l'azione personalizzata
-					val copyCustomAction = ChooserAction.Builder(
-						Icon.createWithResource(requireContext(), R.drawable.ic_copy),
-						"COPIA", // TODO serve una stringa localizzata
-						pendingIntent
-					).build()
-
-					// Aggiunge le azioni personalizzate all'intent chooser
-					chooserIntent.putExtra(
-						Intent.EXTRA_CHOOSER_CUSTOM_ACTIONS,
-						arrayOf(copyCustomAction)
-					)
-
-				}
-
-				startActivity(chooserIntent)
-
-			} catch (e: IOException) {
-				Log.e(TAG, "Error creating custom action to copy contact info", e)
-			}
+		} catch (e: IOException) {
+			Log.e(TAG, "Error creating custom action to copy contact info", e)
 		}
 	}
 
@@ -264,20 +260,6 @@ class ContactDetailsFragment : Fragment() {
 		}
 	}
 
-}
-
-// BroadcastReceiver per gestire l'azione di copia
-class CopyReceiver : BroadcastReceiver() {
-	companion object {
-		const val CONTACT_INFO = "CONTACT_INFO"
-	}
-
-	override fun onReceive(context: Context, intent: Intent) {
-		val textToCopy = intent.getStringExtra(CONTACT_INFO)
-		if (textToCopy != null) {
-			context.copyToClipboard("contact_info_copied", textToCopy)
-		}
-	}
 }
 
 class ContactDetailsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {

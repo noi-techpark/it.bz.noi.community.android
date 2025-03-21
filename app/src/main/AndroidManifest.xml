@@ -87,7 +87,7 @@ SPDX-License-Identifier: CC0-1.0
 				android:resource="@xml/file_paths" />
 		</provider>
 
-		<receiver android:name=".ui.meet.CopyReceiver" android:exported="false" />
+		<receiver android:name=".ui.meet.CopyBroadcastReceiver" android:exported="false" />
 	</application>
 
 </manifest>
