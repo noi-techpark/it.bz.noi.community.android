@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import net.openid.appauth.AuthState
 
-private const val VERSION = 2
+private const val VERSION = 1
 private const val NAME = "settings"
 
 // At the top level of your kotlin file:
