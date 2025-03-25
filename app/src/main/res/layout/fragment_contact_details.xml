@@ -54,31 +54,53 @@ SPDX-License-Identifier: CC0-1.0
 						app:layout_constraintTop_toTopOf="parent"
 						tools:src="@drawable/placeholder_noi_events" />
 
-					<TextView
-						android:id="@+id/contactName"
-						style="?attr/textAppearanceHeadline1"
-						android:layout_width="match_parent"
+					<androidx.constraintlayout.widget.ConstraintLayout
+						android:id="@+id/nameContainer"
+						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:layout_marginStart="@dimen/default_margin"
 						android:layout_marginTop="5dp"
-						android:layout_marginEnd="@dimen/default_margin"
-						android:textColor="@color/primary_color"
+						app:layout_constraintEnd_toStartOf="@+id/shareContactIcon"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/contactIconCardView"
-						tools:text="Mario\nRossi" />
+						app:layout_constraintTop_toBottomOf="@id/contactIconCardView">
 
-					<TextView
-						android:id="@+id/companyName"
-						style="?attr/textAppearanceHeadline5"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
+						<TextView
+							android:id="@+id/contactName"
+							style="?attr/textAppearanceHeadline1"
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:textColor="@color/primary_color"
+							app:layout_constraintStart_toStartOf="parent"
+							app:layout_constraintTop_toTopOf="parent"
+							tools:text="Mario\nRossi" />
+
+						<TextView
+							android:id="@+id/companyName"
+							style="?attr/textAppearanceHeadline5"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_marginTop="5dp"
+							android:textColor="@color/primary_color"
+							app:layout_constraintStart_toStartOf="parent"
+							app:layout_constraintTop_toBottomOf="@id/contactName"
+							tools:text="NOI AG" />
+
+					</androidx.constraintlayout.widget.ConstraintLayout>
+
+					<ImageView
+						android:id="@+id/shareContactIcon"
+						android:layout_width="44dp"
+						android:layout_height="44dp"
 						android:layout_marginStart="@dimen/default_margin"
-						android:layout_marginTop="5dp"
 						android:layout_marginEnd="@dimen/default_margin"
-						android:textColor="@color/primary_color"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/contactName"
-						tools:text="NOI AG" />
+						android:padding="0dp"
+						android:src="@drawable/ios_share"
+						app:layout_constraintBottom_toBottomOf="@id/nameContainer"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintHorizontal_bias="1.0"
+						app:layout_constraintStart_toEndOf="@id/nameContainer"
+						app:layout_constraintTop_toTopOf="@id/nameContainer" />
+
 
 					<com.google.android.material.card.MaterialCardView
 						android:id="@+id/contactIconCardView"
