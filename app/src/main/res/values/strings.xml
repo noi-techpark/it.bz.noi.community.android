@@ -114,6 +114,8 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="filter_by_companies" comment="Companies filters in Meet section: Button title - Filter by Companies">Companies</string>
 	<string name="filter_by_startup" comment="Companies filter in Meet section: Button title - Filter by Startups">Start-ups</string>
 	<string name="highlighted_tag" comment="Tab News: text of the label to show on news flagged as highlighted">Highlight</string>
+	<string name="filter_by" comment="News Filters page: title section">Filter by</string>
+	<string name="label_news_empty_state_subtitle" comment="Tab News: empty state subtitle">We couldn\'t find any News based on the filters you’ve chosen. Please try to adjust your filters.</string>
 	<string name="url_home" comment="">https://noi.bz.it/en</string>
 	<string name="url_privacy" comment="">https://noi.bz.it/en/privacy-cookie-policy</string>
 	<string name="url_companies" comment="">https://noi.bz.it/en/companies</string>

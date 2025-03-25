@@ -61,7 +61,7 @@ object Utils {
 		}
 	}
 
-	fun getEventName(event: Event, fallback: String = "N/D"): String {
+	fun getEventName(event: Event, fallback: String): String {
 		return when (Locale.getDefault().language) {
 			ITALIAN -> {
 				event.nameIT ?: event.name ?: fallback
@@ -77,7 +77,7 @@ object Utils {
 		}
 	}
 
-	fun getEventOrganizer(event: Event, fallback: String = "N/D"): String {
+	fun getEventOrganizer(event: Event, fallback: String): String {
 		return if (event.eventOrganizer.isNullOrEmpty())
 			event.eventOrganizerFallback ?: fallback
 		else

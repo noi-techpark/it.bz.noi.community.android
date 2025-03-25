@@ -4,6 +4,7 @@
 
 package it.bz.noi.community.ui.today.events
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,7 +61,7 @@ class EventsAdapter(
 		else
 			LayoutInflater.from(parent.context)
 				.inflate(R.layout.vh_event, parent, false)
-		return EventViewHolder(view)
+		return EventViewHolder(view, parent.context)
 	}
 
 	override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
@@ -69,7 +70,7 @@ class EventsAdapter(
 
 	override fun getItemCount() = events.size
 
-	inner class EventViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+	inner class EventViewHolder(val view: View, private val context: Context) : RecyclerView.ViewHolder(view) {
 
 		private val eventName = view.findViewById<TextView>(R.id.tvEventName)
 		private val eventLocation = view.findViewById<TextView>(R.id.tvEventLocation)
@@ -104,7 +105,7 @@ class EventsAdapter(
 		fun bind(event: Event) {
 			this.event = event
 
-			eventName.text = getEventName(event)
+			eventName.text = getEventName(event, context.getString(R.string.label_no_value))
 			eventLocation.text = event.location
 
 			eventDate.text = getDateIntervalString(event.startDate, event.endDate)

@@ -6,7 +6,20 @@ package it.bz.noi.community.ui
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asFlow
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -15,10 +28,20 @@ import it.bz.noi.community.MainActivity
 import it.bz.noi.community.NoiApplication
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
-import it.bz.noi.community.data.models.*
+import it.bz.noi.community.data.models.Event
+import it.bz.noi.community.data.models.EventsParams
+import it.bz.noi.community.data.models.FilterValue
+import it.bz.noi.community.data.models.MultiLangEventsFilterValue
+import it.bz.noi.community.data.models.MultiLangNewsFilterValue
+import it.bz.noi.community.data.models.News
+import it.bz.noi.community.data.models.getNewsCountParams
+import it.bz.noi.community.data.models.TimeRange
+import it.bz.noi.community.data.models.toFilterValue
 import it.bz.noi.community.data.repository.FilterRepository
 import it.bz.noi.community.data.repository.JsonFilterRepository
 import it.bz.noi.community.data.repository.MainRepository
+import it.bz.noi.community.storage.getSelectedNewsFilters
+import it.bz.noi.community.storage.setSelectedNewsFilters
 import it.bz.noi.community.ui.today.news.NewsPagingSource
 import it.bz.noi.community.utils.DateUtils.endOfDay
 import it.bz.noi.community.utils.DateUtils.lastDayOfCurrentMonth
@@ -30,8 +53,17 @@ import it.bz.noi.community.utils.Status
 import it.bz.noi.community.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
-import java.util.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import java.util.Calendar
 
 private const val PAGE_SIZE = 10 // How many news to load at once
 
@@ -62,7 +94,7 @@ class ViewModelFactory(private val apiHelper: ApiHelper, private val filterRepo:
  */
 @ExperimentalCoroutinesApi
 class MainViewModel(
-	app: Application,
+	private val app: Application,
 	private val mainRepository: MainRepository,
 	private val filterRepo: FilterRepository,
 	private val savedStateHandle: SavedStateHandle,
@@ -105,36 +137,70 @@ class MainViewModel(
 	/**
 	 * live data of the event filters
 	 */
-	private val availableFilters: LiveData<List<FilterValue>> = getEventFilterValues().map {
+	private val availableEventFilters: LiveData<List<FilterValue>> = getEventFilterValues().map {
 		when (it.status) {
 			Status.SUCCESS -> {
 				val language = Utils.getAppLanguage() ?: Utils.FALLBACK_LANGUAGE
-				it.data!!.map {
-					it.toFilterValue(language)
+				it.data!!.map { eventFilterValue ->
+					eventFilterValue.toFilterValue(language)
 				}
 			}
 			Status.ERROR -> {
-				Log.d(TAG, "Caricamento filtri KO")
+				Log.d(TAG, "Error loading event filters")
 				emptyList()
 			}
 			Status.LOADING -> {
-				Log.d(TAG, "Filtri in caricamento")
+				Log.d(TAG, "Loading event filters...")
 				emptyList()
 			}
 		}
 	}
 
-	private val selectedFilters = MutableLiveData(emptyList<FilterValue>())
-	fun updateSelectedFilters(filters: List<FilterValue>) {
-		selectedFilters.postValue(filters)
+	private val selectedEventFilters = MutableLiveData(emptyList<FilterValue>())
+	fun updateSelectedEventFilters(filters: List<FilterValue>) {
+		selectedEventFilters.postValue(filters)
 		eventsParams.selectedFilters = filters
 	}
 
-	val appliedFilters = MediatorLiveData<List<FilterValue>>()
+	val appliedEventFilters = MediatorLiveData<List<FilterValue>>()
 
-	val selectedFiltersCount = selectedFilters.asFlow().flatMapLatest {
+	val selectedEventFiltersCount = selectedEventFilters.asFlow().flatMapLatest {
 		flowOf(it.size)
 	}.asLiveData(Dispatchers.IO)
+
+	/**
+	 * live data of the news filters
+	 */
+	private val availableNewsFilters: LiveData<List<FilterValue>> = getNewsFilterValues().map {
+		when (it.status) {
+			Status.SUCCESS -> {
+				val language = Utils.getAppLanguage() ?: Utils.FALLBACK_LANGUAGE
+				it.data!!.map { newsFilterValue ->
+					newsFilterValue.toFilterValue(language, app)
+				}
+			}
+			Status.ERROR -> {
+				Log.d(TAG, "Error loading news filters")
+				emptyList()
+			}
+			Status.LOADING -> {
+				Log.d(TAG, "Loading news filters...")
+				emptyList()
+			}
+		}
+	}
+
+	private val selectedNewsFilters = MutableLiveData(emptyList<FilterValue>())
+	fun updateSelectedNewsFilters(filters: List<FilterValue>) {
+		selectedNewsFilters.postValue(filters)
+		saveCurrentNewsFilters(filters)
+	}
+
+	val appliedNewsFilters = MediatorLiveData<List<FilterValue>>()
+
+	val selectedNewsFiltersCount: Flow<Int> = selectedNewsFilters.asFlow().flatMapLatest {
+		flowOf(it.size)
+	}
 
 	/**
 	 * mediator live data that emits the events to the observers
@@ -146,20 +212,55 @@ class MainViewModel(
 			mediatorEvents.value = it
 		}
 
-		appliedFilters.addSource(availableFilters) {
-			appliedFilters.value = loadAppliedFilters()
+		// Carica i filtri salvati
+		viewModelScope.launch {
+			val savedFilterKeys = app.getSelectedNewsFilters()
+			val savedNewsFiltersObserver = object : Observer<List<FilterValue>> {
+				override fun onChanged(availableFilters: List<FilterValue>) {
+					if (availableFilters.isNotEmpty() && savedFilterKeys.isNotEmpty()) {
+						val filtersToApply = availableFilters.map { filter ->
+							filter.copy(checked = filter.key in savedFilterKeys)
+						}
+						selectedNewsFilters.postValue(filtersToApply.filter { it.checked })
+						availableNewsFilters.removeObserver(this)
+					}
+				}
+			}
+			availableNewsFilters.observeForever(savedNewsFiltersObserver)
 		}
-		appliedFilters.addSource(selectedFilters) {
-			appliedFilters.value = loadAppliedFilters()
+
+		appliedEventFilters.addSource(availableEventFilters) {
+			appliedEventFilters.value = loadAppliedEventFilters()
+		}
+		appliedEventFilters.addSource(selectedEventFilters) {
+			appliedEventFilters.value = loadAppliedEventFilters()
+		}
+
+		appliedNewsFilters.addSource(availableNewsFilters) {
+			appliedNewsFilters.value = loadAppliedNewsFilters()
+		}
+		appliedNewsFilters.addSource(selectedNewsFilters) {
+			appliedNewsFilters.value = loadAppliedNewsFilters()
 		}
 	}
 
-	private fun loadAppliedFilters(): List<FilterValue> {
-		return availableFilters.value?.map {f ->
-			f.copy(checked = selectedFilters.value?.find { it.key == f.key } != null)
+	private fun loadAppliedEventFilters(): List<FilterValue> {
+		return availableEventFilters.value?.map { f ->
+			f.copy(checked = selectedEventFilters.value?.find { it.key == f.key } != null)
 		} ?: emptyList()
 	}
 
+	private fun loadAppliedNewsFilters(): List<FilterValue> {
+		return availableNewsFilters.value?.map { f ->
+			f.copy(checked = selectedNewsFilters.value?.find { it.key == f.key } != null)
+		} ?: emptyList()
+	}
+
+	private fun saveCurrentNewsFilters(filters: List<FilterValue>) {
+		viewModelScope.launch {
+			app.setSelectedNewsFilters(filters)
+		}
+	}
 
 	/**
 	 * function used to filter the events by time
@@ -229,7 +330,7 @@ class MainViewModel(
 	}
 
 	/**
-	 * Loads filters to show in filter screen
+	 * Loads filters to show in event filter screen
 	 */
 	private fun getEventFilterValues() = liveData(Dispatchers.IO) {
 		emit(Resource.loading(null))
@@ -237,34 +338,79 @@ class MainViewModel(
 		try {
 			filters = mainRepository.getEventFilterValues()
 			if (filters.isEmpty())
-				filters= filterRepo.loadFilters()
+				filters= filterRepo.loadEventFilters()
 			else
-				filterRepo.saveFilters(filters)
+				filterRepo.saveEventFilters(filters)
 		} catch (exception: Exception) {
-			filters= filterRepo.loadFilters()
+			filters= filterRepo.loadEventFilters()
 		}
 
 		if (filters.isNotEmpty())
 			emit(Resource.success(data = filters))
 		else
-			emit(Resource.error(data = null, message = "Filter loading: error occurred!"))
+			emit(Resource.error(data = null, message = "Event filter loading: error occurred!"))
 	}
 
 	private val reloadNewsTickerFlow = MutableSharedFlow<Unit>(replay = 1).apply {
 		tryEmit(Unit)
 	}
 
-	val newsFlow: StateFlow<PagingData<News>> = reloadNewsTickerFlow.flatMapLatest {
-		loadNews()
-	}.stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+	val newsFlow: StateFlow<PagingData<News>> = combine(
+		reloadNewsTickerFlow,
+		selectedNewsFilters.asFlow()
+	) { _, selectedFilters -> selectedFilters }
+		.flatMapLatest { loadNews(it) }
+		.stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
-	private fun loadNews(): Flow<PagingData<News>> = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
-		NewsPagingSource(PAGE_SIZE, mainRepository)
-	}.flow.cachedIn(viewModelScope)
+	private fun loadNews(selectedFilters: List<FilterValue>?): Flow<PagingData<News>> =
+		Pager(PagingConfig(pageSize = PAGE_SIZE)) {
+			NewsPagingSource(PAGE_SIZE, selectedFilters ?: emptyList(), mainRepository)
+		}.flow.cachedIn(viewModelScope)
 
 	fun refreshNews() {
 		reloadNewsTickerFlow.tryEmit(Unit)
 	}
+
+	/**
+	 * Loads filters to show in news filter screen
+	 */
+	private fun getNewsFilterValues() = liveData(Dispatchers.IO) {
+		emit(Resource.loading(null))
+		var filters: List<MultiLangNewsFilterValue>
+		try {
+			filters = mainRepository.getNewsFilterValues().filters
+			if (filters.isEmpty())
+				filters= filterRepo.loadNewsFilters()
+			else
+				filterRepo.saveNewsFilters(filters)
+		} catch (exception: Exception) {
+			filters= filterRepo.loadNewsFilters()
+		}
+
+		if (filters.isNotEmpty())
+			emit(Resource.success(data = filters))
+		else
+			emit(Resource.error(data = null, message = "News filter loading: error occurred!"))
+	}
+
+	private var _newsCount: Flow<Resource<Int>> = selectedNewsFilters.asFlow().flatMapLatest { selectedFilters ->
+		getNewsCount(selectedFilters)
+	}
+	val newsCount: Flow<Resource<Int>>
+		get() = _newsCount
+
+	private fun getNewsCount(selectedFilters: List<FilterValue> = emptyList()): Flow<Resource<Int>> =
+		flow {
+			emit(Resource.loading(data = null))
+			try {
+				emit(Resource.success(data = mainRepository.getNewsCount(getNewsCountParams(
+					from = startDate,
+					selectedFilters = selectedFilters
+				)).totalResult))
+			} catch (exception: Exception) {
+				emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
+			}
+		}
 
 }
 

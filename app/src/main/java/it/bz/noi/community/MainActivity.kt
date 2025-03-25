@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
 						supportActionBar?.title = arguments.getString(WebViewFragment.TITLE_ARG)
 					}
 				}
-				R.id.eventsFiltersFragment, R.id.meetFiltersFragment -> {
+				R.id.eventsFiltersFragment, R.id.newsFiltersFragment, R.id.meetFiltersFragment -> {
 					supportActionBar?.show()
 					binding.navView.isVisible = false
 					toolbar.setTitleTextAppearance(toolbar.context, R.style.TextAppearance_NOI_Toolbar_TitleSecondary)
