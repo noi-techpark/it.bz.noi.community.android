@@ -4,9 +4,12 @@
 
 package it.bz.noi.community.utils
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.SavedStateHandle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.bz.noi.community.BuildConfig
@@ -58,7 +61,7 @@ object Utils {
 		}
 	}
 
-	fun getEventName(event: Event, fallback: String = "N/D"): String {
+	fun getEventName(event: Event, fallback: String): String {
 		return when (Locale.getDefault().language) {
 			ITALIAN -> {
 				event.nameIT ?: event.name ?: fallback
@@ -74,7 +77,7 @@ object Utils {
 		}
 	}
 
-	fun getEventOrganizer(event: Event, fallback: String = "N/D"): String {
+	fun getEventOrganizer(event: Event, fallback: String): String {
 		return if (event.eventOrganizer.isNullOrEmpty())
 			event.eventOrganizerFallback ?: fallback
 		else
@@ -170,6 +173,13 @@ object Utils {
 		var string = Normalizer.normalize(this, Normalizer.Form.NFD)
 		string = Regex("\\p{InCombiningDiacriticalMarks}+").replace(string, "")
 		return string
+	}
+
+	fun Context.copyToClipboard(label: String, value: String) {
+		val clipboard =
+			getSystemService(this, ClipboardManager::class.java) as ClipboardManager
+		val clip: ClipData = ClipData.newPlainText(label, value)
+		clipboard.setPrimaryClip(clip)
 	}
 }
 

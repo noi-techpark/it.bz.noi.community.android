@@ -64,4 +64,19 @@ interface OpendatahubApiService {
 		@Query("fields") fields: String = "Id,ArticleDate,Detail,ContactInfos,ImageGallery,VideoItems,ODHTags",
 		@Query("language") language: String?
 	): News
+
+	@GET("https://tourism.opendatahub.com/v1/Tag?validforentity=article&types=noicommunitycategory&fields=Id,TagName&pagesize=0")
+	suspend fun getNewsFilterValues(): NewsFilterResponse
+
+	@GET("v1/Article")
+	suspend fun getNewsCount(
+		@Query("removenullvalues") removeNullValues: Boolean = true,
+		@Query("articletype") endDate: String = "newsfeednoi",
+		@Query("fields") fields: String = "Id",
+		@Query("pagesize") pageSize: Int = 1,
+		@Query("pagenumber") pageNumber: Int = 1,
+		@Query("startdate") startDate: String,
+		@Query("publishedon") publishedOn: String? = "noi-communityapp",
+		@Query("rawfilter") rawFilter: String?,
+	): NewsResponse
 }

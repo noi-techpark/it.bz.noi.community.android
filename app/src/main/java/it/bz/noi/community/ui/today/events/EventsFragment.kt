@@ -118,7 +118,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 		binding.editFiltersButton.root.setOnClickListener {
 			exitTransition = null
 			findNavController().navigate(
-				TodayFragmentDirections.actionNavigationTodayToFiltersFragment()
+				TodayFragmentDirections.actionNavigationTodayToEventFiltersFragment()
 			)
 		}
 
@@ -161,7 +161,7 @@ class EventsFragment : Fragment(), EventClickListener, TimeFilterClickListener {
 			}
 		}
 
-		viewModel.selectedFiltersCount.observe(viewLifecycleOwner) { count ->
+		viewModel.selectedEventFiltersCount.observe(viewLifecycleOwner) { count ->
 			binding.editFiltersButton.appliedFiltersCount.apply {
 				if (count > 0) {
 					isVisible = true

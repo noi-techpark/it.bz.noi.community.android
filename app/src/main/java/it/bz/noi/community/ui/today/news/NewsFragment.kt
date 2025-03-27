@@ -111,6 +111,8 @@ class NewsFragment : Fragment() {
 			}
 		}
 
+		binding.emptyState.subtitle.text = getString(R.string.label_news_empty_state_subtitle)
+
 		viewLifecycleOwner.lifecycleScope.launch {
 			viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 				viewModel.newsFlow.collectLatest { pagingData ->
@@ -154,12 +156,41 @@ class NewsFragment : Fragment() {
 						binding.swipeRefreshNews.isRefreshing = false
 					}
 				}
+
+				showEmptyState(loadStates.refresh is LoadState.NotLoading && newsAdapter.itemCount == 0)
 			}
+		}
+
+		binding.newsFilter.root.setOnClickListener {
+			exitTransition = null
+			findNavController().navigate(
+				TodayFragmentDirections.actionNavigationTodayToNewsFiltersFragment()
+			)
 		}
 
 		binding.swipeRefreshNews.setOnRefreshListener {
 			viewModel.refreshNews()
 		}
+
+		viewLifecycleOwner.lifecycleScope.launch {
+			viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+				viewModel.selectedNewsFiltersCount.collectLatest { count ->
+					binding.newsFilter.appliedFiltersCount.apply {
+						if (count > 0) {
+							isVisible = true
+							text = "$count"
+						} else {
+							isVisible = false
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private fun showEmptyState(show: Boolean) {
+		binding.swipeRefreshNews.isVisible = !show
+		binding.emptyState.root.isVisible = show
 	}
 
 }
@@ -216,7 +247,7 @@ class NewsVH(
 		}
 		val contactInfo = news.getLocalizedContactInfo()
 		if (contactInfo == null)  {
-			binding.publisher.text = "N/D"
+			binding.publisher.text = context.getString(R.string.label_no_value)
 		} else {
 			binding.publisher.text = contactInfo.publisher
 			Glide

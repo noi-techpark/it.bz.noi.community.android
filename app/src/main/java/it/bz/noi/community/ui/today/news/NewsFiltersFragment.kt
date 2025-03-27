@@ -1,8 +1,7 @@
 // SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
-
-package it.bz.noi.community.ui.today.events
+package it.bz.noi.community.ui.today.news
 
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +11,9 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import it.bz.noi.community.R
 import it.bz.noi.community.data.api.ApiHelper
@@ -24,11 +26,13 @@ import it.bz.noi.community.ui.UpdateResultsListener
 import it.bz.noi.community.ui.ViewModelFactory
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
-class EventsFiltersFragment : Fragment() {
+class NewsFiltersFragment : Fragment() {
 
-	private lateinit var filterAdapter: EventsFiltersAdapter
+	private lateinit var filterAdapter: NewsFilterAdapter
 	private var _binding: FragmentFiltersBinding? = null
 	private val binding get() = _binding!!
 
@@ -41,16 +45,15 @@ class EventsFiltersFragment : Fragment() {
 
 	private val updateResultsListener = object : UpdateResultsListener {
 		override fun updateResults(filter: FilterValue) {
-			mainViewModel.updateSelectedEventFilters(filterAdapter.filters.filter { it.checked })
+			mainViewModel.updateSelectedNewsFilters(filterAdapter.filters.filter { it.checked })
 		}
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		filterAdapter = EventsFiltersAdapter(
-			eventTypeHeader = resources.getString(R.string.filter_by_type),
-			technlogySectorHeader = resources.getString(R.string.filter_by_sector),
+		filterAdapter = NewsFilterAdapter(
+			filterHeader = getString(R.string.filter_by),
 			updateResultsListener = updateResultsListener
 		)
 	}
@@ -72,25 +75,26 @@ class EventsFiltersFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		mainViewModel.appliedEventFilters.observe(viewLifecycleOwner) {
-			filterAdapter.filters = it
-			mainViewModel.refreshEvents()
+		mainViewModel.appliedNewsFilters.observe(viewLifecycleOwner) { filters ->
+			filterAdapter.filters = filters
 		}
 
-		mainViewModel.mediatorEvents.observe(viewLifecycleOwner) {
-			when (it.status) {
-				Status.LOADING -> {
-					// Continuiamo a mostrare il valore precedente, per evitare side effects grafici introducendo un loader sul pulsante
-					Log.d(TAG, "Loading results with new filters selection in progress...")
-				}
-
-				Status.SUCCESS -> {
-					updateNumberOfResults(it.data?.size ?: 0)
-				}
-
-				Status.ERROR -> {
-					// Continuiamo a mostrare il valore precedente
-					Log.e(TAG, "Error loading results with new filters selection")
+		viewLifecycleOwner.lifecycleScope.launch {
+			viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+				mainViewModel.newsCount.collectLatest { resource ->
+					when (resource.status) {
+						Status.LOADING -> {
+							// Continuiamo a mostrare il valore precedente, per evitare side effects grafici introducendo un loader sul pulsante
+							Log.d(TAG, "Loading results with new filters selection in progress...")
+						}
+						Status.SUCCESS -> {
+							updateNumberOfResults(resource.data)
+						}
+						Status.ERROR -> {
+							// Continuiamo a mostrare il valore precedente
+							Log.e(TAG, "Error loading results with new filters selection")
+						}
+					}
 				}
 			}
 		}
@@ -116,10 +120,10 @@ class EventsFiltersFragment : Fragment() {
 	}
 
 	private fun resetFilters() {
-		mainViewModel.updateSelectedEventFilters(emptyList())
+		mainViewModel.updateSelectedNewsFilters(emptyList())
 	}
 
 	companion object {
-		private const val TAG = "EventsFiltersFragment"
+		private const val TAG = "NewsFiltersFragment"
 	}
 }

@@ -13,8 +13,10 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import it.bz.noi.community.NoiApplication
+import it.bz.noi.community.data.models.FilterValue
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -38,6 +40,8 @@ private const val OLD_AUTH_STATE_KEY = "authState"
 val AUTH_STATE_KEY = stringPreferencesKey("auth_state")
 private const val OLD_ACCESS_GRANTED_KEY = "accessGrantedState"
 val ACCESS_GRANTED_KEY = booleanPreferencesKey("access_granted_state")
+val SELECTED_NEWS_FILTERS = stringSetPreferencesKey("selected__news_filters")
+
 
 //region Welcome understood
 
@@ -112,6 +116,23 @@ suspend fun Context.setAccessGranted(accessGranted: Boolean) {
 suspend fun Context.removeAccessGranted() {
 	this.dataStore.edit { preferences ->
 		preferences.remove(ACCESS_GRANTED_KEY)
+	}
+}
+
+// endregion
+
+// region selected news filter
+
+suspend fun Context.getSelectedNewsFilters(): Set<String> {
+	return this.dataStore.data.map { preferences ->
+		preferences[SELECTED_NEWS_FILTERS] ?: emptySet()
+	}.first()
+}
+
+suspend fun Context.setSelectedNewsFilters(selectedFilters: List<FilterValue>) {
+	val selectedFilterKeys = selectedFilters.map { it.key }.toSet()
+	this.dataStore.edit { preferences ->
+		preferences[SELECTED_NEWS_FILTERS] = selectedFilterKeys
 	}
 }
 

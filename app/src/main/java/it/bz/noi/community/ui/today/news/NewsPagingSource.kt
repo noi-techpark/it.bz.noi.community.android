@@ -8,17 +8,19 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import it.bz.noi.community.data.models.FilterValue
 import it.bz.noi.community.data.models.News
 import it.bz.noi.community.data.models.NewsParams
-import it.bz.noi.community.data.models.NewsResponse
 import it.bz.noi.community.data.repository.MainRepository
-import it.bz.noi.community.utils.DateUtils
-import it.bz.noi.community.utils.Utils
 import java.util.*
 
 private const val TAG = "NewsPagingSource"
 
-class NewsPagingSource(private val pageSize: Int, private val mainRepository: MainRepository) :
+class NewsPagingSource(
+	private val pageSize: Int,
+	private val selectedFilters: List<FilterValue>,
+	private val mainRepository: MainRepository
+) :
     PagingSource<Int, News>() {
 
 	private val startDate = Date()
@@ -32,7 +34,13 @@ class NewsPagingSource(private val pageSize: Int, private val mainRepository: Ma
 			val nextPageNumber = params.key ?: 1 // Start refresh at page 1 if undefined.
 
 			// 1. Obtain the "next" page, optionally highlighted.
-			val newsParams = NewsParams(nextPageNumber, pageSize, startDate, moreHighlight)
+			val newsParams = NewsParams(
+				nextPageNumber = nextPageNumber,
+				pageSize = pageSize,
+				from = startDate,
+				moreHighlights = moreHighlight,
+				selectedFilters = selectedFilters
+			)
 			val newsResponse = mainRepository.getNews(newsParams)
 			val news = newsResponse.news.toMutableList()
 
@@ -45,10 +53,11 @@ class NewsPagingSource(private val pageSize: Int, private val mainRepository: Ma
 				moreHighlight = false
 
 				val notHighlightedNewsParams = NewsParams(
-					nextPageNumber,
-					pageSize,
-					startDate,
-					false
+					nextPageNumber = nextPageNumber,
+					pageSize = pageSize,
+					from = startDate,
+					moreHighlights = false,
+					selectedFilters = selectedFilters
 				)
 				val notHighlightedNewsResponse = mainRepository.getNews(notHighlightedNewsParams)
 				news += notHighlightedNewsResponse.news

@@ -18,11 +18,14 @@ SPDX-License-Identifier: CC0-1.0
         android:label="@string/title_today"
         tools:layout="@layout/fragment_today" >
         <action
-            android:id="@+id/action_navigation_today_to_filtersFragment"
+            android:id="@+id/action_navigation_today_to_eventFiltersFragment"
             app:destination="@id/eventsFiltersFragment"/>
         <action
             android:id="@+id/action_navigation_today_to_eventDetailsFragment"
             app:destination="@id/eventDetailsFragment" />
+		<action
+			android:id="@+id/action_navigation_today_to_newsFiltersFragment"
+			app:destination="@id/newsFiltersFragment"/>
 		<action
 			android:id="@+id/action_navigation_today_to_newsDetails"
 			app:destination="@id/newsDetails" />
@@ -99,6 +102,11 @@ SPDX-License-Identifier: CC0-1.0
         android:name="it.bz.noi.community.ui.today.events.EventsFiltersFragment"
         android:label="@string/title_filters"
         tools:layout="@layout/fragment_filters" />
+	<fragment
+		android:id="@+id/newsFiltersFragment"
+		android:name="it.bz.noi.community.ui.today.news.NewsFiltersFragment"
+		android:label="@string/title_filters"
+		tools:layout="@layout/fragment_filters" />
     <action
         android:id="@+id/action_global_webViewFragment"
         app:destination="@id/webViewFragment"

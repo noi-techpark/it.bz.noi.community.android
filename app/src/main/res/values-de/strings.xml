@@ -114,6 +114,8 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="filter_by_companies" comment="Companies filters in Meet section: Button title - Filter by Companies">Unternehmen</string>
 	<string name="filter_by_startup" comment="Companies filter in Meet section: Button title - Filter by Startups">Start-ups</string>
 	<string name="highlighted_tag" comment="Tab News: text of the label to show on news flagged as highlighted">Highlight</string>
+	<string name="filter_by" comment="News Filters page: title section">Filtern nach</string>
+	<string name="label_news_empty_state_subtitle" comment="Tab News: empty state subtitle">Leider konnten wir keine News finden, die deinen Filtern entsprechen. Bitte ändere deine Suchkriterien.</string>
 	<string name="url_home" comment="">https://noi.bz.it/de</string>
 	<string name="url_privacy" comment="">https://noi.bz.it/de/privacy-cookie-policy</string>
 	<string name="url_companies" comment="">https://noi.bz.it/de/unternehmen</string>
@@ -134,4 +136,5 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="url_google_playstore" comment="">https://play.google.com/store/apps/details?id=it.bz.noi.community</string>
 	<string name="url_app_privacy" comment="">https://noi.bz.it/de/datenschutz-app</string>
 	<string name="url_jobs_noi_techpark" comment="">https://noi.bz.it/de/jobs-noi-techpark</string>
+	<string name="share_copy">KOPIEREN</string>
 </resources>

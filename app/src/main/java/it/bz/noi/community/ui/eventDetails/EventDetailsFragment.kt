@@ -163,7 +163,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 
 	private fun loadEventData(event: Event) {
 		(requireActivity() as AppCompatActivity).supportActionBar?.title =
-			getEventName(event)
+			getEventName(event, getString(R.string.label_no_value))
 
 		setTransitionNames(event.eventId!!)
 		loadEventImage(getImageUrl(event))
@@ -196,7 +196,7 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 						CalendarContract.EXTRA_EVENT_END_TIME,
 						endTime
 					)
-					.putExtra(Events.TITLE, getEventName(event))
+					.putExtra(Events.TITLE, getEventName(event, getString(R.string.label_no_value)))
 					.putExtra(
 						Events.DESCRIPTION,
 						getEventDescription(event)
@@ -246,9 +246,9 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 			}
 		}
 
-		binding.tvEventName.text = getEventName(event)
+		binding.tvEventName.text = getEventName(event, getString(R.string.label_no_value))
 		binding.tvEventLocation.text = event.location
-		binding.tvEventOrganizer.text = getEventOrganizer(event)
+		binding.tvEventOrganizer.text = getEventOrganizer(event, getString(R.string.label_no_value))
 		if (getEventDescription(event).isNullOrEmpty()) {
 			binding.tvAboutLabel.isVisible = false
 			binding.tvEventDescription.isVisible = false
