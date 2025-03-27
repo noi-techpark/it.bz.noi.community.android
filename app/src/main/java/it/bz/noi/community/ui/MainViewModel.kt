@@ -24,7 +24,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import it.bz.noi.community.MainActivity
 import it.bz.noi.community.NoiApplication
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
@@ -34,8 +33,8 @@ import it.bz.noi.community.data.models.FilterValue
 import it.bz.noi.community.data.models.MultiLangEventsFilterValue
 import it.bz.noi.community.data.models.MultiLangNewsFilterValue
 import it.bz.noi.community.data.models.News
-import it.bz.noi.community.data.models.getNewsCountParams
 import it.bz.noi.community.data.models.TimeRange
+import it.bz.noi.community.data.models.getNewsCountParams
 import it.bz.noi.community.data.models.toFilterValue
 import it.bz.noi.community.data.repository.FilterRepository
 import it.bz.noi.community.data.repository.JsonFilterRepository
@@ -127,12 +126,6 @@ class MainViewModel(
 			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
 		}
 	}
-
-	var showWelcome: Boolean
-		get() = savedStateHandle.get<Boolean>(MainActivity.EXTRA_SHOW_WELCOME) ?: true
-		set(value) {
-			savedStateHandle[MainActivity.EXTRA_SHOW_WELCOME] = value
-		}
 
 	/**
 	 * live data of the event filters
