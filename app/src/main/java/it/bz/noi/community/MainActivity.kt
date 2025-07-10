@@ -12,8 +12,11 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
@@ -58,10 +61,19 @@ class MainActivity : AppCompatActivity() {
 			}
 		}
 
+		enableEdgeToEdge()
+
 		window.navigationBarColor = resources.getColor(R.color.background_color, theme)
 
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
+
+		// Edge to edge support for the toolbar.
+		ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { v, insets ->
+			val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+			v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+			WindowInsetsCompat.CONSUMED
+		}
 
 		showWelcome = savedInstanceState?.getBoolean(STATE_SHOW_WELCOME) ?: intent.getBooleanExtra(EXTRA_SHOW_WELCOME, false)
 

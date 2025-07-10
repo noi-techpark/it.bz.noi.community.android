@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
@@ -74,6 +76,11 @@ class MoreFragment : Fragment() {
 		super.onViewCreated(view, savedInstanceState)
 		moreInfoAdapter = SimpleListAdapter(items, openLinkClickListener)
 		binding.moreRecyclerView.adapter = moreAdapter
+		ViewCompat.setOnApplyWindowInsetsListener(binding.moreRecyclerView) { v, insets ->
+			val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+			v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+			WindowInsetsCompat.CONSUMED
+		}
 	}
 
 	private fun getUrlByItemPosition(pos: Int): String {
