@@ -156,5 +156,5 @@ jobs:
           packageName: it.bz.noi.community
           releaseFiles: ${{ steps.sign_app.outputs.signedReleaseFile }}
           # Internal Testing qa, Closed track alpha, beta
-          track: qa
+          track: Tests @ NOI
           status: completed
