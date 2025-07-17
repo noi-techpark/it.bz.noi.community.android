@@ -111,3 +111,50 @@ jobs:
           releaseFiles: ${{ steps.sign_app.outputs.signedReleaseFile }}
           track: alpha
           status: completed
+
+  ## Build and sign the app, and upload it as Github Artifact
+  build_and_deploy_to_play_store_development:
+    needs: [ test, unit_tests, android_tests ]
+    if: github.ref == 'refs/heads/feature/newkeyckloakrealm'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Inject google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
+      - name: Java setup
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '17'
+      - name: Increment build number
+        run: |
+          set -eo pipefail
+          BUILD_NUMBER=$(date "+%s")
+          echo "VERSION_CODE=$BUILD_NUMBER" > app/version.properties
+          cat app/version.properties
+      - name: Generate Release AAB
+        run: ./gradlew bundleDevelopmentRelease
+         # For TESTING USE --> run: ./gradlew bundleDevelopmentRelease
+      - name: Sign AAB
+        uses: r0adkll/sign-android-release@v1
+        # ID used to access action output
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/bundle/developmentRelease
+          # For TESTING USE --> releaseDirectory: app/build/outputs/bundle/developmentRelease
+          signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY }}
+          alias: ${{ secrets.KEYSTORE_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEYSTORE_PASSWORD_FOR_KEY }}
+      - name: Publish to Play Store closed alpha track
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: it.bz.noi.community
+          releaseFiles: ${{ steps.sign_app.outputs.signedReleaseFile }}
+          # Internal Testing qa, Closed track alpha, beta
+          track: qa
+          status: completed
