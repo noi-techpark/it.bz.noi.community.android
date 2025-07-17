@@ -13,6 +13,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import it.bz.noi.community.databinding.ActivitySplashBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
@@ -23,6 +25,8 @@ import it.bz.noi.community.ui.onboarding.OnboardingActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.io.File
+import java.io.FileOutputStream
 
 /**
  * Activity used only for displaying the Splash/Launch Screen
@@ -62,23 +66,43 @@ class SplashScreenActivity : AppCompatActivity() {
 		binding = ActivitySplashBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 		try {
-			val video =
-				Uri.parse("android.resource://" + packageName + "/" + R.raw.noi_splash_screen_video)
 			binding.vwSplash.apply {
-				setVideoURI(video)
+				setVideoURI(getVideoUri())
 				setOnCompletionListener {
 					lifecycleScope.launch {
 						setSkipParam(true)
 					}
 					goToOnboardingActivity()
 				}
+				setOnErrorListener { _, what, extra ->
+					Log.e("TAG", "Error playing splash video: what=$what, extra=$extra")
+					goToOnboardingActivity()
+					true // Indicate that we handled the error
+				}
 				requestFocus()
-				start()
+				setOnPreparedListener { mediaPlayer ->
+					start()
+				}
+				setOnInfoListener { _, what, extra ->
+					Log.d(TAG, "Splash video is ready to play $what, extra=$extra")
+					true // Indicate that we handled the info
+				}
 			}
 		} catch (ex: Exception) {
 			goToOnboardingActivity()
 		}
+	}
 
+	private fun getVideoUri(): Uri {
+		val file = File(cacheDir, "splash.mp4")
+		if (!file.exists()) {
+			resources.openRawResource(R.raw.noi_splash_screen_video).use { input ->
+				FileOutputStream(file).use { output ->
+					input.copyTo(output)
+				}
+			}
+		}
+		return Uri.fromFile(file)
 	}
 
 	private fun goToMainActivity() {

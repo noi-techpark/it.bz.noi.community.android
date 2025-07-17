@@ -23,7 +23,7 @@ SPDX-License-Identifier: CC0-1.0
 	</style>
 
 	<!-- Base application theme, it is actually the "tertiary" variant that is white background and dark text -->
-	<style name="Theme.NOICommunity" parent="Theme.MaterialComponents.Light.DarkActionBar">
+	<style name="Theme.NOICommunity" parent="Theme.Material3.Light">
 
 		<item name="windowActionBar">false</item>
 		<item name="windowNoTitle">true</item>
