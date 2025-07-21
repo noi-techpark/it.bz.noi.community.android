@@ -82,7 +82,7 @@ android {
 		// }
 		development {
 			buildConfigField("String", "ISSUER_URL", "\"https://auth.opendatahub.testingmachine.eu/auth/realms/noi-community/\"")
-			buildConfigField("String", "SIGNUP_URL", "\"https://auth.opendatahub.testingmachine.eu/auth/realms/noi-community/protocol/openid-connect/registrations?client_id=it.bz.noi.community&redirect_uri=https://noi.bz.it&response_type=code&scope=openid\"")
+			buildConfigField("String", "SIGNUP_URL", "\"https://auth.opendatahub.testingmachine.eu/auth/realms/noi-community/protocol/openid-connect/registrations?client_id=community-app&redirect_uri=https://noi.bz.it&response_type=code&scope=openid\"")
 			buildConfigField("String", "COMMUNITY_API_URL", "\"https://api.v2.community.noi.testingmachine.eu\"")
 			buildConfigField("String", "OPENDATAHUB_API_BASE_URL", "\"https://api.tourism.testingmachine.eu/\"")
 			dimension = 'environment'
