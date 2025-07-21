@@ -155,6 +155,6 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: it.bz.noi.community
           releaseFiles: ${{ steps.sign_app.outputs.signedReleaseFile }}
-          # Internal Testing qa, Closed track alpha, beta
-          track: Tests @ NOI
+          # Internal Testing internal, Closed track alpha, beta
+          track: internal
           status: completed
