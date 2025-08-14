@@ -10,33 +10,23 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
-import androidx.fragment.app.commit
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import it.bz.noi.community.MainActivity
 import it.bz.noi.community.R
 import it.bz.noi.community.databinding.ActivityOnboardingBinding
 import it.bz.noi.community.oauth.AuthManager
-import it.bz.noi.community.oauth.AuthStateStatus
 import it.bz.noi.community.storage.getWelcomeUnderstood
-import it.bz.noi.community.ui.WebViewFragment
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
 
 class OnboardingActivity : AppCompatActivity() {
-
-	private val viewModel: OnboardingViewModel by viewModels()
 
 	private val navController: NavController get() = findNavController(R.id.nav_host_fragment)
 

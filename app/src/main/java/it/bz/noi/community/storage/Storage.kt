@@ -30,6 +30,7 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = NAM
 	listOf(getSharedPreferencesMigration())
 })
 
+@Deprecated("Value is now handled locally")
 val PRIVACY_ACCEPTED_KEY = booleanPreferencesKey("privacy_accepted")
 val WELCOME_UNDERSTOOD_KEY = booleanPreferencesKey("welcome_understood")
 val VERSION_KEY = intPreferencesKey("version")
@@ -41,21 +42,6 @@ private const val OLD_ACCESS_GRANTED_KEY = "accessGrantedState"
 val ACCESS_GRANTED_KEY = booleanPreferencesKey("access_granted_state")
 val SELECTED_NEWS_FILTERS = stringSetPreferencesKey("selected__news_filters")
 
-
-//region Privacy accepted
-
-fun Context.getPrivacyAcceptedFlow(): Flow<Boolean> = this.dataStore.data
-	.map { preferences ->
-		preferences[PRIVACY_ACCEPTED_KEY] ?: false
-	}
-
-suspend fun Context.setPrivacyAccepted(privacyAccepted: Boolean) {
-	this.dataStore.edit { preferences ->
-		preferences[PRIVACY_ACCEPTED_KEY] = privacyAccepted
-	}
-}
-
-//endregion
 
 //region Welcome understood
 
