@@ -6,6 +6,7 @@ package it.bz.noi.community
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -60,6 +61,11 @@ class SplashScreenActivity : AppCompatActivity() {
 					}
 				}
 			}
+			return
+		}
+
+		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
+			goToOnboardingActivity()
 			return
 		}
 
