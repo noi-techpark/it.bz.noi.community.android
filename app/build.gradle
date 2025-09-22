@@ -15,7 +15,7 @@ plugins {
 android {
 
 	namespace "it.bz.noi.community"
-	compileSdk 35
+	compileSdk 36
 
 	// Version Code - Start
 	def Properties versionProps = new Properties()
@@ -31,7 +31,7 @@ android {
 	defaultConfig {
 		applicationId "it.bz.noi.community"
 		minSdkVersion 24
-		targetSdkVersion 34
+		targetSdkVersion 35
 		versionCode code
 		versionName "1.2.4"
 
@@ -98,23 +98,25 @@ android {
 }
 
 dependencies {
-	implementation 'androidx.core:core-ktx:1.15.0'
-	implementation 'androidx.appcompat:appcompat:1.7.0'
+	implementation 'androidx.fragment:fragment-ktx:1.8.8'
+	implementation 'androidx.activity:activity-ktx:1.10.1'
+	implementation 'androidx.core:core-ktx:1.16.0'
+	implementation 'androidx.appcompat:appcompat:1.7.1'
 	implementation 'com.google.android.material:material:1.12.0'
-	implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
+	implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
 	implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
 	implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 	testImplementation 'junit:junit:4.13.2'
 	implementation 'androidx.recyclerview:recyclerview:1.4.0'
 	androidTestImplementation 'androidx.test.ext:junit:1.2.1'
 	androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
-	implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1'
+	implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0'
 
 	// DataStore Preferences
-	implementation("androidx.datastore:datastore-preferences:1.1.1")
+	implementation("androidx.datastore:datastore-preferences:1.1.7")
 
 	// Android LifeCycle
-	def lifecycle_version = "2.8.7"
+	def lifecycle_version = "2.9.2"
 	implementation "androidx.lifecycle:lifecycle-common:$lifecycle_version"
 	implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
 	implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
@@ -122,17 +124,17 @@ dependencies {
 	implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
 
 	// Retrofit
-	implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-	implementation 'com.google.code.gson:gson:2.10.1'
-	implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-	implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
+	implementation 'com.squareup.retrofit2:retrofit:3.0.0'
+	implementation 'com.google.code.gson:gson:2.13.1'
+	implementation 'com.squareup.retrofit2:converter-gson:3.0.0'
+	implementation 'com.squareup.okhttp3:logging-interceptor:5.1.0'
 
 	// Kotlin Coroutines
-	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
 
 	// Glide
 	implementation 'com.github.bumptech.glide:glide:4.16.0'
-	annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
+	annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
 
 	// SwipeRefresh Layout
 	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
@@ -141,7 +143,7 @@ dependencies {
 	implementation "androidx.paging:paging-runtime-ktx:3.3.6"
 
 	// BoM for the Firebase platform
-	implementation platform('com.google.firebase:firebase-bom:33.6.0')
+	implementation platform('com.google.firebase:firebase-bom:33.12.0')
 	// When using the BoM, you don't specify versions in Firebase library dependencies
 	implementation 'com.google.firebase:firebase-crashlytics-ktx'
 	implementation 'com.google.firebase:firebase-messaging-ktx'
@@ -150,7 +152,7 @@ dependencies {
 	implementation 'net.openid:appauth:0.11.1'
 
 	// ExoPlayer
-	def media3_version = "1.5.1"
+	def media3_version = "1.7.1"
 	// For media playback using ExoPlayer
 	implementation "androidx.media3:media3-exoplayer:$media3_version"
 	// For building media playback UIs

@@ -24,6 +24,7 @@ import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.MainViewModel
 import it.bz.noi.community.ui.UpdateResultsListener
 import it.bz.noi.community.ui.ViewModelFactory
+import it.bz.noi.community.ui.common.handleEdgeToEdgeAsFooter
 import it.bz.noi.community.utils.Status
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
@@ -113,6 +114,7 @@ class NewsFiltersFragment : Fragment() {
 			}
 		}
 
+		binding.footer.handleEdgeToEdgeAsFooter()
 	}
 
 	private fun updateNumberOfResults(numResults: Int?) {

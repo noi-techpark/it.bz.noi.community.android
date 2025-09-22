@@ -29,6 +29,7 @@ import it.bz.noi.community.data.models.*
 import it.bz.noi.community.data.repository.AccountsManager
 import it.bz.noi.community.databinding.FragmentFiltersBinding
 import it.bz.noi.community.ui.UpdateResultsListener
+import it.bz.noi.community.ui.common.handleEdgeToEdgeAsFooter
 import it.bz.noi.community.ui.today.events.TimeFilterAdapter
 import it.bz.noi.community.ui.today.events.TimeFilterClickListener
 import it.bz.noi.community.utils.Status
@@ -233,6 +234,8 @@ class MeetFiltersFragment : Fragment() {
 				addItemDecoration(CategoriesItemDecoration())
 			}
 		}
+
+		binding.footer.handleEdgeToEdgeAsFooter()
 	}
 
 	private fun updateNumberOfResults(numResults: Int?) {
