@@ -19,21 +19,14 @@ import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentTodayBinding
 import it.bz.noi.community.ui.today.events.EventsFragment
 import it.bz.noi.community.ui.today.news.NewsFragment
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class TodayFragment : Fragment() {
 
 	private var _binding: FragmentTodayBinding? = null
 	private val binding get() = _binding!!
 
-	private val fragments = arrayListOf<Fragment>()
 	private lateinit var tabLayout: TabLayout
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-
-		fragments.add(NewsFragment())
-		fragments.add(EventsFragment())
-	}
 
 	override fun onDestroyView() {
 		super.onDestroyView()
@@ -50,6 +43,7 @@ class TodayFragment : Fragment() {
 		return binding.root
 	}
 
+	@OptIn(ExperimentalCoroutinesApi::class)
 	private fun createTabs() {
 		tabLayout = binding.tabs
 
@@ -58,7 +52,14 @@ class TodayFragment : Fragment() {
 			adapter = TodayTabsAdapter(
 				childFragmentManager,
 				lifecycle,
-				fragments
+				listOf(
+					TodayTabsAdapter.FragmentProvider {
+						NewsFragment()
+					},
+					TodayTabsAdapter.FragmentProvider {
+						EventsFragment()
+					}
+				)
 			)
 			isUserInputEnabled = false
 		}
@@ -73,18 +74,19 @@ class TodayFragment : Fragment() {
 			tab.text = tabsNames[position]
 		}.attach()
 	}
-
 }
 
 class TodayTabsAdapter(
 	fm: FragmentManager,
 	lifecycle: Lifecycle,
-	private val fragments: List<Fragment>
+	private val fragments: List<FragmentProvider>
 ) : FragmentStateAdapter(fm, lifecycle) {
+
+	fun interface FragmentProvider {
+		fun getFragment(): Fragment
+	}
 
 	override fun getItemCount() = fragments.size
 
-	override fun createFragment(position: Int): Fragment {
-		return fragments[position]
-	}
+	override fun createFragment(position: Int): Fragment = fragments[position].getFragment()
 }

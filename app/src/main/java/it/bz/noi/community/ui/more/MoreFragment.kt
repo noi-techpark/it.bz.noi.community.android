@@ -15,8 +15,8 @@ import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentMoreBinding
 import it.bz.noi.community.ui.SimpleListAdapter
 import it.bz.noi.community.utils.Utils.openLinkInExternalBrowser
-import it.bz.noi.community.ui.more.MoreFragmentDirections
 import it.bz.noi.community.ui.WebViewFragmentDirections
+import it.bz.noi.community.ui.common.handleEdgeToEdgeInsetsByPadding
 
 class MoreFragment : Fragment() {
 

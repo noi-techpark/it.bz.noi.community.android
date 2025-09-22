@@ -10,8 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.Insets
 import androidx.core.text.buildSpannedString
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -22,6 +26,8 @@ import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentOnboardingBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
+import it.bz.noi.community.ui.common.handleEdgeToEdgeInsetsByPadding
+import it.bz.noi.community.ui.onboarding.OnboardingFragmentDirections
 import it.bz.noi.community.utils.Utils.openLinkInExternalBrowser
 import it.bz.noi.community.utils.addLinkSpan
 import kotlinx.coroutines.flow.collectLatest
@@ -96,6 +102,17 @@ class OnboardingFragment : BaseOnboardingFragment() {
 					}
 				}
 			}
+		}
+
+		ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+			val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+			v.updatePadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
+			WindowInsetsCompat.CONSUMED
+		}
+		ViewCompat.setOnApplyWindowInsetsListener(binding.pager) { v, insets ->
+			val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+			v.updatePadding(systemBars.left, systemBars.top, systemBars.right, 0)
+			WindowInsetsCompat.CONSUMED
 		}
 	}
 
