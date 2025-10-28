@@ -139,7 +139,7 @@ object AuthManager {
 	private const val REDIRECT_URL: String =
 		"noi-community://oauth2redirect/login-callback"
 	private const val END_SESSION_URL = "noi-community://oauth2redirect/end_session-callback"
-	private const val CLIENT_ID: String = "it.bz.noi.community"
+	private const val CLIENT_ID: String = "community-app"
 
 	private const val ACCESS_GRANTED_ROLE = "ACCESS_GRANTED"
 

@@ -37,10 +37,10 @@ android {
 
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-		buildConfigField("String", "ISSUER_URL", "\"https://auth.opendatahub.com/auth/realms/noi/\"")
-		buildConfigField("String", "SIGNUP_URL", "\"https://auth.opendatahub.com/auth/realms/noi/protocol/openid-connect/registrations?client_id=it.bz.noi.community&redirect_uri=https://noi.bz.it&response_type=code&scope=openid\"")
-		buildConfigField("String", "COMMUNITY_API_URL", "\"https://api.community.noi.opendatahub.com\"")
-		buildConfigField("String", "OPENDATAHUB_API_BASE_URL", "\"https://tourism.opendatahub.com/\"")
+		buildConfigField("String", "ISSUER_URL", "\"https://auth.opendatahub.com/auth/realms/noi-community/\"")
+		buildConfigField("String", "SIGNUP_URL", "\"https://auth.opendatahub.com/auth/realms/noi-community/protocol/openid-connect/registrations?client_id=community-app&redirect_uri=https://noi.bz.it&response_type=code&scope=openid\"")
+		buildConfigField("String", "COMMUNITY_API_URL", "\"https://api.v2.community.noi.opendatahub.com\"")
+		buildConfigField("String", "OPENDATAHUB_API_BASE_URL", "\"https://tourism.api.opendatahub.com/\"")
 		buildConfigField("Boolean", "CHECK_ACCESS_GRANTED_TOKEN", "false")
 	}
 
@@ -74,17 +74,17 @@ android {
 	flavorDimensions += "environment"
 	productFlavors {
 		development {
-			buildConfigField("String", "ISSUER_URL", "\"https://auth.opendatahub.testingmachine.eu/auth/realms/noi/\"")
-			buildConfigField("String", "SIGNUP_URL", "\"https://auth.opendatahub.testingmachine.eu/auth/realms/noi/protocol/openid-connect/registrations?client_id=it.bz.noi.community&redirect_uri=https://noi.bz.it&response_type=code&scope=openid\"")
-			buildConfigField("String", "COMMUNITY_API_URL", "\"https://api.community.noi.testingmachine.eu\"")
-			buildConfigField("String", "OPENDATAHUB_API_BASE_URL", "\"https://api.tourism.testingmachine.eu/\"")
+			buildConfigField("String", "ISSUER_URL", "\"https://auth.opendatahub.testingmachine.eu/auth/realms/noi-community/\"")
+			buildConfigField("String", "SIGNUP_URL", "\"https://auth.opendatahub.testingmachine.eu/auth/realms/noi-community/protocol/openid-connect/registrations?client_id=community-app&redirect_uri=https://noi.bz.it&response_type=code&scope=openid\"")
+			buildConfigField("String", "COMMUNITY_API_URL", "\"https://api.v2.community.noi.testingmachine.eu\"")
+			buildConfigField("String", "OPENDATAHUB_API_BASE_URL", "\"https://tourism.api.opendatahub.testingmachine.eu/\"")
 			dimension = 'environment'
 		}
 		production {
-			buildConfigField("String", "ISSUER_URL", "\"https://auth.opendatahub.com/auth/realms/noi/\"")
-			buildConfigField("String", "SIGNUP_URL", "\"https://auth.opendatahub.com/auth/realms/noi/protocol/openid-connect/registrations?client_id=it.bz.noi.community&redirect_uri=https://noi.bz.it&response_type=code&scope=openid\"")
-			buildConfigField("String", "COMMUNITY_API_URL", "\"https://api.community.noi.opendatahub.com\"")
-			buildConfigField("String", "OPENDATAHUB_API_BASE_URL", "\"https://tourism.opendatahub.com/\"")
+			buildConfigField("String", "ISSUER_URL", "\"https://auth.opendatahub.com/auth/realms/noi-community/\"")
+			buildConfigField("String", "SIGNUP_URL", "\"https://auth.opendatahub.com/auth/realms/noi-community/protocol/openid-connect/registrations?client_id=community-app&redirect_uri=https://noi.bz.it&response_type=code&scope=openid\"")
+			buildConfigField("String", "COMMUNITY_API_URL", "\"https://api.v2.community.noi.opendatahub.com\"")
+			buildConfigField("String", "OPENDATAHUB_API_BASE_URL", "\"https://tourism.api.opendatahub.com/\"")
 			dimension = 'environment'
 		}
 	}
