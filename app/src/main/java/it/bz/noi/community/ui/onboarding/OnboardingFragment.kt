@@ -85,9 +85,20 @@ class OnboardingFragment : BaseOnboardingFragment() {
 			}
 		}
 		viewLifecycleOwner.lifecycleScope.launch {
+			repeatOnLifecycle(Lifecycle.State.RESUMED) {
+				viewModel.isUpdateMessageShownFlow.collect { shown ->
+					showLoginInterface(true)
+				}
+			}
+		}
+		viewLifecycleOwner.lifecycleScope.launch {
 			repeatOnLifecycle(Lifecycle.State.STARTED) {
 				viewModel.status.collectLatest {  status ->
 					when (status) {
+						is AuthStateStatus.Unauthorized.NewSignupRequested -> {
+							showLoginInterface(false)
+							findNavController().navigate(OnboardingFragmentDirections.loginToUpdateMessage())
+						}
 						is AuthStateStatus.Authorized -> {
 							showLoginInterface(false)
 							onboardingActivity?.goToMainActivity()

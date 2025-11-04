@@ -116,6 +116,10 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="highlighted_tag" comment="Tab News: text of the label to show on news flagged as highlighted">Highlight</string>
 	<string name="filter_by" comment="News Filters page: title section">Filtern nach</string>
 	<string name="label_news_empty_state_subtitle" comment="Tab News: empty state subtitle">Leider konnten wir keine News finden, die deinen Filtern entsprechen. Bitte ändere deine Suchkriterien.</string>
+	<string name="login_update_page_title" comment="Title of login upodate message page">Wichtige Aktualisierung</string>
+	<string name="login_update_title" comment="Title of login update message">Neue Registrierung erforderlich</string>
+	<string name="login_update_body" comment="Body of login update message">Wir haben das Login-System vereinfacht, um Fehler und komplizierte Abläufe zu vermeiden.\nDer alte Login funktioniert nicht mehr: Erstelle jetzt dein neues Konto – nach der einmaligen Registrierung bleibst du eingeloggt und hast schnellen Zugriff auf News, Events und Services.</string>
+	<string name="login_update_btn" comment="Login update message: button text">Jetzt registrieren</string>
 	<string name="url_home" comment="">https://noi.bz.it/de</string>
 	<string name="url_privacy" comment="">https://noi.bz.it/de/privacy-cookie-policy</string>
 	<string name="url_companies" comment="">https://noi.bz.it/de/unternehmen</string>

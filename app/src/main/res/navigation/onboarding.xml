@@ -18,6 +18,9 @@ SPDX-License-Identifier: CC0-1.0
 		<action
 			android:id="@+id/login_to_error"
 			app:destination="@id/error" />
+		<action
+			android:id="@+id/login_to_update_message"
+			app:destination="@id/login_update_message" />
 	</fragment>
 	<fragment
 		android:id="@+id/error"
@@ -26,6 +29,11 @@ SPDX-License-Identifier: CC0-1.0
 		<argument
 			android:name="email_address"
 			app:argType="string" />
+	</fragment>
+	<fragment
+		android:id="@+id/login_update_message"
+		android:name="it.bz.noi.community.ui.onboarding.LoginUpdateMessageFragment"
+		android:label="@string/login_update_page_title" >
 	</fragment>
 	<action
 		android:id="@+id/action_global_to_login"

@@ -47,6 +47,8 @@ sealed class AuthStateStatus {
 	sealed class Unauthorized : AuthStateStatus() {
 		object UserAuthRequired : Unauthorized()
 		object PendingToken : Unauthorized()
+
+		object NewSignupRequested : Unauthorized()
 		data class NotValidRole(val emailAddress: String) : Unauthorized()
 	}
 
@@ -117,6 +119,11 @@ object AuthManager {
 					authState.authorizationException!!
 				)
 			)
+
+			// FIXME
+			authState.lastAuthorizationResponse?.request?.clientId != CLIENT_ID -> {
+				AuthStateStatus.Unauthorized.NewSignupRequested
+			}
 
 			!validRole -> AuthStateStatus.Unauthorized.NotValidRole("")
 			authState.isAuthorized -> {
