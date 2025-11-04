@@ -215,11 +215,13 @@ class NewsDetailsFragment : Fragment(), GalleryClickListener {
 			}
 
 			if (!news.getLocalizedVideos().isNullOrEmpty()) {
-				videoAdapter.setVideoItems(news.getLocalizedVideos()?.map { video ->
-					GalleryItem.Video(
-						videoUrl = video.url,
-						thumbnailUrl = video.thumbnailUrl
-					)
+				videoAdapter.setVideoItems(news.getLocalizedVideos()?.mapNotNull { video ->
+					video.url?.let {
+						GalleryItem.Video(
+							videoUrl = video.url,
+							thumbnailUrl = video.thumbnailUrl
+						)
+					}
 				} ?: emptyList())
 			}
 

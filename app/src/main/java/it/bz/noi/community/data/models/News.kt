@@ -79,7 +79,7 @@ data class NewsImage(
 @Parcelize
 data class NewsVideo(
 	@SerializedName("Url")
-	val url: String,
+	val url: String? = null,
 	var thumbnailUrl: String? = null,
 	var videoId: String? = null
 ) : Parcelable

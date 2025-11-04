@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.provider.CalendarContract.Events
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -252,8 +253,9 @@ class EventDetailsFragment : Fragment(), EventClickListener {
 		if (getEventDescription(event).isNullOrEmpty()) {
 			binding.tvAboutLabel.isVisible = false
 			binding.tvEventDescription.isVisible = false
-		} else
-			binding.tvEventDescription.text = getEventDescription(event)
+		} else {
+			binding.tvEventDescription.text = Html.fromHtml(getEventDescription(event), Html.FROM_HTML_MODE_LEGACY)
+		}
 
 		populateSuggestedEvents(allEvents, event)
 	}
