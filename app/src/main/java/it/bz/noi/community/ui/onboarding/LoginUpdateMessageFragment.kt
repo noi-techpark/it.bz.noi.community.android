@@ -10,10 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
-import it.bz.noi.community.BuildConfig
+import androidx.navigation.fragment.findNavController
 import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentLoginUpdateMessageBinding
-import it.bz.noi.community.utils.Utils.openLinkInExternalBrowser
+import it.bz.noi.community.oauth.AuthManager
+import it.bz.noi.community.ui.common.handleEdgeToEdgeAsFooter
 
 class LoginUpdateMessageFragment : BaseOnboardingFragment() {
 
@@ -47,23 +48,13 @@ class LoginUpdateMessageFragment : BaseOnboardingFragment() {
 		}
 
 		binding.registerNowBtn.setOnClickListener {
-			// TODO
-			requireActivity().openLinkInExternalBrowser(BuildConfig.SIGNUP_URL)
+			AuthManager.clearAuthState {
+				findNavController().popBackStack()
+			}
 		}
 
-		/*viewLifecycleOwner.lifecycleScope.launch {
-			repeatOnLifecycle(Lifecycle.State.STARTED) {
-				viewModel.status.collectLatest {  status ->
-					when (status) {
-						is AuthStateStatus.Authorized -> onboardingActivity?.goToMainActivity()
-						!is AuthStateStatus.Unauthorized.NotValidRole -> {
-							findNavController().popBackStack()
-						}
-						else -> Unit
-					}
-				}
-			}
-		}*/
+		binding.footer.handleEdgeToEdgeAsFooter()
+
 	}
 
 	override fun onDestroy() {

@@ -114,18 +114,19 @@ object AuthManager {
 
 	private suspend fun UserState.toStatus(): AuthStateStatus {
 		return when {
-			authState.authorizationException != null -> AuthStateStatus.Error(
-				UnauthorizedException(
-					authState.authorizationException!!
+			authState.authorizationException != null -> {
+				AuthStateStatus.Error(
+					UnauthorizedException(
+						authState.authorizationException!!
+					)
 				)
-			)
-
-			// FIXME
-			authState.lastAuthorizationResponse?.request?.clientId != CLIENT_ID -> {
+			}
+			authState.lastAuthorizationResponse != null && authState.lastAuthorizationResponse?.request?.clientId != CLIENT_ID -> {
 				AuthStateStatus.Unauthorized.NewSignupRequested
 			}
-
-			!validRole -> AuthStateStatus.Unauthorized.NotValidRole("")
+			!validRole -> {
+				AuthStateStatus.Unauthorized.NotValidRole("")
+			}
 			authState.isAuthorized -> {
 				authState.isEmailValid().let { (mail, isValid) ->
 					if (!isValid) {
@@ -135,9 +136,12 @@ object AuthManager {
 					}
 				}
 			}
-
-			authState.lastAuthorizationResponse != null && authState.needsTokenRefresh -> AuthStateStatus.Unauthorized.PendingToken
-			else -> AuthStateStatus.Unauthorized.UserAuthRequired
+			authState.lastAuthorizationResponse != null && authState.needsTokenRefresh -> {
+				AuthStateStatus.Unauthorized.PendingToken
+			}
+			else -> {
+				AuthStateStatus.Unauthorized.UserAuthRequired
+			}
 		}
 	}
 
@@ -492,9 +496,14 @@ object AuthManager {
 	}
 
 	fun onEndSession() {
+		clearAuthState {}
+	}
+
+	fun clearAuthState(callback: () -> Unit) {
 		mainCoroutineScope.launch {
 			deleteUserState()
 			userState.emit(UserState(AuthState(), true))
+			callback()
 		}
 	}
 
