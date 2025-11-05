@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import it.bz.noi.community.databinding.FragmentWelcomeBinding
 import it.bz.noi.community.storage.setWelcomeUnderstood
+import it.bz.noi.community.ui.common.handleEdgeToEdgeAsFooter
 import kotlinx.coroutines.launch
 import it.bz.noi.community.ui.welcome.WelcomeFragmentDirections
 import it.bz.noi.community.utils.getAppVersion
@@ -48,10 +49,6 @@ class WelcomeFragment : Fragment() {
 				findNavController().navigate(WelcomeFragmentDirections.actionWelcomeToHome())
 			}
 		}
-		ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-			val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-			v.updatePadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
-			WindowInsetsCompat.CONSUMED
-		}
+		binding.footer.handleEdgeToEdgeAsFooter()
 	}
 }

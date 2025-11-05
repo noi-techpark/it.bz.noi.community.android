@@ -79,8 +79,10 @@ class NewsDetailViewModel(
 	}.onEach { newsRes: Resource<News> ->
 		if (newsRes.status == Status.SUCCESS) {
 			if (!newsRes.data?.videos.isNullOrEmpty()) {
-				newsRes.data?.getLocalizedVideos()?.forEach { video ->
-					getThumbnailUrl(videoUrl = video.url)
+				newsRes.data.getLocalizedVideos()?.forEach { video ->
+					video.url?.let { videoUrl ->
+						getThumbnailUrl(videoUrl = videoUrl)
+					}
 				}
 			}
 		}
