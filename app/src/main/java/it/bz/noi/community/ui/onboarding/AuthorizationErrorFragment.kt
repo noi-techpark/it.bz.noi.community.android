@@ -25,6 +25,7 @@ import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentAuthorizationErrorBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
+import it.bz.noi.community.ui.common.handleEdgeToEdgeAsFooter
 import it.bz.noi.community.utils.addClickableSpan
 import it.bz.noi.community.utils.addLinkSpan
 import it.bz.noi.community.utils.getAppVersion
@@ -67,6 +68,8 @@ class AuthorizationErrorFragment : BaseOnboardingFragment() {
 		binding.logout.setOnClickListener {
 			AuthManager.logout(requireActivity(), OnboardingActivity.LOGOUT_REQUEST)
 		}
+
+		binding.footer.handleEdgeToEdgeAsFooter()
 
 		binding.appVersion.tvAppVersion.text = getAppVersion()
 

@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.Insets
 import androidx.core.text.buildSpannedString
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -26,8 +25,6 @@ import it.bz.noi.community.R
 import it.bz.noi.community.databinding.FragmentOnboardingBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
-import it.bz.noi.community.ui.common.handleEdgeToEdgeInsetsByPadding
-import it.bz.noi.community.ui.onboarding.OnboardingFragmentDirections
 import it.bz.noi.community.utils.Utils.openLinkInExternalBrowser
 import it.bz.noi.community.utils.addLinkSpan
 import kotlinx.coroutines.flow.collectLatest
@@ -86,8 +83,12 @@ class OnboardingFragment : BaseOnboardingFragment() {
 		}
 		viewLifecycleOwner.lifecycleScope.launch {
 			repeatOnLifecycle(Lifecycle.State.STARTED) {
-				viewModel.status.collectLatest {  status ->
+				viewModel.status.collectLatest { status ->
 					when (status) {
+						is AuthStateStatus.Unauthorized.NewSignupRequested -> {
+							showLoginInterface(false)
+							findNavController().navigate(OnboardingFragmentDirections.loginToUpdateMessage())
+						}
 						is AuthStateStatus.Authorized -> {
 							showLoginInterface(false)
 							onboardingActivity?.goToMainActivity()

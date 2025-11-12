@@ -8,7 +8,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -47,6 +46,7 @@ class OnboardingActivity : AppCompatActivity() {
 			setOf(
 				R.id.login,
 				R.id.error,
+				R.id.login_update_message
 			)
 		)
 
@@ -112,7 +112,6 @@ class OnboardingActivity : AppCompatActivity() {
 
 	companion object {
 		private const val TAG = "OnboardingActivity"
-		private const val AUTH_ERROR_TRANSACTION_NAME = "addAuthorizationErrorFragment"
 		const val AUTH_REQUEST = 111
 		const val LOGOUT_REQUEST = 112
 	}
