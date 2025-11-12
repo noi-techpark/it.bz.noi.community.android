@@ -118,8 +118,8 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="label_news_empty_state_subtitle" comment="Tab News: empty state subtitle">We couldn\'t find any News based on the filters you’ve chosen. Please try to adjust your filters.</string>
 	<string name="login_update_page_title" comment="Title of login upodate message page">Important Update</string>
 	<string name="login_update_title" comment="Title of login update message">New Registration Required</string>
-	<string name="login_update_body" comment="Body of login update message">We’ve simplified the login system to remove errors and complicated steps.\n\nThe old login no longer works. Create your new account now – after this one-time registration, you’ll stay signed in and have quick access to news, events, and services.</string>
-	<string name="login_update_btn" comment="Login update message: button text">Register Now</string>
+	<string name="login_update_body" comment="Body of login update message">We’ve simplified the login system to remove errors and complicated steps.\n\nThe old login no longer works. On the next screen, click “Sign Up” and create your new account. After this one-time registration, you’ll stay signed in and have quick access to news, events, and services.</string>
+	<string name="login_update_btn" comment="Login update message: button text">Continue</string>
 	<string name="share_copy" comment="Copy button for the sahre contact bottom sheet">COPY</string>
 	<string name="url_home" comment="">https://noi.bz.it/en</string>
 	<string name="url_privacy" comment="">https://noi.bz.it/en/privacy-cookie-policy</string>
