@@ -116,10 +116,10 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="highlighted_tag" comment="Tab News: text of the label to show on news flagged as highlighted">Highlight</string>
 	<string name="filter_by" comment="News Filters page: title section">Filtra per</string>
 	<string name="label_news_empty_state_subtitle" comment="Tab News: empty state subtitle">Non abbiamo trovato nessuna news che corrisponda ai tuoi filtri di ricerca. Prova a rivedere la tua ricerca.</string>
-	<string name="login_update_page_title" comment="Title of login upodate message page">Aggiornamento importante</string>
+	<string name="login_update_page_title" comment="Title of login upodate message page">Important Update</string>
 	<string name="login_update_title" comment="Title of login update message">Nuova registrazione necessaria</string>
-	<string name="login_update_body" comment="Body of login update message">Abbiamo semplificato il sistema di login per eliminare errori e procedure complicate.\n\nIl vecchio login non funziona più. Crea subito il tuo nuovo account: ti basta registrarti una volta e poi sei sempre connesso a news, eventi e servizi.</string>
-	<string name="login_update_btn" comment="Login update message: button text">Registrati ora</string>
+	<string name="login_update_body" comment="Body of login update message">Abbiamo semplificato il sistema di login per eliminare errori e procedure complicate.\n\nIl vecchio login non funziona più. Nella prossima schermata clicca su “Iscriviti” e crea il tuo nuovo account: ti basta registrarti una volta e poi sei sempre connesso a news, eventi e servizi.</string>
+	<string name="login_update_btn" comment="Login update message: button text">Continua</string>
 	<string name="share_copy" comment="Copy button for the sahre contact bottom sheet">COPIA</string>
 	<string name="url_home" comment="">https://noi.bz.it/it</string>
 	<string name="url_privacy" comment="">https://noi.bz.it/it/privacy-cookie-policy</string>
