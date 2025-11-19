@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
@@ -21,7 +22,7 @@ data class Restaurant(
     val name: String,
     val pictureIds: List<Int>,
     val openingTime: String,
-    val menuUrl: String
+    val menuUrl: String? = null
 )
 
 /**
@@ -46,7 +47,8 @@ class EatAdapter(private val items: List<Restaurant>, private val onMenuClickLis
 		fun bind(
 			name: String,
 			pictureIds: List<Int>,
-			openingTime: String
+			openingTime: String,
+			showMenuBtn: Boolean
 		) {
 			nameTV.text = name
 			openingTimeTV.text = openingTime
@@ -54,6 +56,7 @@ class EatAdapter(private val items: List<Restaurant>, private val onMenuClickLis
 			picturesRV.layoutManager =
 				LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
 			picturesRV.adapter = PictureAdapter(pictureIds)
+			menuBtn.isVisible = showMenuBtn
 		}
 
 	}
@@ -69,7 +72,8 @@ class EatAdapter(private val items: List<Restaurant>, private val onMenuClickLis
         holder.bind(
             restaurant.name,
             restaurant.pictureIds,
-            restaurant.openingTime
+            restaurant.openingTime,
+			restaurant.menuUrl != null
         )
     }
 
