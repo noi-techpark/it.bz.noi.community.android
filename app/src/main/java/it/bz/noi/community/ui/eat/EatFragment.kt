@@ -40,7 +40,7 @@ class EatFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
 		val rest1 = Restaurant(
-			resources.getString(R.string.community_bar_name),
+			resources.getString(R.string.community_bar_a1_name),
 			listOf(
 				R.drawable.community_bar_01,
 				R.drawable.community_bar_02,
@@ -48,8 +48,8 @@ class EatFragment : Fragment() {
 				R.drawable.community_bar_04,
 				R.drawable.community_bar_05,
 			),
-			resources.getString(R.string.community_bar_openings),
-			resources.getString(R.string.url_noi_bar_menu)
+			resources.getString(R.string.community_bar_a1_openings),
+			resources.getString(R.string.url_community_bar_a1_menu)
 		)
         val rest2 = Restaurant(
             resources.getString(R.string.noisteria_name),

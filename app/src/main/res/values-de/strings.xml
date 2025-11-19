@@ -24,8 +24,10 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="btn_sign_up" comment="Event Details: Signup button label">Anmelden</string>
 	<string name="btn_signup" comment="Onboarding wizard: sign up button label">Registrieren</string>
 	<string name="cancel_label" comment="Cancel Label">Löschen</string>
-	<string name="community_bar_name" comment="NOI-Community Bar displayed name">Community Bar</string>
-	<string name="community_bar_openings" comment="NOI-Community Bar openings days and hours">Montag - Freitag: 7:45 - 21:45 Uhr\nSamstag: 9:00 - 20:00 Uhr\n\nSonntag: geschlossen</string>
+	<string name="community_bar_a1_name" comment="NOI-Community Bar A1 displayed name">Community Bar A1</string>
+	<string name="community_bar_a1_openings" comment="NOI-Community Bar A1 openings days and hours">Zugang mit Badge\nVegane Mahlzeiten erhältlich von Montag bis Freitag (€ 8,00)\nKaffee jederzeit verfügbar (€ 0,60)</string>
+	<string name="community_bar_d2_name" comment="NOI-Community Bar D2 displayed name">Community Bar D2</string>
+	<string name="community_bar_d2_openings" comment="NOI-Community Bar D2 openings days and hours">Zugang mit Badge\nVerkauf von Mahlzeiten und Snacks: Mo–Fr 11:30–14:30 Uhr\nKaffee jederzeit am Automaten verfügbar</string>
 	<string name="delete_profile_compose_body" comment="">Dear NOI-Community Team,\n\nhiermit möchte ich anfragen, mein Profil aus dem Database der NOI-Community zu löschen. Grund hierfür ist, dass\n(bitte auswählen)\n\n- ich nicht mehr in einem Institut/einer Firma im NOI Techpark tätig bin;\n- ich kein Interesse habe, in Kontakt mit der NOI-Community zu treten und diesbezüglich News zu erhalten;\n- andere Gründe.\n\nVielen Dank!</string>
 	<string name="delete_profile_compose_subject" comment="">Anfrage zum Löschen des Profils</string>
 	<string name="error_title" comment="Title of generic error dialog">Error</string>
@@ -133,7 +135,7 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="url_map" comment="">https://maps.noi.bz.it/de/</string>
 	<string name="url_room_booking" comment="">https://outlook.com/owa/calendar/NOITechpark1@noi.bz.it/bookings/</string>
 	<string name="url_noisteria_menu" comment="">https://go.alumix.it/menu/noisteria/</string>
-	<string name="url_noi_bar_menu" comment="">https://www.rockinbeets.com/de/</string>
+	<string name="url_community_bar_a1_menu" comment="">https://www.rockinbeets.com/de/</string>
 	<string name="url_alumix_menu" comment="">https://go.alumix.it/menu/alumix/</string>
 	<string name="url_provide_feedback" comment="">https://forms.office.com/Pages/ResponsePage.aspx?id=R_WstlLDCEenJewOZixdERIOZ0hE1k5LlWwUM_AXhdlUNzRHNlJQRlNRRlI3TDROVkQ2OTcwTDNLMS4u&amp;embed=true</string>
 	<string name="url_onboarding" comment="">https://community.noi.bz.it/de/onboarding-manual</string>
