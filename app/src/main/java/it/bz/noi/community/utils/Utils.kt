@@ -4,6 +4,7 @@
 
 package it.bz.noi.community.utils
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -117,6 +118,13 @@ object Utils {
 			data = Uri.parse(url)
 		}
 		startActivity(intent)
+	}
+
+	fun Activity.openLinkInExternalBrowserForResult(url: String, requestCode: Int) {
+		val intent = Intent(Intent.ACTION_VIEW).apply {
+			data = Uri.parse(url)
+		}
+		startActivityForResult(intent, requestCode)
 	}
 
 	fun Context.writeEmail(

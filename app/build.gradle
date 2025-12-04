@@ -33,7 +33,7 @@ android {
 		minSdkVersion 24
 		targetSdkVersion 35
 		versionCode code
-		versionName "1.3.0"
+		versionName "1.3.1"
 
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -75,14 +75,12 @@ android {
 	productFlavors {
 		development {
 			buildConfigField("String", "ISSUER_URL", "\"https://auth.opendatahub.testingmachine.eu/auth/realms/noi-community/\"")
-			buildConfigField("String", "SIGNUP_URL", "\"https://auth.opendatahub.testingmachine.eu/auth/realms/noi-community/protocol/openid-connect/registrations?client_id=community-app&redirect_uri=https://noi.bz.it&response_type=code&scope=openid\"")
 			buildConfigField("String", "COMMUNITY_API_URL", "\"https://api.v2.community.noi.testingmachine.eu\"")
 			buildConfigField("String", "OPENDATAHUB_API_BASE_URL", "\"https://tourism.api.opendatahub.testingmachine.eu/\"")
 			dimension = 'environment'
 		}
 		production {
 			buildConfigField("String", "ISSUER_URL", "\"https://auth.opendatahub.com/auth/realms/noi-community/\"")
-			buildConfigField("String", "SIGNUP_URL", "\"https://auth.opendatahub.com/auth/realms/noi-community/protocol/openid-connect/registrations?client_id=community-app&redirect_uri=https://noi.bz.it&response_type=code&scope=openid\"")
 			buildConfigField("String", "COMMUNITY_API_URL", "\"https://api.v2.community.noi.opendatahub.com\"")
 			buildConfigField("String", "OPENDATAHUB_API_BASE_URL", "\"https://tourism.api.opendatahub.com/\"")
 			dimension = 'environment'
