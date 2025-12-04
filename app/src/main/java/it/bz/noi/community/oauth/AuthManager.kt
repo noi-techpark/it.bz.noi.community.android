@@ -10,7 +10,6 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import androidx.core.net.toUri
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.GsonBuilder
@@ -20,19 +19,45 @@ import it.bz.noi.community.data.api.CommunityApiService
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.api.bearer
 import it.bz.noi.community.data.models.Contact
-import it.bz.noi.community.storage.removeAccessGranted
-import it.bz.noi.community.storage.removeAuthState
 import it.bz.noi.community.storage.getAccessGranted
 import it.bz.noi.community.storage.getAuthState
+import it.bz.noi.community.storage.removeAccessGranted
+import it.bz.noi.community.storage.removeAuthState
 import it.bz.noi.community.storage.setAccessGranted
 import it.bz.noi.community.storage.setAuthState
 import it.bz.noi.community.storage.setWelcomeUnderstood
 import it.bz.noi.community.utils.Resource
 import it.bz.noi.community.utils.Status
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.*
-import net.openid.appauth.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import net.openid.appauth.AppAuthConfiguration
+import net.openid.appauth.AuthState
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationRequest
+import net.openid.appauth.AuthorizationResponse
+import net.openid.appauth.AuthorizationService
+import net.openid.appauth.AuthorizationServiceConfiguration
+import net.openid.appauth.EndSessionRequest
+import net.openid.appauth.ResponseTypeValues
+import net.openid.appauth.TokenResponse
 import net.openid.appauth.browser.BrowserAllowList
 import net.openid.appauth.browser.VersionedBrowserMatcher
 import okhttp3.OkHttpClient
@@ -43,6 +68,7 @@ import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
+import androidx.core.net.toUri
 
 private const val PROMPT_CREATE = "create"
 
@@ -100,7 +126,7 @@ object AuthManager {
 
 			val contacts = RetrofitBuilder.communityApiService.getContacts(token.bearer()).contacts
 			mail to contacts.any { it.matches(mail) }
-		} catch (ex: Exception) {
+		} catch (_: Exception) {
 			"" to false
 		}
 	}
@@ -230,7 +256,7 @@ object AuthManager {
 	private suspend fun obtainAuthServiceConfig(): AuthorizationServiceConfiguration =
 		suspendCoroutine { cont ->
 			AuthorizationServiceConfiguration.fetchFromIssuer(
-				Uri.parse(BuildConfig.ISSUER_URL)
+				BuildConfig.ISSUER_URL.toUri()
 			) { serviceConfiguration, ex ->
 				if (ex != null) {
 					FirebaseCrashlytics.getInstance().recordException(ex)
@@ -343,8 +369,8 @@ object AuthManager {
 
 			val response = blockingNetworkRequest(request)
 			return if (response.isSuccessful) {
-				val responseBody = response.body?.string()
-				val userInfo = parseUserInfoResponse(responseBody!!)
+				val responseBody = response.body.string()
+				val userInfo = parseUserInfoResponse(responseBody)
 				Resource.success(userInfo)
 			} else {
 				Log.d(
@@ -362,7 +388,7 @@ object AuthManager {
 				data = null,
 				message = "Network error when querying userinfo endpoint"
 			)
-		} catch (jsonEx: JSONException) {
+		} catch (_: JSONException) {
 			Log.e(TAG, "Failed to parse userinfo response")
 			return Resource.error(data = null, message = "Failed to parse userinfo response")
 		}
@@ -394,7 +420,7 @@ object AuthManager {
 			authServiceConfig,
 			CLIENT_ID,
 			ResponseTypeValues.CODE,
-			Uri.parse(REDIRECT_URL)
+			REDIRECT_URL.toUri()
 		)
 			.setPrompt(PROMPT_CREATE)
 			.setScopes(AuthorizationRequest.Scope.OPENID, AuthorizationRequest.Scope.PROFILE)
@@ -403,7 +429,7 @@ object AuthManager {
 		try {
 			val intent = authorizationService.getAuthorizationRequestIntent(authRequest)
 			context.startActivityForResult(intent, requestCode)
-		} catch (e: ActivityNotFoundException) {
+		} catch (_: ActivityNotFoundException) {
 			MaterialAlertDialogBuilder(
 				context,
 				R.style.ThemeOverlay_NOI_MaterialAlertDialog
@@ -425,7 +451,7 @@ object AuthManager {
 			authServiceConfig,
 			CLIENT_ID,
 			ResponseTypeValues.CODE,
-			Uri.parse(REDIRECT_URL)
+			REDIRECT_URL.toUri()
 		)
 			.setPrompt(AuthorizationRequest.Prompt.LOGIN)
 			.setScopes(AuthorizationRequest.Scope.OPENID, AuthorizationRequest.Scope.PROFILE)
@@ -434,7 +460,7 @@ object AuthManager {
 		try {
 			val intent = authorizationService.getAuthorizationRequestIntent(authRequest)
 			context.startActivityForResult(intent, requestCode)
-		} catch (e: ActivityNotFoundException) {
+		} catch (_: ActivityNotFoundException) {
 			MaterialAlertDialogBuilder(
 				context,
 				R.style.ThemeOverlay_NOI_MaterialAlertDialog
@@ -515,7 +541,7 @@ object AuthManager {
 		val endSessionIntent: Intent = authorizationService.getEndSessionRequestIntent(
 			EndSessionRequest.Builder(authServiceConfig)
 				.setIdTokenHint(currentUserState.authState.idToken)
-				.setPostLogoutRedirectUri(Uri.parse(END_SESSION_URL))
+				.setPostLogoutRedirectUri(END_SESSION_URL.toUri())
 				.build()
 		)
 		try {
