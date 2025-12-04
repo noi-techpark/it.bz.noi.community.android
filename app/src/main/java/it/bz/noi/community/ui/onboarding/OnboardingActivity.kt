@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -76,6 +77,7 @@ class OnboardingActivity : AppCompatActivity() {
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		Log.d(TAG, "onActivityResult")
 		when (requestCode) {
+			SIGNUP_REQUEST,
 			AUTH_REQUEST -> {
 				val response: AuthorizationResponse? = data?.let {
 					AuthorizationResponse.fromIntent(it)
@@ -114,6 +116,7 @@ class OnboardingActivity : AppCompatActivity() {
 		private const val TAG = "OnboardingActivity"
 		const val AUTH_REQUEST = 111
 		const val LOGOUT_REQUEST = 112
+		const val SIGNUP_REQUEST = 113
 	}
 
 }

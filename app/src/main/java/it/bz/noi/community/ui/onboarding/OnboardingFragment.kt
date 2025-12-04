@@ -26,6 +26,7 @@ import it.bz.noi.community.databinding.FragmentOnboardingBinding
 import it.bz.noi.community.oauth.AuthManager
 import it.bz.noi.community.oauth.AuthStateStatus
 import it.bz.noi.community.utils.Utils.openLinkInExternalBrowser
+import it.bz.noi.community.utils.Utils.openLinkInExternalBrowserForResult
 import it.bz.noi.community.utils.addLinkSpan
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -60,7 +61,7 @@ class OnboardingFragment : BaseOnboardingFragment() {
 			AuthManager.login(requireActivity(), OnboardingActivity.AUTH_REQUEST)
 		}
 		binding.signup.setOnClickListener {
-			requireActivity().openLinkInExternalBrowser(BuildConfig.SIGNUP_URL)
+			AuthManager.signup(requireActivity(), OnboardingActivity.AUTH_REQUEST)
 		}
 		binding.checkboxText.apply {
 			movementMethod = LinkMovementMethod.getInstance()

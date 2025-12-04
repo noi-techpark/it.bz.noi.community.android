@@ -10,6 +10,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.GsonBuilder
@@ -43,6 +44,8 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+private const val PROMPT_CREATE = "create"
+
 sealed class AuthStateStatus {
 	sealed class Unauthorized : AuthStateStatus() {
 		object UserAuthRequired : Unauthorized()
@@ -75,7 +78,7 @@ object AuthManager {
 	 */
 	private suspend fun AuthState.isEmailValid(): Pair<String,Boolean> {
 
-		fun String.isDimensionEmail() = endsWith("@dimension.it")
+		fun String.isDimensionEmail() = endsWith("@dimension.it") || endsWith("@afliant.com")
 
 		fun String.isGooglePlayReviewEmail() = this == "noi.community.app.test@opendatahub.com"
 
@@ -371,9 +374,46 @@ object AuthManager {
 			gson.fromJson(userInfoResponse, UserInfo::class.java)
 		}
 
+	fun signup(context: Activity, requestCode: Int) = mainCoroutineScope.launch {
+		val authServiceConfig = obtainAuthServiceConfig()
+		signup(authServiceConfig, context, requestCode)
+	}
+
 	fun login(context: Activity, requestCode: Int) = mainCoroutineScope.launch {
 		val authServiceConfig = obtainAuthServiceConfig()
 		login(authServiceConfig, context, requestCode)
+	}
+
+	private fun signup(
+		authServiceConfig: AuthorizationServiceConfiguration,
+		context: Activity,
+		requestCode: Int
+	) {
+
+		val authRequest = AuthorizationRequest.Builder(
+			authServiceConfig,
+			CLIENT_ID,
+			ResponseTypeValues.CODE,
+			Uri.parse(REDIRECT_URL)
+		)
+			.setPrompt(PROMPT_CREATE)
+			.setScopes(AuthorizationRequest.Scope.OPENID, AuthorizationRequest.Scope.PROFILE)
+			.build()
+
+		try {
+			val intent = authorizationService.getAuthorizationRequestIntent(authRequest)
+			context.startActivityForResult(intent, requestCode)
+		} catch (e: ActivityNotFoundException) {
+			MaterialAlertDialogBuilder(
+				context,
+				R.style.ThemeOverlay_NOI_MaterialAlertDialog
+			).apply {
+				setTitle(context.getString(R.string.error_title))
+				setMessage(context.getString(R.string.login_browser_error_msg))
+				setPositiveButton(context.getString(R.string.ok_button)) { _, _ -> }
+				show()
+			}
+		}
 	}
 
 	private fun login(
