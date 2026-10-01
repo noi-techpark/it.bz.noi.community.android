@@ -101,3 +101,4 @@ serviceAccountJson.json
 google-services.json
 .vscode
 .classpath
+.venv/

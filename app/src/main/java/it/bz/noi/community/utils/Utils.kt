@@ -46,44 +46,26 @@ object Utils {
 			return null
 	}
 
-	fun getEventDescription(event: Event): String? {
-		return when (Locale.getDefault().language) {
-			ITALIAN -> {
-				event.descriptionIT
-			}
-
-			GERMAN -> {
-				event.descriptionDE
-			}
-
-			else -> {
-				event.descriptionEN
-			}
-		}
+	/**
+	 * Prefers the device's language; falls back to English; falls back to
+	 * whatever language IS actually present in the map, rather than giving up.
+	 * The API doesn't always populate every language for every field.
+	 */
+	fun <T> localizedOrFirst(map: Map<String, T>?): T? {
+		if (map.isNullOrEmpty())
+			return null
+		val preferred = Locale.getDefault().language
+		return map[preferred] ?: map[FALLBACK_LANGUAGE] ?: map.values.firstOrNull()
 	}
 
-	fun getEventName(event: Event, fallback: String): String {
-		return when (Locale.getDefault().language) {
-			ITALIAN -> {
-				event.nameIT ?: event.name ?: fallback
-			}
+	fun getEventDescription(event: Event): String? =
+		localizedOrFirst(event.detail?.mapValues { it.value.baseText })
 
-			GERMAN -> {
-				event.nameDE ?: event.name ?: fallback
-			}
+	fun getEventName(event: Event, fallback: String): String =
+		localizedOrFirst(event.detail?.mapValues { it.value.title })?.takeUnless { it.isNullOrBlank() } ?: fallback
 
-			else -> {
-				event.nameEN ?: event.name ?: fallback
-			}
-		}
-	}
-
-	fun getEventOrganizer(event: Event, fallback: String): String {
-		return if (event.eventOrganizer.isNullOrEmpty())
-			event.eventOrganizerFallback ?: fallback
-		else
-			event.eventOrganizer
-	}
+	fun getEventOrganizer(event: Event, fallback: String): String =
+		localizedOrFirst(event.organizerInfos?.mapValues { it.value.companyName })?.takeUnless { it.isNullOrBlank() } ?: fallback
 
 	fun getImageUrl(event: Event): String? {
 		var eventImageUrl = event.imageGallery?.firstOrNull { it.imageUrl != null }?.imageUrl

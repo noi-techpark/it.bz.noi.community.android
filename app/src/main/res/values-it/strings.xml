@@ -43,7 +43,6 @@ SPDX-License-Identifier: CC0-1.0
 	<string name="label_empty_state_title" comment="Empty state title">Ci dispiace!</string>
 	<string name="label_events_empty_state_subtitle" comment="Tab Today: Empty state subtitle">Non abbiamo trovato nessun evento che corrisponda ai tuoi filtri di ricerca. Prova a rivedere la tua ricerca.</string>
 	<string name="label_filters_empty_state_subtitle" comment="Company filters page: empty state subtitle">In base alle impostazioni dei filtri, non abbiamo trovato nessun risultato. Provi a regolare nuovamente i filtri.</string>
-	<string name="label_interesting_for_you" comment="Event Details: Interesting for you label">Ti interessa?</string>
 	<string name="label_name" comment="Full name label">Nome</string>
 	<string name="label_no_value" comment="Used in the UI of the single field of one event when the associated field has no value. E.G. if the title is missing, we should place &quot;N/D&quot;">N/D</string>
 	<string name="label_phone" comment="Contact details page: telephone number label">Telefono</string>

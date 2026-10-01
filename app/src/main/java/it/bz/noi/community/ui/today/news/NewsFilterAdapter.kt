@@ -49,7 +49,7 @@ class NewsFilterAdapter(private val filterHeader: String, private val updateResu
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 		return when(viewType) {
 			HEADER -> HeaderViewHolder(VhHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-			FILTER -> FilterViewHolder(VhSwitchBinding.inflate(LayoutInflater.from(parent.context), parent, false), updateResultsListener,exclusive = false)
+			FILTER -> FilterViewHolder(VhSwitchBinding.inflate(LayoutInflater.from(parent.context), parent, false), updateResultsListener)
 			else -> throw RuntimeException("Unsupported viewType $viewType")
 		}
 	}

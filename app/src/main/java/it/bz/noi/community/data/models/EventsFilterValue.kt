@@ -5,43 +5,43 @@
 package it.bz.noi.community.data.models
 
 import com.google.gson.annotations.SerializedName
-import it.bz.noi.community.utils.Utils
 
-data class MultiLangEventsFilterValue(
+data class TagsResponse(
+	@SerializedName("Items")
+	val tags: List<EventTag>
+)
+
+/**
+ * Named EventTag (not Tag) to avoid clashing with the unrelated top-level
+ * `Tag` class already declared in this package by News.kt.
+ */
+data class EventTag(
 	@SerializedName("Id")
 	val id: String,
-    @SerializedName("Key")
-    val key: String,
-    @SerializedName("Type")
-    val type: String,
-	@SerializedName("Parent")
-	val parent: String,
-	@Deprecated("Is not used anymore. Kept for compatibility reasons.")
-	@SerializedName("Bitmask")
-	val bitmask: Int = 0,
-    @SerializedName("TypeDesc")
-    val desc: TypeDesc
-)
-
-data class TypeDesc(
-    @SerializedName("de")
-    val de: String,
-    @SerializedName("en")
-    val en: String,
-    @SerializedName("it")
-    val it: String
-)
-
-fun MultiLangEventsFilterValue.toFilterValue(language: String): FilterValue {
-	val description = when (language) {
-		Utils.ITALIAN -> desc.it
-		Utils.GERMAN -> desc.de
-		else -> desc.en
-	}
-	return FilterValue(key, type, description)
+	@SerializedName("TagName")
+	val tagName: Map<String, String> = emptyMap(),
+	@SerializedName("Types")
+	val types: List<String> = emptyList(),
+) {
+	/**
+	 * A tag's Types array can have more than one entry (e.g. "digital" has both
+	 * "technologyfields" and "customtagging"). Only the first is used to decide
+	 * its filter category: classifying by Types.contains(...) instead would let a
+	 * dual-category tag match both the CustomTagging-OR-group and the
+	 * TechnologyFields-OR-group at once, and AND-ing those two groups together
+	 * could then silently collapse to just one group's constraint whenever that
+	 * shared tag is selected (X AND (X OR Y) = X).
+	 */
+	val category: String?
+		get() = types.firstOrNull()
 }
 
-enum class EventsFilterType(val typeDesc: String) {
-	EVENT_TYPE("CustomTagging"),
-	TECHNOLOGY_SECTOR("TechnologyFields")
+fun EventTag.toFilterValue(language: String): FilterValue {
+	val description = tagName[language] ?: tagName.values.firstOrNull() ?: id
+	return FilterValue(key = id, type = category ?: "", desc = description)
+}
+
+enum class EventsFilterType(val category: String) {
+	EVENT_TYPE("customtagging"),
+	TECHNOLOGY_SECTOR("technologyfields")
 }

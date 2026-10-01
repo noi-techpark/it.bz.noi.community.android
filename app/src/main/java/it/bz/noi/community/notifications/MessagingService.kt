@@ -51,7 +51,7 @@ class MessagingService : FirebaseMessagingService() {
 			showNotificationBanner(
 				"Test",
 				"Test",
-				Uri.parse("noi-community://it.bz.noi.community/eventDetails/2343242")
+				Uri.parse("noi-community://it.bz.noi.community/eventDetails/b30e3bb8-0af4-43b2-bb8f-aff9ea940884")
 			)
 		}
 

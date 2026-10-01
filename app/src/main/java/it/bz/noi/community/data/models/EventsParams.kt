@@ -11,6 +11,10 @@ data class EventsParams(
 	var selectedFilters: List<FilterValue> = emptyList()
 )
 
+private const val NOI_LOCATION_TAG_ID = "noi"
+
+private fun tagRawFilter(tagId: String) = "in(TagIds.[],\"$tagId\")"
+
 /*
  * Filtri per tipo evento:
  * - sono mutualmente esclusivi
@@ -20,8 +24,8 @@ data class EventsParams(
 private fun EventsParams.getEventTypeRawFilter(): String? {
     var rawFilter: String?
 
-	val rawFiltersList = selectedFilters.filter { it.type == EventsFilterType.EVENT_TYPE.typeDesc }.map {
-		"in(${EventsFilterType.EVENT_TYPE.typeDesc}.[],\"${it.key}\")"
+	val rawFiltersList = selectedFilters.filter { it.type == EventsFilterType.EVENT_TYPE.category }.map {
+		tagRawFilter(it.key)
 	}
 
 	if (rawFiltersList.isEmpty())
@@ -47,8 +51,8 @@ private fun EventsParams.getEventTypeRawFilter(): String? {
 private fun EventsParams.getTechSectorRawFilter(): String? {
 	var rawFilter: String?
 
-	val rawFiltersList = selectedFilters.filter { it.type == EventsFilterType.TECHNOLOGY_SECTOR.typeDesc }.map {
-		"in(${EventsFilterType.TECHNOLOGY_SECTOR.typeDesc}.[],\"${it.key}\")"
+	val rawFiltersList = selectedFilters.filter { it.type == EventsFilterType.TECHNOLOGY_SECTOR.category }.map {
+		tagRawFilter(it.key)
 	}
 
 	if (rawFiltersList.isEmpty())
@@ -64,22 +68,21 @@ private fun EventsParams.getTechSectorRawFilter(): String? {
 }
 
 /*
- * Filtro complessivo
+ * Filtro complessivo.
+ *
+ * La location NOI non è più un parametro di query dedicato nella nuova API: è
+ * solo un altro tag, quindi va sempre incluso come componente AND, insieme agli
+ * eventuali filtri selezionati dall'utente.
  */
-fun EventsParams.getRawFilter(): String? {
-	if (selectedFilters == null || selectedFilters.isEmpty())
-		return null
+fun EventsParams.getRawFilter(): String {
+    val components = listOfNotNull(
+		tagRawFilter(NOI_LOCATION_TAG_ID),
+		getEventTypeRawFilter(),
+		getTechSectorRawFilter(),
+	)
 
-    val eventTypeRawFilter = getEventTypeRawFilter()
-    val techSectorRawFilter = getTechSectorRawFilter()
-
-    var rawFilter: String? = null
-    if (eventTypeRawFilter != null && techSectorRawFilter != null)
-    	// Filtro sia per evento sia per settore tecnologico: sono una intersezione di insiemi e quindi vanno messi in AND. Es eventi pubblici e del settore green
-        rawFilter = "and(".plus(eventTypeRawFilter).plus(",").plus(techSectorRawFilter).plus(")")
-    else if (eventTypeRawFilter != null)
-        rawFilter = eventTypeRawFilter
-    else if (techSectorRawFilter != null)
-        rawFilter = techSectorRawFilter
-    return rawFilter
+	return if (components.size == 1)
+		components[0]
+	else
+		components.joinToString(prefix = "and(", separator = ",", postfix = ")")
 }

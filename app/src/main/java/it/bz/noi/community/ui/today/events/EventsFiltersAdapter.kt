@@ -50,8 +50,8 @@ class EventsFiltersAdapter(private val eventTypeHeader: String,
 
 		val filterItems = arrayListOf<Item>()
 
-		val eventTypeFilters = filters.filter { it.type == EventsFilterType.EVENT_TYPE.typeDesc }
-		val technologySectorFilters = filters.filter { it.type == EventsFilterType.TECHNOLOGY_SECTOR.typeDesc }
+		val eventTypeFilters = filters.filter { it.type == EventsFilterType.EVENT_TYPE.category }
+		val technologySectorFilters = filters.filter { it.type == EventsFilterType.TECHNOLOGY_SECTOR.category }
 
 		if (eventTypeFilters.isNotEmpty()) {
 			filterItems.add(Item.Header(eventTypeHeader))
@@ -70,11 +70,31 @@ class EventsFiltersAdapter(private val eventTypeHeader: String,
 		return filterItems
 	}
 
+	/**
+	 * EVENT_TYPE filters are mutually exclusive: checking one must uncheck every
+	 * other EVENT_TYPE filter in [filters] itself, not just sibling views -
+	 * with up to ~24 event-type tags in the new /v1/Tag catalog (was a fixed 3
+	 * before this migration), most siblings won't even be laid out on screen at
+	 * the same time, so a view-position-based approach can't see them.
+	 */
+	private val eventTypeUpdateResultsListener = object : UpdateResultsListener {
+		override fun updateResults(filter: FilterValue) {
+			if (filter.type == EventsFilterType.EVENT_TYPE.category && filter.checked) {
+				filters.forEach {
+					if (it.type == EventsFilterType.EVENT_TYPE.category && it.key != filter.key)
+						it.checked = false
+				}
+				notifyDataSetChanged()
+			}
+			updateResultsListener.updateResults(filter)
+		}
+	}
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             HEADER -> HeaderViewHolder(VhHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            EVENT_TYPE_FILTER -> FilterViewHolder(VhSwitchBinding.inflate(LayoutInflater.from(parent.context), parent, false), updateResultsListener, exclusive = true)
-			TECHNOLOGY_SECTOR_FILTER -> FilterViewHolder(VhSwitchBinding.inflate(LayoutInflater.from(parent.context), parent, false), updateResultsListener,exclusive = false)
+            EVENT_TYPE_FILTER -> FilterViewHolder(VhSwitchBinding.inflate(LayoutInflater.from(parent.context), parent, false), eventTypeUpdateResultsListener)
+			TECHNOLOGY_SECTOR_FILTER -> FilterViewHolder(VhSwitchBinding.inflate(LayoutInflater.from(parent.context), parent, false), updateResultsListener)
             else -> throw RuntimeException("Unsupported viewType $viewType")
         }
     }

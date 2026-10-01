@@ -1,86 +1,311 @@
 [
 	{
-		"Id": "sport",
-		"Key": "Sport",
-		"Type": "CustomTagging",
-		"Parent": "EventType",
-		"Bitmask": 0,
-		"TypeDesc": {
-			"de": "Sport",
-			"en": "Sport",
-			"it": "Sport"
-		}
-	},
-	{
-		"Id": "noicommunity",
-		"Key": "NOI Community",
-		"Type": "CustomTagging",
-		"Parent": "EventType",
-		"Bitmask": 0,
-		"TypeDesc": {
-			"de": "NOI Community",
-			"en": "NOI Community",
-			"it": "NOI Community"
-		}
+		"Id": "artsculture",
+		"TagName": {
+			"de": "Arts Culture",
+			"en": "Arts Culture",
+			"it": "Arts Culture"
+		},
+		"Types": [
+			"customtagging"
+		]
 	},
 	{
 		"Id": "automotiveautomation",
-		"Key": "Automotive/Automation",
-		"Type": "TechnologyFields",
-		"Parent": "",
-		"Bitmask": 0,
-		"TypeDesc": {
+		"TagName": {
 			"de": "Automotive / Automation",
 			"en": "Automotive / Automation",
 			"it": "Automotive / Automation"
-		}
+		},
+		"Types": [
+			"technologyfields"
+		]
+	},
+	{
+		"Id": "camp4company",
+		"TagName": {
+			"de": "Camp4Company",
+			"en": "Camp4Company",
+			"it": "Camp4Company"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "collaboraticerobotics",
+		"TagName": {
+			"de": "Collaboratice Robotics",
+			"en": "Collaboratice Robotics",
+			"it": "Collaboratice Robotics"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "companies",
+		"TagName": {
+			"de": "Unternehmen",
+			"en": "Companies",
+			"it": "Aziende"
+		},
+		"Types": [
+			"customtagging"
+		]
 	},
 	{
 		"Id": "digital",
-		"Key": "Digital",
-		"Type": "TechnologyFields",
-		"Parent": "",
-		"Bitmask": 0,
-		"TypeDesc": {
+		"TagName": {
 			"de": "Digital",
 			"en": "Digital",
 			"it": "Digital"
-		}
+		},
+		"Types": [
+			"technologyfields",
+			"customtagging"
+		]
 	},
 	{
-		"Id": "green",
-		"Key": "Green",
-		"Type": "TechnologyFields",
-		"Parent": "",
-		"Bitmask": 0,
-		"TypeDesc": {
-			"de": "Green",
-			"en": "Green",
-			"it": "Green"
-		}
+		"Id": "elettrotinkering",
+		"TagName": {
+			"de": "Elettro-Tinkering",
+			"en": "Elettro-Tinkering",
+			"it": "Elettro-Tinkering"
+		},
+		"Types": [
+			"customtagging"
+		]
 	},
 	{
-		"Id": "publicengagement",
-		"Key": "Public Engagement",
-		"Type": "CustomTagging",
-		"Parent": "EventType",
-		"Bitmask": 0,
-		"TypeDesc": {
-			"de": "Public Engagement",
-			"en": "Public Engagement",
-			"it": "Public Engagement"
-		}
+		"Id": "euopportunities",
+		"TagName": {
+			"de": "EU Opportunities",
+			"en": "EU Opportunities",
+			"it": "EU Opportunities"
+		},
+		"Types": [
+			"customtagging"
+		]
 	},
 	{
 		"Id": "food",
-		"Key": "Food",
-		"Type": "TechnologyFields",
-		"Parent": "",
-		"Bitmask": 0,
-		"TypeDesc": {
+		"TagName": {
 			"de": "Food & Health",
 			"en": "Food & Health",
 			"it": "Food & Health"
-		}
+		},
+		"Types": [
+			"technologyfields"
+		]
+	},
+	{
+		"Id": "green",
+		"TagName": {
+			"de": "Green",
+			"en": "Green",
+			"it": "Green"
+		},
+		"Types": [
+			"technologyfields"
+		]
+	},
+	{
+		"Id": "innovationmanagement",
+		"TagName": {
+			"de": "Innovation Management",
+			"en": "Innovation Management",
+			"it": "Innovation Management"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "labs",
+		"TagName": {
+			"de": "Labs",
+			"en": "Labs",
+			"it": "Labs"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "legorobotics",
+		"TagName": {
+			"de": "Lego Robotics",
+			"en": "Lego Robotics",
+			"it": "Lego Robotics"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "mininoi",
+		"TagName": {
+			"de": "MiniNOI",
+			"en": "MiniNOI",
+			"it": "MiniNOI"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "noicommunity",
+		"TagName": {
+			"de": "NOI Community",
+			"en": "NOI Community",
+			"it": "NOI Community"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "opendatahub",
+		"TagName": {
+			"de": "Open Data Hub",
+			"en": "Open Data Hub",
+			"it": "Open Data Hub"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "openday",
+		"TagName": {
+			"de": "Open Day",
+			"en": "Open Day",
+			"it": "Open Day"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "outofthelab",
+		"TagName": {
+			"de": "Out of the Lab",
+			"en": "Out of the Lab",
+			"it": "Out of the Lab"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "public",
+		"TagName": {
+			"de": "Public",
+			"en": "Public",
+			"it": "Public"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "publicengagement",
+		"TagName": {
+			"de": "Public Engagement",
+			"en": "Public Engagement",
+			"it": "Public Engagement"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "researchers",
+		"TagName": {
+			"de": "Forscher",
+			"en": "Researchers",
+			"it": "Per chi fa ricerca"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "scratchvideogames",
+		"TagName": {
+			"de": "Scratch Videogames",
+			"en": "Scratch Videogames",
+			"it": "Scratch Videogames"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "sport",
+		"TagName": {
+			"de": "Sport",
+			"en": "Sport",
+			"it": "Sport"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "square",
+		"TagName": {
+			"de": "Square",
+			"en": "Square",
+			"it": "Square"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "startupincubator",
+		"TagName": {
+			"de": "Start-up Incubator",
+			"en": "Start-up Incubator",
+			"it": "Start-up Incubator"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "startups",
+		"TagName": {
+			"de": "Start-up",
+			"en": "Startups",
+			"it": "Start-up"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "summeratnoi",
+		"TagName": {
+			"de": "Summer at NOI",
+			"en": "Summer at NOI",
+			"it": "Summer at NOI"
+		},
+		"Types": [
+			"customtagging"
+		]
+	},
+	{
+		"Id": "techtransfer",
+		"TagName": {
+			"de": "Tech Transfer",
+			"en": "Tech Transfer",
+			"it": "Tech Transfer"
+		},
+		"Types": [
+			"customtagging"
+		]
 	}
 ]

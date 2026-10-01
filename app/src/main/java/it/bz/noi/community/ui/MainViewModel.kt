@@ -28,9 +28,9 @@ import it.bz.noi.community.NoiApplication
 import it.bz.noi.community.data.api.ApiHelper
 import it.bz.noi.community.data.api.RetrofitBuilder
 import it.bz.noi.community.data.models.Event
+import it.bz.noi.community.data.models.EventTag
 import it.bz.noi.community.data.models.EventsParams
 import it.bz.noi.community.data.models.FilterValue
-import it.bz.noi.community.data.models.MultiLangEventsFilterValue
 import it.bz.noi.community.data.models.MultiLangNewsFilterValue
 import it.bz.noi.community.data.models.News
 import it.bz.noi.community.data.models.TimeRange
@@ -121,7 +121,7 @@ class MainViewModel(
 	private var events = liveData(Dispatchers.IO) {
 		emit(Resource.loading(data = null))
 		try {
-			emit(Resource.success(data = mainRepository.getEvents(eventsParams).events))
+			emit(Resource.success(data = mainRepository.getEvents(eventsParams)))
 		} catch (exception: Exception) {
 			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
 		}
@@ -300,7 +300,7 @@ class MainViewModel(
 		events = liveData(Dispatchers.IO) {
 			emit(Resource.loading(data = null))
 			try {
-				emit(Resource.success(data = mainRepository.getEvents(eventsParams).events))
+				emit(Resource.success(data = mainRepository.getEvents(eventsParams)))
 			} catch (exception: Exception) {
 				emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
 			}
@@ -311,25 +311,13 @@ class MainViewModel(
 	}
 
 	/**
-	 *
-	 */
-	fun getRoomMapping() = liveData(Dispatchers.IO) {
-		emit(Resource.loading(null))
-		try {
-			emit(Resource.success(data = mainRepository.getRoomMapping(Utils.getAppLanguage())))
-		} catch (exception: Exception) {
-			emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
-		}
-	}
-
-	/**
 	 * Loads filters to show in event filter screen
 	 */
 	private fun getEventFilterValues() = liveData(Dispatchers.IO) {
 		emit(Resource.loading(null))
-		var filters: List<MultiLangEventsFilterValue>
+		var filters: List<EventTag>
 		try {
-			filters = mainRepository.getEventFilterValues()
+			filters = mainRepository.getEventFilterValues().tags
 			if (filters.isEmpty())
 				filters= filterRepo.loadEventFilters()
 			else

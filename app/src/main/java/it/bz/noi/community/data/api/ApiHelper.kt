@@ -13,16 +13,14 @@ class ApiHelper(
 
 	// EVENTS
 	suspend fun getEvents(eventsParams: EventsParams): EventsResponse = opendatahubApiService.getEvents(
-		startDate = eventsParams.startDate,
+		beginDate = eventsParams.startDate,
 		endDate = eventsParams.endDate,
 		rawFilter = eventsParams.getRawFilter()
 	)
 
 	suspend fun getEventDetails(eventID: String) = opendatahubApiService.getEventDetails(eventID)
 	suspend fun getEventFilterValues() = opendatahubApiService.getEventFilterValues()
-
-	// ROOMS
-	suspend fun getRoomMapping(language: String?) = opendatahubApiService.getRoomMapping(language)
+	suspend fun getVenues(idList: String) = opendatahubApiService.getVenues(idList)
 
 	// NEWS
 	suspend fun getNews(newsParams: NewsParams): NewsResponse =

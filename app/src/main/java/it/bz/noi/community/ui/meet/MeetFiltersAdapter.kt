@@ -74,7 +74,7 @@ class MeetFiltersSectionAdapter(
 					LayoutInflater.from(parent.context),
 					parent,
 					false
-				), updateResultsListener, exclusive = false
+				), updateResultsListener
 			)
 			else -> throw RuntimeException("Unsupported viewType $viewType")
 		}
@@ -165,7 +165,7 @@ class MeetFiltersAdapter(
 					LayoutInflater.from(parent.context),
 					parent,
 					false
-				), updateResultsListener, exclusive = false
+				), updateResultsListener
 			)
 
 			VIEWTYPE_EMPTY -> EmptyViewHolder(

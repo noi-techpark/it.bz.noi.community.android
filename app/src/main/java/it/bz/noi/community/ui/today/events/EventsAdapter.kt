@@ -42,25 +42,15 @@ interface EventClickListener {
 	)
 }
 
-/**
- * isSuggestedEvents is a boolean that is used for telling the adapter that is used in the event details
- * suggested events recyclerview
- * fragment parameter to avoid clicked view to have the fade out animation
- */
 class EventsAdapter(
 	private val events: List<Event>,
 	private val listener: EventClickListener,
-	private val isSuggestedEvents: Boolean = false
 ) :
 	RecyclerView.Adapter<EventsAdapter.EventViewHolder>() {
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
-		val view = if (isSuggestedEvents)
-			LayoutInflater.from(parent.context)
-				.inflate(R.layout.vh_suggested_event, parent, false)
-		else
-			LayoutInflater.from(parent.context)
-				.inflate(R.layout.vh_event, parent, false)
+		val view = LayoutInflater.from(parent.context)
+			.inflate(R.layout.vh_event, parent, false)
 		return EventViewHolder(view, parent.context)
 	}
 
@@ -106,7 +96,7 @@ class EventsAdapter(
 			this.event = event
 
 			eventName.text = getEventName(event, context.getString(R.string.label_no_value))
-			eventLocation.text = event.location
+			eventLocation.text = event.resolvedLocationName
 
 			eventDate.text = getDateIntervalString(event.startDate, event.endDate)
 			eventTime.text = getHoursIntervalString(event.startDate, event.endDate)

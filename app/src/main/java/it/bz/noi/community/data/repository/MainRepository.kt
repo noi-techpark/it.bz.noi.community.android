@@ -18,12 +18,27 @@ class MainRepository(
 	private val isOptOutEnabled: Boolean = false
 ) {
 	// EVENTS
-	suspend fun getEvents(eventsParams: EventsParams) = apiHelper.getEvents(eventsParams)
-	suspend fun getEventDetails(eventID: String) = apiHelper.getEventDetails(eventID)
+	suspend fun getEvents(eventsParams: EventsParams): List<Event> =
+		resolveVenues(apiHelper.getEvents(eventsParams).events)
+
+	suspend fun getEventDetails(eventID: String): Event =
+		resolveVenues(listOf(apiHelper.getEventDetails(eventID))).first()
+
 	suspend fun getEventFilterValues() = apiHelper.getEventFilterValues()
 
-	// ROOMS
-	suspend fun getRoomMapping(language: String?) = apiHelper.getRoomMapping(language)
+	/**
+	 * VenueIds on an event only identifies the building; resolving the specific
+	 * room name/map link requires a batched /v1/Venue call for all distinct
+	 * VenueIds in the page, done once here rather than once per event.
+	 */
+	private suspend fun resolveVenues(events: List<Event>): List<Event> {
+		val venueIds = events.flatMap { it.venueIds.orEmpty() }.distinct()
+		if (venueIds.isEmpty())
+			return events
+
+		val venuesById = apiHelper.getVenues(venueIds.joinToString(",")).venues.associateBy { it.id }
+		return events.map { it.resolve(venuesById) }
+	}
 
 	// NEWS
 	suspend fun getNews(newsParams: NewsParams) = apiHelper.getNews(newsParams)

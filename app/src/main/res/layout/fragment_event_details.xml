@@ -184,30 +184,6 @@ SPDX-License-Identifier: CC0-1.0
 				app:layout_constraintTop_toBottomOf="@id/tvAboutLabel"
 				tools:text="Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet." />
 
-			<TextView
-				android:id="@+id/tvInterestingForYou"
-				style="?attr/textAppearanceSubtitle1"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="28dp"
-				android:paddingHorizontal="@dimen/default_margin"
-				android:text="@string/label_interesting_for_you"
-				android:textColor="@color/secondary_color"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/tvEventDescription" />
-
-			<androidx.recyclerview.widget.RecyclerView
-				android:id="@+id/rvSuggestedEvents"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="@dimen/default_margin"
-				android:layout_marginTop="16dp"
-				android:clipToPadding="false"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/tvInterestingForYou"
-				tools:itemCount="1"
-				tools:listitem="@layout/vh_event" />
-
 		</androidx.constraintlayout.widget.ConstraintLayout>
 
 	</androidx.core.widget.NestedScrollView>
