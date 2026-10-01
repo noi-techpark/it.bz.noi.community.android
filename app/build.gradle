@@ -31,7 +31,7 @@ android {
 	defaultConfig {
 		applicationId "it.bz.noi.community"
 		minSdkVersion 24
-		targetSdkVersion 35
+		targetSdkVersion 36
 		versionCode code
 		versionName "1.3.2"
 
