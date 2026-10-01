@@ -21,6 +21,10 @@ interface OpendatahubApiService {
 	suspend fun getEvents(
 		@Query("removenullvalues") removeNullValues: Boolean = true,
 		@Query("denormalize") denormalize: Boolean = true,
+		// Filters out inactive occurrences (e.g. EventDate.Active = null, which
+		// would otherwise be shown) and keeps the item count consistent with
+		// TotalResults (verified live). Aligned with iOS.
+		@Query("optimizedates") optimizeDates: Boolean = true,
 		@Query("rawsort") rawSort: String = "DateBegin",
 		@Query("pagenumber") pageNumber: Int = 1,
 		@Query("pagesize") pageSize: Int = 20,
