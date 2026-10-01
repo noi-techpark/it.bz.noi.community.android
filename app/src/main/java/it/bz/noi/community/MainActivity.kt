@@ -54,13 +54,9 @@ class MainActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		if (intent.hasExtra("deep_link")) {
-			val deepLink = intent.getStringExtra("deep_link")
-			if (deepLink != null) {
-				val uri = Uri.parse(deepLink)
-				startActivity(Intent(Intent.ACTION_VIEW).apply { data = uri })
-				finish()
-				return
+		if (intent.data == null) {
+			intent.getStringExtra("deep_link")?.let { deepLink ->
+				intent.data = Uri.parse(deepLink)
 			}
 		}
 
