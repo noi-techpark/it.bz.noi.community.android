@@ -11,6 +11,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -52,9 +54,13 @@ class MainActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		if (intent.data == null) {
-			intent.getStringExtra("deep_link")?.let { deepLink ->
-				intent.data = Uri.parse(deepLink)
+		if (intent.hasExtra("deep_link")) {
+			val deepLink = intent.getStringExtra("deep_link")
+			if (deepLink != null) {
+				val uri = Uri.parse(deepLink)
+				startActivity(Intent(Intent.ACTION_VIEW).apply { data = uri })
+				finish()
+				return
 			}
 		}
 
@@ -236,6 +242,23 @@ class MainActivity : AppCompatActivity() {
 		MessagingService.subscribeToTopic(preferredNewsTopic)
 	}
 
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+		if (BuildConfig.DEBUG) {
+			menu.add(Menu.NONE, DEBUG_MENU_ITEM_SHOW_NOTIFICATION, Menu.NONE, "Debug: show test notification")
+		}
+		return super.onCreateOptionsMenu(menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		if (item.itemId == DEBUG_MENU_ITEM_SHOW_NOTIFICATION) {
+			with(MessagingService) {
+				this@MainActivity.showNotification()
+			}
+			return true
+		}
+		return super.onOptionsItemSelected(item)
+	}
+
 	override fun onSupportNavigateUp(): Boolean {
 		navController.popBackStack()
 		return super.onSupportNavigateUp()
@@ -275,5 +298,6 @@ class MainActivity : AppCompatActivity() {
 		internal const val EXTRA_SHOW_WELCOME: String = "show_welcome"
 		private const val STATE_SHOW_WELCOME: String = "show_welcome"
 		private const val TAG = "MainActivity"
+		private const val DEBUG_MENU_ITEM_SHOW_NOTIFICATION = 1
 	}
 }
